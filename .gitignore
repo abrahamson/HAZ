@@ -1,0 +1,8 @@
+# Ignore compiler project files
+*.atools
+*.amake
+*.amake.bk
+mrweprefs.r
+project.r
+# Ignore Mac OS X system files
+.DS_Store
