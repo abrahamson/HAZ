@@ -1,6 +1,6 @@
       program haz45a
 
-c     Probabilisitic Seismic Hazard Program (PSHA) 
+c     Probabilisitic Seismic Hazard Program (PSHA)   
 
       include 'pfrisk.h'
       include 'declare1.h'
