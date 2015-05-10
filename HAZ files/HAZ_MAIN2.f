@@ -36,7 +36,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45i    *'
       write (*,*) '*          May, 2015            *'
-      write (*,*) '*          Git Test             *'
+      write (*,*) '*      Fix Mixture Model        *'
       write (*,*) '*********************************'
       write (*,*)
 
