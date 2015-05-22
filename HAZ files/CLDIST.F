@@ -438,7 +438,8 @@ C     Set the JB and Hypo distances for faults.
       return
       end
 
-c -------------------------------------------------------------------
+c ----------------------------------------------------------------------
+
 
       Subroutine SetnRupLoc ( n1, n2, nHypoX, pHypoX, nHypoXStep, 
      1                        nHypoZ, pHypoZ, nHypoZstep ) 

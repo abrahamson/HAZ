@@ -126,7 +126,10 @@ cnjg          sum1 = sum1 + w
           sum1 = sum1 + real(w/npts)
           nn = nn + 1
         enddo
-        n2(i) = Int( width1 / step ) + 1
+        n2(i) = Int( width1 / step )
+        if (n2(i).eq.0) then
+          n2(i) = 1
+        endif
       enddo
 cnjg      faultW = sum1 / nn
       faultW = sum1 
