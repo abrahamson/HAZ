@@ -34,9 +34,8 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*   Hazard Code: Version 45i    *'
+      write (*,*) '*   Hazard Code: Version 45j    *'
       write (*,*) '*          May, 2015            *'
-      write (*,*) '*      Fix Mixture Model        *'
       write (*,*) '*********************************'
       write (*,*)
 

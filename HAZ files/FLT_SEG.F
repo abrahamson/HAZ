@@ -96,7 +96,6 @@ c ---------------------------------------------------------------------
      
       include 'pfrisk.h'
       include 'declare1.h'
-cnjg      integer nDD, n2(MAX_DD), nfltGrid(2), n1(MAX_SEG)
       integer nDD, n2(MAXFLT_DD), nfltGrid(2), n1(MAXFLT_AS)
       real fltGrid_X(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
      1     fltGrid_z(MAXFLT_DD,MAXFLT_AS),fltGrid_fLen(MAXFLT_DD,MAXFLT_AS)
@@ -104,10 +103,6 @@ cnjg      integer nDD, n2(MAX_DD), nfltGrid(2), n1(MAX_SEG)
       real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_Rseis(MAXFLT_DD,MAXFLT_AS), fltGrid_Rx(MAXFLT_DD,MAXFLT_AS),
      2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS)
-
-c     set grid step in km
-c      step = 0.25
-cnjg      step = 0.25  
 
       distMin1 = 1.E10
 
@@ -122,7 +117,6 @@ c     Find the widest part of the fault and set the number of grid points down d
           dz = zFlt(i+1,j) - zFlt(i,j)
           w = sqrt( dx**2 + dy**2 + dz**2 ) 
           if ( w .gt. width1 ) width1 = w
-cnjg          sum1 = sum1 + w
           sum1 = sum1 + real(w/npts)
           nn = nn + 1
         enddo
@@ -131,7 +125,6 @@ cnjg          sum1 = sum1 + w
           n2(i) = 1
         endif
       enddo
-cnjg      faultW = sum1 / nn
       faultW = sum1 
       nx1 = 0
       ny1 = 0
@@ -283,8 +276,6 @@ C     Case where fault is defined in terms of X,Y coordinates in km.
            flong(iFlt,2,ipt) = flong(iFlt,1,ipt) + x1
            flat(iFlt,2,ipt)  = flat(iFlt,1,ipt) + y1
            fZ(iFlt,2,ipt) = bottom
-c        write (*,'( i5,10f10.3)') ipt, flong(iFlt,2,ipt),flat(iFlt,2,ipt) 
-c     &, fZ(iFlt,2,ipt)
          enddo
 
       endif
