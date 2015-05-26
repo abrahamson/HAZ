@@ -59,7 +59,7 @@ c       Faults
 
 c      Use uniform distribution for faults
 c        ** Faults **
-         write (*,'( 2x, ''in flt part'')')
+c         write (*,'( 2x, ''in flt part'')')
 
         if (iDepthModel .eq. 0 ) then
 c         Uniform distribution 

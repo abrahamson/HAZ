@@ -34,7 +34,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*   Hazard Code: Version 45j    *'
+      write (*,*) '*   Hazard Code: Version 45i    *'
       write (*,*) '*          May, 2015            *'
       write (*,*) '*********************************'
       write (*,*)
@@ -295,13 +295,17 @@ c------------end temporary code
 
 c           Set rupture locations and probabilities for faults
             if (sourceType(iFlt) .eq. 1 ) then                     
-              if (rupWidth .gt. aveWidth ) rupWidth = aveWidth
+              if (rupWidth .gt. aveWidth ) then
+                rupWidth = aveWidth
+              endif
               rupLen = rupArea / rupWidth
-              if (rupLen .gt. faultLen) rupLen = faultLen
+              if (rupLen .gt. faultLen) then
+                rupLen = faultLen
+              endif
               nLocX = (faultLen - RupLen)/xStep(iFlt) + 1       
               nLocY = (aveWidth - rupWidth) / yStep(iFLt) + 1
               nLocXST1 = nLocX
-              nLocYST1 = nLocY            
+              nLocYST1 = nLocY           
             elseif (sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
               rupLen = rupArea / rupWidth
               if (rupLen .gt. faultLen) rupLen = faultLen
@@ -456,9 +460,9 @@ C     Reset nLocX for areal and grid sources
       if (sourceType(iFlt) .eq. 2 .or. sourcetype(iFlt) .eq. 3) then
          nLocX = nLocXAS         
       endif 
-   
-            if (sourcetype(iFlt) .eq. 1) nLocX = nLocXST1
-            
+        
+c CH            if (sourcetype(iFlt) .eq. 1) nLocX = nLocXST1
+                        
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
             iDepthFlag = 0
@@ -508,7 +512,7 @@ C     Set nLocY equal to n1AS values for given column along strike location.
                 r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
               endif
               
-             if (sourcetype(iFlt) .eq. 1) nLocY = nLocYST1
+c CH             if (sourcetype(iFlt) .eq. 1) nLocY = nLocYST1
 
 c            set the probabilisties for the depths 
              if ( iDepthFlag .eq. 0 ) then
