@@ -1,4 +1,3 @@
-      
 c -------------------------------------------------------------
 
       subroutine SetRupLoc ( hx, hy, rupArea, rupWidth0,

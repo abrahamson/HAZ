@@ -516,26 +516,23 @@ c            set the probabilisties for the depths
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
      2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
                iDepthFlag = 1
-c               do iLocY = 1, nLocY
-c                 write (*,'( 4i5,2f10.3)') iMag, iArea, iWidth, iLocX, mag, pLocY(iLocY)
-c               enddo
-c               pause 
              endif
 
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
 
+c             SourceType 1 fixed, assumes hypocenter is in middle of rupture
 c             Set the hypocentral depth (is this really ztor??)
               if (sourceType(iFlt) .eq. 1 ) then
-                hypoDepth = (iLocY-0.5)*ystep(iFlt)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0) + zFlt(1,1)
+                hypoDepth = (iLocY-1.)*ystep(iFlt)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0) + zFlt(1,1)
+     1          + ((0.5*rupWidth)*sin(abs(dip(iFlt,iWidth,1))))
               elseif (sourceType(iFlt) .eq. 5 ) then
                 hypoDepth = fltgrid_Z(iLocY,iLocX)
               elseif ( sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 ) then
                 hypoDepth = (iLocY-0.5)*ystep(iFlt) + grid_top(iFlt,1)
               elseif ( sourceType(iFlt) .eq. 4 ) then
                 hypoDepth = (iLocY-0.5)*ystep(iFlt) + grid_top(iFlt,1)
-              endif    
-c              write (*,'( 2f10.3 )') hypodepth, pLocY(iLocY)
+              endif  
 
 c             Find the Closest Distances for this rupture
 C             Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.
@@ -546,7 +543,6 @@ C             Pass along fault grid locations for calculation of HW and Rx value
      4             fltgrid_x, fltgrid_y, icellRupStrike, icellRupdip, n2, n1, dipavg, pscorflag,
      5             mindepth(iflt), distepi, disthypo, xStep(iFlt), yStep(iFlt), runflag, iSite,
      6             hDD(iFlt), hAS(iFlt), fltgrid_a, n1AS, n2AS, Ry, ry0 )
-c              write (*,'( 2x,''rx, ry, ry0:'',3f10.3)') rx, ry, ry0
 
 c              centerRup = ZTOR + rupWidth * sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0)
 

@@ -97,8 +97,8 @@ c CH: ------------- start
 c     save the rupture cell locations along strike in two arrays 
 c     with their easting and northing coordinates
             
-         rup_E(in2) = fltgrid_x(iLocY,in2)
-         rup_N(in2) = fltgrid_y(iLocY,in2)
+c         rup_E(in2) = fltgrid_x(iLocY,in2)
+c         rup_N(in2) = fltgrid_y(iLocY,in2)
 c CH: ------------- end
          
          do in1=iLocY, nfltgrid(1)-n1AS(iLocX)+iLocY
@@ -115,13 +115,12 @@ c            n1 = in1
 2345  continue
                
 c CH:  GC2 is programmed but currently Global_T and Global_U are not used
-       call GC2(rup_E, rup_N, Global_T, Global_U)
-
+c       call GC2(rup_E, rup_N, Global_T, Global_U)
                               
       n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
       n2 = n2AS(iLocX)
 
-       ZTOR = fltGRid_z(iLocY,iLocX)
+       ZTOR = fltGRid_z(iLocY,iLocX) 
 
 C      Compute average strike for given rupture area.
        strikeX = fltgrid_x(iLocY,n2) - fltgrid_x(iLocY,iLocX)
