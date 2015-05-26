@@ -6,3 +6,6 @@ mrweprefs.r
 project.r
 # Ignore Mac OS X system files
 .DS_Store
+#GC2 files
+release/*
+absoft_run_env.sh
