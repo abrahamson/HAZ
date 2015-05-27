@@ -1,15 +1,16 @@
 
-      subroutine GC2 (n2, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
+       subroutine GC2 (n2, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
       
-      implicit none
-      real rup_E(MAXFLT_AS), rup_N(MAXFLT_AS), Global_T, Global_U
-      integer n2, MAXFLT_AS
-      real Seg_length(MAXFLT_AS), Strike_slope(MAXFLT_AS), 
-     1     Normal_slope(MAXFLT_AS), a, P90_E(MAXFLT_AS), P90_N(MAXFLT_AS), 
-     2     Site_E, Site_N, t_local(MAXFLT_AS), u_local(MAXFLT_AS), 
-     3     Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), sum_Weight, 
-     4     rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, sum_Swxu
-      integer iGC2 
+       implicit none
+       integer n2, MAXFLT_AS
+       real rup_E(MAXFLT_AS), rup_N(MAXFLT_AS), Global_T, Global_U
+
+       integer iGC2       
+       real Seg_length(MAXFLT_AS), Strike_slope(MAXFLT_AS), 
+     1      Normal_slope(MAXFLT_AS), a, P90_E(MAXFLT_AS), P90_N(MAXFLT_AS), 
+     2      Site_E, Site_N, t_local(MAXFLT_AS), u_local(MAXFLT_AS), 
+     3      Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), sum_Weight, 
+     4      rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, sum_Swxu
 
 c     calculate the length of each segment of the rupture (a segment of the
 c     rupture is from the center of one rupture cell to the center of the 
@@ -153,5 +154,5 @@ c       check for special case t=0 on segment
             endif              
           enddo      
   
-      return
-      end
+        return
+       end

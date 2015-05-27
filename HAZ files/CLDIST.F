@@ -1,6 +1,6 @@
 c closestDist.f
 
-      subroutine CalcDist ( iLocX, iLocY, RupLen, RupWidth, fltGrid_rRup,
+      subroutine CalcDist (iLocX, iLocY, RupLen, RupWidth, fltGrid_rRup,
      1             fltGrid_RJB, fltGrid_Rx, fltGrid_HW, fltGrid_Rseis, 
      2             nFltGrid, distRup, distJB, distSeismo, Rx, hwFlag, zTOR,
      3             r_horiz, hypoDepth, fltGRid_z, sourceType, iiflag,   
@@ -23,8 +23,8 @@ c     (e.g. closest distance from the rupture plane to the site)
       real distepi, disthypo, hDDkm, hASkm, Ry, MidDist
       real stepX, stepY, deltaX, deltaY, deltaZ
       integer pscorflag, n1var(MAXFLT_DD,MAXFLT_AS), n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
-      integer mAS, mDD       
-      real rup_E(MAXFLT_AS), rup_N(MAXFLT_AS)  
+      integer irup, mAS, mDD      
+      real rup_E(MAXFLT_AS), rup_N(MAXFLT_AS)
 
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -37,8 +37,8 @@ c     Initialize closest distance
 c     Check for areal sources      
       if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
  
-c      Approximate corrction for using point source with extended source model
-C     added limit on only shallow areal sources (Hypo>30.0km)
+c      Approximate correction for using point source with extended source model
+C      added limit on only shallow areal sources (Hypo>30.0km)
        if ( psCorFlag .eq. 1  .and. hypodepth .le. 30.0) then
          hypo1=hypoDepth-rupWidth/2.   
          if (hypo1 .lt. 0.0) hypo1=0.0
@@ -73,52 +73,24 @@ C     Set Dipaverage equal to 90 for gridded sources.
        return
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
-      else
-cnjg       n2 = int(RupLen) + iLocX
-       n2 = int(RupLen/StepX) + iLocX
-       if ( n2 .eq. 0 ) n2 = 1
-       if ( n2 .gt. nFltGrid(2)) n2=nFltGrid(2)
-cnjg       n1 = int(RupWidth) + iLocY
-       n1 = int(RupWidth/StepY) + iLocY
-       if ( n1 .eq. 0 ) n1 = 1
-       if ( n1 .gt. nFltGrid(1)) n1=nFltGrid(1)
-                     
-C     New method for the summation of fault areas to get the right number of cells 
-C     given the expected rupture area for a magnitude.
-      sumA = 0.0
-      RupArea = RupLen*RupWidth
-C     Start with loop over given along strike location then loop down dip     
-        do in2=iLocX, nFltgrid(2)
-c     Option of limiting rupture area no greater than Rupwidth. 
-c         do in1=iLocY, n1var(iLocY,in2)
+      else      
+       
+c CH:  n1 and n2 are locators, they tell you the grid cell location of the
+c      last cell that makes up the rupture plane down dip (n1) and the last
+c      cell that makes up the rupture plane along strike (n2)
+       n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
+       n2 = n2AS(iLocX)
 
-         
-c CH: ------------- start        
-c     save the rupture cell locations along strike in two arrays 
-c     with their easting and northing coordinates
-            
-c         rup_E(in2) = fltgrid_x(iLocY,in2)
-c         rup_N(in2) = fltgrid_y(iLocY,in2)
-c CH: ------------- end
-         
-         do in1=iLocY, nfltgrid(1)-n1AS(iLocX)+iLocY
-            sumA = sumA + fltgrid_a(in1,in2)         
-         enddo
-C     Check to see that summed rupture area is equal to requested rupture area. 
-C     If not sum up another column of cells only downdip the preset number of cells for this rupture.
-         if (sumA .ge. RupArea) then
-c            n1 = in1
-            n2 = in2           
-            goto 2345
-         endif       
-      enddo                  
-2345  continue
-               
 c CH:  GC2 is programmed but currently Global_T and Global_U are not used
-c       call GC2(rup_E, rup_N, Global_T, Global_U)
-                              
-      n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
-      n2 = n2AS(iLocX)
+c      First save the rupture cell locations along strike in two arrays
+c      with their easting and northing coordinates. Not that this programming
+c      uses the center of the cells, so is missing roughly half the step size
+c      for the two end points of the rupture. Then call GC2.       
+       do irup=iLocX, n2
+         rup_E(irup) = fltgrid_x(iLocY,irup)
+         rup_N(irup) = fltgrid_y(iLocY,irup)
+       enddo
+       call GC2 (n2, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
 
        ZTOR = fltGRid_z(iLocY,iLocX) 
 

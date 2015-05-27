@@ -24,8 +24,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real    BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
       real segModelWt1(MAX_FLT,100), distDensity2(MAX_GRID), lnDir, lgIo, lgIntenscl
       real sigDirY, sigtemp, lg1, sig1, lat1
-      integer n1var(MAXFLT_DD,MAXFLT_AS), n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
-      real rcolwid(MAXFLT_AS), rwidth, cwid(MAXFLT_AS), arwid(MAXFLT_AS)
+      integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
       real phi, tau, medadj, sigadj, phiSSS
       character*80 filebmode
       integer bnum, bnumflag, coefcountRrup, coefcountRjb, iMixture
@@ -293,228 +292,30 @@ c            rupWidth = sqrt(rupArea/2.)
 
 c------------end temporary code
 
-c           Set rupture locations and probabilities for faults
-            if (sourceType(iFlt) .eq. 1 ) then                     
-              if (rupWidth .gt. aveWidth ) then
-                rupWidth = aveWidth
-              endif
-              rupLen = rupArea / rupWidth
-              if (rupLen .gt. faultLen) then
-                rupLen = faultLen
-              endif
-              nLocX = (faultLen - RupLen)/xStep(iFlt) + 1       
-              nLocY = (aveWidth - rupWidth) / yStep(iFLt) + 1
-              nLocXST1 = nLocX
-              nLocYST1 = nLocY           
-            elseif (sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
-              rupLen = rupArea / rupWidth
-              if (rupLen .gt. faultLen) rupLen = faultLen
-              nLocX = (faultLen - RupLen)/xStep(iFlt) + 1
-            elseif (sourceType(iFlt) .eq. 4 ) then
-              nLocXAS = Grid_n(iFlt) 
-              nLocYAS = faultWidth(iFlt,iFltWidth) / yStep(iFLt) + 1
-              
-C     Check for RupWidth being less than defined Grid width
-              if (rupWidth .gt. faultWidth(iFlt,iFltWidth) ) then                                        
-                 rupWidth = faultWidth(iFlt,iFltWidth)                                                          
-              endif                                                                     
-              rupLen = rupArea / rupWidth
-cnjg              rupLen = 0.0
-            else
-ccdh  This is the depth counter for areal source types - in the middle of bins so don't need +1                  
-               nLocYAS = faultWidth(iFlt,iFltWidth) / yStep(iFLt)
-               if (nLocYAS.eq.0) then
-                       nLocYAS = 1
-               endif    
-C     Check for RupWidth being less than defined Areal width
-              if (rupWidth .gt. faultWidth(iFlt,iFltWidth) ) then                                        
-                 rupWidth = faultWidth(iFlt,iFltWidth)                                                          
-              endif                                                                     
-              rupLen = rupArea / rupWidth
-cnjg              rupLen = 0.0
-            endif
-
-C     Need to do loop along strike adding up area for all cells with width less than RupWidth
-       countnLocX = 0
-       do 1234 in2m=1,nfltgrid(2)
-          colarea = 0.0
-C     Check for case in which total area is less than RupArea.
-          if (in2m .gt. 1 .and. countnLocX .eq. 0) then
-             goto 1233
-          endif
-
-          do 1235 in2=in2m,nfltgrid(2) 
-             colarew = 0.0
-             if (in2 .eq. in2m) then
-                do iw=1,nfltgrid(1)
-                   colarew = colarew + fltgrid_w(iw,in2)
-C      Find the number of downdip cells for this along strike location to 
-C      get the correct rupture width.
-                   if (colarew .gt. rupWidth) then
-                      colarew = 0.0
-                      goto 2341
-                   endif
-                enddo
-
- 2341           continue
-                if (iw .gt. nfltgrid(1) ) iw = nfltgrid(1)
-             endif
-
-             do 1236 in1=1,iw
-                   colarea = colarea + fltgrid_a(in1,in2)  
- 1236        continue
-
-                if (colarea .ge. ruparea) then
-                   countnLocX = countnLocX + 1
-                   n1AS(in2m) = nfltgrid(1) - iw + 1
-                   n2AS(in2m) = in2
-                   goto 1234
-                endif
-
- 1235     continue
- 1234  continue
-
- 1233  continue
-      if (countnLocX .eq. 0) then
-         nLocX = 1
-         if (sourcetype(iFlt) .eq. 1) then
-            n1AS(1) = nLocYST1
-         else
-            n1AS(1) = 1
-         endif
-         n2AS(1) = nfltgrid(2)
-      else 
-         nLocX = countnLocX
-      endif     
-
-C     Now compute the unequal wts for given number of ruptures along strike
-      if (sourceType(iFlt) .eq. 6) then
-C     First compute the average width of the entire fault.
-       awid = 0.0
-       do iii=1,nfltgrid(2)
-          cwid(iii) = 0.0
-          do jjj=1,nfltgrid(1)
-             cwid(iii) = cwid(iii) + fltgrid_w(jjj,iii) 
-          enddo
-          awid = awid + cwid(iii)/nfltgrid(2)
-       enddo
-
-C     Next compute the average rupture width for a given rupture area. 
-       asum = 0.0
-       do iii=1,nLocX
-          arwid(iii) = 0.0
-          do iiii=iii,n2AS(iii)
-             arwid(iii) = arwid(iii) + cwid(iiii)/(n2AS(iii)-iii)
-          enddo
-          arwid(iii) = arwid(iii)/awid
-          asum = asum + arwid(iii)
-       enddo
-
-C     Now normalize the arwid values.
-       do iii=1,nLocX
-          arwid(iii) = arwid(iii)/asum
-       enddo
-
-C     First sum up all of the column widths for a given along strike locations 
-        rwidth = 0.0
-         do iii=1,nLocX
-            rcolwid(iii) = 0.0
-            do jjj=1,nfltgrid(1)
-               rwidth = rwidth + fltgrid_w(jjj,iii)
-               rcolwid(iii) = rcolwid(iii) + fltgrid_w(jjj,iii)
-            enddo
-         enddo      
-C     Next normalize each column location based on the column width divided by total width. 
-         do iii=1,nLocX
-               rcolwid(iii) = rcolwid(iii)/rwidth
-         enddo      
-      endif
+        call nLocXYdims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen, 
+     1                   xStep(iFlt), yStep(iFlt), Grid_n(iFlt), 
+     2                   faultWidth(iFlt,iFltWidth), nLocX, nLocY, nLocXST1, 
+     3                   nLocYST1, nLocXAS, nLocYAS, rupLen)      
  
-C     Loop along each column along the strike
-       do in2=1,nfltgrid(2)
-c     Loop at each down dip cell for a given strike location (i.e., column). 
-          do in1m=1,nfltGrid(1)
-             n1var(in1m,in2) = 0
-             colarea = 0.0
-             colarew = 0.0
-             colarel = 0.0
-c     Loop down the given column and find the number of cells to get the expected rupture width
-               do in1=in1m,nfltgrid(1)
-                  colarea = colarea + fltgrid_a(in1,in2)
-                  colarew = colarew + fltgrid_w(in1,in2)
-c             Set the number of cells downdip for a given along strike column that is equal to the rupWidth
-                  if (colarew .ge. rupWidth) then
-                     if (n1var(in1m,in2) .eq. 0) then
-                         n1var(in1m,in2) = in1
-                     endif
-                  endif
-                  if (in1 .eq. nfltgrid(1) .and. n1var(in1m,in2) .eq. 0) then
-                     n1var(in1m,in2) = nfltgrid(1)
-                  endif
-               enddo
-          enddo
-          colarel = colarel + fltgrid_a(1,in2)/fltgrid_w(1,in2)
-       enddo
-
-C     Reset nLocX for areal and grid sources
-      if (sourceType(iFlt) .eq. 2 .or. sourcetype(iFlt) .eq. 3) then
-         nLocX = nLocXAS         
-      endif 
-        
-c CH            if (sourcetype(iFlt) .eq. 1) nLocX = nLocXST1
+        call nLocXcells (MAXFLT_AS, MAXFLT_DD, nfltgrid, sourcetype, nLocYST1, 
+     1                   rupWidth, fltgrid_w, fltgrid_a, ruparea, nLocXAS, 
+     2                   nLocX, n1AS, n2AS)
                         
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
             iDepthFlag = 0
             do 650 iLocX = 1, nLocX
+            
+        call nLocYcells (MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, 
+     1                   nfltgrid, fltgrid_w, iLocX, rupWidth, n1AS, 
+     2                   sourceType(iFlt), nLocX, xStep(iFlt), nLocYAS, 
+     3                   distDensity, distDensity2, grid_x, x0, grid_y, 
+     4                   y0, nLocY, pLocX)
+             if ( pLocX .eq. 0. ) then
+               goto 650
+             endif
 
-C           New code for Varibable fault plane case
-C           Compute the number of rupture locations down dip for given location along strike and rupwidth
-              swidth = 0.0
-              do irw=1,nfltgrid(1)
-                 swidth = swidth + fltgrid_w(irw,iLocX)               
-              enddo
-              testw = 0.0
-C     If rupture width at given along strike location is less than requested rupture width
-C        set number of down dip rupture locations equal to 1 (i.e., entire width ruptures).
-C        For this case extra columns of rupture will be needed to make the areas needed and 
-C        will be adjusted in the CALDIST subroutine. 
-              if (swidth .le. rupwidth) then
-                 nLocY = 1
-                 goto 2345
-              endif
-              do irw=nfltgrid(1),1,-1
-                 testw = testw + fltgrid_w(irw,iLocX)
-                 if (testw .gt.rupwidth) then
-                    nLocY = irw
-                    goto 2345
-                 endif
-                 nLocY = irw
-              enddo
- 2345         continue
-
-C     Set nLocY equal to n1AS values for given column along strike location.
-           nLocY = n1AS(iLocX)
-
-              if (sourceType(iFlt) .eq. 1 ) then
-                pLocX = 1./nLocX                
-              elseif (sourceType(iFlt) .eq. 5 ) then
-                pLocX = 1./nLocX
-              elseif (sourceType(iFlt) .eq. 6 ) then
-                pLocX = 1./nLocX
-              elseif ( sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 ) then
-                pLocX = distDensity(iLocX)               
-                if ( pLocX .eq. 0. ) goto 650
-                r_horiz = xStep(iFlt) * (iLocX-0.5)                
-                nLocY = nLocYAS               
-              elseif ( sourceType(iFlt) .eq. 4 ) then
-                pLocX = distDensity2(iLocX)
-                r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
-              endif
-              
-c CH             if (sourcetype(iFlt) .eq. 1) nLocY = nLocYST1
-
-c            set the probabilisties for the depths 
+c            set the probabilities for the depths 
              if ( iDepthFlag .eq. 0 ) then
                call CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
@@ -540,7 +341,7 @@ c             Set the hypocentral depth (is this really ztor??)
 
 c             Find the Closest Distances for this rupture
 C             Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.
-              call CalcDist ( iLocX, iLocY, RupLen, RupWidth, fltGrid_rRup,
+              call CalcDist (iLocX, iLocY, RupLen, RupWidth, fltGrid_rRup,
      1             fltGrid_RJB, fltGrid_Rx, fltGrid_HW, fltGrid_Rseis, 
      2             nFltGrid, distRup, distJB, distSeismo, Rx, hwFlag, zTOR,
      3             r_horiz, hypoDepth, fltGrid_z, sourceType(iFlt), iiflag,
