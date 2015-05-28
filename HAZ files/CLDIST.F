@@ -83,7 +83,7 @@ c      cell that makes up the rupture plane along strike (n2)
 
 c CH:  GC2 is programmed but currently Global_T and Global_U are not used
 c      First save the rupture cell locations along strike in two arrays
-c      with their easting and northing coordinates. Not that this programming
+c      with their easting and northing coordinates. Note that this programming
 c      uses the center of the cells, so is missing roughly half the step size
 c      for the two end points of the rupture. Then call GC2.       
        do irup=iLocX, n2
@@ -92,7 +92,7 @@ c      for the two end points of the rupture. Then call GC2.
        enddo
        call GC2 (n2, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
 
-       ZTOR = fltGRid_z(iLocY,iLocX) 
+       ZTOR = fltGRid_z(iLocY,iLocX)      
 
 C      Compute average strike for given rupture area.
        strikeX = fltgrid_x(iLocY,n2) - fltgrid_x(iLocY,iLocX)

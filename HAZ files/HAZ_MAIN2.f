@@ -303,7 +303,7 @@ c------------end temporary code
                         
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
-            iDepthFlag = 0
+c            iDepthFlag = 0
             do 650 iLocX = 1, nLocX
             
         call nLocYcells (MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, 
@@ -311,17 +311,18 @@ c           This is along strike for faults and epicentral distance for source z
      2                   sourceType(iFlt), nLocX, xStep(iFlt), nLocYAS, 
      3                   distDensity, distDensity2, grid_x, x0, grid_y, 
      4                   y0, nLocY, pLocX)
+
              if ( pLocX .eq. 0. ) then
                goto 650
              endif
 
 c            set the probabilities for the depths 
-             if ( iDepthFlag .eq. 0 ) then
+c             if ( iDepthFlag .eq. 0 ) then
                call CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
      2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
-               iDepthFlag = 1
-             endif
+c               iDepthFlag = 1
+c             endif
 
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
@@ -778,6 +779,7 @@ c                    Set up weight array for later output.
                      wtout(iFlt,iParam,iFltWidth,iFtype) = wt
          
 c                    Set probability of this earthquake (w/o gm)
+
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)*phypoX*phypoZ*probSyn
                      
 c                    Sum up probability (w/o ground motion) as a check
