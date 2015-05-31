@@ -205,7 +205,8 @@ c ----------------------------------------------------------------------
        subroutine nLocYcells (MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, 
      1                       nfltgrid, fltgrid_w, iLocX, rupWidth, n1AS, 
      2                       sourceType, nLocX, xStep, nLocYAS, distDensity,
-     3                       distDensity2, grid_x, x0, grid_y, y0, nLocY, pLocX)
+     3                       distDensity2, grid_x, x0, grid_y, y0, nLocY, pLocX,
+     4                       r_horiz)
      
        implicit none        
        integer MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, nfltgrid(2), 

@@ -38,15 +38,15 @@ c         normal distribution
 
           do iLocY=1,nLocY
             depth0 = top + yStep*(iLocy-1) + yStep/2.   
-            depth1 = depth1 - yStep/2.         
-            depth2 = depth1 + yStep/2.  
+            depth1 = depth0 - yStep/2.         
+            depth2 = depth0 + yStep/2. 
 
 c           COMPUTE PROBABILITY OF depth BETWEEN depth1 and depth2                
             z1 = (depth1-meanDepth)/sigma    
             z2 = (depth2-meanDepth)/sigma    
             call NDTR(z1,p1,d)        
             call NDTR(z2,p2,d)        
-            pLocY(iLocY) = (p1 - p2)   
+            pLocY(iLocY) = (p1 - p2)               
           enddo
 
         else

@@ -51,7 +51,7 @@ C      added limit on only shallow areal sources (Hypo>30.0km)
          endif
        else
          r_horiz1 = r_horiz
-         hypo1 = hypoDepth
+         hypo1 = hypoDepth         
        endif
        distJB = r_horiz1
        distRup = sqrt( r_horiz1**2 + hypo1**2 )
@@ -62,6 +62,7 @@ C      added limit on only shallow areal sources (Hypo>30.0km)
        else
           distSeismo = distRup
        endif 
+       
 c     Set other distance values equal to corresponding distance measures.
        distepi = distJB
        distRx = distJB
@@ -69,7 +70,7 @@ c     Set other distance values equal to corresponding distance measures.
 C     Set HWflag = 0 for areal or grid sources.
        hwflag = 0
 C     Set Dipaverage equal to 90 for gridded sources.
-       dipavg = 3.14159/2.0 
+       dipavg = 3.14159/2.0      
        return
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)

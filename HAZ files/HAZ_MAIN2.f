@@ -303,26 +303,28 @@ c------------end temporary code
                         
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
-c            iDepthFlag = 0
+            iDepthFlag = 0
             do 650 iLocX = 1, nLocX
             
         call nLocYcells (MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, 
      1                   nfltgrid, fltgrid_w, iLocX, rupWidth, n1AS, 
      2                   sourceType(iFlt), nLocX, xStep(iFlt), nLocYAS, 
      3                   distDensity, distDensity2, grid_x, x0, grid_y, 
-     4                   y0, nLocY, pLocX)
+     4                   y0, nLocY, pLocX, r_horiz)
 
              if ( pLocX .eq. 0. ) then
                goto 650
              endif
 
 c            set the probabilities for the depths 
-c             if ( iDepthFlag .eq. 0 ) then
+             if ( iDepthFlag .eq. 0 ) then
                call CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
      2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
-c               iDepthFlag = 1
-c             endif
+               if (sourceType(iFlt).eq.1 .or. sourceType(iFlt).eq.2) then
+                 iDepthFlag = 1
+               endif
+             endif
 
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
@@ -406,7 +408,7 @@ C                Check for either fixed sigma value (scalc1<0) or other sigma mo
                    jcalc1 = jcalc(iProb,jType,iAtten) 
                 endif
 
-               dipaverage(1) = dipavg*180.0/3.14159               
+               dipaverage(1) = dipavg*180.0/3.14159  
 
 c              Call for median ground motions
                call meanInten ( distRup, distJB, distSeismo,
@@ -781,7 +783,7 @@ c                    Set up weight array for later output.
 c                    Set probability of this earthquake (w/o gm)
 
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)*phypoX*phypoZ*probSyn
-                     
+                    
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1
      1                   .and. jInten .eq. 1) then

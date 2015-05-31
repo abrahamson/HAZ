@@ -98,7 +98,8 @@ c     compute Sa (given the PGA rock value)
       phi = sigma
 
 c     Convert units spectral acceleration in gal                                
-      lnSa = lnSa + 6.89                                                
+      lnSa = lnSa + 6.89              
+               
       return
       end
 c ----------------------------------------------------------------------
@@ -758,7 +759,7 @@ C     (Eq. 16)
      1               a22*alog(z10*1000.0/200.0)
       else
          sum = sum+ a21*alog((z10*1000.0+c2)/(zhat+c2))
-      endif
+      endif  
 
 c     Hanging wall Model (Eq. 7)
       if ( HWFlag .eq. 1 ) then
@@ -1545,7 +1546,7 @@ C Compute the tau term
 
 C     Convert ground motion to units of gals.
       lnY = psa + 6.89
-      period2 = period1
+      period2 = period1 
 
       return
       end 
@@ -4228,7 +4229,7 @@ C.....Now compute the site term........
 
 C     Convert ground motion to units of gals.
       lnY = lnY + 6.89
-      sigma = sigmaT
+      sigma = sigmaT     
 
       return
       END

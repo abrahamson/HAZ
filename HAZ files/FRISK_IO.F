@@ -158,7 +158,8 @@ c     Read min max long and lat for grid sources
 c     Input options 
       read(13,'( a80)') title
       read(13,*) nProb, nAttenType, iMixture
-      call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )
+      
+      call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )        
       call CheckDim ( nProb, MAX_Prob, 'MAX_ATTEN ' )
       write (18,'( a80)') title
       write (18,*) 
@@ -193,7 +194,7 @@ c     Enter GM models for each problem
           read (13,*) nAtten(i,j)
           call CheckDim ( nAtten(i,j), MAX_ATTEN, 'MAX_ATTEN ' )
           do k=1,nAtten(i,j)
-            read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k)
+            read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k)  
 
 C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
             if (jcalc(i,j,k) .lt. 0) then
