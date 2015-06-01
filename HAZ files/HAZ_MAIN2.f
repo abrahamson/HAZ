@@ -333,7 +333,7 @@ c             SourceType 1 fixed, assumes hypocenter is in middle of rupture
 c             Set the hypocentral depth (is this really ztor??)
               if (sourceType(iFlt) .eq. 1 ) then
                 hypoDepth = (iLocY-1.)*ystep(iFlt)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0) + zFlt(1,1)
-     1          + ((0.5*rupWidth)*sin(abs(dip(iFlt,iWidth,1))))
+     1          + ((0.5*rupWidth)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0))
               elseif (sourceType(iFlt) .eq. 5 ) then
                 hypoDepth = fltgrid_Z(iLocY,iLocX)
               elseif ( sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 ) then

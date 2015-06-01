@@ -910,7 +910,7 @@ c                Set max mag
                        nMag(iFlt) = 1
                      endif    
                    testMaxMag = maxMag(iFlt,i,iWidth)
-                 endif
+                 endif               
                            
                  mpdf_param(iFlt,i,iWidth,1) = rP1(iRecur)
                  mpdf_param(iFlt,i,iWidth,2) = rP2(iRecur)

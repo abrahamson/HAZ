@@ -2970,23 +2970,23 @@ c     Compute HW taper 4 (eq 4.14)
       endif
       
 c     Compute HW taper 5 (eq. 13)  **** Ry0 version ***
-c      Ry1 = Rx * tan(20.*3.1415926/180.)
-c      if ( Ry0 .lt. Ry1 ) then
-c        HW_taper5 = 1.
-c      elseif ( Ry0-Ry1 .lt. 5. ) then
-c        HW_taper5 = 1. - (Ry0-Ry1) / 5.
-c      else
-c        HW_taper5 = 0.
-c      endif
-
-c     Compute HW taper 5 (eq. 4.15b)  **** No Ry0 version ***     
-      if (Rjb .eq. 0. ) then
-        HW_taper5 = 1. 
-      elseif ( Rjb .lt. 30. ) then
-        HW_taper5 = 1 - Rjb/30.
+      Ry1 = Rx * tan(20.*3.1415926/180.)
+      if ( Ry0 .lt. Ry1 ) then
+        HW_taper5 = 1.
+      elseif ( Ry0-Ry1 .lt. 5. ) then
+        HW_taper5 = 1. - (Ry0-Ry1) / 5.
       else
         HW_taper5 = 0.
       endif
+
+c     Compute HW taper 5 (eq. 4.15b)  **** No Ry0 version ***     
+c      if (Rjb .eq. 0. ) then
+c        HW_taper5 = 1. 
+c      elseif ( Rjb .lt. 30. ) then
+c        HW_taper5 = 1 - Rjb/30.
+c      else
+c        HW_taper5 = 0.
+c      endif
 
 c     Hanging wall Model (eq 4.10)
       if ( HWFlag .eq. 1 ) then
