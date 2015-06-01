@@ -53,7 +53,7 @@ C      added limit on only shallow areal sources (Hypo>30.0km)
          r_horiz1 = r_horiz
          hypo1 = hypoDepth         
        endif
-       distJB = r_horiz1
+       distJB = r_horiz1       
        distRup = sqrt( r_horiz1**2 + hypo1**2 )
                             
        ZTOR = hypo1

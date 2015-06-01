@@ -905,7 +905,7 @@ c                Set max mag
                    maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag)
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
-                   nMag(iFlt) = int((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
+                   nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
                      if (nMag(iFlt) .eq. 0 ) then
                        nMag(iFlt) = 1
                      endif    

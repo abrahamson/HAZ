@@ -36,7 +36,7 @@ c           Set rupture locations and probabilities for faults
               
 c           Otherwise source is area  
             else                  
-              nLocYAS = faultWidth / yStep
+              nLocYAS = faultWidth / yStep              
               if (nLocYAS.eq.0) then
                 nLocYAS = 1
               endif    
