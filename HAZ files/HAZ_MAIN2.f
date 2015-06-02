@@ -352,8 +352,6 @@ C             Pass along fault grid locations for calculation of HW and Rx value
      5             mindepth(iflt), distepi, disthypo, xStep(iFlt), yStep(iFlt), runflag, iSite,
      6             hDD(iFlt), hAS(iFlt), fltgrid_a, n1AS, n2AS, Ry, ry0 )
 
-c              centerRup = ZTOR + rupWidth * sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0)
-
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
                 FaultDist(iFlt,iFltWidth,1)=distRup
