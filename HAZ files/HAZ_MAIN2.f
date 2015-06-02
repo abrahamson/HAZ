@@ -297,7 +297,7 @@ c------------end temporary code
      2                   faultWidth(iFlt,iFltWidth), nLocX, nLocY, nLocXST1, 
      3                   nLocYST1, nLocXAS, nLocYAS, rupLen)      
  
-        call nLocXcells (MAXFLT_AS, MAXFLT_DD, nfltgrid, sourcetype, nLocYST1, 
+        call nLocXcells (MAXFLT_AS, MAXFLT_DD, nfltgrid, sourceType(iFlt), nLocYST1, 
      1                   rupWidth, fltgrid_w, fltgrid_a, ruparea, nLocXAS, 
      2                   nLocX, n1AS, n2AS)
                         
