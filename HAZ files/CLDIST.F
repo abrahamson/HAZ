@@ -23,8 +23,9 @@ c     (e.g. closest distance from the rupture plane to the site)
       real distepi, disthypo, hDDkm, hASkm, Ry, MidDist
       real stepX, stepY, deltaX, deltaY, deltaZ
       integer pscorflag, n1var(MAXFLT_DD,MAXFLT_AS), n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
-      integer irup, mAS, mDD      
-      real rup_E(MAXFLT_AS), rup_N(MAXFLT_AS)
+      integer mAS, mDD
+      integer irup, inorm, n3    
+      real rup_Et, rup_Nt, rup_E(MAXFLT_AS), rup_N(MAXFLT_AS)
 
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -87,11 +88,18 @@ c      First save the rupture cell locations along strike in two arrays
 c      with their easting and northing coordinates. Note that this programming
 c      uses the center of the cells, so is missing roughly half the step size
 c      for the two end points of the rupture. Then call GC2.       
+       inorm = 0
        do irup=iLocX, n2
-         rup_E(irup) = fltgrid_x(iLocY,irup)
-         rup_N(irup) = fltgrid_y(iLocY,irup)
+         rup_Et = fltgrid_x(iLocY,irup)
+         rup_Nt = fltgrid_y(iLocY,irup)
+         inorm = inorm + 1
+         rup_E(inorm) = rup_Et
+         rup_N(inorm) = rup_Nt
        enddo
-       call GC2 (n2, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
+       n3 = inorm
+       write (*,*) 'iLocX ', iLocX
+       pause
+       call GC2 (n3, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
 
        ZTOR = fltGRid_z(iLocY,iLocX)      
 
