@@ -78,16 +78,15 @@ c        if no special case, assign Segment weight as analytical
 c          solution of 1/(r^2) evaluated from 0 to Seg_length
 
           do iGC2=1, n3-1
-            if (t_local(iGC2).EQ.0) then
-              if (u_local(iGC2).LT.0) then
-                Seg_weight(iGC2) = (1/(u_local(iGC2) - Seg_length(iGC2))) - 
-     1                            (1/u_local(iGC2))
-              else if (u_local(iGC2).GT.Seg_length(iGC2)) then
-                Seg_weight(iGC2) = (1/(u_local(iGC2) - Seg_length(iGC2))) - 
-     1                            (1/u_local(iGC2))
-              else
-                Seg_weight(iGC2) = 0.0
-              endif
+            if (t_local(iGC2).EQ.0 .and. u_local(iGC2).LT.0) then
+              Seg_weight(iGC2) = (1/(u_local(iGC2) - Seg_length(iGC2))) - 
+     1                           (1/u_local(iGC2))
+            else if (t_local(iGC2).EQ.0 .and. u_local(iGC2).GT.Seg_length(iGC2)) then
+              Seg_weight(iGC2) = (1/(u_local(iGC2) - Seg_length(iGC2))) - 
+     1                           (1/u_local(iGC2))
+            else if (t_local(iGC2).EQ.0 .and. u_local(iGC2).GE.0 .and. 
+     1        u_local(iGC2).LE.Seg_length(iGC2)) then
+              Seg_weight(iGC2) = 0.0
             else
               Seg_weight(iGC2) = (1/t_local(iGC2))*((ATAN(
      1                          (Seg_length(iGC2) - u_local(iGC2))/
@@ -127,12 +126,9 @@ c       check for special case t=0 on segment
             Global_T = rec_Weight*sum_Swt
           enddo  
           do iGC2=1, n3-1
-            if (t_local(iGC2).EQ.0) then
-              if (u_local(iGC2).GE.0) then
-                if (u_local(iGC2).LE.Seg_length(iGC2)) then 
-                Global_T = 0.0
-                endif
-              endif
+            if (t_local(iGC2).EQ.0 .and. u_local(iGC2).GE.0 .and. 
+     1        u_local(iGC2).LE.Seg_length(iGC2)) then 
+              Global_T = 0.0
             endif              
           enddo      
 
@@ -145,12 +141,9 @@ c       check for special case t=0 on segment
             Global_U = rec_Weight*sum_Swxu
           enddo
           do iGC2=1, n3-1  
-            if (t_local(iGC2).EQ.0) then
-              if (u_local(iGC2).GE.0) then
-                if (u_local(iGC2).LE.Seg_length(iGC2)) then 
-                Global_U = Seg_x(iGC2)+u_local(iGC2)
-                endif
-              endif
+            if (t_local(iGC2).EQ.0 .and. u_local(iGC2).GE.0 .and. 
+     1        u_local(iGC2).LE.Seg_length(iGC2)) then 
+              Global_U = Seg_x(iGC2)+u_local(iGC2)
             endif              
           enddo 
 
