@@ -97,8 +97,6 @@ c      for the two end points of the rupture. Then call GC2.
          rup_N(inorm) = rup_Nt
        enddo
        n3 = inorm
-       write (*,*) 'iLocX ', iLocX
-       pause
        call GC2 (n3, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
 
        ZTOR = fltGRid_z(iLocY,iLocX)      

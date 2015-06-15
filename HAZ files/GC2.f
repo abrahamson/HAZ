@@ -61,13 +61,13 @@ c       calculate local strike-normal coordinate t
 c       calculate local strike-parallel coordinate u  
 
           do iGC2=1, n3-1
-              if (P90_N(iGC2).GT.rup_N(iGC2)) then
+              if (P90_N(iGC2).GT.rup_N(iGC2)) then                 
                 u_local(iGC2) = -sqrt(((P90_E(iGC2) - rup_E(iGC2))**2) +
      1                         ((P90_N(iGC2) - rup_N(iGC2))**2)) 
               else              
                 u_local(iGC2) = sqrt(((P90_E(iGC2) - rup_E(iGC2))**2) +
      1                         ((P90_N(iGC2) - rup_N(iGC2))**2)) 
-              endif
+              endif                  
           enddo
 
 c        check for special case t=0, on extension and assign 
@@ -145,11 +145,7 @@ c       check for special case t=0 on segment
      1        u_local(iGC2).LE.Seg_length(iGC2)) then 
               Global_U = Seg_x(iGC2)+u_local(iGC2)
             endif              
-          enddo 
-
-        write (*,*) 'Global_T ', Global_T
-        write (*,*) 'Global_U ', Global_U
-        pause     
+          enddo     
   
         return
        end
