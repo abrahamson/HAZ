@@ -835,11 +835,11 @@ c          call rdMagModel ()
 c        Load up parameter variations into large single dimension arrays        
          testMaxMag = 0.
          iWidth = 0
-         do iDip=1,n_Dip
-          do iThick1=1,nThick1
+         do iThick1=1,nThick1
            iWidth = iWidth + 1
-           call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )
- 
+           call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )           
+           do iDip=1,n_Dip
+           
            if ( sourceType(iFlt) .eq. 1 ) then
              
              dip2 = dip1 + deltaDip1(iDip)
@@ -1007,9 +1007,9 @@ c     End loop over iRate
 c     End loop over iRecur
              enddo
              nParamVar(iFlt,iWidth) = i
-c     End loop over iThick1
-            enddo
 c     End loop over iDip
+            enddo
+c     End loop over iThick1
            enddo
            probAct(iFlt) = probAct0
            nWidth(iFlt) = iWidth
