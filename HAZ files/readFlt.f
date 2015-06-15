@@ -836,12 +836,12 @@ c        Load up parameter variations into large single dimension arrays
          testMaxMag = 0.
          iWidth = 0
          do iThick1=1,nThick1
-           iWidth = iWidth + 1
-           call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )           
+        
            do iDip=1,n_Dip
+           iWidth = iWidth + 1
+           call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )   
            
            if ( sourceType(iFlt) .eq. 1 ) then
-             
              dip2 = dip1 + deltaDip1(iDip)
              dip(iFlt,iWidth,1) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
@@ -853,11 +853,12 @@ c            For areal source only set the first point and use thickness not wid
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
                 
            endif
-                
+
            i = 0
            mtest = 0.0
 
-           do iRecur=1,nMagRecur
+           do iRecur=1,nMagRecur    
+           
             do iRate=1,nRate
               if ( rateType1(iRate) .eq. 2 ) then
                 nb1 = 1
@@ -865,7 +866,7 @@ c            For areal source only set the first point and use thickness not wid
                 nb1 = n_bvalue
               endif
               do i_bValue=1,nb1
-               do iRefMag=1,nRefMag(iThick1)
+               do iRefMag=1,nRefMag(iWidth)
                  i = i + 1
                  if (runflag .ne. 3) then
                     call CheckDim ( i, MAXPARAM, 'MAXPARAM  ' )
