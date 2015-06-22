@@ -25,7 +25,8 @@ c     (e.g. closest distance from the rupture plane to the site)
       integer pscorflag, n1var(MAXFLT_DD,MAXFLT_AS), n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
       integer mAS, mDD
       integer irup, inorm, n3    
-      real rup_Et, rup_Nt, rup_E(MAXFLT_AS), rup_N(MAXFLT_AS)
+      real rup_xt, rup_yt, rup_xbt, rup_ybt, rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), 
+     1     rup_xb(MAXFLT_AS), rup_yb(MAXFLT_AS)
 
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -82,22 +83,39 @@ c      last cell that makes up the rupture plane down dip (n1) and the last
 c      cell that makes up the rupture plane along strike (n2)
        n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
        n2 = n2AS(iLocX)
+       
+       write (*,*) 'iLocX ', iLocX
+       pause
 
 c CH:  GC2 is programmed but currently Global_T and Global_U are not used
 c      First save the rupture cell locations along strike in two arrays
-c      with their easting and northing coordinates. Note that this programming
+c      with their x and y coordinates. Note that this programming
 c      uses the center of the cells, so is missing roughly half the step size
 c      for the two end points of the rupture. Then call GC2.       
        inorm = 0
        do irup=iLocX, n2
-         rup_Et = fltgrid_x(iLocY,irup)
-         rup_Nt = fltgrid_y(iLocY,irup)
+         rup_xt = fltgrid_x(iLocY,irup)
+         rup_yt = fltgrid_y(iLocY,irup)
+         rup_xbt = fltgrid_x(n1,irup)
+         rup_ybt = fltgrid_y(n1,irup)
          inorm = inorm + 1
-         rup_E(inorm) = rup_Et
-         rup_N(inorm) = rup_Nt
+         rup_x(inorm) = rup_xt
+         rup_y(inorm) = rup_yt
+         rup_xb(inorm) = rup_xtb
+         rup_yb(inorm) = rup_ytb
        enddo
        n3 = inorm
-       call GC2 (n3, MAXFLT_AS, rup_E, rup_N, Global_T, Global_U)
+       call GC2 (n3, MAXFLT_AS, rup_x, rup_y, rup_xb, rup_yb, Global_T, Global_U)
+       
+       write (*,*) 'iLocX ', iLocX  
+       write (*,*) 'iLocY ', iLocY 
+       write (*,*) 'fltgrid_x(iLocY,iLocX) ', fltgrid_x(iLocY,iLocX)
+       write (*,*) 'fltgrid_y(iLocY,iLocX) ', fltgrid_y(iLocY,iLocX)
+       write (*,*) 'fltgrid_x(iLocY,n2) ', fltgrid_x(iLocY,n2)
+       write (*,*) 'fltgrid_y(iLocY,n2) ', fltgrid_y(iLocY,n2)            
+       write (*,*) 'Global_T ', Global_T
+       write (*,*) 'Global_U ', Global_U
+       pause
 
        ZTOR = fltGRid_z(iLocY,iLocX)      
 
@@ -119,7 +137,7 @@ C      Site is assumed to be location: (0.0, 0.0, 0.0)
        xfltend1 = fltgrid_x(iLocY,iLocx) - xtemp
        xfltend2 = fltgrid_x(iLocY,iLocx) + xtemp
        yfltend1 = fltgrid_y(iLocY,iLocx) - ytemp
-       yfltend2 = fltgrid_y(iLocY,iLocx) + ytemp
+       yfltend2 = fltgrid_y(iLocY,iLocx) + ytemp     
 
        call Calc_LineSeg_Dist (xfltend1,yfltend1, 0.0,
      1             xfltend2,yfltend2, 0.0, 0.0, 0.0, 0.0, distRx) 
@@ -151,13 +169,13 @@ C      Reset HW or FW Flag for each rupture area.
        HWFlag = 0
        FWFlag = 0
 
-C      Extend downdip point to check for site being on HW site.
+C      Extend downdip point to check for site being on HW side.
 C      First compute the distances and angles between upper and lower points on the rupture area. 
        adistX1 = fltgrid_x(n1,iLocX) - fltgrid_x(iLocY,iLocX)
        adistY1 = fltgrid_y(n1,iLocX) - fltgrid_y(iLocY,iLocX)
        adist1 = sqrt (adistX1*adistX1 + adistY1*adistY1)
 
-       astrike1 = atan2(adistY1,adistX1)
+       astrike1 = atan2(adistY1,adistX1)     
     
 c      Extend top of rupture end point locations by 100 additional km down dip
 c             and end points by 1000 km along strike.
@@ -1110,7 +1128,7 @@ c -----------------------------
      1     sumTheta, test, tol
 
 c     This subroutine determines if a point (x0,y0) is inside of
-c     the polygon given by xSeg, ySeg. 
+c     the polygon given by xSeg, ySeg.
 
       pi = 3.1415926
       twoPi = 2. * pi
