@@ -2,7 +2,7 @@
      1              sourceType, nLocY, yStep, top, width, rupWidth, dip )
       include 'pfrisk.h'
       integer sourceType, nLocY, iDepthModel
-      real depthParam(MAX_FLT,1)
+      real depthParam(MAX_FLT,3)
       real meanDepth, hypo_Prob(1000), pLocY(1)
       
 c     Check for areal sources (point sources)
