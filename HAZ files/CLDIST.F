@@ -85,6 +85,7 @@ c      cell that makes up the rupture plane along strike (n2)
        n2 = n2AS(iLocX)
        
        write (*,*) 'iLocX ', iLocX
+       write (*,*) 'iLocY ', iLocY
        pause
 
 c CH:  GC2 is programmed but currently Global_T and Global_U are not used
@@ -101,8 +102,8 @@ c      for the two end points of the rupture. Then call GC2.
          inorm = inorm + 1
          rup_x(inorm) = rup_xt
          rup_y(inorm) = rup_yt
-         rup_xb(inorm) = rup_xtb
-         rup_yb(inorm) = rup_ytb
+         rup_xb(inorm) = rup_xbt
+         rup_yb(inorm) = rup_ybt
        enddo
        n3 = inorm
        call GC2 (n3, MAXFLT_AS, rup_x, rup_y, rup_xb, rup_yb, Global_T, Global_U)
