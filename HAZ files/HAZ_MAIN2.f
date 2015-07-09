@@ -188,11 +188,10 @@ c        Set bottom of fault for standard faults
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)
-         call ConvertCoordinates ( fLat, fLong, fZ, siteX, 
-     1       siteY, xFlt, yFlt, zFlt, nfp, iFlt,  
-     2       nPts, x0, y0, z0, iCoor, grid_lat, grid_long, grid_x,
-     3       grid_y, grid_dlat, grid_dlong, grid_dx, grid_dy, grid_n,
-     4       sourceType, nDD )
+         call ConvertCoordinates2 (MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp(iFlt), 
+     1        iFlt, iCoor, grid_n(iFlt), sourceType(iFlt), nDD(iFlt), siteX,
+     2        siteY, fLat, fLong, fZ, grid_lat, grid_long, grid_dlat, grid_dlong,
+     3        nPts, xFlt, yFlt, zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
 
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 ) then

@@ -1,90 +1,103 @@
-c -------------------------------------------------------------
 
-      subroutine SetRupLoc ( hx, hy, rupArea, rupWidth0,
-     1           faultWidth, faultLength, cumLength, strike,
-     2           nPts, xFlt, yFlt, zFlt, dip, xRup, yRup, zRup,
-     3           dipRup, nSegRup, minDepth, hypodepth )
-
-      real xFlt(1), yFlt(1), zFlt(1), dip(1)
-      real xRup(4,1), yRup(4,1), zRup(4,1), dipRup(1)
-  
-      return
-      end
-
-c ----------------------------------------------------
-
-      subroutine ConvertCoordinates ( fLat, fLong, fZ, siteX, siteY,
-     1         xFlt, yFlt, zFlt, nfp, iFlt, nPts1, x0, y0,
-     2         z0, iCoor, grid_lat, grid_long, grid_x, grid_y,
-     3   grid_dlat, grid_dlong, grid_dx, grid_dy, grid_n, sourceType, nDD )
+      subroutine ConvertCoordinates2 (MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp, iFlt, 
+     1           iCoor, grid_n, sourceType, nDD, siteX, siteY, fLat, fLong, fZ, 
+     2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts1, xFlt, yFlt, 
+     3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0)
      
-      include 'pfrisk.h'
+c     This subroutine uses the haversine formula to calculate distance, bearing, and
+c     convert latitude/longitude to x/y coordinates on the basis of a spherical
+c     earth (ignoring ellipsoidal effects).
 
-      real fLat(MAX_FLT,MAX_DD,MAX_SEG), fLong(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
-     1     dip(MAX_FLT,1)
-      real xFlt(MAX_DD,1), yFlt(MAX_DD,1), zFlt(MAX_DD,1), dip1(1)
-      integer nfp(1), sourceType(1), grid_n(MAX_FLT), nDD(1)
-      real grid_lat(MAX_FLT,MAX_GRID)
-      real grid_long(MAX_FLT,MAX_GRID)
-      real grid_dlong(MAX_FLT), grid_dlat(MAX_FLT)
-      real grid_x(MAX_GRID), grid_y(MAX_GRID), grid_dx, grid_dy, conlat
+c     Reference: http://www.movable-type.co.uk/scripts/latlong.html
+     
+      implicit none
+
+      integer MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp, iFlt, iCoor, grid_n, sourceType, 
+     1        nDD, nPts1
+      real siteX, siteY, fLat(MAX_FLT,MAX_DD,MAX_SEG), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
+     1     fZ(MAX_FLT,MAX_DD,MAX_SEG), grid_lat(MAX_FLT,MAX_GRID), 
+     2     grid_long(MAX_FLT,MAX_GRID), grid_dlat(MAX_FLT), grid_dlong(MAX_FLT), 
+     3     xFlt(MAX_DD,1), yFlt(MAX_DD,1), zFlt(MAX_DD,1), grid_x(MAX_GRID), 
+     4     grid_y(MAX_GRID), grid_dx, grid_dy, x0, y0, z0
+     
+      integer i, iz, iPt
+      real Rearth, refLat, refLong, phi1, phi2, deltaphi, lambda1, lambda2, 
+     1     deltalambda, a, c, dist, bearing, xscale, yscale
       
-            
+      Rearth = 6371.        
+     
 c     Load npts in fault and dip into 1-D arrays
-      npts1 = nfp(iFlt)
+      npts1 = nfp
       
-      if ( iCoor .eq. 1. ) then
+      if (iCoor .eq. 1.) then
 c     Convert Lat, long to km (using site coordinates as ref)
-      refLat = siteY
-      refLong = siteX
-C     Use average latitude of fault to scale flat earth conversion. 
-C     Note only use for souretype = 1 or 5. For other sourcetypes 
-C     (i.e., areal and gridded sources) use site latitude for conversion. 
-      if (sourcetype(iFlt) .eq. 1 ) then
-         conlat = (fLat(iFlt,1,nfp(iFlt)) + fLat(iFlt,1,1) ) / 2.0
-      elseif (sourcetype(iFlt) .eq. 5 ) then
-         conlat = (fLat(iFlt,1,nfp(iFlt)) + fLat(iFlt,1,1) ) / 2.0
-      elseif (sourcetype(iFlt) .eq. 6 ) then
-         conlat = (fLat(iFlt,1,nfp(iFlt)) + fLat(iFlt,1,1) ) / 2.0
-      else
-         conlat = refLat
-      endif
+        refLat = siteY
+        refLong = siteX
 
-      xScale = 111.12 * cos(conlat/180*3.1415926)
-      yScale = 111.12
+c       Check for grid source
+        if ( sourceType .eq. 3 .or. sourceType .eq. 4 ) then       
+          do i=1,grid_n
+              phi1 = refLat*3.1415926/180.
+              phi2 = grid_lat(iFlt,i)*3.1415926/180.
+              deltaphi = phi2 - phi1
+              lambda1 = refLong*3.1415926/180.
+              lambda2 = grid_long(iFlt,i)*3.1415926/180.
+              deltalambda = lambda2 - lambda1
+              a = (sin(deltaphi/2.)*sin(deltaphi/2.))+(cos(phi1)*cos(phi2)
+     1            *sin(deltalambda/2.)*sin(deltalambda/2.))
+              c = 2*atan2(sqrt(a),sqrt(1.-a))
+              dist = Rearth*c
+              if (dist .eq. 0.) then
+                bearing = 0.
+              else
+                bearing = atan2(sin(lambda2-lambda1)*cos(phi2),cos(phi1)*
+     1                    sin(phi2)-sin(phi1)*cos(phi2)*cos(lambda2-lambda1))
+              endif
+              grid_x(i) = dist*sin(bearing)
+              grid_y(i) = dist*cos(bearing)
+          enddo
+c         Use flat earth scaling for grid_dx and grid_dy only
+          xscale = 111.12 * cos(reflat/180*3.1415926)
+          yscale = 111.12
+          grid_dx = grid_dlong(iFlt)*xscale 
+          grid_dy = grid_dlat(iFlt)*yscale
+        else
 
+          do iz=1,nDD
+            do iPt=1,nfp
+              phi1 = refLat*3.1415926/180.
+              phi2 = fLat(iFlt,iz,iPt)*3.1415926/180.
+              deltaphi = phi2 - phi1
+              lambda1 = refLong*3.1415926/180.
+              lambda2 = fLong(iFlt,iz,iPt)*3.1415926/180.
+              deltalambda = lambda2 - lambda1
+              a = (sin(deltaphi/2.)*sin(deltaphi/2.))+(cos(phi1)*cos(phi2)
+     1            *sin(deltalambda/2.)*sin(deltalambda/2.))
+              c = 2*atan2(sqrt(a),sqrt(1.-a))
+              dist = Rearth*c
+              if (dist .eq. 0.) then
+                bearing = 0.
+              else
+                bearing = atan2(sin(lambda2-lambda1)*cos(phi2),cos(phi1)*
+     1                    sin(phi2)-sin(phi1)*cos(phi2)*cos(lambda2-lambda1))
+              endif
+              xFlt(iz,iPt) = dist*sin(bearing)
+              yFlt(iz,iPt) = dist*cos(bearing)
+              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)            
+            enddo
+          enddo
+        endif
+        
       else
 c     Units are in km already 
-      reflat = 0.
-      refLong = 0.
-      xScale = 1.
-      yScale = 1.
-      endif
-
-c     Check for grid source
-      if ( sourceType(iFlt) .eq. 3 .or. sourceType(iFlt) .eq. 4 ) then
-        do i=1,grid_n(iFlt)
-          grid_y(i) = (grid_lat(iFlt,i) - reflat ) * yScale
-          grid_x(i) = (grid_long(iFlt,i) - reflong ) * xScale
-        enddo
-        grid_dx = grid_dlong(iFlt)*xscale 
-        grid_dy = grid_dlat(iFlt)*yscale
-      else
-
-        do iz=1,nDD(iFlt)
-          do iPt=1,nfp(iFlt)
-            xFlt(iz,iPt) = ( fLong(iFlt,iz,iPt) - reflong ) * xScale
-            yFlt(iz,iPt) = ( fLat(iFlt,iz,iPt) - reflat ) * yScale
-            zFlt(iz,iPt) = fZ(iFlt,iz,iPt)            
-          enddo
-        enddo
-      endif
-      x0 = ( siteX - reflong ) * xScale
-      y0 = ( siteY - reflat ) * yScale
+      x0 = 0.
+      y0 = 0.
       z0 = 0.
+      endif
 
       return 
       end
+
 
 c ---------------------------------------------------------------------
 
