@@ -2,6 +2,7 @@
 *.atools
 *.amake
 *.amake.bk
+*.o
 mrweprefs.r
 project.r
 # Ignore Mac OS X system files
