@@ -114,13 +114,15 @@ c ---------------------------------------------------------------------
       real fltGrid_w(MAXFLT_DD,MAXFLT_AS), fltGrid_a(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_Rseis(MAXFLT_DD,MAXFLT_AS), fltGrid_Rx(MAXFLT_DD,MAXFLT_AS),
-     2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS)
+     2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS), faultArea
+      real*8 dfaultArea
 
       distMin1 = 1.E10
 
 c     Find the widest part of the fault and set the number of grid points down dip
       sum1 = 0.
       nn = 0
+      
       do i=1,nDD-1
         width1 = 0.
         do j=1,npts
@@ -132,18 +134,19 @@ c     Find the widest part of the fault and set the number of grid points down d
           sum1 = sum1 + real(w/npts)
           nn = nn + 1
         enddo
-        n2(i) = Int( width1 / step )
+        n2(i) = nint( width1 / step )
         if (n2(i).eq.0) then
           n2(i) = 1
         endif
       enddo
+      
       faultW = sum1 
       nx1 = 0
       ny1 = 0
       ii = 0
       i0 = 0
       j0 = 0
-      faultArea = 0
+      dfaultArea = 0
       faultLen = 0
       do i=1,nDD-1
         ny1 = ny1 + n2(i)
@@ -152,7 +155,10 @@ c     Find the widest part of the fault and set the number of grid points down d
           if ( i .eq. 1 ) then
             xLtop =  xFlt(i,j) - xFlt(i,j-1)
             yLtop =  yFlt(i,j) - yFlt(i,j-1)
-            n1(j) = int(sqrt(xLtop**2 + yLtop**2)/step) + 1
+            n1(j) = nint(sqrt(xLtop**2 + yLtop**2)/step)
+            if (n1(j) .eq. 1) then
+              n1(j) = 1
+            endif
             nx1 = nx1 + n1(j)
             faultLen = faultLen + sqrt(xLtop**2 + yLtop**2)
           endif
@@ -188,7 +194,7 @@ c           Set coordinates of center of grid and width and area of grid
 c   *** this needs to be fixed.  It now assumes right angles ***
               fltGrid_w(i2,j2) = sqrt(dx**2+dy**2+dz**2)
               fltGrid_a(i2,j2) = fltGrid_w(i2,j2) * sqrt( (xLtop/n1(j))**2 + (ylTop/n1(j))**2 )
-              faultArea = faultArea + fltGrid_a(i2,j2)  
+              dfaultArea = dfaultArea + dble(fltGrid_a(i2,j2))  
 
             enddo
             i0 = ii
@@ -228,6 +234,8 @@ C     Compute the fault lengths for each cell relative to start of fault.
           FltGrid_fLen(i,j) = FltGrid_fLen(i,j-1) + sqrt( dx**2 + dy**2 ) 
         enddo
       enddo
+      
+      faultArea = real(dfaultArea)
       
       return
       end
