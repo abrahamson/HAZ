@@ -342,15 +342,14 @@ c             Set the hypocentral depth (is this really ztor??)
                 hypoDepth = (iLocY-0.5)*ystep(iFlt) + grid_top(iFlt,1)
               endif  
 
-c             Find the Closest Distances for this rupture
-C             Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.
-              call CalcDist (iLocX, iLocY, RupLen, RupWidth, fltGrid_rRup,
-     1             fltGrid_RJB, fltGrid_Rx, fltGrid_HW, fltGrid_Rseis, 
-     2             nFltGrid, distRup, distJB, distSeismo, Rx, hwFlag, zTOR,
-     3             r_horiz, hypoDepth, fltGrid_z, sourceType(iFlt), iiflag,
-     4             fltgrid_x, fltgrid_y, icellRupStrike, icellRupdip, n2, n1, dipavg, pscorflag,
-     5             mindepth(iflt), distepi, disthypo, xStep(iFlt), yStep(iFlt), runflag, iSite,
-     6             hDD(iFlt), hAS(iFlt), fltgrid_a, n1AS, n2AS, Ry, ry0 )
+c            Find the Closest Distances for this rupture
+C            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
+             call CalcDist (sourceType(iflt), pscorflag, hypoDepth, RupWidth, RupLen, 
+     1             r_horiz, mindepth(iflt), nFltGrid, n1AS, iLocX, iLocY, n2AS,
+     2             fltGrid_x, fltGrid_y, fltGrid_z, MAXFLT_AS, MAXFLT_DD,
+     3             fltGrid_Rrup, fltGrid_Rjb,
+     4             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
+     5             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)          
 
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
@@ -410,7 +409,7 @@ C                Check for either fixed sigma value (scalc1<0) or other sigma mo
 
 c              Call for median ground motions
                call meanInten ( distRup, distJB, distSeismo,
-     1               hwflag, mag, jcalc1, specT(iProb),  
+     1               HWFlag, mag, jcalc1, specT(iProb),  
      2               lgInten,sigmaY, ftype(iFlt,iFtype), attenName, period1, 
      3               iAtten, jType, vs, hypodepth, intflag, AR, dipaverage(1),
      4               disthypo, depthvs10, depthvs15, D25, tau,
