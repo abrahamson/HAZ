@@ -992,8 +992,18 @@ c -----------------------------
 
       subroutine Inside_OutSide ( nSeg, xSeg, ySeg, x0, y0, 
      1           insideFlag )
-      integer nSeg, insideFlag
+     
+      implicit none
+
+c     declarations passed in      
+      integer nSeg
       real xSeg(1), ySeg(1), x0, y0
+
+c     declarations passed out
+      integer insideFlag      
+
+c     declarations only used within subroutine    
+      integer i  
       real twoPi, pi, theta1, theta2, dTheta, dx1, dx2, dy1, dy2,
      1     sumTheta, test, tol
 
