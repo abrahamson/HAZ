@@ -182,9 +182,9 @@ c       (This changes the geometry of the fault)
         	
 c        Set bottom of fault for standard faults
           if ( sourceType(iFlt) .eq. 1. ) then
-            call SetFltBottom ( dip(iFlt,iFltWidth,1), 
-     1           nDD, faultWidth(iFlt,iFltWidth), flong, flat, fZ, nfp, iFlt,
-     2           iCoor )
+            call SetFltBottom (MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, 
+     1           nfp, dip(iFlt,iFltWidth,1), faultWidth(iFlt,iFltWidth), 
+     2           fZ, flat, flong, nDD)
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)

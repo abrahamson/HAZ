@@ -242,14 +242,25 @@ C     Compute the fault lengths for each cell relative to start of fault.
 
 c -------------------------------------------------------------------
 
-      subroutine SetFltBottom ( dip2, nDD, faultThick, flong, flat, fZ, nfp, iFlt,
-     1           iCoor )
-      include 'pfrisk.h'
-      real lat1
-      real fLong(MAX_FLT,MAX_DD,MAX_SEG), fLat(MAX_FLT,MAX_DD,MAX_SEG),
-     1     fZ(MAX_FLT,MAX_DD,MAX_SEG)
-      integer nfp(MAX_FLT), nDD(MAX_FLT) 
+      subroutine SetFltBottom (MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, 
+     1                         nfp, dip2, faultThick, fZ, flat, flong, nDD)
+     
+      implicit none
+     
+c      declarations passed in
+       integer MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, nfp(MAX_FLT)
+       real dip2, faultThick        
 
+c      declarations passed out
+       integer nDD(MAX_FLT)
+       
+c      declarations passed in and out (changed) 
+       real fZ(MAX_FLT,MAX_DD,MAX_SEG), fLat(MAX_FLT,MAX_DD,MAX_SEG),
+     1      fLong(MAX_FLT,MAX_DD,MAX_SEG)
+
+c      declarations only used within subroutine   
+       integer ipt
+       real sin_theta, top, bottom, lat1, dx, dy, strike, az1, R1, x1, y1         
 
 C     Set bottom for case in which fault is defined in latitude and longitude. 
       if (iCoor .eq. 1) then     
