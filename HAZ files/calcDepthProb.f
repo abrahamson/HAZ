@@ -1,9 +1,19 @@
-      subroutine CalcDepthProb ( iDepthModel, depthParam, iFlt, pLocY,
+      subroutine CalcDepthProb ( MAX_FLT, iDepthModel, depthParam, iFlt, pLocY,
      1              sourceType, nLocY, yStep, top, width, rupWidth, dip )
-      include 'pfrisk.h'
-      integer sourceType, nLocY, iDepthModel
-      real depthParam(MAX_FLT,3)
-      real meanDepth, hypo_Prob(1000), pLocY(1)
+
+      implicit none
+
+c     declarations passed in 
+      integer MAX_FLT, iDepthModel, iFlt, sourceType, nLocY 
+      real depthParam(MAX_FLT,3), yStep, top, width, rupWidth, dip
+
+c     declarations passed out
+      real pLocY(1)
+      
+c     declarations only used within subroutine 
+      integer iLocY     
+      real meanDepth, hypo_Prob(1000), z1, z2, z3, depth1, sigma, depth0,
+     1     depth2, z_half, p1, p2, zstep, d, sum
       
 c     Check for areal sources (point sources)
       if (sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then

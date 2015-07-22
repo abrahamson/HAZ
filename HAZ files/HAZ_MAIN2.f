@@ -317,7 +317,7 @@ c           This is along strike for faults and epicentral distance for source z
 
 c            set the probabilities for the depths 
              if ( iDepthFlag .eq. 0 ) then
-               call CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
+               call CalcDepthProb ( MAX_FLT, iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
      2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
                if (sourceType(iFlt).eq.1 .or. sourceType(iFlt).eq.2) then
