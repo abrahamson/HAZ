@@ -2,19 +2,19 @@ c closestDist.f
 
       subroutine CalcDist (sourceType, pscorflag, hypoDepth, RupWidth, RupLen, 
      1             r_horiz, seismoDepth, nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltgrid_x, fltgrid_y, fltgrid_z, MAXFLT_AS, MAXFLT_DD,
-     3             fltgrid_Rrup, fltgrid_Rjb,
-     4             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     5             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)
+     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_Rrup, fltgrid_Rjb,
+     3             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
+     4             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
 
       implicit none
+      include 'pfrisk.h'
 
 c     declarations passed in 
-      integer MAXFLT_AS, MAXFLT_DD, sourceType, pscorflag, nfltGrid(2), 
-     1        n1AS(MAXFLT_AS), iLocX, iLocY, n2AS(MAXFLT_AS)
+      integer sourceType, pscorflag, nfltGrid(2), n1AS(MAXFLT_AS), iLocX, 
+     1        iLocY, n2AS(MAXFLT_AS)
       real hypoDepth, RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
@@ -84,13 +84,13 @@ c         n2 is the last cell that makes up the rupture plane along strike
        
 c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag
 c         Average Strike method
-c          call AveStrike (MAXFLT_AS, MAXFLT_DD, fltgrid_x, fltgrid_y, 
-c     1                    fltgrid_z, rupLen, distRx, iLocX, iLocY, n2, 
-c     2                    n1, Rx, Ry, Ry0, HWFlag, dipavg)
+c          call AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, rupLen, 
+c     1                    distRx, iLocX, iLocY, n2, n1, Rx, Ry, Ry0, 
+c     2                    HWFlag, dipavg)
 
 c         OR Global Coordinate System 2 method
-          call GC2 (MAXFLT_AS, MAXFLT_DD, iLocX, iLocY, n2, n1, fltgrid_x, 
-     1              fltgrid_y, fltgrid_z, Rx, Ry, Ry0, HWFlag, dipavg)           
+          call GC2 (iLocX, iLocY, n2, n1, fltgrid_x, fltgrid_y, fltgrid_z, 
+     1              Rx, Ry, Ry0, HWFlag, dipavg)           
 
 c         Calculate ZTOR
           ZTOR = fltgrid_z(iLocY,iLocX)             

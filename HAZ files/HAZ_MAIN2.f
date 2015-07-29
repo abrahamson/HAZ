@@ -340,10 +340,9 @@ c            Find the Closest Distances for this rupture
 C            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
              call CalcDist (sourceType(iflt), pscorflag, hypoDepth, RupWidth, RupLen, 
      1             r_horiz, mindepth(iflt), nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltGrid_x, fltGrid_y, fltGrid_z, MAXFLT_AS, MAXFLT_DD,
-     3             fltGrid_Rrup, fltGrid_Rjb,
-     4             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     5             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)          
+     2             fltGrid_x, fltGrid_y, fltGrid_z, fltGrid_Rrup, fltGrid_Rjb,
+     3             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
+     4             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)          
 
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then

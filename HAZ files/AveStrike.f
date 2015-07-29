@@ -1,11 +1,12 @@
-       subroutine AveStrike (MAXFLT_AS, MAXFLT_DD, fltgrid_x, fltgrid_y, 
-     1                       fltgrid_z, rupLen, distRx, iLocX, iLocY, n2, 
-     2                       n1, Rx, Ry, Ry0, HWFlag, dipavg)
+       subroutine AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, rupLen, 
+     1                       distRx, iLocX, iLocY, n2, n1, Rx, Ry, Ry0, 
+     2                       HWFlag, dipavg)
       
        implicit none
+       include 'pfrisk.h'
        
 c      declarations passed in 
-       integer MAXFLT_AS, MAXFLT_DD, iLocX, iLocY, n2, n1
+       integer iLocX, iLocY, n2, n1
        real fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS), 
      1      fltgrid_z(MAXFLT_DD,MAXFLT_AS), rupLen, distRx 
        

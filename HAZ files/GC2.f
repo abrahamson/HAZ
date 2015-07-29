@@ -1,11 +1,12 @@
      
-       subroutine GC2 (MAXFLT_AS, MAXFLT_DD, iLocX, iLocY, n2, n1, fltgrid_x, 
-     1                 fltgrid_y, fltgrid_z, Rx, Ry, Ry0, HWFlag, dipavg)
+       subroutine GC2 (iLocX, iLocY, n2, n1, fltgrid_x, fltgrid_y, fltgrid_z, 
+     1                 Rx, Ry, Ry0, HWFlag, dipavg)
       
        implicit none
+       include 'pfrisk.h'
        
 c      declarations passed in        
-       integer MAXFLT_AS, MAXFLT_DD, iLocX, iLocY, n2, n1 
+       integer iLocX, iLocY, n2, n1 
        real fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      1      fltgrid_z(MAXFLT_DD,MAXFLT_AS)  
 
@@ -87,8 +88,8 @@ c       u and t form 90 degree angle
 c       calculate local strike-normal coordinate t  
 
           do iGC2=1, n3-1
-              call GC2_tsign (iGC2, MAXFLT_AS, MAXFLT_DD, n1, iLocX, iLocY, 
-     1                        fltgrid_z, rup_x, rup_y, rup_xb, rup_yb, tflag) 
+              call GC2_tsign (iGC2, n1, iLocX, iLocY, fltgrid_z, rup_x, 
+     1                        rup_y, rup_xb, rup_yb, tflag) 
               t_local(iGC2) = tflag*sqrt(((P90_x(iGC2) - Site_x)**2) +
      1                        ((P90_y(iGC2) - Site_y)**2)) 
           enddo
@@ -96,7 +97,7 @@ c       calculate local strike-normal coordinate t
 c       calculate local strike-parallel coordinate u  
 
           do iGC2=1, n3-1
-              call GC2_usign (iGC2, MAXFLT_AS, rup_x, rup_y, uflag)             
+              call GC2_usign (iGC2, rup_x, rup_y, uflag)             
               u_local(iGC2) = uflag*sqrt(((P90_x(iGC2) - rup_x(iGC2))**2) +
      1                         ((P90_y(iGC2) - rup_y(iGC2))**2))                
           enddo
@@ -224,13 +225,14 @@ c       calculate dipavg
        
 c ----------------------------------------------------------------------
 
-       subroutine GC2_tsign (iGC2, MAXFLT_AS, MAXFLT_DD, n1, iLocX, iLocY, fltgrid_z, 
-     1                       rup_x, rup_y, rup_xb, rup_yb, tflag)
+       subroutine GC2_tsign (iGC2, n1, iLocX, iLocY, fltgrid_z, rup_x, 
+     1                       rup_y, rup_xb, rup_yb, tflag)      
        
        implicit none
+       include 'pfrisk.h'
        
 c      declarations passed in        
-       integer iGC2, MAXFLT_AS, MAXFLT_DD, n1, iLocX, iLocY  
+       integer iGC2, n1, iLocX, iLocY  
        real fltgrid_z(MAXFLT_DD,MAXFLT_AS), rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_xb(MAXFLT_AS), 
      1      rup_yb(MAXFLT_AS)
 
@@ -325,11 +327,12 @@ c      Site is assumed to be location: (0.0, 0.0, 0.0)
       
 c ----------------------------------------------------------------------
 
-       subroutine GC2_usign (iGC2, MAXFLT_AS, rup_x, rup_y, uflag)
+       subroutine GC2_usign (iGC2, rup_x, rup_y, uflag)
        
        implicit none
+       include 'pfrisk.h'
        
-       integer iGC2, MAXFLT_AS, uflag 
+       integer iGC2, uflag 
        real rup_x(MAXFLT_AS), rup_y(MAXFLT_AS)
         
        integer upositive, unegative 
