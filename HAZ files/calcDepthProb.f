@@ -1,10 +1,11 @@
-      subroutine CalcDepthProb ( MAX_FLT, iDepthModel, depthParam, iFlt, pLocY,
+      subroutine CalcDepthProb (iDepthModel, depthParam, iFlt, pLocY,
      1              sourceType, nLocY, yStep, top, width, rupWidth, dip )
 
       implicit none
+      include 'pfrisk.h'
 
 c     declarations passed in 
-      integer MAX_FLT, iDepthModel, iFlt, sourceType, nLocY 
+      integer iDepthModel, iFlt, sourceType, nLocY 
       real depthParam(MAX_FLT,3), yStep, top, width, rupWidth, dip
 
 c     declarations passed out

@@ -182,16 +182,15 @@ c       (This changes the geometry of the fault)
         	
 c        Set bottom of fault for standard faults
           if ( sourceType(iFlt) .eq. 1. ) then
-            call SetFltBottom (MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, 
-     1           nfp, dip(iFlt,iFltWidth,1), faultWidth(iFlt,iFltWidth), 
-     2           fZ, flat, flong, nDD)
+            call SetFltBottom (iCoor, iFlt, nfp, dip(iFlt,iFltWidth,1), 
+     1                         faultWidth(iFlt,iFltWidth), fZ, flat, flong, nDD)
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)
-         call ConvertCoordinates2 (MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp(iFlt), 
-     1        iFlt, iCoor, grid_n(iFlt), sourceType(iFlt), nDD(iFlt), siteX,
-     2        siteY, fLat, fLong, fZ, grid_lat, grid_long, grid_dlat, grid_dlong,
-     3        nPts, xFlt, yFlt, zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
+         call ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
+     1           sourceType(iFlt), nDD(iFlt), siteX, siteY, fLat, fLong, fZ, 
+     2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts, xFlt, yFlt, 
+     3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
 
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 ) then
@@ -312,7 +311,7 @@ c           This is along strike for faults and epicentral distance for source z
 
 c            set the probabilities for the depths 
              if ( iDepthFlag .eq. 0 ) then
-               call CalcDepthProb ( MAX_FLT, iDepthModel(iFlt), depthParam, iFlt, pLocY,
+               call CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
      2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
                if (sourceType(iFlt).eq.1 .or. sourceType(iFlt).eq.2) then

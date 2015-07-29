@@ -1,8 +1,9 @@
 
-      subroutine ConvertCoordinates2 (MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp, iFlt, 
-     1           iCoor, grid_n, sourceType, nDD, siteX, siteY, fLat, fLong, fZ, 
-     2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts1, xFlt, yFlt, 
-     3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0)
+      subroutine ConvertCoordinates2 (nfp, iFlt, iCoor, grid_n, sourceType, nDD, 
+     1                                siteX, siteY, fLat, fLong, fZ, grid_lat, 
+     2                                grid_long, grid_dlat, grid_dlong, nPts1, xFlt, 
+     3                                yFlt, zFlt, grid_x, grid_y, grid_dx, grid_dy, 
+     4                                x0, y0, z0)
      
 c     This subroutine uses the haversine formula to calculate distance, bearing, and
 c     convert latitude/longitude to x/y coordinates on the basis of a spherical
@@ -11,9 +12,9 @@ c     earth (ignoring ellipsoidal effects).
 c     Reference: http://www.movable-type.co.uk/scripts/latlong.html
      
       implicit none
+      include 'pfrisk.h'
 
-      integer MAX_FLT, MAX_GRID, MAX_DD, MAX_SEG, nfp, iFlt, iCoor, grid_n, sourceType, 
-     1        nDD, nPts1
+      integer nfp, iFlt, iCoor, grid_n, sourceType, nDD, nPts1
       real siteX, siteY, fLat(MAX_FLT,MAX_DD,MAX_SEG), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
      1     fZ(MAX_FLT,MAX_DD,MAX_SEG), grid_lat(MAX_FLT,MAX_GRID), 
      2     grid_long(MAX_FLT,MAX_GRID), grid_dlat(MAX_FLT), grid_dlong(MAX_FLT), 
@@ -242,13 +243,14 @@ C     Compute the fault lengths for each cell relative to start of fault.
 
 c -------------------------------------------------------------------
 
-      subroutine SetFltBottom (MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, 
-     1                         nfp, dip2, faultThick, fZ, flat, flong, nDD)
+      subroutine SetFltBottom (iCoor, iFlt, nfp, dip2, faultThick, fZ, 
+     1                         flat, flong, nDD)
      
       implicit none
+      include 'pfrisk.h'
      
 c      declarations passed in
-       integer MAX_FLT, MAX_DD, MAX_SEG, iCoor, iFlt, nfp(MAX_FLT)
+       integer iCoor, iFlt, nfp(MAX_FLT)
        real dip2, faultThick        
 
 c      declarations passed out
