@@ -291,25 +291,20 @@ c            rupWidth = sqrt(rupArea/2.)
 
 c------------end temporary code
 
-        call nLocXYdims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen, 
-     1                   xStep(iFlt), yStep(iFlt), Grid_n(iFlt), 
-     2                   faultWidth(iFlt,iFltWidth), nLocX, nLocY, nLocXST1, 
-     3                   nLocYST1, nLocXAS, nLocYAS, rupLen)      
+        call RupDims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen,
+     1                faultWidth(iFlt,iFltWidth), nLocYST1, yStep(iFlt), rupLen)      
  
-        call nLocXcells (MAXFLT_AS, MAXFLT_DD, nfltgrid, sourceType(iFlt), nLocYST1, 
-     1                   rupWidth, fltgrid_w, fltgrid_a, ruparea, nLocXAS, 
-     2                   nLocX, n1AS, n2AS)
+        call nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
+     1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
                         
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
             iDepthFlag = 0
             do 650 iLocX = 1, nLocX
             
-        call nLocYcells (MAXFLT_AS, MAXFLT_DD, MAX_DIST1, MAX_GRID, 
-     1                   nfltgrid, fltgrid_w, iLocX, rupWidth, n1AS, 
-     2                   sourceType(iFlt), nLocX, xStep(iFlt), nLocYAS, 
-     3                   distDensity, distDensity2, grid_x, x0, grid_y, 
-     4                   y0, nLocY, pLocX, r_horiz)
+            call nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
+     1                       faultWidth(iFlt,iFltWidth), yStep(iFlt), distDensity2, grid_x,
+     2                       grid_y, x0, y0, nLocY, pLocX, r_horiz)
 
              if ( pLocX .eq. 0. ) then
                goto 650
