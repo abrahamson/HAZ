@@ -7,10 +7,10 @@ c  --------------------------------------------------------------------
       character*80 filein
       real*8 sum, sum1
       real minLat, minLong, maxLat, maxLong
-      real grid_long(MAX_FLT,1), grid_lat(MAX_FLT,1),
-     1     grid_a(MAX_FLT,1)
-      real grid_dlong(1), grid_dlat(1)
-      integer grid_n(1)
+      real grid_long(MAX_FLT,MAX_GRID), grid_lat(MAX_FLT,MAX_GRID),
+     1     grid_a(MAX_FLT,MAX_GRID)
+      real grid_dlong(MAX_FLT), grid_dlat(MAX_FLT)
+      integer grid_n(MAX_FLT)
                 
 
       read (10,'( a80)') filein

@@ -22,7 +22,7 @@ c     implicit none
       real mean, sigma, zmagL, zmagU, pmagL, pmagU, dd, mag                     
       real mU1, mL1, sum, mch, mchr, mexp, aexp, achr, m1
       real term1,term2, term3
-      integer iParam, iFlt, i, nParamVar(MAX_FLT,1), nWidth(1)                  
+      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH), nWidth(1)                  
       integer nmstep                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
       real maxmag1, magstep1, nsigma

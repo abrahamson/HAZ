@@ -4,14 +4,14 @@ c     magprob.f
      1                     pmag, nParam, nWidth,                                
      2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo )
       include 'pfrisk.h'            
-      real mag, maxMag(MAX_FLT,MAXPARAM,1), beta(MAX_FLT,MAXPARAM,1),           
-     1     minMag(1), magStep(1), magRecur(MAX_FLT,MAXPARAM,1)                  
-      real pmag(MAXPARAM,1), mU, mL, magU, magL, mag1, mag2                     
+      real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
+     1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
+      real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2                     
       real zmL, zmU, zmagU, zmagL, d    
       real*8 pmL, pmU, pmagL, pmagU       
       real meanMag, sigma                                   
       real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
-      integer iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(1)
+      integer iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(MAX_FLT)
       real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH)                        
       real magcut, betaAC, magnorm, sumnorm, mUnorm, mLnorm
       real aknorm, pmagnorm(MAXPARAM,MAX_WIDTH) 

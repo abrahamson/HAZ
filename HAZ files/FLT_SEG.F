@@ -18,7 +18,7 @@ c     Reference: http://www.movable-type.co.uk/scripts/latlong.html
       real siteX, siteY, fLat(MAX_FLT,MAX_DD,MAX_SEG), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
      1     fZ(MAX_FLT,MAX_DD,MAX_SEG), grid_lat(MAX_FLT,MAX_GRID), 
      2     grid_long(MAX_FLT,MAX_GRID), grid_dlat(MAX_FLT), grid_dlong(MAX_FLT), 
-     3     xFlt(MAX_DD,1), yFlt(MAX_DD,1), zFlt(MAX_DD,1), grid_x(MAX_GRID), 
+     3     xFlt(MAX_DD,MAX_SEG), yFlt(MAX_DD,MAX_SEG), zFlt(MAX_DD,MAX_SEG), grid_x(MAX_GRID), 
      4     grid_y(MAX_GRID), grid_dx, grid_dy, x0, y0, z0
      
       integer i, iz, iPt

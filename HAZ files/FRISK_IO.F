@@ -11,9 +11,9 @@ c     frisk_io.f
       include 'pfrisk.h'
 
       real testInten(MAX_PROB, MAX_INTEN), lgTestInten(MAX_PROB, MAX_INTEN)
-      real magBins(1), distBins(1), epsBins(1),  XcostBins(1)
-      real sigTrunc(1) 
-      integer attenType(1), nInten(1), runFlag, bnumflag
+      real magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS),  XcostBins(MAX_Xcost)
+      real sigTrunc(MAX_PROB) 
+      integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag
       integer nMagBins, nDistBins, nEpsBins, nXcostBins
       integer psCorFlag,dirflag(MAX_PROB)
       integer jCalc(MAX_PROB,4,MAX_ATTEN)
@@ -21,9 +21,10 @@ c     frisk_io.f
       real sigfix(MAX_PROB,4,MAX_ATTEN)
       character*80 filein, title, file1, filelog, filehyp
       real minlat, maxlat, minlong, maxlong, vs
-      integer nProb, nAttenType, nAtten(MAX_PROB,1), soilAmpFlag
-      real specT(1)
-      real gmScale(MAX_PROB,4,1), gm_wt(MAX_PROB,4,1), sigvaradd(MAX_PROB,4,1)
+      integer nProb, nAttenType, nAtten(MAX_PROB,4), soilAmpFlag
+      real specT(MAX_PROB)
+      real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
+     1     sigvaradd(MAX_PROB,4,MAX_ATTEN)
       integer ichart, charcount, coefcountrrup, coefcountrjb, iMixture
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11)
 
@@ -481,24 +482,25 @@ c  -------------------------------------------------------------------
 
       real siteX, siteY, ati(MAX_PROB, MAX_INTEN) 
       real*8     risk(MAX_INTEN,MAX_PROB,MAX_FLT)
-      real al_segWt(1), segWt1(1), magbins(1), distbins(1), epsBins(1)
+      real al_segWt(MAX_FLT), segWt1(MAX_FLT), magbins(MAX_MAG), distbins(MAX_DIST), 
+     1     epsBins(MAX_EPS)
       real*8 m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
      3     e_bar(MAX_PROB,MAX_INTEN)
       real    riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
      5     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
      9     sumbar
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM)
-      real minDist(1), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
+      real minDist(MAX_FLT), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
       real*8 risk2(MAX_INTEN), sum, risk2t(MAX_INTEN)
       real  period1(4,MAX_PROB),
-     1     sigTrunc(1), probAct(1), faultdist(MAX_FLT,MAX_WIDTH,3)
-      integer csrflag(1), attenType(1), nAttenType, dirflag(MAX_PROB)
-      integer tapflag(MAX_PROB), intflag(4,1)
+     1     sigTrunc(MAX_PROB), probAct(MAX_FLT), faultdist(MAX_FLT,MAX_WIDTH,3)
+      integer csrflag(MAX_PROB), attenType(MAX_FLT), nAttenType, dirflag(MAX_PROB)
+      integer tapflag(MAX_PROB), intflag(4,MAX_PROB)
       integer nMagBins, nDistBins, nEpsBins, fsys(MAX_FLT)
-      integer isite, nInten(1), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(1) 
-      integer hwflagout(1), nMaxmag2(1), casecount
-      real ftype(1), vs, specT(1)
-      character*80 fName(1), file1, attenName(4,MAX_PROB)
+      integer isite, nInten(MAX_PROB), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(MAX_FLT) 
+      integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount
+      real ftype(1), vs, specT(MAX_PROB)
+      character*80 fName(MAX_FLT), file1, attenName(4,MAX_PROB)
       nwr = 12
 
 c     Open output file
@@ -669,9 +671,9 @@ c  ------------------------------------------------------------------
 
       real siteX, siteY,  
      1     riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
-     2     magBins(1), distBins(1), epsBins(1),
-     2     testInten(MAX_PROB, 1),
-     3     period1(4,1), sigTrunc(1), 
+     2     magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS),
+     2     testInten(MAX_PROB, MAX_INTEN),
+     3     period1(4,MAX_PROB), sigTrunc(MAX_PROB), 
      6     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
      7      XcostBins(MAX_Xcost),
      8     RiskBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN)
@@ -681,8 +683,8 @@ c  ------------------------------------------------------------------
      5     e_bar(MAX_PROB,MAX_INTEN),Xcost_bar(MAX_PROB,MAX_INTEN)
 
 
-      integer csrflag(1), attenType(1)
-      integer isite, nInten(1), jCalc(MAX_PROB,4,MAX_ATTEN) 
+      integer csrflag(MAX_PROB), attenType(MAX_FLT)
+      integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
       integer nMagBins, nDistBins, nEpsBins, nXcostBins, iXcostBins
       character*80 file1, attenName(4,1) 
       nwr = 14

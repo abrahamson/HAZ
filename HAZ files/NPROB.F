@@ -117,7 +117,7 @@ c ------------------------------------------------------------------
 
       real*8 function pxceed3 ( eti, ti, siga, jj, i, sigTrunc )                   
       include 'pfrisk.h'                                                        
-      real eti, ti(MAX_PROB,1), siga, sigTrunc, w
+      real eti, ti(MAX_PROB,MAX_INTEN), siga, sigTrunc, w
 	  real*8 g, g1
                                                                                 
       W = (ti(JJ,I)-ETI)/SIGA                                                   
@@ -159,9 +159,9 @@ c ------------------------------------------------------------------
       subroutine rupDimProb ( mag, coef, sigma, step, sigmaMax,                 
      1           rupDim, prob, iFlt, idim )                                     
                                                                                 
-c      include 'pfrisk.h'                                                       
+      include 'pfrisk.h'                                                       
                                                                                 
-      real mag, coef(2,1), sigma(1), rupDim, prob                                  
+      real mag, coef(2,MAX_FLT), sigma(1), rupDim, prob                                  
       real nSigma, nSigma_plus, nSigma_minus                                    
                                                                                 
       nSigma = -sigmaMax + (idim-0.5)*step                                      

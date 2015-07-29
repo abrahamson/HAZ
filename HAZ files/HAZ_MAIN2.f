@@ -28,7 +28,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real phi, tau, medadj, sigadj, phiSSS
       character*80 filebmode
       integer bnum, bnumflag, coefcountRrup, coefcountRjb, iMixture
-      real pLocY(10000), sigmaTotal, sigma1, sigma2
+      real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
       real*8 prock1, prock2
    
 c     Write Program information to the screen.

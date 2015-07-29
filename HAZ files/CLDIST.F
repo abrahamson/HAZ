@@ -1161,7 +1161,7 @@ c --------------------------------------------------------------------
       subroutine CalcDistDensity (nPts, xFlt2, yFlt2, distDensity,
      1                            dr, nr, x0, y0, step, minDist )
       include 'pfrisk.h'
-      real xFlt2(MAX_DD,1), yFlt2(MAX_DD,1), minDist, maxdist
+      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), minDist, maxdist
       real xFlt(MAX_SEG), yFlt(MAX_SEG)
       real distDensity(MAX_DIST1)
       
