@@ -105,4 +105,4 @@
       real ftype(MAX_FLT,MAX_N1), ftype_wt(MAX_FLT,MAX_N1)
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1)
       real minlat, maxlat, minlong, maxlong
-      real cfcoefrrup(MAX_ATTEN,10), cfcoefRjb(MAX_ATTEN,10)
+      real cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11)

@@ -20,7 +20,7 @@ C       attenflag = 2 Spectra
       real attenrupdist(MAXDETM_DIST), attenjbdist(MAXDETM_DIST), attenseisdist(MAXDETM_DIST)
       real attenhypodist(MAXDETM_DIST), attenRx(MAXDETM_DIST)
       real hypodepth, hypodepth1, rupWidth, specT(4,MAX_PROB)
-      real gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), period1
+      real gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), period1(4,1)
 
 C     If requested compute ground motion attenuation from input data file.
 c        (i.e., attenflag = 1)
@@ -124,10 +124,10 @@ C     Perform loop over distances for attenuation models.
                call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), period1, 
-     3               iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
-     4               disthypo, depthvs10, depthvs15, D25, tau,  ftop(1,1),
+     3               iAtten, jType, vs, hypoDepth,intflag, AR, dip1,
+     4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
-     6               cfcoefRrup, cfcoefRjb )
+     6               cfcoefRrup, cfcoefRjb, Ry0)
               intflag(1,icalc) = intflag(1,1)
 
 C             Adjust median ground motion by constant factors
@@ -141,7 +141,7 @@ C     Check for sigma values different than requested GMPE.
      3               iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
      4               disthypo, depthvs10, depthvs15, D25, tau,  ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
-     6               cfcoefRrup, cfcoefRjb )
+     6               cfcoefRrup, cfcoefRjb, Ry0 )
 
 C      Call for Single Station Sigma Phi if requested (i.e., SssCalc1>0)
 C             Phi only Models: 0 < ssscalc1 < 100
@@ -460,10 +460,10 @@ c     is not defined (output will be set to null value of -9.99999)
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
+     2               period1, iAtten, jType, vs, hypoDepth, intflag, AR, dip1,
      4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
-     6               cfcoefRrup, cfcoefRjb )
+     6               cfcoefRrup, cfcoefRjb, Ry0 )
        
                      intflag(1,icalc) = intflag(1,1)
 
@@ -472,10 +472,10 @@ c     is not defined (output will be set to null value of -9.99999)
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
+     2               period1, iAtten, jType, vs, hypoDepth, intflag, AR, dip1,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
-     4               cfcoefRrup, cfcoefRjb )
+     4               cfcoefRrup, cfcoefRjb, Ry0 )
        
                      intflag(1,icalc) = intflag(1,1)
 
@@ -484,10 +484,10 @@ c     is not defined (output will be set to null value of -9.99999)
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
+     2               period1, iAtten, jType, vs, hypoDepth, intflag, AR, dip1,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
-     4               cfcoefRrup, cfcoefRjb )
+     4               cfcoefRrup, cfcoefRjb, Ry0 )
        
                      intflag(1,icalc) = intflag(1,1)
 
@@ -496,10 +496,10 @@ c     is not defined (output will be set to null value of -9.99999)
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
+     2               period1, iAtten, jType, vs, hypoDepth, intflag, AR, dip1,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
-     4               cfcoefRrup, cfcoefRjb )
+     4               cfcoefRrup, cfcoefRjb, Ry0 )
        
                      intflag(1,icalc) = intflag(1,1)
 
@@ -516,10 +516,10 @@ C     Now compute the sigma if requested is different than jcalc GMPE.
                         call meanInten ( distRup, distJB, distSeismo,
      1                     hwflag, mag, scalc1, specT(1,1),  
      2                     temp,sigmaY, ftype(1,1), sigmaName(1,1), 
-     2                     period1, iAtten, jType, vs, hypoDepth,intflag,AR,dip1,
+     2                     period1, iAtten, jType, vs, hypoDepth,intflag, AR, dip1,
      4                     disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5                     theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
-     6                     cfcoefRrup, cfcoefRjb )
+     6                     cfcoefRrup, cfcoefRjb, Ry0 )
 C      Call for Single Station Sigma Phi if requested (i.e., SssCalc1>0)
 C             Phi only Models: 0 < ssscalc1 < 100
                      if (ssscalc1 .gt. 0 .and. ssscalc1 .lt. 100) then

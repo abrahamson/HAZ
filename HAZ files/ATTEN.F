@@ -11846,7 +11846,7 @@ C     Coefficients are passed from input file and are only applicable for
 C     the spectral period specified in the input file. 
 
       Subroutine SWUS_CFRjb ( m, Rrup, Rjb, ztor, ftype, dip, Width, Rx, HWFlag, 
-     1                   specT, lnY, sigma, iflag, cfcoefrjb, coefcountRjb )
+     1                   specT, lnY, sigma, iflag, cfcoefrjb, coefcountRjb, phi, tau )
      
       include 'pfrisk.h'
       

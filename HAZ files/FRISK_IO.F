@@ -25,7 +25,7 @@ c     frisk_io.f
       real specT(MAX_PROB)
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
      1     sigvaradd(MAX_PROB,4,MAX_ATTEN)
-      integer ichart, charcount, coefcountrrup, coefcountrjb, iMixture
+      integer ichart, charcount, coefcountrrup, coefcountrjb, iMixture, nDD(MAX_FLT)
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11)
 
 c     Set Data file units
