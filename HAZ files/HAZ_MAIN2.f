@@ -403,7 +403,7 @@ c              Call for median ground motions
                call meanInten ( distRup, distJB, distSeismo,
      1               HWFlag, mag, jcalc1, specT(iProb),  
      2               lgInten,sigmaY, ftype(iFlt,iFtype), attenName, period1, 
-     3               iAtten, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefrrup, cfcoefrjb, Ry0 )
@@ -415,7 +415,7 @@ C               Second call for different sigma model
                call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(iProb),  
      2               temp, sigmaY, ftype(iFlt,iFtype), sigmaName, period1, 
-     3               iAtten, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi, 
      6               cfcoefrrup, cfcoefrjb, Ry0 )

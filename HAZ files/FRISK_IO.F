@@ -500,7 +500,7 @@ c  -------------------------------------------------------------------
       integer isite, nInten(MAX_PROB), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(MAX_FLT) 
       integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount
       real ftype(1), vs, specT(MAX_PROB)
-      character*80 fName(MAX_FLT), file1, attenName(4,MAX_PROB)
+      character*80 fName(MAX_FLT), file1, attenName(4,MAX_ATTEN)
       nwr = 12
 
 c     Open output file
@@ -686,7 +686,7 @@ c  ------------------------------------------------------------------
       integer csrflag(MAX_PROB), attenType(MAX_FLT)
       integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
       integer nMagBins, nDistBins, nEpsBins, nXcostBins, iXcostBins
-      character*80 file1, attenName(4,1) 
+      character*80 file1, attenName(4,MAX_ATTEN) 
       nwr = 14
 
 c     Open output file

@@ -1,20 +1,20 @@
 c meanpga.f
 
       subroutine meanInten (rupdist, jbdist, seismodist, hwflag,
-     1  mag, jcalc, specT, lnY, siga, ftype, attenName, period1, iProb,
+     1  mag, jcalc, specT, lnY, siga, ftype, attenName, period1, iAtten, iProb,
      2  jType, vs, depth,intflag, AR, dip1, disthypo, depthvs10, 
      3  depthvs15, D25, tau, depthTop, Theta_Site, RupWidth, vs30_class,
      4  foreArc, Rx, phi, cfcoefrrup, cfcoefrjb, Ry0 )        
 
       include 'pfrisk.h'
       
-      real mag, lnY, siga, ftype, period1(4,1), mag1, period2, lnSa, m
+      real mag, lnY, siga, ftype, period1(4,MAX_PROB), mag1, period2, lnSa, m
       integer jcalc,soilflag,softrock,hardRock,hwflag
       real jbdist, rupdist, seismodist, baseDepth, depth, specT, factor, a, b, faddmag
-      character*80 attenName(4,1), attenname1, attenname0
-      integer intflag(4,1), iflag, vs30_class
+      character*80 attenName(4,MAX_ATTEN), attenname1, attenname0
+      integer intflag(4,MAX_PROB), iflag, vs30_class
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
-      integer coefcountRrup, coefcountRjb
+      integer coefcountRrup, coefcountRjb, iAtten, iProb
 
       real sc, sd, se, D25, RupWidth, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
       real magc, rupdistc, ftypec, lnYc, mcb, depthTop
@@ -5049,7 +5049,7 @@ c     Check for valid jcalc
          stop 99
       endif
 
-      attenName(jType,iProb) = attenname1
+      attenName(jType,iAtten) = attenname1
       period1(jType,iProb) = period2
       intflag(jType,iProb) = iflag
       siga = sigma        
