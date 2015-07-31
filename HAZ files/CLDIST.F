@@ -2,9 +2,11 @@ c closestDist.f
 
       subroutine CalcDist (sourceType, pscorflag, hypoDepth, RupWidth, RupLen, 
      1             r_horiz, seismoDepth, nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_Rrup, fltgrid_Rjb,
-     3             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     4             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)
+     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, 
+     3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb,
+     5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
+     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -17,8 +19,13 @@ c     declarations passed in
      1        iLocY, n2AS(MAXFLT_AS)
       real hypoDepth, RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
-     2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     3     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS)
+     2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
+     3     fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_z1(MAXFLT_DD,MAXFLT_AS), 
+     4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), 
+     5     fltgrid_x3(MAXFLT_DD,MAXFLT_AS), fltgrid_y3(MAXFLT_DD,MAXFLT_AS), 
+     6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS), 
+     7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS)
 
 c     declarations passed out
       real distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
@@ -89,11 +96,13 @@ c     1                    distRx, iLocX, iLocY, n2, n1, Rx, Ry, Ry0,
 c     2                    HWFlag, dipavg)
 
 c         OR Global Coordinate System 2 method
-          call GC2 (iLocX, iLocY, n2, n1, fltgrid_x, fltgrid_y, fltgrid_z, 
-     1              Rx, Ry, Ry0, HWFlag, dipavg)           
+          call GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+     1              fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
+     2              fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
+     3              HWFlag, dipavg)          
 
 c         Calculate ZTOR
-          ZTOR = fltgrid_z(iLocY,iLocX)             
+          ZTOR = fltgrid_z1(iLocY,iLocX)             
 
 c         Calculate Rrup and Rjb
 C         Keep track of the fault grid cell for the closest rupture distance

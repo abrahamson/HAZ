@@ -1,14 +1,19 @@
      
-       subroutine GC2 (iLocX, iLocY, n2, n1, fltgrid_x, fltgrid_y, fltgrid_z, 
-     1                 Rx, Ry, Ry0, HWFlag, dipavg)
+       subroutine GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1,
+     1                 fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
+     2                 fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
+     3                 HWFlag, dipavg)
       
        implicit none
        include 'pfrisk.h'
        
 c      declarations passed in        
        integer iLocX, iLocY, n2, n1 
-       real fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
-     1      fltgrid_z(MAXFLT_DD,MAXFLT_AS)  
+       real fltgrid_x1(MAXFLT_DD,MAXFLT_AS), fltgrid_y1(MAXFLT_DD,MAXFLT_AS),
+     1      fltgrid_z1(MAXFLT_DD,MAXFLT_AS), fltgrid_x2(MAXFLT_DD,MAXFLT_AS), 
+     2      fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_x3(MAXFLT_DD,MAXFLT_AS), 
+     3      fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_x4(MAXFLT_DD,MAXFLT_AS), 
+     4      fltgrid_y4(MAXFLT_DD,MAXFLT_AS), fltgrid_z4(MAXFLT_DD,MAXFLT_AS)  
 
 c      declarations passed out
        integer HWFlag
@@ -22,22 +27,33 @@ c      declarations only used within subroutine
      3      P90_x(MAXFLT_AS), P90_y(MAXFLT_AS), Site_x, Site_y, t_local(MAXFLT_AS), 
      4      u_local(MAXFLT_AS), Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), 
      5      sum_Weight, rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, 
-     6      sum_Swxu, Global_T, Global_U, adistX1, adistY1
-         
+     6      sum_Swxu, Global_T, Global_U, dipX, dipY 
+
 c      save rupture grid cell locations in new arrays
        inorm = 0
        do irup=iLocX, n2
-         rup_xt = fltgrid_x(iLocY,irup)
-         rup_yt = fltgrid_y(iLocY,irup)
-         rup_xbt = fltgrid_x(n1,irup)
-         rup_ybt = fltgrid_y(n1,irup)
+         rup_xt = fltgrid_x1(iLocY,irup)
+         rup_yt = fltgrid_y1(iLocY,irup)
+         rup_xbt = fltgrid_x4(n1,irup)
+         rup_ybt = fltgrid_y4(n1,irup)
          inorm = inorm + 1
          rup_x(inorm) = rup_xt
          rup_y(inorm) = rup_yt
          rup_xb(inorm) = rup_xbt
          rup_yb(inorm) = rup_ybt
+         if (irup .eq. n2) then
+           rup_xt = fltgrid_x2(iLocY,irup)
+           rup_yt = fltgrid_y2(iLocY,irup)
+           rup_xbt = fltgrid_x3(n1,irup)
+           rup_ybt = fltgrid_y3(n1,irup)
+           inorm = inorm + 1
+           rup_x(inorm) = rup_xt
+           rup_y(inorm) = rup_yt
+           rup_xb(inorm) = rup_xbt
+           rup_yb(inorm) = rup_ybt
+         endif         
        enddo
-       n3 = inorm   
+       n3 = inorm 
 
 c       calculate the length of each segment of the rupture (a segment of the
 c       rupture is from the center of one rupture cell to the center of the 
@@ -88,8 +104,8 @@ c       u and t form 90 degree angle
 c       calculate local strike-normal coordinate t  
 
           do iGC2=1, n3-1
-              call GC2_tsign (iGC2, n1, iLocX, iLocY, fltgrid_z, rup_x, 
-     1                        rup_y, rup_xb, rup_yb, tflag) 
+              call GC2_tsign (iGC2, n1, iLocX, iLocY, rup_x, rup_y, 
+     1                        rup_xb, rup_yb, tflag) 
               t_local(iGC2) = tflag*sqrt(((P90_x(iGC2) - Site_x)**2) +
      1                        ((P90_y(iGC2) - Site_y)**2)) 
           enddo
@@ -179,20 +195,25 @@ c       check for special case t=0 on segment
             endif              
           enddo   
           
-c       calculate Rx and assign HWFlag from Global Coordinate T  
-         HWFlag = 0
-         if ((fltgrid_z(n1,iLocX)-fltgrid_z(iLocY,iLocX)).eq. 0.0) then
+c       calculate Rx, dipavg, and assign HWFlag from Global Coordinate T  
+         HWFlag = 0        
+         dipX = fltgrid_x4(n1,iLocX) - fltgrid_x1(iLocY,iLocX)
+         dipY = fltgrid_y4(n1,iLocX) - fltgrid_y1(iLocY,iLocX)
+         if (dipX .eq. 0.0 .and. dipY .eq. 0.0) then
            Rx = (-1)*(abs(Global_T))
            HWFlag = 0
+           dipavg = 3.141592653590/2.0
          else
-           Rx = Global_T  
+           Rx = Global_T 
+           dipavg = atan2((fltgrid_z4(n1,iLocX)-fltgrid_z1(iLocY,iLocX)),
+     1              sqrt(dipX*dipX+dipY*dipY)) 
            if (Global_T .LE. 0.0) then
              HWFlag = 0
            elseif (Global_T .GT. 0.0) then
              HWFlag = 1
            endif    
-         endif             
-
+         endif    
+         
 c       calculate Ry from Global Coordinate U
          if (Global_U .LT. 0) then
            Ry = abs(Global_U) + (0.5*GC2_ruplength)
@@ -210,31 +231,21 @@ c       calculate Ry0 from Global Coordinate U
          elseif (Global_U .GT. GC2_ruplength) then
            Ry0 = Global_U - GC2_ruplength
          endif  
-
-c       calculate dipavg
-         if ((fltgrid_z(n1,iLocX)-fltgrid_z(iLocY,iLocX)).eq. 0.0) then
-           dipavg = 3.141592653590/2.0
-         else
-           adistX1 = fltgrid_x(n1,iLocX) - fltgrid_x(iLocY,iLocX)
-           adistY1 = fltgrid_y(n1,iLocX) - fltgrid_y(iLocY,iLocX)
-           dipavg = atan2((fltgrid_z(n1,iLocX)-fltgrid_z(iLocY,iLocX)),sqrt(adistX1*adistX1+adistY1*adistY1))
-         endif
   
         return
        end
        
 c ----------------------------------------------------------------------
 
-       subroutine GC2_tsign (iGC2, n1, iLocX, iLocY, fltgrid_z, rup_x, 
-     1                       rup_y, rup_xb, rup_yb, tflag)      
+       subroutine GC2_tsign (iGC2, n1, iLocX, iLocY, rup_x, rup_y, rup_xb, 
+     1                       rup_yb, tflag)      
        
        implicit none
        include 'pfrisk.h'
        
 c      declarations passed in        
        integer iGC2, n1, iLocX, iLocY  
-       real fltgrid_z(MAXFLT_DD,MAXFLT_AS), rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_xb(MAXFLT_AS), 
-     1      rup_yb(MAXFLT_AS)
+       real rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_xb(MAXFLT_AS), rup_yb(MAXFLT_AS)
 
 c      declarations passed out
        integer tflag
@@ -250,13 +261,14 @@ c      For pure strike slip fault, use right hand rule for dummy dip direction
        strikeX = rup_x(iGC2+1) - rup_x(iGC2)
        strikeY = rup_y(iGC2+1) - rup_y(iGC2)
        strike = atan2(strikeY,strikeX) 
-       if ((fltgrid_z(n1,iLocX)-fltgrid_z(iLocY,iLocX)).eq. 0.0) then 
-         ddip = strike - 3.141592653590/2.0                
-       else
-         dipX = rup_xb(iGC2) - rup_x(iGC2)
-         dipY = rup_yb(iGC2) - rup_y(iGC2)                  
+        
+       dipX = rup_xb(iGC2) - rup_x(iGC2)
+       dipY = rup_yb(iGC2) - rup_y(iGC2) 
+         if (dipX .eq. 0.0 .and. dipY .eq. 0.0) then
+           ddip = strike - 3.141592653590/2.0
+         else                
          ddip = atan2(dipY,dipX)    
-       endif         
+         endif         
 
 c      Extend the first point of the segment by 1000 km in each 
 c      of the strike directions
