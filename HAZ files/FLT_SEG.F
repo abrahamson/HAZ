@@ -84,13 +84,14 @@ c         Use flat earth scaling for grid_dx and grid_dy only
               endif
               xFlt(iz,iPt) = dist*sin(bearing)
               yFlt(iz,iPt) = dist*cos(bearing)
-              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)            
+              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)           
+       
             enddo
           enddo
         endif
         
       else
-c     Units are in km already 
+c     Units are in km already
       x0 = 0.
       y0 = 0.
       z0 = 0.
@@ -105,7 +106,10 @@ c ---------------------------------------------------------------------
       subroutine calcFltGrid ( xFlt, yFlt, zFlt, npts, nDD, fltGrid_X, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,
-     3               faultArea, faultLen, faultW, distMin1, step, FltGrid_fLen )  
+     3               faultArea, faultLen, faultW, distMin1, step, FltGrid_fLen,
+     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
+     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
+     6               fltGrid_y4, fltGrid_z4 )  
      
       include 'pfrisk.h'
       include 'declare1.h'
@@ -116,7 +120,9 @@ c ---------------------------------------------------------------------
       real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_Rseis(MAXFLT_DD,MAXFLT_AS), fltGrid_Rx(MAXFLT_DD,MAXFLT_AS),
      2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS), faultArea
-      real*8 dfaultArea
+      real*8 dfaultArea      
+      real x1n1, x2n1, y1n1, y2n1, z1n1, z2n1, x1n2, x2n2, y1n2, y2n2, z1n2, 
+     1     z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, dzn2
 
       distMin1 = 1.E10
 
@@ -138,9 +144,9 @@ c     Find the widest part of the fault and set the number of grid points down d
         n2(i) = nint( width1 / step )
         if (n2(i).eq.0) then
           n2(i) = 1
-        endif
+        endif                       
       enddo
-      
+     
       faultW = sum1 
       nx1 = 0
       ny1 = 0
@@ -169,10 +175,12 @@ c     Find the widest part of the fault and set the number of grid points down d
           zLtop =  zFlt(i,j) - zFlt(i,j-1)
           xLbot =  xFlt(i+1,j) - xFlt(i+1,j-1)
           yLbot =  yFlt(i+1,j) - yFlt(i+1,j-1)
-          zLbot =  zFlt(i+1,j) - zFlt(i+1,j-1)
-          
+          zLbot =  zFlt(i+1,j) - zFlt(i+1,j-1)                  
+         
           do j1=1,n1(j)
             j2 = j1 + j0
+            
+c           these x1-z2s are for the center point             
             x1 = xFlt(i,j-1) + (XLtop/n1(j))*(j1-1+0.5)
             y1 = yFlt(i,j-1) + (yLtop/n1(j))*(j1-1+0.5)
             z1 = zFlt(i,j-1) + (zLtop/n1(j))*(j1-1+0.5)
@@ -183,14 +191,59 @@ c     Find the widest part of the fault and set the number of grid points down d
             dx = (x2 - x1) / n2(i)
             dy = (y2 - y1) / n2(i)
             dz = (z2 - z1) / n2(i)
+                        
+c           these x1-z2s are for node points 1 and 4            
+            x1n1 = xFlt(i,j-1) + (XLtop/n1(j))*(j1-1)
+            x2n1 = xFlt(i+1,j-1) + (XLbot/n1(j))*(j1-1)
+            y1n1 = yFlt(i,j-1) + (yLtop/n1(j))*(j1-1)
+            y2n1 = yFlt(i+1,j-1) + (yLbot/n1(j))*(j1-1)
+            z1n1 = zFlt(i,j-1) + (zLtop/n1(j))*(j1-1)
+            z2n1 = zFlt(i+1,j-1) + (zLbot/n1(j))*(j1-1)
+            
+            dxn1 = (x2n1 - x1n1) / n2(i)
+            dyn1 = (y2n1 - y1n1) / n2(i)
+            dzn1 = (z2n1 - z1n1) / n2(i)
 
+c           these x1-z2s are for node points 2 and 3              
+            x1n2 = xFlt(i,j-1) + (XLtop/n1(j))*(j1)
+            x2n2 = xFlt(i+1,j-1) + (XLbot/n1(j))*(j1)
+            y1n2 = yFlt(i,j-1) + (yLtop/n1(j))*(j1)
+            y2n2 = yFlt(i+1,j-1) + (yLbot/n1(j))*(j1)
+            z1n2 = zFlt(i,j-1) + (zLtop/n1(j))*(j1)
+            z2n2 = zFlt(i+1,j-1) + (zLbot/n1(j))*(j1)
+            
+            dxn2 = (x2n2 - x1n2) / n2(i)
+            dyn2 = (y2n2 - y1n2) / n2(i)
+            dzn2 = (z2n2 - z1n2) / n2(i)                                                              
+            
 c           Set coordinates of center of grid and width and area of grid
             do i1=1,n2(i)
               i2 = i1 + i0
+              
+c             these cell coordinates are for the center point               
               fltGrid_x(i2,j2) = x1 + dx*(i1-1+0.5)
               fltGrid_y(i2,j2) = y1 + dy*(i1-1+0.5)
               fltGrid_z(i2,j2) = z1 + dz*(i1-1+0.5)
+                            
+c             these cell coordinates are for node point 1 
+              fltGrid_x1(i2,j2) = x1n1 + dxn1*(i1-1)
+              fltGrid_y1(i2,j2) = y1n1 + dyn1*(i1-1)
+              fltGrid_z1(i2,j2) = z1n1 + dzn1*(i1-1)
+
+c             these cell coordinates are for node point 2              
+              fltGrid_x2(i2,j2) = x1n2 + dxn2*(i1-1)
+              fltGrid_y2(i2,j2) = y1n2 + dyn2*(i1-1)
+              fltGrid_z2(i2,j2) = z1n2 + dzn2*(i1-1)
               
+c             these cell coordinates are for node point 3              
+              fltGrid_x3(i2,j2) = x1n2 + dxn2*(i1)
+              fltGrid_y3(i2,j2) = y1n2 + dyn2*(i1)
+              fltGrid_z3(i2,j2) = z1n2 + dzn2*(i1)
+              
+c             these cell coordinates are for node point 4              
+              fltGrid_x4(i2,j2) = x1n1 + dxn1*(i1)
+              fltGrid_y4(i2,j2) = y1n1 + dyn1*(i1)
+              fltGrid_z4(i2,j2) = z1n1 + dzn1*(i1)             
 
 c   *** this needs to be fixed.  It now assumes right angles ***
               fltGrid_w(i2,j2) = sqrt(dx**2+dy**2+dz**2)

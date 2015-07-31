@@ -197,17 +197,26 @@ c        Turn fault into a grid
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen )  
+     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen,
+     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
+     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
+     6               fltGrid_y4, fltGrid_z4 )   
          elseif ( sourceType(iFlt) .eq. 5 ) then
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen )  
+     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen, 
+     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
+     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
+     6               fltGrid_y4, fltGrid_z4 )  
          elseif ( sourceType(iFlt) .eq. 6 ) then
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen )  
+     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen, 
+     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
+     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
+     6               fltGrid_y4, fltGrid_z4 )  
          endif
 
 c        Initialize Deterministic Values for this Fault
