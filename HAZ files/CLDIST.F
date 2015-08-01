@@ -830,53 +830,24 @@ c     Determine if the site is inside this boundary
 
 c -------------------------------------------------------------------
 
-      subroutine Get_plane_dist ( xRup, yRup, zRup, iSeg, 
-     1           x0, y0, z0, dip0, dist )
-c     implicit none
-      real xRup(4,1), yRup(4,1), zRup(4,1)
-      real x(4), y(4), z(4), xSeg(5), ySeg(5)
-      real dist, dip0
-      real x0, y0, z0, dist1
-      real pi, dip, theta, theta1, sin1, cos1, 
-     1     tan1, d1, d2
-      integer i, i1, nSeg, insideFlag, iSeg
-      pi = 3.1415926
-
-      do i=1,4
-         x(i) = xRup(i,iSeg)
-         y(i) = yRup(i,iSeg)
-         z(i) = zRup(i,iSeg)
-      enddo
+      subroutine Get_plane_dist (x, y, z, x0, y0, z0, dist)
       
-c     Set angles
-      dip = dip0/180 * pi
-      theta = atan2 ( y(2)-y(1), x(2)-x(1) )
-      theta1 = theta + pi/2.
-      if ( dip .lt. 0 ) then
-         theta1 = theta1 + pi
-      endif
-      cos1 = cos(theta1)
-      sin1 = sin(theta1) 
-      tan1 = tan(dip)
+      implicit none
       
-c     Set boundary for points for which the closest point is to 
-C     the plane
-      d1 = z(1) * abs(tan1)
-      d2 = z(3) * abs(tan1)
-      xSeg(1) = x(1) + d1*cos1
-      xSeg(2) = x(2) + d1*cos1
-      xSeg(3) = x(4) + d2*cos1
-      xSeg(4) = x(3) + d2*cos1
-      xSeg(5) = xSeg(1)
-      ySeg(1) = y(1) + d1*sin1
-      ySeg(2) = y(2) + d1*sin1
-      ySeg(3) = y(4) + d2*sin1
-      ySeg(4) = y(3) + d2*sin1
-      ySeg(5) = ySeg(1)
+c     declarations passed in      
+      real x(5), y(5), z(5), x0, y0, z0
+      
+c     declarations passed out  
+      real dist
 
-c     Determine if the site is inside this boundary
+c     declarations only used in this subroutine    
+      integer i, i1, nSeg, insideFlag
+      real dist1
+
+c     Determine if the site is inside the surface projection of the cell
+c     boundary
       nSeg = 4
-      call Inside_OutSide ( nSeg, xSeg, ySeg, x0, y0, insideFlag )
+      call Inside_OutSide ( nSeg, x, y, x0, y0, insideFlag )
 
 c     Compute closest distance for inside
       if ( insideFlag .eq. 1 ) then
@@ -890,7 +861,7 @@ c     Compute the shortest dist to each edge
          i1 = i+1
          if ( i1 .gt. 4 ) i1=1
          call Calc_LineSeg_dist ( x(i), y(i), z(i), x(i1), 
-     1       y(i1), z(i1), x0, y0, z0, dist1 )
+     1       y(i1), z(i1), x0, y0, z0, dist1 )         
          if ( dist1 .lt. dist ) then
             dist = dist1
          endif

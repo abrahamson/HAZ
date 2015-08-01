@@ -84,7 +84,7 @@ c         Use flat earth scaling for grid_dx and grid_dy only
               endif
               xFlt(iz,iPt) = dist*sin(bearing)
               yFlt(iz,iPt) = dist*cos(bearing)
-              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)           
+              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)       
        
             enddo
           enddo
@@ -122,7 +122,7 @@ c ---------------------------------------------------------------------
      2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS), faultArea
       real*8 dfaultArea      
       real x1n1, x2n1, y1n1, y2n1, z1n1, z2n1, x1n2, x2n2, y1n2, y2n2, z1n2, 
-     1     z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, dzn2
+     1     z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, dzn2, x(5), y(5), z(5)
 
       distMin1 = 1.E10
 
@@ -243,7 +243,7 @@ c             these cell coordinates are for node point 3
 c             these cell coordinates are for node point 4              
               fltGrid_x4(i2,j2) = x1n1 + dxn1*(i1)
               fltGrid_y4(i2,j2) = y1n1 + dyn1*(i1)
-              fltGrid_z4(i2,j2) = z1n1 + dzn1*(i1)             
+              fltGrid_z4(i2,j2) = z1n1 + dzn1*(i1)           
 
 c   *** this needs to be fixed.  It now assumes right angles ***
               fltGrid_w(i2,j2) = sqrt(dx**2+dy**2+dz**2)
@@ -262,18 +262,31 @@ c   *** this needs to be fixed.  It now assumes right angles ***
       nfltGrid(1) = ny1
       nfltGrid(2) = nx1
       
-c     Find the distance to each grid point. 
+c     Find the distance metrics for each cell. 
       do i=1,ny1
         do j=1,nx1
+          x(1) = fltgrid_x1(i,j)
+          y(1) = fltgrid_y1(i,j)
+          z(1) = fltgrid_z1(i,j)
+          x(2) = fltgrid_x2(i,j)
+          y(2) = fltgrid_y2(i,j)
+          z(2) = fltgrid_z2(i,j)
+          x(3) = fltgrid_x3(i,j)
+          y(3) = fltgrid_y3(i,j)
+          z(3) = fltgrid_z3(i,j)
+          x(4) = fltgrid_x4(i,j)
+          y(4) = fltgrid_y4(i,j)
+          z(4) = fltgrid_z4(i,j)
+          x(5) = x(1)
+          y(5) = y(1)
+          z(5) = z(1)           
+          call Get_plane_dist (x, y, z, x0, y0, z0, dist)
+          fltgrid_Rrup(i,j) = dist   
           dx = fltGrid_x(i,j) - x0
           dy = fltGrid_y(i,j) - y0
-          dz = fltGrid_z(i,j) - z0
-          FltGrid_Rrup(i,j) = sqrt( dx**2 + dy**2 + dz**2 ) 
+          dz = fltGrid_z(i,j) - z0              
           FltGrid_Rjb(i,j) = sqrt( dx**2 + dy**2 )
-          fltGrid_Rx(i,j) = 0
-          fltGrid_HW(i,j) = 0
           if (fltGrid_Rrup(i,j) .lt. distMin1) distMin1=fltGrid_Rrup(i,j)
-
         enddo
       enddo
 
@@ -293,7 +306,7 @@ C     Compute the fault lengths for each cell relative to start of fault.
       
       return
       end
-
+            
 c -------------------------------------------------------------------
 
       subroutine SetFltBottom (iCoor, iFlt, nfp, dip2, faultThick, fZ, 
