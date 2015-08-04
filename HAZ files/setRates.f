@@ -163,17 +163,21 @@ c            calculate mean moment between Mag=0 and MMax
              meanMoRelease3 = mexp + mchr
 
 c        calculate the scale factor
-           scale1 = (momentRate2/meanMoRelease3)/ (momentRate2/
-     1             (meanMoRelease3-meanMoRelease2))  
+           if (momentRate2 .eq. 0.) then
+             scale1 = 0.0
+           else
+             scale1 = (momentRate2/meanMoRelease3)/ (momentRate2/
+     1                (meanMoRelease3-meanMoRelease2)) 
+           endif 
 
 c        calculate the rate
   
              if ( meanMoRelease1 .eq. 0. ) then              
                 rate(iParam,i) = 0.                  
              else            
-                rate(iParam,i) = momentRate2*scale1/meanMoRelease1  
-                               
-             endif		 
+                rate(iParam,i) = momentRate2*scale1/meanMoRelease1                                 
+             endif
+		 
            elseif (magRecur(iFlt,iParam,i) .eq. 3.) then                              
 
 c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)                       

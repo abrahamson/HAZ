@@ -247,7 +247,7 @@ c             these cell coordinates are for node point 4
 
 c   *** this needs to be fixed.  It now assumes right angles ***
               fltGrid_w(i2,j2) = sqrt(dx**2+dy**2+dz**2)
-              fltGrid_a(i2,j2) = fltGrid_w(i2,j2) * sqrt( (xLtop/n1(j))**2 + (ylTop/n1(j))**2 )
+              fltGrid_a(i2,j2) = fltGrid_w(i2,j2) * sqrt( (xLtop/n1(j))**2 + (ylTop/n1(j))**2 )              
               dfaultArea = dfaultArea + dble(fltGrid_a(i2,j2))  
 
             enddo
