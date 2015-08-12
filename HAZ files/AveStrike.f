@@ -1,6 +1,7 @@
-       subroutine AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, rupLen, 
-     1                       distRx, iLocX, iLocY, n2, n1, Rx, Ry, Ry0, 
-     2                       HWFlag, dipavg)
+       subroutine AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1,
+     1                       fltgrid_y1, fltgrid_x2, fltgrid_y2, fltgrid_x4,
+     2                       fltgrid_y4, rupLen, distRx, iLocX, iLocY, n2, 
+     3                       n1, Rx, Ry, Ry0, HWFlag, dipavg)
       
        implicit none
        include 'pfrisk.h'
@@ -8,7 +9,10 @@
 c      declarations passed in 
        integer iLocX, iLocY, n2, n1
        real fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1      fltgrid_z(MAXFLT_DD,MAXFLT_AS), rupLen, distRx 
+     1      fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS),
+     2      fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_x2(MAXFLT_DD,MAXFLT_AS),
+     3      fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_x4(MAXFLT_DD,MAXFLT_AS),
+     4      fltgrid_y4(MAXFLT_DD,MAXFLT_AS), rupLen, distRx        
        
 c      declarations passed out
        integer HWFlag
@@ -21,8 +25,8 @@ c      declarations only used within subroutine
      2      xtest(5), ytest(5), xtestfw(5), ytestfw(5) 
 
 C      Compute average strike for given rupture area.
-       strikeX = fltgrid_x(iLocY,n2) - fltgrid_x(iLocY,iLocX)
-       strikeY = fltgrid_y(iLocY,n2) - fltgrid_y(iLocY,iLocX)
+       strikeX = fltgrid_x2(iLocY,n2) - fltgrid_x1(iLocY,iLocX)
+       strikeY = fltgrid_y2(iLocY,n2) - fltgrid_y1(iLocY,iLocX)
        if (strikeX .eq. 0.0) then
           strike = 0.0
        else
@@ -35,10 +39,10 @@ C      Site is assumed to be location: (0.0, 0.0, 0.0)
 
        xtemp = 1000.0*sin(strike)
        ytemp = 1000.0*cos(strike)
-       xfltend1 = fltgrid_x(iLocY,iLocx) - xtemp
-       xfltend2 = fltgrid_x(iLocY,iLocx) + xtemp
-       yfltend1 = fltgrid_y(iLocY,iLocx) - ytemp
-       yfltend2 = fltgrid_y(iLocY,iLocx) + ytemp     
+       xfltend1 = fltgrid_x1(iLocY,iLocx) - xtemp
+       xfltend2 = fltgrid_x1(iLocY,iLocx) + xtemp
+       yfltend1 = fltgrid_y1(iLocY,iLocx) - ytemp
+       yfltend2 = fltgrid_y1(iLocY,iLocx) + ytemp     
 
        call Calc_LineSeg_Dist (xfltend1,yfltend1, 0.0,
      1             xfltend2,yfltend2, 0.0, 0.0, 0.0, 0.0, distRx) 
@@ -72,8 +76,8 @@ C      Reset HW or FW Flag for each rupture area.
 
 C      Extend downdip point to check for site being on HW side.
 C      First compute the distances and angles between upper and lower points on the rupture area. 
-       adistX1 = fltgrid_x(n1,iLocX) - fltgrid_x(iLocY,iLocX)
-       adistY1 = fltgrid_y(n1,iLocX) - fltgrid_y(iLocY,iLocX)
+       adistX1 = fltgrid_x4(n1,iLocX) - fltgrid_x1(iLocY,iLocX)
+       adistY1 = fltgrid_y4(n1,iLocX) - fltgrid_y1(iLocY,iLocX)
        adist1 = sqrt (adistX1*adistX1 + adistY1*adistY1)
 
        astrike1 = atan2(adistY1,adistX1)     

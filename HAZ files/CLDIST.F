@@ -91,9 +91,10 @@ c         n2 is the last cell that makes up the rupture plane along strike
        
 c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag
 c         Average Strike method
-c          call AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, rupLen, 
-c     1                    distRx, iLocX, iLocY, n2, n1, Rx, Ry, Ry0, 
-c     2                    HWFlag, dipavg)
+c          call AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1,
+c     1                    fltgrid_y1, fltgrid_x2, fltgrid_y2, fltgrid_x4,
+c     2                    fltgrid_y4, rupLen, distRx, iLocX, iLocY, n2, 
+c     3                    n1, Rx, Ry, Ry0, HWFlag, dipavg)
 
 c         OR Global Coordinate System 2 method
           call GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
