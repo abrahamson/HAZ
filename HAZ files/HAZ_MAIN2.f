@@ -754,8 +754,11 @@ c                   Compute Probability of exceeding test
                     endif
 
 c                   Compute number of standard deviations (epsilon) to reach test level
-                    epsilon1 = ( lgtestInten(iProb,jInten)-lgInten )/sigmaTotal
-c                    write (*,'( i5,2f12.5)') iMixture, prock2/prock1, epsilon1
+                    if (sigmatotal .le. 0.0001) then
+                      epsilon1 = 0.0
+                    else
+                      epsilon1 = ( lgtestInten(iProb,jInten)-lgInten )/sigmaTotal
+                    endif
    
 c                   Set bin for epsilon deaggregation
                     call SetBin_Eps ( nEpsBins, epsBins, epsilon1, iepsBin)
