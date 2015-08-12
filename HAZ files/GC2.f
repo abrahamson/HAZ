@@ -56,9 +56,7 @@ c      save rupture grid cell locations in new arrays
        n3 = inorm 
 
 c       calculate the length of each segment of the rupture (a segment of the
-c       rupture is from the center of one rupture cell to the center of the 
-c       next rupture cell, so the segment length should be approximately equal
-c       to the step size along strike)         
+c       rupture is a grid cell)         
 
         Site_x = 0.0
         Site_y = 0.0
