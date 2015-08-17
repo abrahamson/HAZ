@@ -1,5 +1,4 @@
-c ntdr.f                                                                        
-                                                                                
+                                                                                                                                                      
       SUBROUTINE NDTR( X, P, D)                                                 
 C          X IS NO. OF STANDARDIZED NORMAL DEVIATES.                            
 C          P IS COMP. CUMULATIVE VALUE (OUTPUT).                                
@@ -20,32 +19,7 @@ C          D IS DENSITY VALUE (OUTPUT).
     7 P = 1.0 - P                                                               
     8 continue                                                                  
       RETURN                                                                    
-      END                                                                       
-
-c ------------------------------------------------------------------
-      SUBROUTINE NDTR2( X, P)                                                 
-C          X IS NO. OF STANDARDIZED NORMAL DEVIATES.                            
-C          P IS COMP. CUMULATIVE VALUE (OUTPUT).                                
-C          D IS DENSITY VALUE (OUTPUT).
-      real*8 p, x1
-	  real*8 d1, d2, d3, d4, d5, d6
-	  real x
-	  data d1, d2, d3, d4, d5, d6 / 0.0498673470, 0.0211410061,
-     1     0.0032776263, 0.0000380036, 0.0000488906, 0.0000053830 /
-      if ( x .lt. 0. ) then
-	    x1 = abs(x)
-	  else
-	    x1 = x
-	  endif
-	  
-	  p = 1. - 0.5*(  (((((d6*x1+d5)*x1+d4)*x1+d3)*x1+d2)*x1+d1)*
-     1         x1+1.)**(-16.)
-      if ( x .gt. 0. ) then
-	    p = 1. - p
-	  endif
-
-      RETURN                                                                    
-      END                                                                       
+      END                                                                                                                                             
 
 c ------------------------------------------------------------------
       SUBROUTINE NDTR3( X, P)    
@@ -91,27 +65,7 @@ c     TRUNCATE DISTRIBUTION AT SigTrunc
         pxceed = (g-g1)*(1.+g1)                                                        
       endif 
       return                                                                    
-      end                                                                       
-
-c ------------------------------------------------------------------
-
-      real*8 function pxceed2 ( eti, ti, siga, jj, i, sigTrunc )                   
-      include 'pfrisk.h'                                                        
-      real eti, ti(MAX_PROB,1), siga, sigTrunc, w
-	  real*8 g, g1
-                                                                                
-      W = (ti(JJ,I)-ETI)/SIGA                                                   
-      CALL NDTR2(W,G)     
-                                                                                
-c     TRUNCATE DISTRIBUTION AT SigTrunc                                         
-      if (w .gt. sigTrunc) then                                                 
-        pxceed2 = 0.0                                                                   
-      else                                                                      
-        CALL NDTR2(sigTrunc,g1)                                                       
-        pxceed2 = (g-g1)*(1.+g1)                                                        
-      endif                                                                     
-      return                                                                    
-      end  
+      end                                                                        
 
 c ------------------------------------------------------------------
 
@@ -131,28 +85,7 @@ c     TRUNCATE DISTRIBUTION AT SigTrunc
         pxceed3 = (g-g1)*(1.+g1)                                                             
       endif                                                                     
       return                                                                    
-      end                                                                       
-c ------------------------------------------------------------------
-
-      real*8 function probOccur ( eps1, eps2, sTrunc )                   
-      include 'pfrisk.h'                                                        
-      real eps1, eps2, sTrunc
-      real*8 g1, g2, gt
-                                                                                
-      CALL NDTR2(-eps1,g1)                                                       
-      CALL NDTR2(-eps2,g2)                                                       
-      CALL NDTR2(-sTrunc,gt)                                                       
-
-c     TRUNCATE DISTRIBUTION AT SigTrunc                                         
-      if (eps1 .ge. sTrunc) then                                                 
-        probOccur = 0.0                                                                   
-      else                                                                      
-        probOccur = (g2-g1)/(gt)                                                        
-      endif                                                                     
-
-      return                                                                    
-      end                                                                       
-
+      end                                                                                                                                             
 
 c ------------------------------------------------------------------
                                                                                 

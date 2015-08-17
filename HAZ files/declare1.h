@@ -40,7 +40,7 @@
      1     maxmag1, minDist, maxInten, mag, pMag(MAXPARAM,MAX_WIDTH),
      1     mindist1, wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), rout(MAXPARAM,MAX_WIDTH),
      1     wt2(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real*8 probX, mHaz, pxceed2, pxceed3
+      real*8 probX, mHaz, pxceed3
       real pxceed, faultLength, period1(4,MAX_PROB),
      1     shortDist(MAX_FLT)
       real HazBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN)
@@ -78,7 +78,7 @@
       integer fsys(MAX_FLT)
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2, file4, sigmaName(4,MAX_PROB)
       integer jInten, iSoilBin, nepsrock
-      real probOccur, lgRockSa, lgSoilSa, epsrock1, epsrock2
+      real lgRockSa, lgSoilSa, epsrock1, epsrock2
       real*8 prock
       integer fltDirect(MAX_FLT), synchron(MAX_FLT), synatten(MAX_FLT)
       integer nSyn_Case(MAX_FLT)
