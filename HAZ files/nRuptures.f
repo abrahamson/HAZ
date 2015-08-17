@@ -162,7 +162,7 @@ c      declarations passed out
                 pLocX = distDensity(iLocX)               
                 if ( pLocX .ne. 0. ) then
                   r_horiz = xStep * (iLocX-0.5)                
-                  nLocY = faultWidth / yStep
+                  nLocY = nint(faultWidth / yStep)
                     if (nLocY.eq.0) then
                       nLocY = 1
                     endif
@@ -170,10 +170,10 @@ c      declarations passed out
               elseif ( sourceType .eq. 4 ) then
                 pLocX = distDensity2(iLocX)
                 r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
-                nLocY = faultWidth / yStep
-                    if (nLocY.eq.0) then
-                      nLocY = 1
-                    endif
+                nLocY = nint(faultWidth / yStep)
+                  if (nLocY.eq.0) then
+                    nLocY = 1
+                  endif
               endif
 
        return
