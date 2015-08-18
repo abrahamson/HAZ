@@ -103,23 +103,21 @@ c     Units are in km already
 
 c ---------------------------------------------------------------------
 
-      subroutine calcFltGrid ( xFlt, yFlt, zFlt, npts, nDD, fltGrid_X, fltGrid_y,
+      subroutine calcFltGrid ( xFlt, yFlt, zFlt, npts, nDD, fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,
-     3               faultArea, faultLen, faultW, distMin1, step, FltGrid_fLen,
-     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
-     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
-     6               fltGrid_y4, fltGrid_z4 )  
+     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, faultW, 
+     3               distMin1, step, fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
      
       include 'pfrisk.h'
       include 'declare1.h'
       integer nDD, n2(MAXFLT_DD), nfltGrid(2), n1(MAXFLT_AS)
-      real fltGrid_X(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
+      real fltGrid_x(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
      1     fltGrid_z(MAXFLT_DD,MAXFLT_AS),fltGrid_fLen(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_w(MAXFLT_DD,MAXFLT_AS), fltGrid_a(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS),
-     1     fltGrid_Rseis(MAXFLT_DD,MAXFLT_AS), fltGrid_Rx(MAXFLT_DD,MAXFLT_AS),
-     2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS), faultArea
+      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_Rjb(MAXFLT_DD,MAXFLT_AS),
+     1     faultArea
       real*8 dfaultArea      
       real x1n1, x2n1, y1n1, y2n1, z1n1, z2n1, x1n2, x2n2, y1n2, y2n2, z1n2, 
      1     z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, dzn2, x(5), y(5), z(5)
@@ -279,13 +277,29 @@ c     Find the distance metrics for each cell.
           z(4) = fltgrid_z4(i,j)
           x(5) = x(1)
           y(5) = y(1)
-          z(5) = z(1)           
-          call Get_plane_dist (x, y, z, x0, y0, z0, dist)
-          fltgrid_Rrup(i,j) = dist   
-          dx = fltGrid_x(i,j) - x0
-          dy = fltGrid_y(i,j) - y0
-          dz = fltGrid_z(i,j) - z0              
-          FltGrid_Rjb(i,j) = sqrt( dx**2 + dy**2 )
+          z(5) = z(1)  
+  
+c           Compute Rrup       
+            call Get_plane_dist (x, y, z, x0, y0, z0, insideFlag, dist)
+            fltgrid_Rrup(i,j) = dist
+            
+c           Compute Rjb                        
+            if ( insideFlag .eq. 1 ) then
+              fltGrid_Rjb(i,j) = 0.0
+            else
+              dist2 = 1.0e30
+              do k=1,4
+                k1 = k+1
+                if ( k1 .gt. 4 ) k1=1
+                call Calc_LineSeg_dist ( x(k), y(k), 0.0, x(k1), 
+     1          y(k1), 0.0, x0, y0, z0, dist1 )         
+                if ( dist1 .lt. dist2 ) then
+                  dist2 = dist1
+                endif
+              enddo             
+              fltGrid_Rjb(i,j) = dist2
+            endif   
+          
           if (fltGrid_Rrup(i,j) .lt. distMin1) distMin1=fltGrid_Rrup(i,j)
         enddo
       enddo
@@ -294,11 +308,11 @@ C     Compute the fault lengths for each cell relative to start of fault.
       do i=1,ny1
         dx = fltGrid_x(i,1) - fltGrid_x(i,2)
         dy = fltGrid_y(i,1) - fltGrid_y(i,2)
-        FltGrid_fLen(i,1) = sqrt( dx**2 + dy**2 ) 
+        fltGrid_fLen(i,1) = sqrt( dx**2 + dy**2 ) 
         do j=2,nx1
           dx = fltGrid_x(i,j-1) - fltGrid_x(i,j)
           dy = fltGrid_y(i,j-1) - fltGrid_y(i,j)
-          FltGrid_fLen(i,j) = FltGrid_fLen(i,j-1) + sqrt( dx**2 + dy**2 ) 
+          fltGrid_fLen(i,j) = fltGrid_fLen(i,j-1) + sqrt( dx**2 + dy**2 ) 
         enddo
       enddo
       

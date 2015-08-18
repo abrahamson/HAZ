@@ -730,108 +730,7 @@ C Adjust the sigma value.
 
 c -------------------------------------------------------------------
 
-      subroutine hanging_wall ( xRup, yRup, iSeg, x0, y0, dip0, hwflag)
-c     implicit none
-      real xRup(4,1), yRup(4,1) 
-      real x(4), y(4), xSeg(5), ySeg(5)
-      real dip0
-      real x0, y0
-      real pi, dip, theta, theta1, sin1, cos1 
-      integer i, iSeg, nSeg, hwflag
-      pi = 3.1415926
-
-c       write (*,*) 'Dip = ', dip0
-
-c     for (near) vertical fault, there is no hanging wall
-      if (abs(dip0) .ge. 80.) return
-
-      do i=1,4
-         x(i) = xRup(i,iSeg)
-         y(i) = yRup(i,iSeg)
-      enddo
-      
-c     Set angles
-      dip = dip0/180 * pi
-      theta = atan2 ( y(2)-y(1), x(2)-x(1) )
-      theta1 = theta + pi/2.
-      if ( dip .lt. 0 ) then
-         theta1 = theta1 + pi
-      endif
-      cos1 = cos(theta1)
-      sin1 = sin(theta1) 
-      
-c     Set boundary for points for which the closest point is to 
-C     the plane
-      xSeg(1) = x(1) 
-      xSeg(2) = x(2) 
-      xSeg(3) = x(3) + 100.*cos1
-      xSeg(4) = x(4) + 100.*cos1
-      xSeg(5) = xSeg(1)
-      ySeg(1) = y(1) 
-      ySeg(2) = y(2) 
-      ySeg(3) = y(3) + 100.*sin1
-      ySeg(4) = y(4) + 100.*sin1
-      ySeg(5) = ySeg(1)
-
-c     Determine if the site is inside this boundary
-      nSeg = 4
-      call Inside_OutSide ( nSeg, xSeg, ySeg, x0, y0, hwflag)
-      return
-      end
-
-c -------------------------------------------------------------------
-
-      subroutine foot_wall ( xRup, yRup, iSeg, x0, y0, dip0, fwflag)
-c     implicit none
-      real xRup(4,1), yRup(4,1) 
-      real x(4), y(4), xSeg(5), ySeg(5)
-      real dip0
-      real x0, y0
-      real pi, dip, theta, theta1, sin1, cos1 
-      integer i, iSeg, nSeg, fwflag
-      pi = 3.1415926
-
-c     for (near) vertical fault, there is no foot wall
-      if (abs(dip0) .ge. 80.) return
-
-      do i=1,4
-         x(i) = xRup(i,iSeg)
-         y(i) = yRup(i,iSeg)
-      enddo
-      
-c     Set angles
-      dip = dip0/180 * pi
-      theta = atan2 ( y(2)-y(1), x(2)-x(1) )
-      theta1 = theta + pi/2.
-      if ( dip .lt. 0 ) then
-         theta1 = theta1 + pi
-      endif
-      cos1 = cos(theta1)
-      sin1 = sin(theta1) 
-      
-c     Set boundary for points for which the closest point is to 
-C     the plane
-      xSeg(1) = x(1) 
-      xSeg(2) = x(2) 
-      xSeg(3) = x(3) - 100.*cos1
-      xSeg(4) = x(4) - 100.*cos1
-      xSeg(5) = xSeg(1)
-      ySeg(1) = y(1) 
-      ySeg(2) = y(2) 
-      ySeg(3) = y(3) - 100.*sin1
-      ySeg(4) = y(4) - 100.*sin1
-      ySeg(5) = ySeg(1)
-
-c     Determine if the site is inside this boundary
-      nSeg = 4
-      call Inside_OutSide ( nSeg, xSeg, ySeg, x0, y0, fwflag)
-      
-      return
-      end
-
-c -------------------------------------------------------------------
-
-      subroutine Get_plane_dist (x, y, z, x0, y0, z0, dist)
+      subroutine Get_plane_dist (x, y, z, x0, y0, z0, insideFlag, dist)
       
       implicit none
       
@@ -839,10 +738,11 @@ c     declarations passed in
       real x(5), y(5), z(5), x0, y0, z0
       
 c     declarations passed out  
+      integer insideFlag
       real dist
 
 c     declarations only used in this subroutine    
-      integer i, i1, nSeg, insideFlag
+      integer i, i1, nSeg
       real dist1
 
 c     Determine if the site is inside the surface projection of the cell
@@ -867,61 +767,6 @@ c     Compute the shortest dist to each edge
             dist = dist1
          endif
       enddo
-      return
-      end
-
-c ----------------------------------------------------
-
-      subroutine CalcJB_dist ( xRup, yRup, iSeg, x0, y0, dip,
-     1           distJB )
-      real xRup(4,1), yRup(4,1), dip
-      real x(4), y(4), xSeg(5), ySeg(5)
-      
-      do i=1,4
-         x(i) = xRup(i,iSeg)
-         y(i) = yRup(i,iSeg)
-      enddo
-      
-c     Check for vertical dip
-      if ( dip .eq. 90. ) then
-         call Calc_LineSeg_dist ( x(1), y(1), 0., x(2), 
-     1              y(2), 0., x0, y0, 0., distJB )
-         return
-      endif
-
-      xSeg(1) = x(1)
-      xSeg(2) = x(2)
-      xSeg(3) = x(4)
-      xSeg(4) = x(3)
-      xSeg(5) = xSeg(1)
-      ySeg(1) = y(1)
-      ySeg(2) = y(2)
-      ySeg(3) = y(4)
-      ySeg(4) = y(3)
-      ySeg(5) = ySeg(1)
-
-c     Determine if the site is inside this boundary
-      nSeg = 4
-      call Inside_OutSide ( nSeg, xSeg, ySeg, x0, y0, insideFlag )
-
-c     Compute closest distance for inside
-      if ( insideFlag .eq. 1 ) then
-         distJB = 0.
-         return
-      endif
-      
-c     Compute the shortest dist to each edge
-      distJB = 1.0e30
-      do i=1,4
-         i1 = i+1
-         if ( i1 .gt. 4 ) i1=1
-         call Calc_LineSeg_dist ( x(i), y(i), 0., x(i1), 
-     1              y(i1), 0., x0, y0, 0., dist1 )
-         if ( dist1 .lt. distJB ) then
-            distJB = dist1
-         endif
-      enddo
-      
       return
       end
 

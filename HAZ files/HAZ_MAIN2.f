@@ -12,16 +12,14 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
      1     rupGrid_z(MAXFLT_DD,MAXFLT_AS), hDD(MAX_FLT), hAS(MAX_FLT)
       integer nfltGrid(2), nRupGrid(2), hDDcell, hAScell
       real fltGrid_w(MAXFLT_DD,MAXFLT_AS),  fltGrid_a(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS),
-     1     fltGrid_Rseis(MAXFLT_DD,MAXFLT_AS), fltGrid_Rx(MAXFLT_DD,MAXFLT_AS),
-     2     fltGrid_HW(MAXFLT_DD,MAXFLT_AS)
+      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS)
       real testsum(1000), sum1(1000,10), dipaverage(1), Rx, Ry, Ry0
       real*8 p1_sum, wt, p1
       real*8 BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
       integer BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE)
       integer segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT)
       integer icellRupStrike, icellRupDip, runflag
-      real    BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
+      real BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
       real segModelWt1(MAX_FLT,100), distDensity2(MAX_GRID), lnDir, lgIo, lgIntenscl
       real sigDirY, sigtemp, lg1, sig1, lat1
       integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
@@ -194,29 +192,26 @@ c        Convert Long, Lat to x,y in km and put into new array (1-D)
 
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 ) then
-           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
+           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen,
-     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
-     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
-     6               fltGrid_y4, fltGrid_z4 )   
+     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
+     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
          elseif ( sourceType(iFlt) .eq. 5 ) then
-           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
+           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen, 
-     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
-     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
-     6               fltGrid_y4, fltGrid_z4 )  
+     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
+     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
          elseif ( sourceType(iFlt) .eq. 6 ) then
-           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_X, fltGrid_y,
+           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGRid_Rrup, FltGRid_Rjb, fltGrid_Rseis, fltGrid_Rx, FltGrid_HW,  
-     3               faultArea, faultLen, aveWidth, minDist, xStep(iFlt), fltGrid_fLen, 
-     4               fltGrid_x1, fltGrid_y1, fltGrid_z1, fltGrid_x2, fltGrid_y2,
-     5               fltGrid_z2, fltGrid_x3, fltGrid_y3, fltGrid_z3, fltGrid_x4, 
-     6               fltGrid_y4, fltGrid_z4 )  
+     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
+     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
          endif
 
 c        Initialize Deterministic Values for this Fault
@@ -352,7 +347,7 @@ C            Pass along fault grid locations for calculation of HW and Rx values
      3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
      4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb,
      5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)         
+     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip)    
 
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
