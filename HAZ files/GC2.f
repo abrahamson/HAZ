@@ -21,10 +21,10 @@ c      declarations passed out
 
 c      declarations only used within subroutine
        integer inorm, irup, n3, iGC2, tflag, uflag       
-       real rup_xt, rup_yt, rup_xbt, rup_ybt, rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), 
-     1      rup_xb(MAXFLT_AS), rup_yb(MAXFLT_AS), Seg_length(MAXFLT_AS), 
-     2      Strike_slope(MAXFLT_AS), Normal_slope(MAXFLT_AS), GC2_ruplength, a, b,
-     3      P90_x(MAXFLT_AS), P90_y(MAXFLT_AS), Site_x, Site_y, t_local(MAXFLT_AS), 
+       real rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_xb(MAXFLT_AS), 
+     1      rup_yb(MAXFLT_AS), Seg_length(MAXFLT_AS), Strike_slope(MAXFLT_AS), 
+     2      Normal_slope(MAXFLT_AS), GC2_ruplength, a, b, P90_x(MAXFLT_AS), 
+     3      P90_y(MAXFLT_AS), Site_x, Site_y, t_local(MAXFLT_AS), 
      4      u_local(MAXFLT_AS), Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), 
      5      sum_Weight, rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, 
      6      sum_Swxu, Global_T, Global_U, dipX, dipY 
@@ -32,28 +32,20 @@ c      declarations only used within subroutine
 c      save rupture grid cell locations in new arrays
        inorm = 0
        do irup=iLocX, n2
-         rup_xt = fltgrid_x1(iLocY,irup)
-         rup_yt = fltgrid_y1(iLocY,irup)
-         rup_xbt = fltgrid_x4(n1,irup)
-         rup_ybt = fltgrid_y4(n1,irup)
          inorm = inorm + 1
-         rup_x(inorm) = rup_xt
-         rup_y(inorm) = rup_yt
-         rup_xb(inorm) = rup_xbt
-         rup_yb(inorm) = rup_ybt
+         rup_x(inorm) = fltgrid_x1(iLocY,irup)
+         rup_y(inorm) = fltgrid_y1(iLocY,irup)
+         rup_xb(inorm) = fltgrid_x4(n1,irup)
+         rup_yb(inorm) = fltgrid_y4(n1,irup)
          if (irup .eq. n2) then
-           rup_xt = fltgrid_x2(iLocY,irup)
-           rup_yt = fltgrid_y2(iLocY,irup)
-           rup_xbt = fltgrid_x3(n1,irup)
-           rup_ybt = fltgrid_y3(n1,irup)
            inorm = inorm + 1
-           rup_x(inorm) = rup_xt
-           rup_y(inorm) = rup_yt
-           rup_xb(inorm) = rup_xbt
-           rup_yb(inorm) = rup_ybt
+           rup_x(inorm) = fltgrid_x2(iLocY,irup)
+           rup_y(inorm) = fltgrid_y2(iLocY,irup)
+           rup_xb(inorm) = fltgrid_x3(n1,irup)
+           rup_yb(inorm) = fltgrid_y3(n1,irup)
          endif         
        enddo
-       n3 = inorm 
+       n3 = inorm       
 
 c       calculate the length of each segment of the rupture (a segment of the
 c       rupture is a grid cell)         
