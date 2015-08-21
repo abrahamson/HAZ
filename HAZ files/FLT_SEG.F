@@ -92,14 +92,36 @@ c         Use flat earth scaling for grid_dx and grid_dy only
         
       else
 c     Units are in km already
+c     Adjust sources so that site is at 0,0
+      refLat = siteY
+      refLong = siteX
+      
+        if ( sourceType .eq. 3 .or. sourceType .eq. 4 ) then
+          do i=1,grid_n
+            grid_y(i) = grid_lat(iFlt,i) - reflat 
+            grid_x(i) = grid_long(iFlt,i) - reflong 
+          enddo
+          grid_dx = grid_dlong(iFlt)
+          grid_dy = grid_dlat(iFlt)
+        else
+
+          do iz=1,nDD
+            do iPt=1,nfp
+              xFlt(iz,iPt) = fLong(iFlt,iz,iPt) - reflong
+              yFlt(iz,iPt) = fLat(iFlt,iz,iPt) - reflat
+              zFlt(iz,iPt) = fZ(iFlt,iz,iPt)
+            enddo
+          enddo
+        endif
+
+      endif
+      
       x0 = 0.
       y0 = 0.
       z0 = 0.
-      endif
 
       return 
       end
-
 
 c ---------------------------------------------------------------------
 
