@@ -23,7 +23,7 @@ c     implicit none
       real mU1, mL1, mch, mchr, mexp, aexp, achr, m1
       real*8 sum
       real term1,term2, term3
-      integer iParam, iFlt, i, nParamVar(MAX_FLT,1), nWidth(1)                  
+      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH), nWidth(1)                  
       integer nmstep                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
       real maxmag1, magstep1, nsigma
@@ -165,8 +165,12 @@ c            calculate mean moment between Mag=0 and MMax
              meanMoRelease3 = mexp + mchr
 
 c        calculate the scale factor
-           scale1 = (momentRate2/meanMoRelease3)/ (momentRate2/
-     1             (meanMoRelease3-meanMoRelease2))  
+	   if (momentRate2 .eq. 0.) then
+             scale1 = 0.0
+           else
+             scale1 = (momentRate2/meanMoRelease3)/ (momentRate2/
+     1                (meanMoRelease3-meanMoRelease2)) 
+           endif 
 
 c        calculate the rate
   
