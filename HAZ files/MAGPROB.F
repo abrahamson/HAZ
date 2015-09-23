@@ -4,15 +4,15 @@ c     magprob.f
      1                     pmag, nParam, nWidth,                                
      2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo )
       include 'pfrisk.h'            
-      real mag, maxMag(MAX_FLT,MAXPARAM,1), beta(MAX_FLT,MAXPARAM,1),           
-     1     minMag(1), magStep(1), magRecur(MAX_FLT,MAXPARAM,1)                  
-      real pmag(MAXPARAM,1), mU, mL, magU, magL, mag1, mag2  
+      real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
+     1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
+      real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2         
       real maxMagWA, mMag, mChar                
       real zmL, zmU, zmagU, zmagL, d    
       real*8 pmL, pmU, pmagL, pmagU       
       real meanMag, sigma                                   
       real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
-      integer iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(1)
+      integer iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(MAX_FLT)
       real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH)                        
       real magcut, betaAC, magnorm, sumnorm, mUnorm, mLnorm
       real aknorm, pmagnorm(MAXPARAM,MAX_WIDTH) 
@@ -73,10 +73,10 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR3(zmL,pmL)        
-                 call NDTR3(zmU,pmU)        
-                 call NDTR3(zmagL,pmagL)           
-                 call NDTR3(zmagU,pmagU)       
+                 call NDTR(zmL,Real(pmL),d)        
+                 call NDTR(zmU,Real(pmU),d)        
+                 call NDTR(zmagL,Real(pmagL),d)           
+                 call NDTR(zmagU,Real(pmagU),d)        
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
