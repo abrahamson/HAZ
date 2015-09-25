@@ -4,7 +4,7 @@ c  --------------------------------------------------------------------
      1           grid_long, grid_lat, minLat, minLong, maxLat, maxLong, rate_scale )
       include 'pfrisk.h'
          
-      character*80 filein
+      character*80 filein, dummy
       real*8 sum, sum1
       real minLat, minLong, maxLat, maxLong
       real grid_long(MAX_FLT,MAX_GRID), grid_lat(MAX_FLT,MAX_GRID),
@@ -18,10 +18,12 @@ c  --------------------------------------------------------------------
           
 c     Read header
       read (11,*) nHead
+      write (*,'( i5)') nHead
       do i=1,nHead
-        read (11,'( a1)') dummy
+        read (11,'( a80)') dummy
       enddo
       read (11,*) n, grid_dlong(iFlt), grid_dlat(iFlt)
+c      write (*,'( i5, 2f10.4)') n, grid_dlong(iFlt), grid_dlat(iFlt)
       if ( n .gt. MAX_GRID ) then
         write (*,'( 2x,''Increase MAX_GRID to '',i7)') n
         stop 99
@@ -47,6 +49,7 @@ c     and between min and max long and lat
       close (11)
       grid_n(iFlt) = j - 1
       rate_scale = sum1/sum
+
       
 c     Note: Rate_scale keeps track of the activity rate that is removed because
 c     it is at to large a distance (but is still in the activity rate of the input)            
