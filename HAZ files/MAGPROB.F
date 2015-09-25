@@ -6,7 +6,8 @@ c     magprob.f
       include 'pfrisk.h'            
       real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
-      real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2                     
+      real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2         
+      real maxMagWA, mMag, mChar                
       real zmL, zmU, zmagU, zmagL, d    
       real*8 pmL, pmU, pmagL, pmagU       
       real meanMag, sigma                                   
@@ -18,14 +19,17 @@ c     magprob.f
       
 c     Set magnitude range               
       mU = mag + magStep(iFlt)/2.       
-      mL = mag - magStep(iFlt)/2.       
+      mL = mag - magStep(iFlt)/2.   
 
 c     Compute the mag probability for each parameter variation                  
       do iWidth=1,nWidth(iFlt)          
         do iParam=1,nParam(iFlt,iWidth)        
-          beta1 = beta(iFlt,iParam,iWidth)     
-          magU = maxMag(iFlt,iParam,iWidth)                
-
+          beta1 = beta(iFlt,iParam,iWidth) 
+          if ( magRecur(iFlt,iParam,iWidth) .ne. 10 ) then 
+            magU = maxMag(iFlt,iParam,iWidth)                
+          else
+            magU = 8.5              
+          endif
 c         Lower magnitude equal to the minimum magnitude for each fault.		  
           magL = minMag(iFlt)        
           
@@ -69,10 +73,10 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR3(zmL,pmL)        
-                 call NDTR3(zmU,pmU)        
-                 call NDTR3(zmagL,pmagL)           
-                 call NDTR3(zmagU,pmagU)       
+                 call NDTR(zmL,Real(pmL),d)        
+                 call NDTR(zmU,Real(pmU),d)        
+                 call NDTR(zmagL,Real(pmagL),d)           
+                 call NDTR(zmagU,Real(pmagU),d)        
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
@@ -141,10 +145,10 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR(zmL,Real(pmL),d)        
-                 call NDTR(zmU,Real(pmU),d)        
-                 call NDTR(zmagL,Real(pmagL),d)           
-                 call NDTR(zmagU,Real(pmagU),d)           
+                 call NDTR(zmL,pmL,d)        
+                 call NDTR(zmU,pmU,d)        
+                 call NDTR(zmagL,pmagL,d)           
+                 call NDTR(zmagU,pmagU,d)           
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
@@ -268,12 +272,23 @@ c                 write (*,'(f8.3,2e12.4)') magnorm, pmagnorm(iParam,iWidth), su
               
 C             Now normalize BC Hydro Model by total 
               pmag(iParam,iWidth) = pmag(iParam,iWidth)/sumnorm
-       
-       
-c               write (*,'(i4,2x,f8.3,3e10.3)') nsummag, mag, pmag(iParam,iWidth), sumnorm, pmagnorm(iParam,iWidth)*sumnorm
-c               write (*,*)
-c               pause 
-              
+
+c           WAACY Model
+            elseif ( magRecur(iFlt,iParam,iWidth) .eq. 10. ) then  
+              if ( mpdf_param(iFlt,iParam,iwidth,5) .eq. 0. ) then
+               MaxMagWA =  mpdf_param(iFlt,iParam,iwidth,2)
+              else
+               MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
+             endif
+              Btail = mpdf_param(iFlt,iParam,iwidth,3)
+              SigM = mpdf_param(iFlt,iParam,iwidth,1)
+              Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
+              mChar = maxMag(iFlt,iParam,iWidth)
+              b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
+
+              call Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA, 
+     1                  minMag(iFlt), ML, MU, pMag1)
+              pMag(iParam,iWidth) = pMag1
           endif                                
          endif     
 
@@ -283,3 +298,158 @@ c               pause
 
       return                            
       end                               
+   
+C------WAACY Subroutine for Magnitude Prob Values --------------
+
+      subroutine Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, F, Mmax,
+     1       Mmin, ML, MU, WA_Pmag)
+
+      implicit none
+      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
+      real M1, M2
+      real Mmin, stepM, ML, MU, WA_Pmag
+      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
+      real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
+      real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
+      integer nStep, i
+      real temp1, temp2, x1, x2, x3, x4, x5
+
+      betaTail = bTail * alog(10.)
+      beta = b_value * alog(10.)
+
+c     Calculate WAACY terms
+      M1 = mChar - 0.25
+      M2 = mChar + 1.5*sigM
+      t1 = sqrt(2*3.1415926)
+      c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
+      x = -0.25 / sigM
+      phi1 = 0.159
+c      call NDTR(x,PHI1)        
+      PHI_15 = 0.933
+      c2 = 1./ ( 1.-PHI1-(1.-PHI_15) )
+      c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
+
+      temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) 
+      temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
+      Mo_bar_exp1 = temp1/temp2
+
+      Mo_bar_exp2 = betaTail * 10**16.05 * exp( betaTail*M2 ) *
+     1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
+     2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
+      Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
+
+      d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
+      d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
+      alpha = d2*F / ( d1*(1.-F)+d2*F )
+
+c     Compute the pdf with a small step size
+      step1 = 0.01
+      nStep = int ( (MU - ML ) / step1 )
+
+c     Compute the probability of mag bewteen ML and MU
+      WA_Pmag = 0.
+      do i=1,nStep
+        mag1 = ML + (i-0.5)*step1       
+        if ( mag1 .lt. Mmin) then
+          pdf1(i) = 0.
+        elseif ( mag1 .lt. M1 ) then
+          pdf1(i) = alpha * beta*exp(-beta*(mag1-Mmin)) / ( 1. - exp(-beta*(M1-Mmin)) )
+        elseif ( mag1 .lt. M2 ) then
+          x1 = (1.-alpha)
+          x2 = c2 / (1. + c1*c2*c3)
+          x3 = 1./  (t1*sigM)
+          x4 = exp( -((mag1-mChar)**2) / (2*sigM**2) )
+          pdf1(i) = x1 * x2 * x3 * x4
+
+        elseif ( mag1 .lt. Mmax ) then
+          pdf1(i) = (1.-alpha) * c1*c2 / ( (1.+c1*c2*c3) ) * exp( -betaTail*(mag1-M2) ) 
+        else
+          pdf1(i) = 0.
+        endif
+        WA_Pmag = WA_Pmag + pdf1(i)*step1   
+      enddo
+
+      return
+      end
+
+C------WAACY Subroutine for Magnitude Prob Values Used for Rates --------------
+
+      subroutine Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, F, Mmax,
+     1       Mmin, WA_Pmag, stepM, nMag)
+
+      implicit none
+      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
+      real M1, M2
+      real Mmin, stepM, ML, MU, WA_Pmag(1)
+      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
+      real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
+      real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
+      integer nStep, i, nMag, iBin, iMag
+      real temp1, temp2
+      betaTail = bTail * alog(10.)
+      beta = b_value * alog(10.)
+
+c     Calculate WAACY terms
+      M1 = mChar - 0.25
+      M2 = mChar + 1.5*sigM
+      t1 = sqrt(2*3.1415926)
+      c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
+      x = -0.25 / sigM
+c      call NDTR(x,PHI1) 
+      phi1 = 0.159       
+      PHI_15 = 0.933
+      c2 = 1./ ( PHI1-(1.-PHI_15) )
+      c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
+
+c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
+c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
+
+      temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) 
+      temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
+      Mo_bar_exp1 = temp1/temp2
+
+      Mo_bar_exp2 = betaTail * 10**(16.05) * exp( betaTail*M2 ) *
+     1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
+     2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
+      Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
+
+      d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
+      d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
+      alpha = d2*F / ( d1*(1.-F)+d2*F )
+c      write (*,'( 2x,f10.4, 2x,''Mmax'')') Mmax
+
+c     Compute the pdf with a small step size
+      step1 = 0.01
+      do i=1,nMag
+        mag1 = Mmin + (i-1)*step1  
+        if ( mag1 .lt. Mmin) then
+          pdf1(i) = 0.
+        elseif ( mag1 .lt. M1 ) then
+          pdf1(i) = alpha * beta*exp(-beta*(mag1-Mmin)) / ( 1. - exp(-beta*(M1-Mmin)) )
+c          write (*,'( ''bin 1'', 5e12.4)') pdf1(i), alpha,  beta*exp(-beta*(mag1-Mmin))
+c     1           , ( 1. - exp(-beta*(M1-Mmin)) )
+
+
+        elseif ( mag1 .lt. M2 ) then
+          pdf1(i) = (1-alpha) * c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
+     1             exp( -((mag1-mChar)**2) / (2*sigM**2) )
+c          pdf1(i) =  c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
+c     1             exp( -((mag1-mChar)**2) / (2*sigM**2) )
+
+        elseif ( mag1 .lt. Mmax ) then
+          pdf1(i) = (1.-alpha) * c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
+c          pdf1(i) = c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
+          
+        else
+          pdf1(i) = 0.
+        endif
+
+      enddo
+
+c     Compute the probability of mag bewteen ML and MU
+      do i=1,nMag
+        WA_Pmag(i) = pdf1(i)*step1   
+      enddo
+        
+      return
+      end                             
