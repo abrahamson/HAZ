@@ -14,7 +14,7 @@ c meanpga.f
       character*80 attenName(4,MAX_ATTEN), attenname1, attenname0
       integer intflag(4,MAX_PROB), iflag, vs30_class
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
-      integer coefcountRrup, coefcountRjb, iAtten, iProb
+      integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
 
       real sc, sd, se, D25, RupWidth, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
       real magc, rupdistc, ftypec, lnYc, mcb, depthTop
@@ -5037,10 +5037,38 @@ C     Apply Mag Uncertainty
          lnY = lnY + efac
        endif
 
+C     Total Sigma Model for SWUS
+C     Note that these sigma models should only be called with given scalc number. 
+C     The use of these values as jcalcs will be incorrect as the median ground motions is kept 
+C     at the large value of 1.0e10.
 
+C     SWUS Total Sigma: DCPP Central
+C     Model Number = 13001
+      if ( jcalc .eq. 13001 ) then
+         attenname1 = 'SWUS Total Sigma DCPP-Central'
+         call SWUS_Sigma_DCPP_Cen ( mag, specT, sigma, iflag ) 
+C     Kepp median ground motions large since this is only for sigma model
+         lnY = 1.0e10
+       endif
 
-       
-       
+C     SWUS Total Sigma: DCPP Low
+C     Model Number = 13002
+      if ( jcalc .eq. 13002 ) then
+         attenname1 = 'SWUS Total Sigma DCPP-Low'
+         call SWUS_Sigma_DCPP_Low ( mag, specT, sigma, iflag ) 
+C     Kepp median ground motions large since this is only for sigma model
+         lnY = 1.0e10
+       endif
+
+C     SWUS Total Sigma: DCPP High
+C     Model Number = 13003
+      if ( jcalc .eq. 13003 ) then
+         attenname1 = 'SWUS Total Sigma DCPP-High'
+         call SWUS_Sigma_DCPP_High ( mag, specT, sigma, iflag ) 
+C     Kepp median ground motions large since this is only for sigma model
+         lnY = 1.0e10
+       endif
+
 
 c     Check for valid jcalc
       if ( lnY .gt. 1.0e10 ) then
@@ -5052,7 +5080,7 @@ c     Check for valid jcalc
       attenName(jType,iAtten) = attenname1
       period1(jType,iProb) = period2
       intflag(jType,iProb) = iflag
-      siga = sigma        
+      siga = sigma
 
 c     Convert to g
       lnY = lnY - 6.89
