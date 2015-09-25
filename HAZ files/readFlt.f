@@ -41,7 +41,7 @@ c  --------------------------------------------------------------------
       real grid_lat(MAX_FLT,MAX_GRID), grid_long(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID)
       real grid_dlong(MAX_FLT), grid_dlat(MAX_FLT)
       real minMag(MAX_FLT), magStep(MAX_FLT), hxStep(MAX_FLT), hyStep(MAX_FLT), minDepth(MAX_FLT)
-      real segModelWt(1), sampleStep(MAX_FLT)
+      real segModelWt(MAX_FLT), sampleStep(MAX_FLT)
       real rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH),  betaWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)
@@ -83,7 +83,6 @@ c  --------------------------------------------------------------------
       real temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       integer segModelFlag(MAX_FLT,100), nSegModel0(1), runflag
       real segModelWt1(MAX_FLT,100)
-      
 
 c     Input Fault Parameters
       read (10,*) iCoor
@@ -96,8 +95,8 @@ c     Input Fault Parameters
          write (17,*) 'NFLT = ' , nFLT
          write (*,*) 
          write (17,*) 
-      endif  
-     
+      endif
+
       iflt = 0
       ifsystem = 1
       
@@ -113,9 +112,9 @@ c     Input Fault Parameters
          write (17,*) 'fName1 = ', fName1
          write (*,*) 'ProbAct0 = ', ProbAct0
          write (17,*) 'ProbAct0 = ', ProbAct0
-      endif  
+      endif
 
-c      Read number of segmentation models for this fault system       
+c      Read number of segmentation models for this fault system
        read (10,*) nSegModel
        read (10,*) (segWt(iFlt0,k),k=1,nSegModel)
 
@@ -126,14 +125,14 @@ c      Read number of segmentation models for this fault system
             write (*,*) 'SegWt = ', k,segWt(iFlt0,k)
             write (17,*) 'SetWt = ', k,segWt(iFlt0,k)
          enddo
-      endif  
+      endif
 
-c      Read total number of fault segments 
+c      Read total number of fault segments
        read (10,*) nFlt2
       if (runflag .eq. 3) then
          write (*,*) 'nFlt2 = ', nFlt2
          write (17,*) 'nFlt2 = ', nFlt2
-      endif  
+      endif
 
        do i=1,nSegModel
          read (10,*) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -141,10 +140,10 @@ c      Read total number of fault segments
       if (runflag .eq. 3) then
          write (*,*) 'faultFlag = ', i,(faultFlag(iFlt0,i,k),k=1,nFlt2)
          write (17,*) 'faultFlag = ', i,(faultFlag(iFlt0,i,k),k=1,nFlt2)
-      endif  
+      endif
 
        enddo
-                        
+
        do iflt2=1,nflt2
         iFlt = iFlt + 1
         if (runflag .ne. 3) then
@@ -169,7 +168,7 @@ c       Set segment flags for this fault system
           segModelWt1(iFlt,i) = segWt(iFlt0,i)
         enddo
         nSegModel0(iFlt) = nSegModel
-            
+
 c       Read name of this segment
         read(10,'( a80)') fName(iFlt)
         write (*,'( i5,2x,a80)') iFlt, fName(iFlt)
@@ -187,7 +186,7 @@ c       Read type of source (planar, areal, grid1, grid2, irregular)
            write (17,*) iFlt,sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
      1                 fltDirect(iFlt), synchron(iFlT)
         endif
-          
+
 c       Now read in the synchronous rupture case parameters if needed.
         if (synchron(iFlt) .gt. 0) then
            read (10,*) nsyn_Case(iFlt), synatten(iFlt)
@@ -235,7 +234,7 @@ c       Check for standard fault source or areal source
            write (17,*) 'Dip1, Top = ', dip1, top
         endif
 
-          read(10,*) nfp(iFlt)     
+          read(10,*) nfp(iFlt)
 
         if (runflag .eq. 3) then
            write (*,*) 'nFp = ', nfp(iFlt)
@@ -323,7 +322,7 @@ c        Check for custom fault source
 
           enddo
          endif
-               
+
 c        Read dip Variation
          if ( sourceType(iFlt) .lt. 5 ) then
            read (10,*) n_Dip
@@ -371,7 +370,7 @@ c        Read b-values (not for activity rate cases)
               write (17,*) 'bValue, bValueWt = ', i, bValue1(i), bValueWt1(i)
            enddo
         endif
-                
+
 c        Read activity rate - b-value pairs
          read (10,*) nActRate 
 
@@ -491,7 +490,7 @@ c        Check that slip-rates are not used for areal sources
               stop 99
            endif
          endif
-         
+
 c        Load into single array called "rate_param"
 c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
          nRate = nSR + nActRate + nRecInt + nMoRate
@@ -528,7 +527,7 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             temp_BR_wt(k+nSR+nActRate+nRecInt) =  wt_MoRate(k)
             MoRDepth(k+nSR+nActRate+nRecInt) = 1.0/MoRateDepth(nMoRate)
          enddo
-                     
+
 c        Read Mag recurrence weights (char, exp, etc.)
          read (10,*) nMagRecur
 
@@ -557,7 +556,9 @@ c        Read in corresponding magnitude parameters.
 c          Read in necessary parameters for bi-exponential distribution.
            elseif (magRecur1(iRecur) .eq. 5) then
              read (10,*) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
-           else              
+            elseif (magRecur1(iRecur) .eq. 10) then
+             read (10,*) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+          else              
              read (10,*) rP1(iRecur), rP2(iRecur), rP3(iRecur)
              rp4(iRecur) = 0.0
              rp5(iRecur) = 0.0
@@ -831,8 +832,8 @@ c        Build up distribution of mean Char Mag for each dip,thickness
            stop 99
 c          call rdMagModel ()
          endif
- 
-c        Load up parameter variations into large single dimension arrays        
+
+c        Load up parameter variations into large single dimension arrays
          testMaxMag = 0.
          iWidth = 0
          do iThick1=1,nThick1
@@ -904,6 +905,12 @@ c                Set max mag
                    maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag) + rP3(iRecur)
                  elseif (magRecur1(iRecur) .eq. 6 ) then
                    maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag)
+                 elseif (magRecur1(iRecur) .eq. 10 ) then
+                   if ( rp5(iRecur) .eq. 0. ) then
+                     maxMag(iFlt,i,iWidth) = rp2(iRecur)
+                   else
+                     maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag) + rp5(iRecur)
+                   endif
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
                    nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
@@ -912,7 +919,12 @@ c                Set max mag
                      endif    
                    testMaxMag = maxMag(iFlt,i,iWidth)
                  endif               
-                           
+
+c  temp fix - the maxmag, refmag probelem for waacy
+                 if (magRecur1(iRecur) .eq. 10 ) then
+                     maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag)
+                 endif
+                          
                  mpdf_param(iFlt,i,iWidth,1) = rP1(iRecur)
                  mpdf_param(iFlt,i,iWidth,2) = rP2(iRecur)
                  mpdf_param(iFlt,i,iWidth,3) = rP3(iRecur)
@@ -922,6 +934,7 @@ c                Set max mag
 c      Test for the maximum magnitude value for all realizations of this fault.
                  if (maxMag(iFlt,i,iWidth) .ge. mtest) then
                    mtest = maxMag(iFlt,i,iWidth)
+c                   write (*,'( 2x,''max mag'',3i5,f10.4 )') iFlt, i, iWidth, mtest
                  endif
 
                  mmagout(iFlt,iWidth,iRefMag) = refMag1(iWidth,iRefMag)
@@ -1027,3 +1040,4 @@ c     End loop over iFlt
       
       return
       end
+
