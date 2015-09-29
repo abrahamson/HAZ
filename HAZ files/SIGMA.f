@@ -1471,12 +1471,19 @@ C     Zoneflag = 1, 2 (which applies for 3 also)
       
       data period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 
      1        1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
-      data PhiSSC  /  0.32, 0.32, 0.32, 0.32, 0.32, 0.32, 0.327, 0.335, 0.34, 0.344, 0.348, 
-     1        0.354, 0.358, 0.366, 0.371, 0.378, 0.382, 0.388, 0.391, 0.395, 0.398, 0.402  / 
-      data PhiSSH  /  0.417, 0.417, 0.417, 0.417, 0.417, 0.417, 0.426, 0.436, 0.443, 0.448, 0.454, 
-     1        0.461, 0.467, 0.476, 0.483, 0.492, 0.498, 0.505, 0.509, 0.514, 0.518, 0.524  / 
-      data PhiSSL  /  0.219, 0.219, 0.219, 0.219, 0.219, 0.219, 0.223, 0.229, 0.233, 0.235, 0.238, 0.242, 
-     1        0.245, 0.25, 0.253, 0.258, 0.261, 0.265, 0.267, 0.27, 0.272, 0.275  / 
+c      data PhiSSC  /  0.32, 0.32, 0.32, 0.32, 0.32, 0.32, 0.327, 0.335, 0.34, 0.344, 0.348, 
+c     1        0.354, 0.358, 0.366, 0.371, 0.378, 0.382, 0.388, 0.391, 0.395, 0.398, 0.402  / 
+c      data PhiSSH  /  0.417, 0.417, 0.417, 0.417, 0.417, 0.417, 0.426, 0.436, 0.443, 0.448, 0.454, 
+c     1        0.461, 0.467, 0.476, 0.483, 0.492, 0.498, 0.505, 0.509, 0.514, 0.518, 0.524  / 
+c      data PhiSSL  /  0.219, 0.219, 0.219, 0.219, 0.219, 0.219, 0.223, 0.229, 0.233, 0.235, 0.238, 0.242, 
+c     1        0.245, 0.25, 0.253, 0.258, 0.261, 0.265, 0.267, 0.27, 0.272, 0.275  / 
+C Updated 8/26/14
+      data PhiSSC /  0.304, 0.304, 0.304, 0.304, 0.304, 0.304, 0.304, 0.304, 0.304, 0.304, 0.304,
+     1               0.304, 0.304, 0.339, 0.364, 0.399, 0.423, 0.423, 0.423, 0.423, 0.423, 0.423 /
+      data PhiSSH /  0.388, 0.388, 0.388, 0.388, 0.388, 0.388, 0.388, 0.388, 0.388, 0.388, 0.388,
+     1               0.388, 0.388, 0.432, 0.464, 0.508, 0.54, 0.54, 0.54, 0.54, 0.54, 0.54 /
+      data PhiSSL /  0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 0.217, 
+     1               0.217, 0.217, 0.242, 0.26, 0.284, 0.302, 0.302, 0.302, 0.302, 0.302, 0.302 /
 
 C     First check for the PGA
       if (specT .le. 0.0) then 
@@ -1608,6 +1615,798 @@ C     Interpolate the coefficients for the requested spectral period.
       
       return
       end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - DCPP Central 
+C     Scalc = 13001
+
+      subroutine SWUS_Sigma_DCPP_Cen ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.557, 0.557, 0.559, 0.560, 0.562, 0.564, 0.566, 0.568, 0.569, 0.571, 
+     1            0.572, 0.573, 0.574, 0.575, 0.576, 0.578, 0.578, 0.579, 0.580, 0.581,
+     1            0.581, 0.582  /
+      data sig2 / 0.491, 0.491, 0.494, 0.496, 0.500, 0.505, 0.508, 0.512, 0.515, 0.517,
+     1            0.519, 0.522, 0.524, 0.527, 0.529, 0.532, 0.533, 0.535, 0.536, 0.537, 
+     1            0.537, 0.538  /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: DCPP Central'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - DCPP Low 
+C     Scalc = 13002
+
+      subroutine SWUS_Sigma_DCPP_Low ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.428, 0.428, 0.431, 0.432, 0.436, 0.440, 0.443, 0.446, 0.449, 0.450, 
+     1            0.452, 0.454, 0.455, 0.457, 0.459, 0.461, 0.462, 0.463, 0.464, 0.464,
+     1            0.465, 0.466 /
+      data sig2 / 0.389, 0.389, 0.393, 0.395, 0.401, 0.406, 0.410, 0.416, 0.419, 0.422,
+     1            0.424, 0.427, 0.429, 0.432, 0.435, 0.437, 0.439, 0.441, 0.442, 0.442,
+     1            0.443, 0.443 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: DCPP Low'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - DCPP High 
+C     Scalc = 13003
+
+      subroutine SWUS_Sigma_DCPP_High ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.694, 0.694, 0.695, 0.695, 0.696, 0.697, 0.697, 0.698, 0.699, 0.700, 
+     1            0.700, 0.701, 0.701, 0.702, 0.703, 0.703, 0.704, 0.705, 0.705, 0.705, 
+     1            0.706, 0.706 /
+      data sig2 / 0.600, 0.600, 0.602, 0.604, 0.607, 0.61, 0.613, 0.616, 0.618, 0.620, 
+     1            0.622, 0.624, 0.625, 0.628, 0.63, 0.632, 0.633, 0.635, 0.636, 0.637,
+     1            0.638, 0.638 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: DCPP High'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS Arizona Sources Central 
+C     Scalc = 13004
+
+      subroutine SWUS_Sigma_PVNGS_AZ_Cen ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.573, 0.573, 0.574, 0.574, 0.575, 0.576, 0.576, 0.577, 0.577, 0.578, 
+     1            0.578, 0.578, 0.579, 0.579, 0.579, 0.580, 0.580, 0.580, 0.580, 0.580,
+     1            0.581, 0.581 /
+      data sig2 / 0.553, 0.553, 0.553, 0.553, 0.554, 0.555, 0.555, 0.556, 0.556, 0.557, 
+     1            0.557, 0.557, 0.558, 0.558, 0.558, 0.559, 0.559, 0.559, 0.559, 0.559,
+     1            0.560, 0.560 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS Arizona Sources Central'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS Arizona Sources Low 
+C     Scalc = 13005
+
+      subroutine SWUS_Sigma_PVNGS_AZ_Low ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.461, 0.461, 0.461, 0.461, 0.462, 0.462, 0.463, 0.463, 0.463, 0.463, 
+     1            0.463, 0.464, 0.464, 0.464, 0.464, 0.464, 0.464, 0.464, 0.464, 0.464, 
+     1            0.464, 0.464 /
+      data sig2 / 0.459, 0.459, 0.459, 0.460, 0.460, 0.460, 0.461, 0.461, 0.461, 0.461, 
+     1            0.461, 0.461, 0.461, 0.462, 0.462, 0.462, 0.462, 0.462, 0.462, 0.462,
+     1            0.462, 0.462 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS Arizona Sources Low'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS Arizona Sources High 
+C     Scalc = 13006
+
+      subroutine SWUS_Sigma_PVNGS_AZ_High ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER), sig2(MAXPER)
+      real sig1T, sig2T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.694, 0.694, 0.695, 0.695, 0.696, 0.697, 0.698, 0.699, 0.700, 0.701, 
+     1            0.701, 0.702, 0.702, 0.703, 0.704, 0.705, 0.705, 0.706, 0.706, 0.707, 
+     1            0.707, 0.707 /
+      data sig2 / 0.652, 0.652, 0.653, 0.653, 0.655, 0.656, 0.657, 0.658, 0.659, 0.660, 
+     1            0.661, 0.662, 0.662, 0.664, 0.664, 0.665, 0.666, 0.667, 0.667, 0.667, 
+     1            0.668, 0.668 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        sig2T = sig2(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS Arizona Sources High'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+      call interp ( period(count1), period(count2), sig2(count1), sig2(count2),
+     &    specT, sig2T, iflag )
+
+5     period1 = specT
+
+C     Now compute the magnitude-dependent total sigma value. 
+      if (mag .ge. 7.0) then
+         sigma = sig2T
+      else
+         sigma = sig1T + ((mag-5.0)/2.0)*(sig2T-sig1T)
+      endif
+      
+      return
+      end 
+
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources with Path Central 
+C     Scalc = 13007
+
+      subroutine SWUS_Sigma_PVNGS_CAPath_Cen ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.449, 0.449, 0.449, 0.449, 0.449, 0.449, 0.449, 0.449, 0.449, 0.449,
+     1            0.449, 0.449, 0.449, 0.473, 0.491, 0.517, 0.535, 0.535, 0.535, 0.535,
+     1            0.535, 0.535 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources with Path Central'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources with Path Low 
+C     Scalc = 13008
+
+      subroutine SWUS_Sigma_PVNGS_CAPath_Low ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.354, 0.354, 0.354, 0.354, 0.354, 0.354, 0.354, 0.354, 0.354, 0.354,
+     1            0.354, 0.354, 0.354, 0.375, 0.390, 0.410, 0.425, 0.425, 0.425, 0.425,
+     1            0.425, 0.425 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources with Path Low'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources with Path High 
+C     Scalc = 13009
+
+      subroutine SWUS_Sigma_PVNGS_CAPath_High ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.552, 0.552, 0.552, 0.552, 0.552, 0.552, 0.552, 0.552, 0.552, 0.552, 
+     1            0.552, 0.552, 0.552, 0.579, 0.600, 0.631, 0.655, 0.655, 0.655, 0.655,
+     1            0.655, 0.655 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources with Path High'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources no Path Central 
+C     Scalc = 13010
+
+      subroutine SWUS_Sigma_PVNGS_CAnoPath_Cen ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.613, 0.613, 0.613, 0.613, 0.613, 0.613, 0.613, 0.613, 0.612, 0.609, 
+     1            0.606, 0.598, 0.591, 0.579, 0.571, 0.561, 0.553, 0.544, 0.537, 0.532, 
+     1            0.525, 0.519 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources no Path Central'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources no Path Low 
+C     Scalc = 13011
+
+      subroutine SWUS_Sigma_PVNGS_CAnoPath_Low ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.512, 0.512, 0.512, 0.512, 0.512, 0.512, 0.512, 0.512, 0.511, 0.508, 
+     1            0.506, 0.499, 0.493, 0.483, 0.476, 0.467, 0.460, 0.452, 0.446, 0.442,
+     1            0.435, 0.430 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources no Path Low'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+C--------------------------------------------------------------------------------------  
+C     SWUS Total Sigma Model - PVNGS California Sources no Path High 
+C     Scalc = 13012
+
+      subroutine SWUS_Sigma_PVNGS_CAnoPath_High ( mag, specT, sigma, iflag )
+      
+      implicit none 
+      integer MAXPER
+      parameter (MAXPER=22) 
+      integer nPer, count1, count2, i, iflag
+      real specT, period(MAXPER), sig1(MAXPER)
+      real sig1T, period1, sigma, mag
+      
+      data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
+     1          0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 
+      data sig1 / 0.720, 0.720, 0.720, 0.720, 0.720, 0.720, 0.720, 0.720, 0.718, 0.715, 
+     1            0.712, 0.702, 0.694, 0.681, 0.672, 0.660, 0.652, 0.641, 0.634, 0.629, 
+     1            0.620, 0.614 /
+
+C     First check for the PGA
+      if (specT .eq. 0.0) then 
+        period1 = period(1)
+        sig1T = sig1(1)
+        goto 5
+      endif
+      
+      nPer = 22
+C     For other periods, loop over the spectral period range of the Sigma Model.
+      do i = 2, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 1020 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'SWUS Total Sigma Model: PVNGS California Sources no Path High'
+      write (*,*) 'Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+1020  call interp ( period(count1), period(count2), sig1(count1), sig1(count2),
+     &    specT, sig1T, iflag )
+
+5     period1 = specT
+
+      sigma = sig1T
+      
+      return
+      end 
+
+
+
 
 
 

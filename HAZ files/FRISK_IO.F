@@ -372,6 +372,65 @@ c      integer nAtten(MAX_PROB)
     
       return
       end
+c  -------------------------------------------------------------------
+      subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nWidth, nInten, 
+     1                nProb, nAtten, iFlt, jtype, nftype )
+ 
+      include 'pfrisk.h'
+      include 'declare1.h'
+
+      real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
+c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
+c      integer nAtten(MAX_PROB,4)
+
+      nwr = 27
+
+      do iProb=1,nProb
+
+c      write (27) iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
+
+      write (27,'( 20i5)') iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
+     1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
+     1         nInten(iProb)
+
+c       do iAtten = 1,nAtten(iProb,jType)
+         do iFltWidth=1,nWidth(iFlt)
+          do iFtype=1,nFtype(iFlt)
+           do iParam=1,nParamVar(iFlt,iFltWidth)
+c             write (11,'( 20e15.6 )')  (tempHaz1(iParam,iFltWidth,j,iProb,iFtype),j=1,nInten(iProb))
+             write (27, '( 15e12.4)')  (tempHaz1(iParam,iFltWidth,j,iProb,iFtype),j=1,nInten(iProb))
+           enddo
+          enddo
+         enddo
+c       enddo
+      enddo
+    
+      return
+      end
+
+c  -------------------------------------------------------------------
+      subroutine WriteTempHaz2 ( tempHaz2, nInten, nProb, 
+     1        nAtten, iFlt, jtype )
+ 
+      include 'pfrisk.h'
+      include 'declare1.h'
+
+      real*8 tempHaz2(MAX_FLT, MAX_INTEN, MAX_PROB,MAX_ATTEN)
+c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
+c      integer nAtten(MAX_PROB,4)
+
+      nwr = 28
+
+      write (*,'( i5)') nProb
+      do iProb=1,nProb
+        write (*,'( i5 ''  nAtten'')') nAtten(iProb,jType)
+         do iAtten = 1,nAtten(iProb,jType)
+             write (28,'( 20e15.6 )')  (tempHaz2(iFlt, j,iProb,iAtten),j=1,nInten(iProb))
+         enddo
+      enddo
+    
+      return
+      end
 
 c  -------------------------------------------------------------------
  
