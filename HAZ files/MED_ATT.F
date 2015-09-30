@@ -32,6 +32,7 @@ C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       phi = 0.0
       iflag = 0
       efac = 0.0
+      
        
 c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9501 ) then

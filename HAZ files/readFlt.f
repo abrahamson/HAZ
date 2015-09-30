@@ -842,18 +842,18 @@ c        Load up parameter variations into large single dimension arrays
            iWidth = iWidth + 1
            call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )   
            
-           if ( sourceType(iFlt) .eq. 1 ) then
+c           if ( sourceType(iFlt) .eq. 1 ) then
              dip2 = dip1 + deltaDip1(iDip)
              dip(iFlt,iWidth,1) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
-           else
+c          else
 
 c            For areal source only set the first point and use thickness not width
-             faultWidth(iFlt,iWidth) = faultThick1(iThick1)
-             faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
+c            faultWidth(iFlt,iWidth) = faultThick1(iThick1)
+c           faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
                 
-           endif
+c           endif
 
            i = 0
            mtest = 0.0

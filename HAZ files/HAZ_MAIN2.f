@@ -392,7 +392,7 @@ c            Pass along fault grid locations for calculation of HW and Rx values
      3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
      4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb,
      5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip) 
+     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip, dip, iFltWidth, iFlt) 
 
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
