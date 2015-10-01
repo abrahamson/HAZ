@@ -379,13 +379,14 @@ C------WAACY Subroutine for Magnitude Prob Values Used for Rates --------------
 
       implicit none
       real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
-      real M1, M2
+      real M1, M2, d
       real Mmin, stepM, ML, MU, WA_Pmag(1)
       real pdf1(10000), PHI_15, PHI1, x, step1, mag1
-      real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
-      real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
+      real*8  beta, betaTail, c1, c2, c3, t1
+      real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2
+      real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer nStep, i, nMag, iBin, iMag
-      real temp1, temp2
+      real*8  temp1, temp2
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
 
@@ -395,10 +396,13 @@ c     Calculate WAACY terms
       t1 = sqrt(2*3.1415926)
       c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
       x = -0.25 / sigM
-c      call NDTR(x,PHI1) 
-      phi1 = 0.159       
+      call NDTR(x,PHI1,d) 
+      phi1 = 1-phi1
+c     phi1 = 0.159       
       PHI_15 = 0.933
-      c2 = 1./ ( PHI1-(1.-PHI_15) )
+      c2 = 1./ ( PHI_15-phi1) 
+c      write (*,'( 3f10.4)') phi1, phi_15 , c2
+c     pause 'phi and c2'
       c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
 
 c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
@@ -412,11 +416,17 @@ c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
      1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
      2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
       Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
+c      write (*,'( 3e15.4)')  Mo_bar_exp1, Mo_bar_Char, Mo_bar_exp2
+c     pause 'Mo_bar terms'
 
       d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
+      temp1 = c1*c2*c3
+c      write (*,'( 2x,4f10.4)') c1, c2, c3, temp1
       d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
+      a1 = d2*F
+      a2 = d1*(1.-F)+d2*F
       alpha = d2*F / ( d1*(1.-F)+d2*F )
-c      write (*,'( 2x,f10.4, 2x,''Mmax'')') Mmax
+      alpha1 = d1*(1-F) / (d1*(1.-F)+d2*F)
 
 c     Compute the pdf with a small step size
       step1 = 0.01
@@ -431,14 +441,13 @@ c     1           , ( 1. - exp(-beta*(M1-Mmin)) )
 
 
         elseif ( mag1 .lt. M2 ) then
-          pdf1(i) = (1-alpha) * c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
+          pdf1(i) = alpha1 * c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
      1             exp( -((mag1-mChar)**2) / (2*sigM**2) )
-c          pdf1(i) =  c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
-c     1             exp( -((mag1-mChar)**2) / (2*sigM**2) )
+c           write (*,'( 2x,''M1 to M2'', f10.4, 3e12.4)') mag1, pdf1(i), alpha1, c2
 
         elseif ( mag1 .lt. Mmax ) then
-          pdf1(i) = (1.-alpha) * c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
-c          pdf1(i) = c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
+          pdf1(i) = alpha1 * c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
+c           write (*,'( 2x,''> M2'', f10.4, e12.4)') mag1, pdf1(i)
           
         else
           pdf1(i) = 0.
@@ -446,10 +455,21 @@ c          pdf1(i) = c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) )
 
       enddo
 
-c     Compute the probability of mag bewteen ML and MU
+c     Compute the probability of mag
+       sum1 = 0.
+       sum2 = 0.
       do i=1,nMag
+        mag1 = Mmin + (i-1)*step1
         WA_Pmag(i) = pdf1(i)*step1   
+c        write (44,'( f10.4,2x,e15.7)') mag1, WA_Pmag(i)
+        if (mag1 .le. M1 ) then
+         sum1 = sum1 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
+       else
+         sum2 = sum2 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
+       endif
       enddo
+c      write (*,'( 2x,''Check on F:'',2f10.4)') F, sum1 / (sum1+sum2)
+c      flush (44)
         
       return
       end                             

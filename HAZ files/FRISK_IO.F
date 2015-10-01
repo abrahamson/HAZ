@@ -25,7 +25,8 @@ c     frisk_io.f
       real specT(MAX_PROB)
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
      1     sigvaradd(MAX_PROB,4,MAX_ATTEN)
-      integer ichart, charcount, coefcountrrup, coefcountrjb, iMixture, nDD(MAX_FLT)
+      integer ichart, charcount, coefcountrrup, coefcountrjb, nDD(MAX_FLT)
+      integer iMixture(4, MAX_PROB, MAX_ATTEN)
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11)
 
 c     Set Data file units
@@ -158,7 +159,7 @@ c     Read min max long and lat for grid sources
 
 c     Input options 
       read(13,'( a80)') title
-      read(13,*) nProb, nAttenType, iMixture
+      read(13,*) nProb, nAttenType
       
       call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )        
       call CheckDim ( nProb, MAX_Prob, 'MAX_ATTEN ' )
@@ -189,25 +190,25 @@ c     Enter GM models for each problem
         do j=1,nAttenType
            write (18,*) 
            write (18,'(a19,2x,i4)') 'Attenuation Type = ', j
-           write (18,*) ' Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc'
+           write (18,*) ' Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc    iMix'
 
           checkattenwt = 0.0
           read (13,*) nAtten(i,j)
           call CheckDim ( nAtten(i,j), MAX_ATTEN, 'MAX_ATTEN ' )
           do k=1,nAtten(i,j)
-            read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k)  
+            read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k)  
 
 C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
             if (jcalc(i,j,k) .lt. 0) then
                backspace (13)
-               read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
+               read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k), sCalc(i,j,k), sigfix(i,j,k)
 c               read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), sssCalc(i,j,k)
 c               jCalc(i,j,k) = abs(jCalc(i,j,k))
-               write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
-     1             sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), ssscalc(i,j,k)
+               write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,2i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
+     1             sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), ssscalc(i,j,k), iMixture(j, i, k)  
             else
-            write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,a24)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
-     1           sigvaradd(i,j,k)
+            write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,31x,i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
+     1           sigvaradd(i,j,k), iMixture(j, i, k)
             endif
 
 C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) selected and if so read in coefficients.
@@ -409,13 +410,12 @@ c       enddo
       end
 
 c  -------------------------------------------------------------------
-      subroutine WriteTempHaz2 ( tempHaz2, nInten, nProb, 
-     1        nAtten, iFlt, jtype )
- 
+      subroutine WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
+
       include 'pfrisk.h'
       include 'declare1.h'
 
-      real*8 tempHaz2(MAX_FLT, MAX_INTEN, MAX_PROB,MAX_ATTEN)
+      real*8 tempHaz2(4, MAX_INTEN, MAX_PROB,MAX_ATTEN)
 c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
 c      integer nAtten(MAX_PROB,4)
 
@@ -423,9 +423,11 @@ c      integer nAtten(MAX_PROB,4)
 
       write (*,'( i5)') nProb
       do iProb=1,nProb
-        write (*,'( i5 ''  nAtten'')') nAtten(iProb,jType)
-         do iAtten = 1,nAtten(iProb,jType)
-             write (28,'( 20e15.6 )')  (tempHaz2(iFlt, j,iProb,iAtten),j=1,nInten(iProb))
+        do jType=1,nattenType
+           do iAtten = 1,nAtten(iProb,jType)
+               write (28,'( 3i5, 100e12.4 )')  iProb, jType, iAtten, 
+     1             (tempHaz2(jType, j,iProb,iAtten),j=1,nInten(iProb))
+           enddo
          enddo
       enddo
     
@@ -551,8 +553,9 @@ c       Write Results
         enddo
 
 c       Write Total Number of Events
-        write(NWR,'( 2x,''Wt Total Events/yr'',21x,18x,30e12.4)' )
-     1        (risk2( M ), M=1,nInten(iProb))
+        xx = 0.
+        write(NWR,'( 2x,''Wt_Total_Events/yr'',20x,2f6.3,f8.1,1x,30e12.4)' )
+     1        xx, xx, xx, (risk2( M ), M=1,nInten(iProb))
 
 c       Compute Probability of Exceedance  (Poisson)
         do iInten=1,nInten(iProb)
@@ -562,9 +565,9 @@ c       Compute Probability of Exceedance  (Poisson)
           endif
         enddo
         
-c       Write Risk        
-        write(NWR,'( 2x,''Poisson Prob:  '',24x,18x,30e16.8)')
-     1        ( risk2( M ), M=1,nInten(iProb))
+c       Write hazard        
+        write(NWR,'( 2x,''Poisson_Prob:  '',23x,2f6.3,f8.1,1x,30e12.4)')
+     1        xx, xx, xx, ( risk2( M ), M=1,nInten(iProb))
 
 c       Write out M,D and epsilon Bar values.
 c       Normalize for each intensity
@@ -602,11 +605,11 @@ c       Normalize for each intensity
 
 c       Write MBar, DBar and EpsBar Results
         
-        write (nwr,'(2x,''M_bar'',53x,30(e10.3,2x))')  
+        write (nwr,'(2x,''M_bar'',33x,2f6.3,f8.1,2x,30(e10.3,2x))')  xx, xx, xx,
      1  (m_bar(iProb,iInten),iInten=1,nInten(iProb))
-            write (nwr,'(2x,''D_bar'',53x,30(e10.3,2x))')
+            write (nwr,'(2x,''D_bar'',33x,2f6.3,f8.1,2x,30(e10.3,2x))') xx, xx, xx,
      1  (d_bar(iProb,iInten),iInten=1,nInten(iProb))
-            write (nwr,'(2x,''Eps_bar'',51x,30(e10.3,2x))')
+            write (nwr,'(2x,''Eps_bar'',31x,2f6.3,f8.1,2x,30(e10.3,2x))') xx, xx, xx,
      1  (e_bar(iProb,iInten),iInten=1,nInten(iProb))
         write (nwr,'( /,''------------------'',/)')
                 
@@ -616,7 +619,7 @@ c       Write MBar, DBar and EpsBar Results
       
  910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
  919  FORMAT(' LOG (AMPLITUDE):',7X,10F10.2)
- 920  FORMAT(1X,'AMP:',36x,' pSeg al_Wt MinDis',30F12.6)
+ 920  FORMAT(1X,'AMP:',36x,' pSeg al_Wt  MinDis',30F12.6)
  950  FORMAT('     FAULT',I2,' E(NO/YR)',5X,10E10.3)
  960  FORMAT('     TOTAL   E(NO/YR)',5X,10E10.3)
  975  FORMAT('     TOTAL risk',11X,10E10.3)

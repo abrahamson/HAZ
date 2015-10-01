@@ -221,7 +221,6 @@ c     WAACY Model
  
 c            Set the rate to balance the moment
              rate(iParam,i) = rate_M_gt_0 * pRatio   
-             write (*,'( 2e12.5)') rate(iParam,i), pratio
 
 C..........Working Group Model...................
            elseif (magRecur(iFlt,iParam,i) .eq. 4.) then     
@@ -424,6 +423,7 @@ c     Set WAACY model parameters (haz45 version)
       Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
       mChar = maxMag(iFlt,iParam,iWidth)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
+      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value
 
 c     start integration at Mag=0 for momment balance
       Mmin = 0
@@ -453,7 +453,9 @@ c       Just use log(A)= M-4 for now
 c     Find the cumulative rate
       cumProb(nMag) = WA_Pmag(nMag) 
       do iMag=nMag-1,1,-1
-        cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag) 
+              mag = Mmin + (iMag-0.5)*stepM
+        cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag)
+c        write (44,'( f10.3,2e12.4)')  mag, cumProb(iMag), WA_Pmag(iMag)
       enddo
 
 c     Set the ratio of Prob for M>Mmin to M>0

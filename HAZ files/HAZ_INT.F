@@ -208,13 +208,13 @@ c -------------------------------------------------------------
 
       subroutine Init_tempHaz2 ( tempHaz2 )
       include 'pfrisk.h'                                                        
-      real*8 tempHaz2(MAX_FLT, MAX_ATTEN, MAX_INTEN, MAX_PROB )
+      real*8 tempHaz2(4, MAX_ATTEN, MAX_INTEN, MAX_PROB )
       
-      do iFlt=1,MAX_FLT  
+      do i=1,4  
        do iInten=1,MAX_INTEN
          do iProb=1,MAX_PROB
            do iAtten=1,MAX_ATTEN
-             tempHaz2(iFlt, iInten,iProb,iAtten) = 0.0
+             tempHaz2(i, iInten,iProb,iAtten) = 0.0
            enddo
          enddo
        enddo

@@ -75,6 +75,74 @@ c  *** Turkey adjusted NGA1 models
      3                     hwflag, Rx )
       endif
 
+c    Taiwan GMPEs
+
+
+C     **** Taiwan TNGA attenuation models  ****
+c-----------------------------------------------------------------------------       
+c     New Lin et al. (2011) Taiwan crustal model SOIL ************                     
+C     Model Number = 316                                        
+      if ( jcalc .eq. 316 ) then     
+      	if (hwflag .eq. 1 ) then      
+         call Lin_hw_soil                                        
+     1    ( mag, rupDist, specT, period2, lnY, sigma, iflag)
+        else
+         call Lin_fw_soil                                        
+     1    ( mag, rupDist, specT, period2, lnY, sigma, iflag)         
+        endif                                           
+         attenname1 = 'Lin et al. (2011) , Crustal soil'
+         lnY = lnY + efac     
+      endif                                                     
+
+c-----------------------------------------------------------------------------       
+c     New Lin et al. (2011) Taiwan crustal model ROCK ************                     
+C     Model Number = 317                                        
+      if ( jcalc .eq. 317 ) then     
+      	if (hwflag .eq. 1 ) then      
+         call Lin_hw_rock                                        
+     1    ( mag, rupDist, specT, period2, lnY, sigma, iflag)
+        else
+         call Lin_fw_rock                                        
+     1    ( mag, rupDist, specT, period2, lnY, sigma, iflag)         
+        endif                                           
+         attenname1 = 'Lin et al. (2011) , Crustal rock'
+         lnY = lnY + efac     
+      endif                                                     
+
+c-----------------------------------------------------------------------------
+c     Lin 2009 Doctoral thesis          
+C     Model Number = 315                                        
+      if ( jcalc .eq. 315) then    
+c      write(*,*) 'specT = ', specT
+
+         call  Lin2009                                        
+     1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
+         attenname1 = 'Lin 2009 Doctoral thesis, Crustal, VS30'
+         lnY = lnY + efac     
+      endif                                                     
+c-----------------------------------------------------------------------------
+c     TG09221 2012 project          
+C     Model Number = 441                                        
+      if ( jcalc .eq. 441) then    
+c      write(*,*) 'specT = ', specT
+
+         call  TG09221_2012                                        
+     1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
+         attenname1 = 'TG09221 Report 2012/06, Crustal, VS30'
+         lnY = lnY + efac     
+      endif                                                     
+
+c-----------------------------------------------------------------------------
+c     NCREE 2011 project          
+C     Model Number = 451                                        
+      if ( jcalc .eq. 451) then    
+         call  NCREE_2011                                        
+     1    ( mag, rupDist, specT, period2, lnY, sigma)
+         attenname1 = 'NCREE Report 2011/01, Vs30°Ÿ360m/sec'
+         lnY = lnY + efac     
+      endif                                                     
+
+C     **** End of Taiwan TNGA attenuation models  ****
      
 C ******* PEER NGA Attenuation Models ****
 c ******* Abrahamson and Silva Model *********

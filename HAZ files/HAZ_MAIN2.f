@@ -25,14 +25,15 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
       real phi, tau, medadj, sigadj, phiSSS
       character*80 filebmode
-      integer bnum, bnumflag, coefcountRrup, coefcountRjb, iMixture
+      integer bnum, bnumflag, coefcountRrup, coefcountRjb
+      integer iMixture(4, MAX_PROB, MAX_ATTEN)
       real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
       real*8 prock1, prock2
       real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
       real Pmag_all(MAXPARAM)
       
       real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
-      real*8 tempHaz2(MAX_FLT, MAX_INTEN, MAX_PROB, MAX_ATTEN)
+      real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
 
    
 c     Write Program information to the screen.
@@ -151,9 +152,13 @@ c      Initialize Haz Arrays
 c      Initialize Mean Deagg values for this site
        call InitDeagg ( m_bar, d_bar, e_bar, Xcost_bar )
 
+C       Initialize temp hazard array for GM sensitivity
+        call Init_tempHaz2 ( tempHaz2 )
+        
 c      Sum Over Number of Faults
        do 900 iFlt = 1, nFlt
         write (*,'(2x,''Site = '',i4,'', '',''iFlt ='',4i5)') iSite, iFlt, nFlt, sourceType(iFlt), ibnum
+        flush (0)
 
 C     For distance case, read in hypocenter location in km down-dip and along strike from separate file. 
 C     Only read the locations in for the first site which will be used for all additional sites in distance case. 
@@ -179,7 +184,7 @@ c       Initialize closest distance for each distance metric
 C       Initialize temp hazard array for this source
         call Init_tempHaz ( tempHaz )
         call Init_tempHaz1 ( tempHaz1 )
-        call Init_tempHaz2 ( tempHaz2 )
+
 
 
 c       Loop over alternative Fault Widths (epistemic)
@@ -462,175 +467,13 @@ c              Call for median ground motions
 
 C               Second call for different sigma model 
                 if (sigflag .eq. 1) then
-               call meanInten ( distRup, distJB, distSeismo,
+                  call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(iProb),  
      2               temp, sigmaY, ftype(iFlt,iFtype), sigmaName, period1, 
      3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi, 
      6               cfcoefrrup, cfcoefrjb, Ry0 )
-
-C      Call for Single Station Sigma Phi if requested (i.e., SssCalc1>0)
-C             Phi only Models: 0 < ssscalc1 < 100
-                     if (ssscalc1 .gt. 0 .and. ssscalc1 .lt. 100) then
-                        call sssphimodel (ssscalc1, specT(iProb), mag, Rrup, phiSSS )
-                        sigmaY = sqrt (tau*tau + phiSSS*phiSSS)
-                        phi = phiSSS
-
-C             Tau only Models: 100 < ssscalc1 < 200
-C              Tau Model - base case (July 2014)
-                     elseif (ssscalc1 .eq. 100 ) then
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.386 + (mag-5.0)*(0.338-0.386)/(2.0)
-                        else
-                            tauSSS = 0.338
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phi*phi)
-                        tau = tauSSS
-C              Tau Model - Lower Eps Case (July 2014)
-                     elseif (ssscalc1 .eq. 101 ) then
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.226 + (mag-5.0)*(0.226-0.226)/(2.0) 
-                        else
-                            tauSSS = 0.226
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phi*phi)
-                        tau = tauSSS
-C              Tau Model - Upper Eps Case (July 2014)
-                     elseif (ssscalc1 .eq. 102 ) then
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.539 + (mag-5.0)*(0.443-0.539)/(2.0) 
-                        else
-                            tauSSS = 0.443 
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phi*phi)
-                        tau = tauSSS
-
-C        Combined Phi and Tau Models
-C             Phi and Tau (Central) Models: 200 < ssscalc1 < 300
-                     elseif (ssscalc1 .gt. 200 .and. ssscalc1 .lt. 300) then
-                        ssscalctemp = ssscalc1 - 200
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.386 + (mag-5.0)*(0.338-0.386)/(2.0)
-                        else
-                            tauSSS = 0.338
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS
-                        phi = phiSSS
-
-C             Phi and Tau (Low) Models: 300 < ssscalc1 < 400
-                     elseif (ssscalc1 .gt. 300 .and. ssscalc1 .lt. 400) then
-                        ssscalctemp = ssscalc1 - 300
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.226 + (mag-5.0)*(0.226-0.226)/(2.0) 
-                        else
-                            tauSSS = 0.226
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS
-                        phi = phiSSS
-
-C             Phi and Tau (High) Models: 400 < ssscalc1 < 500
-                     elseif (ssscalc1 .gt. 400 .and. ssscalc1 .lt. 500) then
-                        ssscalctemp = ssscalc1 - 400
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.539 + (mag-5.0)*(0.443-0.539)/(2.0) 
-                        else
-                            tauSSS = 0.443 
-                        endif
-                        sigmaY = sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS
-                        phi = phiSSS
-
-
-C        Combined Phi and Tau Models scaled by 0.8
-C             Phi and Tau (Central) Models: 500 < ssscalc1 < 600
-                     elseif (ssscalc1 .gt. 500 .and. ssscalc1 .lt. 600) then
-                        ssscalctemp = ssscalc1 - 500
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.386 + (mag-5.0)*(0.338-0.386)/(2.0)
-                        else
-                            tauSSS = 0.338
-                        endif
-                        sigmaY = 0.8*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*0.8
-                        phi = phiSSS*0.8
-
-C             Phi and Tau (Low) Models: 600 < ssscalc1 < 700
-                     elseif (ssscalc1 .gt. 600 .and. ssscalc1 .lt. 700) then
-                        ssscalctemp = ssscalc1 - 600
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.226 + (mag-5.0)*(0.226-0.226)/(2.0) 
-                        else
-                            tauSSS = 0.226
-                        endif
-                        sigmaY = 0.8*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*0.8
-                        phi = phiSSS*0.8
-
-C             Phi and Tau (High) Models: 700 < ssscalc1 < 800
-                     elseif (ssscalc1 .gt. 700 .and. ssscalc1 .lt. 800) then
-                        ssscalctemp = ssscalc1 - 700
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.539 + (mag-5.0)*(0.443-0.539)/(2.0) 
-                        else
-                            tauSSS = 0.443 
-                        endif
-                        sigmaY = 0.8*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*0.8
-                        phi = phiSSS*0.8
-
-
-
-C        Combined Phi and Tau Models scaled by 1.2
-C             Phi and Tau (Central) Models: 800 < ssscalc1 < 900
-                     elseif (ssscalc1 .gt. 800 .and. ssscalc1 .lt. 900) then
-                        ssscalctemp = ssscalc1 - 800
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.386 + (mag-5.0)*(0.338-0.386)/(2.0)
-                        else
-                            tauSSS = 0.338
-                        endif
-                        sigmaY = 1.2*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*1.2
-                        phi = phiSSS*1.2
-
-C             Phi and Tau (Low) Models: 900 < ssscalc1 < 1000
-                     elseif (ssscalc1 .gt. 900 .and. ssscalc1 .lt. 1000) then
-                        ssscalctemp = ssscalc1 - 900
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.226 + (mag-5.0)*(0.226-0.226)/(2.0) 
-                        else
-                            tauSSS = 0.226
-                        endif
-                        sigmaY = 1.2*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*1.2
-                        phi = phiSSS*1.2
-
-C             Phi and Tau (High) Models: 1000 < ssscalc1 < 1100
-                     elseif (ssscalc1 .gt. 1000 .and. ssscalc1 .lt. 1100) then
-                        ssscalctemp = ssscalc1 - 1000
-                        call sssphimodel (ssscalctemp, specT(iProb), mag, Rrup, phiSSS )
-                        if (mag .lt. 7.0) then
-                            tauSSS = 0.539 + (mag-5.0)*(0.443-0.539)/(2.0) 
-                        else
-                            tauSSS = 0.443 
-                        endif
-                        sigmaY = 1.2*sqrt (tauSSS*tauSSS + phiSSS*phiSSS)
-                        tau = tauSSS*1.2
-                        phi = phiSSS*1.2
-
-                     endif
-
 
                 elseif (sigflag .eq. 2) then
                     sigmaY = sigfix1
@@ -782,7 +625,7 @@ c                   Compute Probability of exceeding test
                     pRock2 = 0.5 * pxceed3 (lgInten, lgTestInten, sigma1, iProb,jInten,sigTrunc(iProb))
      1                       + 0.5 * pxceed3 (lgInten, lgTestInten, sigma2, iProb,jInten,sigTrunc(iProb))
 
-                    if ( iMixture .eq. 0 ) then
+                    if ( iMixture(jType,iProb,iAtten)  .eq. 0 ) then
                       pRock = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
 
                     else
@@ -837,10 +680,10 @@ c                    Add weight for aleatory rupture segmentation
 
 c                    Compute Marginal Rate of Occurance
                      mHaz = rate(iParam,iFltWidth) * prock * p1 * probAct(iFlt)
-                     wt = wt * gm_wt(iProb,jType,iAtten)*segwt1(iFLt)
+                     wt = wt *segwt1(iFLt)
 
 c                    Add marginal rate of exceed to total
-                     Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt
+                     Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt* gm_wt(iProb,jType,iAtten)
 
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) = 
      1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt)
@@ -866,11 +709,11 @@ c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype) = mHaz
      1                        + tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype)
 
-                     tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype) = mHaz
+                     tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
      1                        + tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype)
 
-                     tempHaz2(iFlt, jInten,iProb,iAtten) = mHaz
-     1                        + tempHaz2(iFlt, jInten,iProb,iAtten)
+                     tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
+     1                        + tempHaz2(jType, jInten,iProb,iAtten)
 
 
 
@@ -930,8 +773,7 @@ c       Write temp Haz array to file
      1        nAtten, iFlt, attenType(iFlt), nFtype )
            call WriteTempHaz1 ( tempHaz1, nParamVar, nWidth, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype )
-           call WriteTempHaz2 ( tempHaz2, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt) )
+
         endif
 
 c       Write p1_sum as a check
@@ -974,6 +816,7 @@ c      Write out the deagrregated hazard
      4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
      5       HazBinsX)
        endif
+                  call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue
 
