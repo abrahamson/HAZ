@@ -253,9 +253,9 @@ c        Compute activity rate: N(Mmin)
      1         charMeanMo, expMeanMo )
 
 
-c  temp fix for rup longer than modeled fault 
+c  temp fix for rup longer than modeled fault (applies to waacy only)
 c        Correct for moment released outside of the modelled rupture for faults
-         if (sourceType(iFlt) .ne. 2 .and. sourceType(iFlt) .ne. 3 ) then 
+         if (sourceType(iFlt) .ne. 2 .and. sourceType(iFlt) .ne. 3  ) then 
          do iParam=1,nparamVar(iFlt,iFltWidth)
            sum0_Mo(iParam) = 0.
            sum1_Mo(iParam) = 0.
@@ -268,6 +268,7 @@ c        Correct for moment released outside of the modelled rupture for faults
      2           mpdf_param, ExpMeanMo, CharMeanMo )
 
            a_moment = 10.**(1.5*mag+16.05)
+           a_moment1 = a_moment
            area_rup = 10.**(mag-4.)
            areaRatio = area_rup / faultArea
            if (areaRatio .gt. 1. ) then
@@ -280,10 +281,13 @@ c        Correct for moment released outside of the modelled rupture for faults
             sum1_Mo(iParam) = sum1_Mo(iParam) + a_moment1*pMag_all(iParam)
            enddo 
           enddo
-         
+          
+c        only apply to waacy         
            do iParam=1,nparamVar(iFlt,iFltWidth)
-            Rate(iParam,iFltWidth) = Rate(iParam,iFltWidth)  * (sum0_Mo(iParam) / sum1_Mo(iParam) )
+              if ( magRecur(iFlt,iParam,iFltWidth)  .eq. 10 ) then
+                Rate(iParam,iFltWidth) = Rate(iParam,iFltWidth)  * (sum0_Mo(iParam) / sum1_Mo(iParam) )
 c            write (*,'( i5,e12.5)') iParam, (sum0_Mo(iParam) / sum1_Mo(iParam) )
+            endif
            enddo
          endif
 
@@ -441,7 +445,7 @@ C               either a fixed value or sigma from another model.
                    jcalc1 = abs(jcalc(iProb,jType,iAtten) )
                    scalc1 = scalc(iProb,jtype,iAtten) 
                    sigfix1 = sigfix(iProb,jType,iAtten)
-                   ssscalc1 = ssscalc(iProb,jType,iAtten)
+c                   ssscalc1 = ssscalc(iProb,jType,iAtten)
 C                Check for either fixed sigma value (scalc1<0) or other sigma model
                    if (scalc1 .lt. 0) then
                       sigflag = 2
@@ -680,11 +684,14 @@ c                    Add weight for aleatory rupture segmentation
 
 c                    Compute Marginal Rate of Occurance
                      mHaz = rate(iParam,iFltWidth) * prock * p1 * probAct(iFlt)
+c                     write (*,'( 4e12.4)') rate(iParam,iFltWidth) , prock , p1 , probAct(iFlt)
                      wt = wt *segwt1(iFLt)
 
 c                    Add marginal rate of exceed to total
                      Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt* gm_wt(iProb,jType,iAtten)
-
+c                     write (*,'( 3e12.4)') mHaz, wt,  gm_wt(iProb,jType,iAtten)
+c                    pause
+                     
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) = 
      1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt)
 
