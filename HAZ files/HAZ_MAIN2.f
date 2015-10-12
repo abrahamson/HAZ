@@ -129,8 +129,8 @@ c      Open Output file2 for Probability of Magnitude Density for each parameter
           read (13,'( a80)') file2
        if (runflag .ne. 4) then
           open (17,file=file2,status='unknown')
-          write (17,'(a25,i10)') 'Total Number of Faults = ', nFlt
-          write (17,*)
+          write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
+          write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
        endif
 c      Output5 file which will contain the individual hazard curves averaged over GMPEs.
           read (13,'( a80)') file1
@@ -159,6 +159,7 @@ c      Sum Over Number of Faults
        do 900 iFlt = 1, nFlt
         write (*,'(2x,''Site = '',i4,'', '',''iFlt ='',4i5)') iSite, iFlt, nFlt, sourceType(iFlt), ibnum
         flush (0)
+        write (17,'( 20f10.6)') (faultWidthWt(iFlt,iWidth),iWidth=1,nWidth(iFlt))
 
 C     For distance case, read in hypocenter location in km down-dip and along strike from separate file. 
 C     Only read the locations in for the first site which will be used for all additional sites in distance case. 
@@ -739,13 +740,18 @@ c                    Save Marginal Hazard to temp array for fractile output
  750      continue
 
 
-c     Write out prob. density functions with rate and wts applied.
-      do iParam=1,nParamVar(iFlt,iFltWidth)
-c             rout(iParam,iFltWidth) = (rate(iParam,iFltWidth)*pmag(iParam,iFltWidth))
-             rout(iParam,iFltWidth) = (rate(iParam,iFltWidth)*pmag(iParam,iFltWidth))
-c             write (*,'( 2i5,2e12.4)') iFltWidth, iParam, rate(iParam,iFltWidth), pmag(iParam,iFltWidth)
-         enddo
+c         Write out prob. density functions with rate and wts applied.
+c         (out2 file)
+          do iParam=1,nParamVar(iFlt,iFltWidth)
+            rout(iParam,iFltWidth) = (rate(iParam,iFltWidth)*pmag(iParam,iFltWidth))
+          enddo
+                     mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
 
+          if (iMag .eq. 1 ) then
+            write (17,'( 2i5,''  nMag, nParamVar'')') nMag(iFlt), nParamVar(iFlt,iFltWidth)
+            write (17,'( 100f10.6)') (wt2(iFlt,iParam,iFltWidth),
+     1            iParam=1,nParamVar(iFlt,iFltWidth)) 
+          endif
           write (17,'(2i4,f8.3,200e12.4)') iFlt, iFltwidth, mag,
      1      (rout(iParam,iFltWidth), iParam=1,nParamVar(iFlt,iFltWidth)) 
 
