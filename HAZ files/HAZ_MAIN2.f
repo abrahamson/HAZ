@@ -90,60 +90,38 @@ c     read fault File
      2     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam, 
      3     nMaxmag2, segWt1, faultFlag, nDD, nFtype, ftype_wt, 
      4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag )
-
-C     Write out Column header explanation to distance file if runflag=4.
-      if (runflag .eq. 4) then
-          call writedisthead (1)          
-      endif
-
-C     For Runflag=5 case the program will run in batch mode with multiple
-C         input files being from batch input file. 
-      if (runflag .eq. 5) then         
-      endif
       
 c     Loop Over Number of Sites
-
-      read (13,*) nSite
-      
+      read (13,*) nSite    
       do 1000 iSite = 1, nSite      
             
 c      Read site coordinates and properties
        read (13,*) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
        
-       if (runflag .eq. 4) then
-          call writedisthead (2)
-       endif
-
 c      Read site-specific site amplification
        if ( soilAmpFlag .eq. 1 ) then
         call RdSoilAmpModel ( refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
        endif
 
-c      Output1 file which will contain the individual hazard curves. Note output files are not created for 
-C      distance run case (i.e., runflag=4).
-          read (13,'( a80)') file1
-       if (runflag .ne. 4) then
-          open (11,file=file1,status='unknown')
-       endif
-c      Open Output file2 for Probability of Magnitude Density for each parameter combination.
-          read (13,'( a80)') file2
-       if (runflag .ne. 4) then
-          open (17,file=file2,status='unknown')
-          write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
-          write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
-       endif
-c      Output5 file which will contain the individual hazard curves averaged over GMPEs.
-          read (13,'( a80)') file1
-       if (runflag .ne. 4) then
-          open (27,file=file1,status='unknown')
-       endif
-c      Output6 file which will contain the individual hazard curves over SSC models.
-          read (13,'( a80)') file1
-       if (runflag .ne. 4) then
-          open (28,file=file1,status='unknown')
-       endif
+c      Output1 file which will contain the individual hazard curves. 
+       read (13,'( a80)') file1
+       open (11,file=file1,status='unknown')
+       
+c      Open Output2 file for Probability of Magnitude Density for each parameter combination.
+       read (13,'( a80)') file2
+       open (17,file=file2,status='unknown')
+       write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
+       write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
+       
+c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
+       read (13,'( a80)') file1
+       open (27,file=file1,status='unknown')
+       
+c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
+       read (13,'( a80)') file1
+       open (28,file=file1,status='unknown')
 
-c      Initialize Haz Arrays
+c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
        call InitHaz ( magbar1 )
        call InitHazBins ( HazBins )
@@ -152,33 +130,24 @@ c      Initialize Haz Arrays
 c      Initialize Mean Deagg values for this site
        call InitDeagg ( m_bar, d_bar, e_bar, Xcost_bar )
 
-C       Initialize temp hazard array for GM sensitivity
-        call Init_tempHaz2 ( tempHaz2 )
+C      Initialize temp hazard array for GM sensitivity
+       call Init_tempHaz2 ( tempHaz2 )
         
-c      Sum Over Number of Faults
+c      Sum Over Number of sources 
        do 900 iFlt = 1, nFlt
         write (*,'(2x,''Site = '',i4,'', '',''iFlt ='',4i5)') iSite, iFlt, nFlt, sourceType(iFlt), ibnum
-        flush (0)
+
+c       Write fault width weights to output2 file
         write (17,'( 20f10.6)') (faultWidthWt(iFlt,iWidth),iWidth=1,nWidth(iFlt))
 
-C     For distance case, read in hypocenter location in km down-dip and along strike from separate file. 
-C     Only read the locations in for the first site which will be used for all additional sites in distance case. 
-         if (runflag .eq. 4) then   
-            if (iSite .eq. 1) then
-                read (29,*) hDD(iFlt), hAS(iFlt)
-             endif
-         endif
-
-c       Initialize branch hazard sums
-c        call InitBrhaz ( nProb, nInten, nNode, br_haz )
-
+c       Initialize p1_sum (check of the integration over all source pdfs)
         p1_sum = 0.
 
 c       Initialize closest distance for each distance metric
         minDist = 1.e10
         do iWidth=1,nWidth(iFlt)
           do j=1,3
-             FaultDist(iFlt,iWidth,j) = 1.e10
+            FaultDist(iFlt,iWidth,j) = 1.e10
           enddo
         enddo
 
@@ -186,13 +155,11 @@ C       Initialize temp hazard array for this source
         call Init_tempHaz ( tempHaz )
         call Init_tempHaz1 ( tempHaz1 )
 
-
-
 c       Loop over alternative Fault Widths (epistemic)
-c       (This changes the geometry of the fault)
+c       (This changes the geometry of the source)
         do 860 iFltWidth=1,nWidth(iFlt)
         	
-c        Set bottom of fault for standard faults
+c        Set bottom of fault for standard faults (source type 1)
           if ( sourceType(iFlt) .eq. 1. ) then
             call SetFltBottom (iCoor, iFlt, nfp, dip(iFlt,iFltWidth,1), 
      1                         faultWidth(iFlt,iFltWidth), fZ, flat, flong, nDD)
@@ -253,8 +220,7 @@ c        Compute activity rate: N(Mmin)
      2         RateParam, mpdf_param, magStep, RateType, 
      1         charMeanMo, expMeanMo )
 
-
-c  temp fix for rup longer than modeled fault (applies to waacy only)
+c     temp fix for rup longer than modeled fault (applies to waacy only)
 c        Correct for moment released outside of the modelled rupture for faults
          if (sourceType(iFlt) .ne. 2 .and. sourceType(iFlt) .ne. 3  ) then 
          do iParam=1,nparamVar(iFlt,iFltWidth)
@@ -297,12 +263,6 @@ c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
            sum1(iParam,iFltWidth) = 0.
          enddo
          
-c     Set max value for distance checking option (i.e. Runflag=4)
-         if (runflag .eq. 4) then
-            nMag(iFlt) = 1
-            minMag(iFlt) = 8.5
-         endif
-
          do 800 iMag = 1, nMag(iFlt)
           mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
           magTotal = mag
@@ -323,9 +283,7 @@ c         using the magnitude pdf for each parameter variation
 
 c         Echo magnitude integration step over magnitude to the screen 
 c         as a check of the programs progress.
-          if (runflag .ne. 4) then
-             write (*,'( 2x,2I5,f10.3)') IFLT, ifltWidth,MAG
-          endif
+          write (*,'( 2x,2I5,f10.3)') IFLT, ifltWidth,MAG
           
 c         Intergrate Over Rupture Area for this mag (aleatory)
           do 750 iArea = 1, nRupArea(iFlt)
@@ -429,14 +387,11 @@ c             Set the distance bin for de-aggregation (using rupture distance)
               call SetBin ( nDistBins, distBins, distRup,iDistBin)
 
 c             Loop over ftypes
-              if (runflag .eq. 4) nFtype(iflt) = 1
               do 561 iFtype=1,nFtype(iFlt)
 
 c             Loop Over Number of Problems (e.g. spectral periods)
-              if (runflag .eq. 4) nProb=1
               do 560 iProb=1,nProb
                jType = attenType(iFlt)
-               if (runflag .eq. 4) nAtten(iProb,jtype)=1
                do 550 iAtten = 1,nAtten(iProb,jType)
 
 c               Check for negative jcalc values which will set the corresponding sigma to 
@@ -468,9 +423,10 @@ c              Call for median ground motions
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefrrup, cfcoefrjb, Ry0 )
 
+c               Add epistemic uncertainty term (constant shift) to median
                 lgIntenscl = lgInten + gmScale(iProb,jType,iAtten)
 
-C               Second call for different sigma model 
+C               Second call got GPE for different sigma model 
                 if (sigflag .eq. 1) then
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(iProb),  
@@ -480,28 +436,20 @@ C               Second call for different sigma model
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi, 
      6               cfcoefrrup, cfcoefrjb, Ry0 )
 
+c               Check if a constant, user input sigma, is selected
                 elseif (sigflag .eq. 2) then
-                    sigmaY = sigfix1
+                  sigmaY = sigfix1
                 endif
 
 C               Adjust sigma value if sigvaradd .ne. 0.0
-                if (sigvaradd(iProb,jType,iAtten) .lt. 0.0) then
-c               Check for reduction of sigma is greater than 0.0.
-cnjg                   if ( (sigmaY+sigvaradd(iProb,jType,iAtten)) .le. 0.0) then
-                   if ( (sigmaY*sigmaY+sigvaradd(iProb,jType,iAtten)) .le. 0.0) then
-                      sigmaY = 0.0
-                   else
-                      sigmaY = sqrt(sigmaY*sigmaY + sigvaradd(iProb,jType,iAtten) )
-                   endif
-                elseif (sigvaradd(iProb,jType,iAtten) .gt. 0.0) then
-                   sigmaY = sqrt(sigmaY*sigmaY + sigvaradd(iProb,jType,iAtten) )
+                if (sigvaradd(iProb,jType,iAtten) .ne. 0.0) then
+                  sigmaY = sqrt(sigmaY*sigmaY + sigvaradd(iProb,jType,iAtten) )
                 endif
 
-C               Set Sigma = 0 if requested by a negative jcalc value. 
-c                if (sigflag .eq. 1) then
-c                  sigmaY = 0.0001
-c                endif
- 
+c               Check that sigma is not less than zero (0.0001)
+                if (sigmaY .lt. 0.0001 ) sigmaY = 0.0001
+
+c               Reset SigmaTotal variable
                 sigmaTotal = sigmaY
 
 C      Application of Directivity model if requested. 
@@ -541,34 +489,6 @@ c               Loop over hypocenter location along strike (aleatory)
 
 c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
-
-C     Call the DirModelDist Subroutine to compute necessary directivity Distance values. 
-                if (runflag .eq. 4) then 
-                   if (sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5) then
-                      hDDcell = int(hDD(iFlt)/xstep(iFlt))
-                      hAScell = int(hAS(iFlt)/xstep(iFlt))
-                      if (hDDcell .eq. 0) hDDcell=1
-                      if (hAScell .eq. 0) hAScell=1
-                      if (hDDcell .gt. n1) then
-                         hDDcell=n1
-                         write (*,*) 'Caution - Hypocenter location downdip greater than fault width downdip!!!'
-                         write (*,*) 'Hypocenter placed at bottom of downdip fault plane.'
-                      endif   
-                      if (hAScell .gt. n2) then
-                         hAScell=n2
-                         write (*,*) 'Caution - Hypocenter location along strike greater than fault length!!!'
-                         write (*,*) 'Hypocenter place at end of fault plane.'
-                      endif
-                   else
-                      hDDcell = 1
-                      hAScell = 1
-                   endif
-                   call DetermDist (hAScell, hDDcell, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipaverage(1),
-     2                      iLocY, iLocX, RupLen, RupWidth, x0, y0, z0, 
-     3                      edist, hdist, slit, azp1p2, ystep(iFlt), dlit, phiang, fltGrid_rRup,
-     4                      s2Site, Rx, astrike )
-                endif
 
 C     Now make the call to the NGA rupture directivity Subroutine if applicable
                 if ( fltDirect(iFlt) .eq. 1) then
@@ -618,10 +538,8 @@ C     Call to Version 1 of Directivity Model (Not currently used but placeholder
                   nSyn_Case(iFlt) = 1
                   probSyn = 1.
 c                 Loop over synchronous ruptures (aleatory)
-                  if (runflag .eq. 4) nSyn_Case(iFlt)=1
                   do 520 iSyn=1,nSyn_Case(iFlt)
 c                  Loop over test ground motion values                  
-                   if (runflag .eq. 4) nInten(iProb)=1
 
                    do 510 jInten = 1, nInten(iProb)
 
@@ -651,7 +569,6 @@ c                   Set bin for epsilon deaggregation
                     call SetBin_Eps ( nEpsBins, epsBins, epsilon1, iepsBin)
                         
 c                   Loop over parameter variations (epistemic)
-                    if (runflag .eq. 4) nParamVar(iFlt,iFltWidth) = 1
                     do 500 iParam=1,nParamVar(iFlt,iFltWidth)
 
 c                    Set the weight for this set of parameters (epistemic)
@@ -661,22 +578,14 @@ c                    Set the weight for this set of parameters (epistemic)
      2                 * maxMagWt(iFlt,iParam,iFltWidth) 
      2                 * ftype_wt(iFlt,iFtype) 
 
-c                    Set the weight for this set of parameters (epistemic)
-                     wt2(iFlt,iParam,iFltWidth) = RateParamWt(iFlt,iParam,iFltWidth) 
-     1                 * magRecurWt(iFlt,iParam,iFltWidth) 
-     2                 * faultWidthWt(iFlt,iFltWidth)
-     2                 * maxMagWt(iFlt,iParam,iFltWidth) 
-
 c                    Set up weight array for later output.
                      wtout(iFlt,iParam,iFltWidth,iFtype) = wt
          
 c                    Set probability of this earthquake (w/o gm)
-
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)*phypoX*phypoZ*probSyn
                     
 c                    Sum up probability (w/o ground motion) as a check
-                     if ( iAtten .eq. 1 .and. iProb .eq. 1
-     1                   .and. jInten .eq. 1) then
+                     if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then
                        p1_sum = p1_sum + wt*p1                       
                      endif
                            
@@ -706,12 +615,9 @@ c                    Add to mean deagg
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt*Xcost
 
 c                    Set up branch hazard curves for later output for fractile analysis.
-c                    Skip this step for distance case (i.e., runflag=4).
-                     if (runflag .ne. 4) then
-                        call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
+                     call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
      1                                iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
      2                                iParam, nNode, jInten, iProb, iSeg )                      
-                     endif
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype) = mHaz
@@ -739,66 +645,44 @@ c                    Save Marginal Hazard to temp array for fractile output
  700       continue
  750      continue
 
-
-c         Write out prob. density functions with rate and wts applied.
-c         (out2 file)
+c         Compute the rate for this magnitude for each epistemic parameter variation
           do iParam=1,nParamVar(iFlt,iFltWidth)
             rout(iParam,iFltWidth) = (rate(iParam,iFltWidth)*pmag(iParam,iFltWidth))
           enddo
-                     mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
+          mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
 
+c         Write out magnitude rates of occurrence (out2 file)
+c         Write header for the first magnitude only
           if (iMag .eq. 1 ) then
+            write (17,'( i5,2x,a80)') iFlt, fname(iflt)
             write (17,'( 2i5,''  nMag, nParamVar'')') nMag(iFlt), nParamVar(iFlt,iFltWidth)
-            write (17,'( 100f10.6)') (wt2(iFlt,iParam,iFltWidth),
+c           Set the weight for this set of parameters (epistemic)
+            do iParam=1,nParamVar(iFlt,iFltWidth)
+              wt2(iParam) = RateParamWt(iFlt,iParam,iFltWidth) 
+     1                      * magRecurWt(iFlt,iParam,iFltWidth) 
+     2                      * maxMagWt(iFlt,iParam,iFltWidth)
+            enddo
+            write (17,'( 100f10.6)') (wt2(iParam),
      1            iParam=1,nParamVar(iFlt,iFltWidth)) 
           endif
-          write (17,'(2i4,f8.3,200e12.4)') iFlt, iFltwidth, mag,
+          write (17,'(2i4,f8.3,500e12.4)') iFlt, iFltwidth, mag, 
      1      (rout(iParam,iFltWidth), iParam=1,nParamVar(iFlt,iFltWidth)) 
 
  800     continue
  
  850     shortDist(iFlt) = minDist
 
-c     Write out distance values for runflag=4 case.
-         if (runflag .eq. 4) then 
-            if (sourcetype(iFlt) .eq. 1 .or. sourcetype(iflt) .eq. 5) then
-               write (19,'(i3,3x,a30,4f8.2,i5,6f8.2,4i5,3f8.2,2i5,14f8.2)') iSite, fname(iflt), FaultDist(iFlt,iFltWidth,1),
-     1             FaultDist(iFlt,iFltWidth,2), FaultDist(iFlt,iFltWidth,3), Rx, HWFlag, s2site,
-     2             faultlen, avewidth, astrike*180.0/3.14159, dipaverage(1), xstep(iflt), icellRupDip, nFltGrid(1), 
-     3             icellRupstrike, nFltGrid(2),fltGrid_fLen(iCellRupDip,iCellRupstrike), hDD(iFlt), hAS(iFlt), 
-     4             hDDcell, hAScell, eDist, hDist, slit, azp1p2, slit/faultlen,
-     6             dlit, phiang, dlit/avewidth,
-     5             fltGrid_x(hDDcell,hAScell), fltGrid_y(hDDcell,hAScell), fltGrid_z(hDDcell,hAScell), 
-     5             fltGrid_x(iCellRupDip,iCellRupStrike), fltGrid_y(iCellRupDip,iCellRupStrike), 
-     6             fltGrid_z(iCellRupDip,iCellRupStrike)
-            else
-               write (19,'(i3,3x,a30,4f8.2,i5,48x,20x,24x,10x,2f8.2)') iSite, fname(iflt), FaultDist(iFlt,iFltWidth,1),
-     1             FaultDist(iFlt,iFltWidth,2), FaultDist(iFlt,iFltWidth,3), FaultDist(iFlt,iFltWidth,2), HWFlag, 
-     2             FaultDist(iFlt,iFltWidth,2), FaultDist(iFlt,iFltWidth,1)
-            endif
-         endif
 
  860    continue
 
 c       Write temp Haz array to file
-        if (runflag. ne. 4) then
-           call WriteTempHaz ( tempHaz, nParamVar, nWidth, nInten, nProb, 
+        call WriteTempHaz ( tempHaz, nParamVar, nWidth, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype )
-           call WriteTempHaz1 ( tempHaz1, nParamVar, nWidth, nInten, nProb, 
+        call WriteTempHaz1 ( tempHaz1, nParamVar, nWidth, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype )
-
-        endif
 
 c       Write p1_sum as a check
-        if (runflag .ne. 4) then
-           write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt
-        endif
-c        write (*,'( 2x,''mindist ='',f10.4)') mindist
-
-c       Write out the tornado plot numbers for this fault
-c        if (runflag .ne. 4) then
-c           call Write_Br_Haz ( iFlt, nInten, nBr, nNode, Br_haz, Br_wt1, nProb )
-c        endif
+        write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt
 
  900   continue
 
@@ -806,13 +690,8 @@ c      close outfiles 1 and 2 for this site
        close (11)
        close (17)
 
-c      Write out the mean Haz, skipping this step for distance runs (i.e., runflag=4)
-       if (runflag .eq. 4) then
-          read (13,*) 
-          read (13,*) 
-          write (19,*)
-       else          
-         call output_TotalHaz ( isite, sitex, sitey, testInten, nInten,
+c      Write out the mean Haz
+       call output_TotalHaz ( isite, sitex, sitey, testInten, nInten,
      1       nFlt, nProb, Haz, fName, jCalc, sigTrunc, csrflag,
      2       attenName, period1, probAct, nWidth, m_bar, d_bar, e_bar,
      3       HazBins, nMagBins, nDistBins, nEpsBins, magBins, distBins,
@@ -821,22 +700,17 @@ c      Write out the mean Haz, skipping this step for distance runs (i.e., runfl
      6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 
 c      Write out the deagrregated hazard
-          call output_HazBins ( isite, sitex, sitey, testInten, nInten,
+        call output_HazBins ( isite, sitex, sitey, testInten, nInten,
      1       nProb, HazBins, jCalc, sigTrunc, csrflag,
      1       nMagBins, nDistBins,
      2       nEpsBins, magBins, distBins, epsBins,
      3       attenName, period1, m_bar, d_bar, e_bar,
      4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
      5       HazBinsX)
-       endif
-                  call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
+     
+        call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue
-
-      if (runflag .eq. 4) then
-         close (19)
-         close (29)
-      endif
 
  2000 continue
       close (77)

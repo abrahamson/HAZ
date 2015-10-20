@@ -37,7 +37,7 @@
       real xStep(MAX_FLT), yStep(MAX_FLT), 
      1     maxmag1, minDist, maxInten, mag, pMag(MAXPARAM,MAX_WIDTH),
      1     mindist1, wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), rout(MAXPARAM,MAX_WIDTH),
-     1     wt2(MAX_FLT,MAXPARAM,MAX_WIDTH)
+     1     wt2(MAXPARAM)
       real*8 probX, mHaz, pxceed3
       real pxceed, faultLength, period1(4,MAX_PROB),
      1     shortDist(MAX_FLT)
