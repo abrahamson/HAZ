@@ -2,7 +2,8 @@ c     magprob.f
 
       subroutine magProb ( mag, maxMag, minMag, magStep, beta, iFlt,            
      1                     pmag, nParam, nWidth,                                
-     2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo )
+     2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo,
+     3                     Rup1_flag )
       include 'pfrisk.h'            
       real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
@@ -16,7 +17,11 @@ c     magprob.f
       real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH)                        
       real magcut, betaAC, magnorm, sumnorm, mUnorm, mLnorm
       real aknorm, pmagnorm(MAXPARAM,MAX_WIDTH) 
+      real WA_PMag(10000), sum
+      integer rup1_flag
       
+      rup1_flag = 0
+            
 c     Set magnitude range               
       mU = mag + magStep(iFlt)/2.       
       mL = mag - magStep(iFlt)/2.   
@@ -28,8 +33,13 @@ c     Compute the mag probability for each parameter variation
           if ( magRecur(iFlt,iParam,iWidth) .ne. 10 ) then 
             magU = maxMag(iFlt,iParam,iWidth)                
           else
-            magU = 8.5              
+            if ( mpdf_param(iFlt,iParam,iwidth,5) .eq. 0. ) then
+              magU =  mpdf_param(iFlt,iParam,iwidth,2)
+            else
+              magU = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
+            endif
           endif
+
 c         Lower magnitude equal to the minimum magnitude for each fault.		  
           magL = minMag(iFlt)        
           
@@ -52,7 +62,13 @@ c           TRUNCATED EXPONENTIAL MODEL
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE EXPONENTIAL MODEL.
               pmag(iParam,iWidth) = ak*(exp(-beta1*(mL - magL))                                
-     1                   - exp(-beta1*(mU - magL)) )                            
+     1                   - exp(-beta1*(mU - magL)) )  
+c             set flag if this is part of the large eqk'                          
+              if ( mag .gt. MagU-mpdf_param(iFlt,iParam,iwidth,3)) then
+                Rup1_flag = 1
+              else
+                Rup1_flag = 0
+              endif
 
 c           MAXIMUM MAGNITUDE MODEL       
             elseif ( magRecur(iFlt,iParam,iWidth) .eq. 3. ) then                         
@@ -81,7 +97,11 @@ c            magnitude bin.
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
                  pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)                        
-              endif            
+              endif      
+
+c             All ruptures are large mag ruptures for syn rup
+              Rup1_flag = 1
+      
  
 c           CHARACTERISTIC MODEL (Youngs and Coppersmith)                         
             elseif (magRecur(iFlt,iParam,iWidth) .eq. 0. ) then                         
@@ -122,7 +142,15 @@ c               FOR THE CHARACTERISTIC MAGNITUDE MODEL.
 c             NORMALIZE                   
               ak = (1-exp(-beta1*(magU-deltaM1-minMag(iFlt))))                           
      1         + beta1*exp(-beta1*(mag1-minMag(iFlt))) * deltaM1                
-              pmag(iParam,iWidth) = pmag(iParam,iWidth) / ak                             
+              pmag(iParam,iWidth) = pmag(iParam,iWidth) / ak   
+
+c             Set large rup falg for syn rupture
+              if ( mag .gt. mag2) then
+                Rup1_flag = 1
+              else
+                Rup1_flag = 0
+              endif
+                          
        
 c         WG99 model
           elseif ( magRecur(iFlt,iParam,iWidth) .eq. 4. ) then         
@@ -279,18 +307,34 @@ c           WAACY Model
                MaxMagWA =  mpdf_param(iFlt,iParam,iwidth,2)
               else
                MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
-             endif
+              endif
               Btail = mpdf_param(iFlt,iParam,iwidth,3)
               SigM = mpdf_param(iFlt,iParam,iwidth,1)
               Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
               mChar = maxMag(iFlt,iParam,iWidth)
               b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
+              if ( MaxMagWA .lt. mChar ) then
+                write (*,'( 2x,''bad parameter for WAACY model, maxmag is too small'')')
+                stop 99
+              endif  
 
-              call Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA, 
-     1                  minMag(iFlt), ML, MU, pMag1)
-              pMag(iParam,iWidth) = pMag1
-          endif                                
-         endif     
+c             Brute force calc of Pmag.  Fix this later to be faster.
+              stepM = 0.01
+              nMag = int ( (MaxMagWA - minMag(iFlt)) / stepM )
+              call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA,
+     1                    minMag(iFlt), WA_Pmag, stepM, nMag)
+
+c              call Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA, 
+c     1                  minMag(iFlt), ML, MU, pMag1)
+              sum = 0.
+              do iMag=1,nMag
+               mag = minMag(iFlt) + (iMag-1)*stepM  
+               if ( mag .gt. ML .and. mag .le. MU ) sum = sum + WA_Pmag(iMag)
+c               write (*,'( i5,f10.3,2e12.4)') iMag, mag, WA_Pmag(iMag), sum              
+              enddo
+              pMag(iParam,iWidth) = sum
+            endif                                
+          endif     
 
         enddo                                  
 

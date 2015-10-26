@@ -1,6 +1,7 @@
       program haz45a
 
-c     Probabilisitic Seismic Hazard Program (PSHA)
+c     Probabilisitic Seismic Hazard Program (PSHA) 
+
 
       include 'pfrisk.h'
       include 'declare1.h'
@@ -31,6 +32,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real*8 prock1, prock2
       real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
       real Pmag_all(MAXPARAM)
+      integer rup1_flag
       
       real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
@@ -85,11 +87,12 @@ c     read fault File
      7     al_segWt, attenType, sampleStep,
      8     grid_a,grid_dlong,grid_dlat,grid_n,grid_long, grid_lat,
      9     grid_top, minlat, maxlat, minlong, maxlong, scaleRate, fsys,
-     1     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synatten,
+     1     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synjcalc,
      1     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
      2     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam, 
      3     nMaxmag2, segWt1, faultFlag, nDD, nFtype, ftype_wt, 
-     4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag )
+     4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag, 
+     7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
       
 c     Loop Over Number of Sites
       read (13,*) nSite    
@@ -220,44 +223,6 @@ c        Compute activity rate: N(Mmin)
      2         RateParam, mpdf_param, magStep, RateType, 
      1         charMeanMo, expMeanMo )
 
-c     temp fix for rup longer than modeled fault (applies to waacy only)
-c        Correct for moment released outside of the modelled rupture for faults
-         if (sourceType(iFlt) .ne. 2 .and. sourceType(iFlt) .ne. 3  ) then 
-         do iParam=1,nparamVar(iFlt,iFltWidth)
-           sum0_Mo(iParam) = 0.
-           sum1_Mo(iParam) = 0.
-         enddo  
-
-          do iMag = 1, nMag(iFlt)
-           mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
-           call magProb ( mag, maxMag, minMag, magStep, beta, iFlt, 
-     1           pMag, nParamVar, nWidth, MagRecur, 
-     2           mpdf_param, ExpMeanMo, CharMeanMo )
-
-           a_moment = 10.**(1.5*mag+16.05)
-           a_moment1 = a_moment
-           area_rup = 10.**(mag-4.)
-           areaRatio = area_rup / faultArea
-           if (areaRatio .gt. 1. ) then
-              a_moment1 = a_moment / areaRatio
-           endif
-
-           do iParam=1,nparamVar(iFlt,iFltWidth)
-            pMag_all(iParam) = pmag(iParam,iFltWidth)
-            sum0_Mo(iParam) = sum0_Mo(iParam) + a_moment*pMag_all(iParam)
-            sum1_Mo(iParam) = sum1_Mo(iParam) + a_moment1*pMag_all(iParam)
-           enddo 
-          enddo
-          
-c        only apply to waacy         
-           do iParam=1,nparamVar(iFlt,iFltWidth)
-              if ( magRecur(iFlt,iParam,iFltWidth)  .eq. 10 ) then
-                Rate(iParam,iFltWidth) = Rate(iParam,iFltWidth)  * (sum0_Mo(iParam) / sum1_Mo(iParam) )
-c            write (*,'( i5,e12.5)') iParam, (sum0_Mo(iParam) / sum1_Mo(iParam) )
-            endif
-           enddo
-         endif
-
 c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          do iParam=1,nparamVar(iFlt,iFltWidth)
            sum1(iParam,iFltWidth) = 0.
@@ -274,7 +239,7 @@ c         Compute Probability of mag between mag-magStep/2 and mag+magStep/2
 c         using the magnitude pdf for each parameter variation
           call magProb ( mag, maxMag, minMag, magStep, beta, iFlt, 
      1           pMag, nParamVar, nWidth, MagRecur, 
-     2           mpdf_param, ExpMeanMo, CharMeanMo )
+     2           mpdf_param, ExpMeanMo, CharMeanMo, rup1_flag )
 
 
          do iParam=1,nparamVar(iFlt,iFltWidth)
@@ -414,7 +379,7 @@ C                Check for either fixed sigma value (scalc1<0) or other sigma mo
 
                dipaverage(1) = dipavg*180.0/3.14159  
 
-c              Call for median ground motions
+c              Compute the median and sigma of the ground motions
                call meanInten ( distRup, distJB, distSeismo,
      1               HWFlag, mag, jcalc1, specT(iProb),  
      2               lgInten,sigmaY, ftype(iFlt,iFtype), attenName, period1, 
@@ -424,7 +389,38 @@ c              Call for median ground motions
      6               cfcoefrrup, cfcoefrjb, Ry0 )
 
 c               Add epistemic uncertainty term (constant shift) to median
-                lgIntenscl = lgInten + gmScale(iProb,jType,iAtten)
+                lgInten = lgInten + gmScale(iProb,jType,iAtten)
+
+C               Second Median Call for Complex/Splay Rupture Median
+C               Ground Motions will be SRSS with main rupture median ground motions.
+                if (synchron(iFlt) .eq. 0) then
+                  nSyn_Case(iFlt) = 1
+                  synwt(iFlt,1)= 1.0
+                endif
+
+c               Temp: set probability of syn rupture to unity
+c               Later, this will be an input
+c           write (*,'( 2i5)') iFlt, synchron(iFlt)
+                probSyn = 1.
+
+c               Loop over synchronous ruptures (aleatory)          
+                do 549 isyn=1,nSyn_Case(iFlt)
+                 if (synchron(iFlt) .gt. 0 .and. rup1_flag .eq. 1) then
+                  call meanInten ( synDistRup(iFlt,isyn), syndistJB(iFlt,isyn), 
+     1                syndistSeismo(iFlt,isyn),
+     2                synhwflag(iFlt,isyn), synmag(iFlt,isyn), synjcalc(iFlt), specT(iProb),  
+     3                lgIntenS, temp, synftype(iFlt,isyn), attenName, period1, 
+     4                iAtten, iProb, jType, vs, synhypo(iflt,1), intflag, AR, syn_dip(iFlt,isyn),
+     5                disthypo, depthvs10, depthvs15, D25, tau,
+     6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
+     7                vs30_class, forearc, syn_Rx, phi,
+     8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
+c                  write (*,'( 2f10.4)') lgInten, lgIntenS
+c           pause 'syn flag'
+
+c                 Compute SRSS of median                
+                  lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
+                endif
 
 C               Second call got GPE for different sigma model 
                 if (sigflag .eq. 1) then
@@ -452,9 +448,9 @@ c               Check that sigma is not less than zero (0.0001)
 c               Reset SigmaTotal variable
                 sigmaTotal = sigmaY
 
-C      Application of Directivity model if requested. 
-                if ( fltDirect(iFlt) .eq. 1) then
-                   if (dirflag(iProb) .ge. 1 .and. dirflag(iProb) .lt. 100 .and. mag .gt. 5.6          
+C               Application of Directivity model. 
+                if ( fltDirect(iFlt) .eq. 1 .and. dirflag(iProb) .ge. 1
+     1              .and. dirflag(iProb) .lt. 100 .and. mag .gt. 5.6          
      1                      .and. specT(iProb) .ge. 0.50 ) then
 
 C      First set up the number of hypocenter locations for a given fault rupture area
@@ -474,80 +470,25 @@ C      Set -->  nHypoX = nHypoZ = 1
                       pHypoZ = 1.
                       nHypoZStep = 1
                    endif
-                else
-                   nHypoX = 1
-                   pHypoX = 1.
-                   nHypoXStep = 1
-
-                   nHypoZ = 1
-                   pHypoZ = 1.
-                   nHypoZStep = 1
-                endif
-                
+                    
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
 
 c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
 
-C     Now make the call to the NGA rupture directivity Subroutine if applicable
-                if ( fltDirect(iFlt) .eq. 1) then
-                  if (dirflag(iProb) .ge. 1 .and. mag .ge. 5.6          
-     1                      .and. specT(iProb) .ge. 0.50 ) then
-
-                    if (dirflag(iProb) .ge. 1 .and. dirflag(iProb) .lt. 100 ) then 
-
-                       call ngaRDirmodel (iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavg,
-     2                      iLocY, iLocX, fltgrid_rrup, Rx, HWFlag, ftype(iFlt,iFtype),
-     3                      dirflag(iProb), lnDir, specT(iProb), mag, sigDirY, RupLen, RupWidth )
-
-                       lgInten = lgIntenscl + lnDir
-                       sigmaTotal = sigmaY - sigDirY
-C     Apply JWL Directivity model. For Median adjustment use (101) for Sigma adjustment use (102)
-C     Note: currently based on if statement above this will only get applied for periods greater than 0.5 sec. 
-                    elseif (dirflag(iProb) .ge. 100 ) then
-
-                       if (dirflag(iProb) .le. 103) then
-                          call DirJWL_V2 (specT(iProb), DistRup, Rx, Ry, Ruplen, Mag, ftype(iFlt,iFtype), 
-     1                      RupWidth, Dipaverage(1), HWflag, medadj, sigadj )
-                       elseif (dirflag(iProb) .gt. 103) then
-                          call DirJWL_V3 (specT(iProb), DistRup, Rx, Ry, Ruplen, Mag, ftype(iFlt,iFtype), 
-     1                      RupWidth, Dipaverage(1), HWflag, medadj, sigadj )
-                       endif
-
-C     Call to Version 1 of Directivity Model (Not currently used but placeholder for Dirflag kept).
-                          if (dirflag(iProb) .eq. 101) then
-                             lgInten = lgIntenscl + medadj 
-                          elseif (dirflag(iProb) .eq. 102) then  
-                             sigmaTotal = sqrt(sigmaY*sigmaY + sigadj*sigadj)
-                             if (sigmaTotal .lt. 0.0) Sigmatotal = 0.0                             
-                          elseif (dirflag(iProb) .ge. 103) then
-                             lgInten = lgIntenscl + medadj 
-                             sigmaTotal = sqrt(sigmaY*sigmaY + sigadj*sigadj)
-                          endif
-                    endif
-
-                  else
-                    lgInten = lgIntenscl
-                  endif
-                else
-                  lgInten = lgIntenscl
-                endif
-
-                  nSyn_Case(iFlt) = 1
-                  probSyn = 1.
-c                 Loop over synchronous ruptures (aleatory)
-                  do 520 iSyn=1,nSyn_Case(iFlt)
+C                 Call to the rupture directivity Subroutine if applicable
+                  if ( dirflag(iProb) .ge. 1 .and. fltDirect(iFlt) .eq. 1) then
+c                    call Directivity ( dirFlag(iProb), specT, DistRup, 
+c     1                    Rx, Ry, Ruplen, mag, ftype(iFlt,iFtype), 
+c     2                    RupWidth, Dipaverage(1), HWflag, lgIntenscl,
+c     3                    lgInten, sigmaTotal )
+                  endif 
+  
 c                  Loop over test ground motion values                  
-
                    do 510 jInten = 1, nInten(iProb)
 
 c                   Compute Probability of exceeding test  
-                    pRock1 = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
-                    pRock2 = 0.5 * pxceed3 (lgInten, lgTestInten, sigma1, iProb,jInten,sigTrunc(iProb))
-     1                       + 0.5 * pxceed3 (lgInten, lgTestInten, sigma2, iProb,jInten,sigTrunc(iProb))
-
                     if ( iMixture(jType,iProb,iAtten)  .eq. 0 ) then
                       pRock = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
 
@@ -581,8 +522,9 @@ c                    Set the weight for this set of parameters (epistemic)
 c                    Set up weight array for later output.
                      wtout(iFlt,iParam,iFltWidth,iFtype) = wt
          
-c                    Set probability of this earthquake (w/o gm)
-                     p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)*phypoX*phypoZ*probSyn
+c                    Set probability of this earthquake (w/o gm) - (aleatory)
+                     p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)
+     1                    *phypoX*phypoZ*probSyn*synwt(iFlt,isyn)
                     
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then
@@ -633,9 +575,9 @@ c                    Save Marginal Hazard to temp array for fractile output
 
  500                continue
  510               continue
- 520              continue
- 530             continue
- 540            continue
+ 530              continue
+ 540             continue
+ 549            continue
  550           continue
  560          continue
  561          continue
@@ -648,6 +590,7 @@ c                    Save Marginal Hazard to temp array for fractile output
 c         Compute the rate for this magnitude for each epistemic parameter variation
           do iParam=1,nParamVar(iFlt,iFltWidth)
             rout(iParam,iFltWidth) = (rate(iParam,iFltWidth)*pmag(iParam,iFltWidth))
+c            write (*,'( i5,2e12.4)') iparam, (rate(iParam,iFltWidth),pmag(iParam,iFltWidth))
           enddo
           mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
 

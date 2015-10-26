@@ -215,12 +215,15 @@ c               sum = sum + (pL1-pU1)/(pmagL-pmagU)*(10.**(1.5*mag+16.05))
              rate(iParam,i) = momentRate2/sum  
 
 c     WAACY Model             
-          elseif (magRecur(iFlt,iParam,i) .eq. 10 ) then     
+          elseif (magRecur(iFlt,iParam,i) .eq. 10 ) then  
              call calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minMag, iFlt, iParam, iwidth, faultArea, pRatio )  
              rate_M_gt_0 = momentRate2/sum
  
-c            Set the rate to balance the moment
-             rate(iParam,i) = rate_M_gt_0 * pRatio   
+c            Set the rate for M> Mmin (scale the rate for M>0 by pRatio,
+c            where pRatio is the ratio of eqk with M>Mmin / M>0
+             rate(iParam,i) = rate_M_gt_0 * pRatio 
+c             write (*,'( 3e12.5)')   rate(iParam,i), rate_M_gt_0,  pRatio 
+c             pause 'out of waacy rate'   
 
 C..........Working Group Model...................
            elseif (magRecur(iFlt,iParam,i) .eq. 4.) then     
@@ -372,23 +375,23 @@ c          truncated exp model
              rate(iParam,i) = (1./RateParam(iFlt,iParam,i) ) / (t1/t2)
 
 c........does not work with Working Group Case
-            elseif (magRecur(iFlt,iParam,i) .eq. 4.) then
+           elseif (magRecur(iFlt,iParam,i) .eq. 4.) then
                write (*,*) 'Recurence interval does not currently work'
                write (*,*) 'with working group model!!!!'
                stop 99
 c........does not work with Bi-Exponential Model
-            elseif (magRecur(iFlt,iParam,i) .eq. 5.) then
+           elseif (magRecur(iFlt,iParam,i) .eq. 5.) then
                write (*,*) 'Recurence interval does not currently work'
                write (*,*) 'with Bi-Exponential model!!!!'
                stop 99
 c........does not work with BC Hydro Alternative Characteristic Model
-            elseif (magRecur(iFlt,iParam,i) .eq. 6.) then
+           elseif (magRecur(iFlt,iParam,i) .eq. 6.) then
                write (*,*) 'Recurence interval does not currently work'
                write (*,*) 'with BC Hydro Alternative model!!!!'
                stop 99
-            endif
            endif
-                      
+         endif
+c         write (*,'( 2i5,e12.5)') iParam, i, rate(iParam,i)           
         enddo                                  
 
       return                            
@@ -423,7 +426,7 @@ c     Set WAACY model parameters (haz45 version)
       Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
       mChar = maxMag(iFlt,iParam,iWidth)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
-      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value
+      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
 
 c     start integration at Mag=0 for momment balance
       Mmin = 0
@@ -438,6 +441,8 @@ c     Initialize moment sum
 c     Loop over all magnitudes
       do iMag=1,nMag
         mag = Mmin + (iMag-0.5)*stepM
+c        write (77,'( i5,f10.3,e12.4)') iMag, mag, WA_Pmag(iMag)
+c        write (*,'( i5,f10.3,e12.4)') iMag, mag, WA_Pmag(iMag)
         moment = 10.**(1.5*mag+16.05)
 
 c       Scale the moment from the eqk for the part that is released on the modelled fault
@@ -453,15 +458,17 @@ c       Just use log(A)= M-4 for now
 c     Find the cumulative rate
       cumProb(nMag) = WA_Pmag(nMag) 
       do iMag=nMag-1,1,-1
-              mag = Mmin + (iMag-0.5)*stepM
+        mag = Mmin + (iMag-0.5)*stepM
         cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag)
-c        write (44,'( f10.3,2e12.4)')  mag, cumProb(iMag), WA_Pmag(iMag)
+c        write (*,'( f10.3,2e12.4)')  mag, cumProb(iMag), WA_Pmag(iMag)
       enddo
 
 c     Set the ratio of Prob for M>Mmin to M>0
       iMag1 = Int( minMag(iFlt) / stepM ) 
       pRatio = cumProb(iMag1) / cumProb(1)
+c      write (*,'( i5,e12.5)') iMag1, pRatio
 
+c      pause 'iMag1, pRatio'
 
       return
       end

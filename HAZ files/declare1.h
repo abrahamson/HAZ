@@ -78,12 +78,14 @@
       integer jInten, iSoilBin, nepsrock
       real lgRockSa, lgSoilSa, epsrock1, epsrock2
       real*8 prock
-      integer fltDirect(MAX_FLT), synchron(MAX_FLT), synatten(MAX_FLT)
+      integer fltDirect(MAX_FLT), synchron(MAX_FLT), synjcalc(MAX_FLT)
       integer nSyn_Case(MAX_FLT)
       real SynMag(MAX_FLT,MAX_SYN), SynDistRup(MAX_FLT,MAX_SYN)
       real synDistJB(MAX_FLT,MAX_SYN), synDistSeismo(MAX_FLT,MAX_SYN)
       real synhypo(MAX_FLT,MAX_SYN), synFtype(MAX_FLT,MAX_SYN)
       real SynWt(MAX_FLT,MAX_SYN), sigma, lnY, distRupS, distJBS
+      real syn_dip(MAX_FLT,MAX_SYN), syn_zTOR(MAX_FLT,MAX_SYN)
+      real syn_RupWidth(MAX_FLT,MAX_SYN), syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
       real distSeismoS, ftypeS, lgIntenS, sigmaYS, magS, magTotal
       integer synHWFlag(MAX_FLT,MAX_SYN), hwflagS, jtypeS, iSegClose
       real refPeriod(MAX_AMPPER), RefGM_Mag(MAX_AMPMAG)

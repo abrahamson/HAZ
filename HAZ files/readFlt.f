@@ -11,11 +11,12 @@ c  --------------------------------------------------------------------
      8     grid_a, grid_dlong, grid_dlat, grid_n, grid_long, grid_lat,
      9     grid_top, minlat, maxlat, minlong, maxlong, scaleRate,
      1     fsys, 
-     2     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synatten,
+     2     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synjcalc,
      3     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
      4     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam,
      5     nMaxMag2, segwt1, faultFlag, nDownDip, nFtype, ftype_wt, 
-     6     br_index, br_wt, segModelFlag, nSegModel0, segModelWt1, runflag )
+     6     br_index, br_wt, segModelFlag, nSegModel0, segModelWt1, runflag,
+     7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
 
       include 'pfrisk.h'
       
@@ -24,8 +25,11 @@ c  --------------------------------------------------------------------
       real syndistSeismo(MAX_FLT,MAX_SYN), synftype(MAX_FLT,MAX_SYN)
       real synhypo(MAX_FLT,MAX_SYN), synwt(MAX_FLT,MAX_SYN)
       integer synHWFlag(MAX_FLT,MAX_SYN)
-      integer nsyn_Case(MAX_FLT), synatten(MAX_FLT)
+      integer nsyn_Case(MAX_FLT), synjcalc(MAX_FLT)
       integer fltDirect(MAX_FLT), synchron(MAX_FLT)
+      real syn_dip(MAX_FLT,MAX_SYN), syn_zTOR(MAX_FLT,MAX_SYN)
+      real syn_RupWidth(MAX_FLT,MAX_SYN), syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
+
       real rateParam1(MAX_N1), RateWt1(MAX_N1)
       real al_segWt(MAX_FLT), dipWt1(MAX_N1), deltaDip1(MAX_N1)
       real bValue1(MAX_N1), bValueWt1(MAX_N1),  bValue2(MAX_N1)
@@ -189,11 +193,11 @@ c       Read type of source (planar, areal, grid1, grid2, irregular)
 
 c       Now read in the synchronous rupture case parameters if needed.
         if (synchron(iFlt) .gt. 0) then
-           read (10,*) nsyn_Case(iFlt), synatten(iFlt)
+           read (10,*) nsyn_Case(iFlt), synjcalc(iFlt)
 
         if (runflag .eq. 3) then
-           write (*,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synatten(iFlt)
-           write (17,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synatten(iFlt)
+           write (*,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synjcalc(iFlt)
+           write (17,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synjcalc(iFlt)
         endif
 
 c          Now read in the magnitude, distance and weigths for each synchronous rupture case.
@@ -201,7 +205,10 @@ c          Now read in the magnitude, distance and weigths for each synchronous 
              read (10,*) synmag(iFlt,isyn),syndistRup(iFlt,isyn),
      1                 syndistJB(iFlt,isyn),syndistSeismo(iFlt,isyn),
      2                 synHWFlag(iFlt,isyn),synhypo(iFlt,isyn),
-     3                 synftype(iFlt,isyn),synwt(iFlt,isyn)
+     3                 synftype(iFlt,isyn), 
+     4                 syn_dip(iFlt,isyn), syn_zTOR(iFlt,isyn), 
+     5                 syn_RupWidth(iFlt,isyn), syn_RX(iFlt,isyn), syn_Ry0(iFlt,isyn),
+     5                 synwt(iFlt,isyn)
 
         if (runflag .eq. 3) then
            write (*,*) 'Read Synmag information: ', synmag(iFlt,isyn),syndistRup(iFlt,isyn),
