@@ -28,6 +28,8 @@ c     frisk_io.f
       integer ichart, charcount, coefcountrrup, coefcountrjb, nDD(MAX_FLT)
       integer iMixture(4, MAX_PROB, MAX_ATTEN)
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11)
+      real syn_dip(MAX_FLT,MAX_SYN), syn_zTOR(MAX_FLT,MAX_SYN)
+      real syn_RupWidth(MAX_FLT,MAX_SYN), syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
 
 c     Set Data file units
       nwr = 11
@@ -109,7 +111,8 @@ c     read fault File
      1     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
      2     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam, 
      3     nMaxmag2, segWt1, faultFlag, nDD, nFtype, ftype_wt, 
-     4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag )
+     4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag,
+     7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
 
            write (*,*)
            write (*,*) 'Normal termination of fault file for testing.'

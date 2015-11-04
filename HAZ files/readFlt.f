@@ -141,10 +141,6 @@ c      Read total number of fault segments
        do i=1,nSegModel
          read (10,*) (faultFlag(iFlt0,i,k),k=1,nFlt2)
 
-      if (runflag .eq. 3) then
-         write (*,*) 'faultFlag = ', i,(faultFlag(iFlt0,i,k),k=1,nFlt2)
-         write (17,*) 'faultFlag = ', i,(faultFlag(iFlt0,i,k),k=1,nFlt2)
-      endif
 
        enddo
 
@@ -176,29 +172,14 @@ c       Set segment flags for this fault system
 c       Read name of this segment
         read(10,'( a80)') fName(iFlt)
         write (*,'( i5,2x,a80)') iFlt, fName(iFlt)
-        if (runflag .eq. 3) then
-           write (17,'( a13,i5,2x,a80)') 'iFlt, Fname: ', iFlt, fName(iFlt)
-        endif
 
 c       Read type of source (planar, areal, grid1, grid2, irregular)
         read(10,*) sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
      1                 fltDirect(iFlt), synchron(iFlT)
 
-        if (runflag .eq. 3) then
-           write (*,*) iFlt,sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
-     1                 fltDirect(iFlt), synchron(iFlT)
-           write (17,*) iFlt,sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
-     1                 fltDirect(iFlt), synchron(iFlT)
-        endif
-
 c       Now read in the synchronous rupture case parameters if needed.
         if (synchron(iFlt) .gt. 0) then
            read (10,*) nsyn_Case(iFlt), synjcalc(iFlt)
-
-        if (runflag .eq. 3) then
-           write (*,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synjcalc(iFlt)
-           write (17,*) 'NSyn_Case, snyatten = ', nsyn_Case(iFlt), synjcalc(iFlt)
-        endif
 
 c          Now read in the magnitude, distance and weigths for each synchronous rupture case.
            do isyn=1,nsyn_Case(iFlt)
@@ -210,43 +191,16 @@ c          Now read in the magnitude, distance and weigths for each synchronous 
      5                 syn_RupWidth(iFlt,isyn), syn_RX(iFlt,isyn), syn_Ry0(iFlt,isyn),
      5                 synwt(iFlt,isyn)
 
-        if (runflag .eq. 3) then
-           write (*,*) 'Read Synmag information: ', synmag(iFlt,isyn),syndistRup(iFlt,isyn),
-     1                 syndistJB(iFlt,isyn),syndistSeismo(iFlt,isyn),
-     2                 synHWFlag(iFlt,isyn),synhypo(iFlt,isyn),
-     3                 synftype(iFlt,isyn),synwt(iFlt,isyn)
-           write (17,*) 'Read Synmag information: ', synmag(iFlt,isyn),syndistRup(iFlt,isyn),
-     1                 syndistJB(iFlt,isyn),syndistSeismo(iFlt,isyn),
-     2                 synHWFlag(iFlt,isyn),synhypo(iFlt,isyn),
-     3                 synftype(iFlt,isyn),synwt(iFlt,isyn)
-        endif
-
            enddo
         endif
 
 c       Read aleatory segmentation wts
         read (10,*) al_segWt(iFlt)
 
-        if (runflag .eq. 3) then
-           write (*,*) 'Al_Segwt = ', al_segWt(iFlt)
-           write (17,*) 'Al_Segwt = ', al_segWt(iFlt)
-        endif
-
 c       Check for standard fault source or areal source
         if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFLt) .eq. 2) then
           read (10,*) dip1, top
-
-        if (runflag .eq. 3) then
-           write (*,*) 'Dip1, Top = ', dip1, top
-           write (17,*) 'Dip1, Top = ', dip1, top
-        endif
-
           read(10,*) nfp(iFlt)
-
-        if (runflag .eq. 3) then
-           write (*,*) 'nFp = ', nfp(iFlt)
-           write (17,*) 'nFp = ', nfp(iFlt)
-        endif
 
           call CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
           do ipt=1,nfp(iFlt)
@@ -255,32 +209,16 @@ c       Check for standard fault source or areal source
             if (sourceType(iFlt) .eq. 2) then
                grid_top(iFlt,ipt) = top
             endif
-
-        if (runflag .eq. 3) then
-           write (*,*) 'ipt, Flong, fLat = ',ipt,fLong(iFlt,1,ipt), fLat(iFlt,1,ipt)
-           write (17,*) 'ipt, Flong, fLat = ', ipt,fLong(iFlt,1,ipt), fLat(iFlt,1,ipt)
-        endif
-
           enddo
           nDownDip(iFlt) = 1
-         endif
+        endif
 
 c        Check for grid source (w/o depth)
          if ( sourceType(iFlt) .eq. 3 ) then
            read (10,*)  dip1, top
 
-        if (runflag .eq. 3) then
-           write (*,*) 'Dip1, top = ', dip1, top
-           write (17,*) 'Dip1, top = ', dip1, top
-        endif
-
            call RdGrid1 (iFlt, grid_a, grid_dlong, grid_dlat, grid_n,
      1             grid_long, grid_lat, minLat, minLong,  maxLat, maxLong, scaleRate(iFlt) )
-
-        if (runflag .eq. 3) then
-           write (*,*) 'Successful call to RdGrid1 Subroutine.'
-           write (17,*) 'Successful call to RdGrid1 Subroutine.'
-        endif
 
            do igrid=1,grid_n(iFlt)
              grid_top(iFlt,igrid) = top
@@ -292,19 +230,9 @@ c        Check for grid source (w/ depth)
          if ( sourceType(iFlt) .eq. 4 ) then
               read (10,*)  dip1
 
-        if (runflag .eq. 3) then
-           write (*,*) 'Dip1 = ', dip1
-           write (17,*) 'Dip1 = ', dip1
-        endif
-
               call RdGrid2 (iFlt,grid_a,grid_dlong,grid_dlat,grid_n,
      1             grid_long, grid_lat, minLat, minLong, maxLat, maxLong, scaleRate(iFlt),
      2             grid_top)
-
-        if (runflag .eq. 3) then
-           write (*,*) 'Successful call to RdGrid2 Subroutine.'
-           write (17,*) 'Successful call to RdGrid2 Subroutine.'
-        endif
 
               nDownDip(iFlt) = 1
          endif
@@ -313,19 +241,9 @@ c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
            read(10,*) nDownDip(iFLt), nfp(iFlt)  
    
-        if (runflag .eq. 3) then
-           write (*,*) 'nDownDip, nFp = ', nDownDip(iFLt), nfp(iFlt)
-           write (17,*) 'nDownDip, nFp = ', nDownDip(iFLt), nfp(iFlt)
-        endif
-
            call CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
            do ipt=1,nfp(iFlt)
               read (10,*) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
-
-         if (runflag .eq. 3) then
-           write (*,*) 'Flong, Flat, Fz: ', (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
-           write (17,*) 'Flong, Flat, Fz: ', (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
-        endif
 
           enddo
          endif
@@ -334,21 +252,9 @@ c        Read dip Variation
          if ( sourceType(iFlt) .lt. 5 ) then
            read (10,*) n_Dip
 
-         if (runflag .eq. 3) then
-           write (*,*) 'n_Dip = ',n_Dip
-           write (17,*) 'n_Dip = ', n_Dip 
-        endif
-
            call CheckDim ( n_Dip, MAX_N1, 'MAX_N1    ' )
            read (10,*) (deltaDip1(i),i=1,n_Dip)
            read (10,*) (dipWt1(i),i=1,n_Dip)
-
-        if (runflag .eq. 3) then
-           do i=1,n_dip
-              write (*,*) 'DeltaDip, DipWt = ', i, deltaDip1(i), dipWt1(i)
-              write (17,*) 'DeltaDip, DipWt = ', i, deltaDip1(i), dipWt1(i)
-           enddo
-        endif
 
            call CheckWt ( dipWt1, n_Dip, fName(iFlt), 'Dip                 ' )
          else
@@ -357,13 +263,9 @@ c        Read dip Variation
            dipWt1(1) = 1.
          endif
 
+
 c        Read b-values (not for activity rate cases)
          read (10,*) n_bValue
-
-        if (runflag .eq. 3) then
-           write (*,*) 'nb_value = ', n_bValue
-           write (17,*) 'nb_value = ', n_bValue
-        endif
 
          call CheckDim ( n_bValue, MAX_N1, 'MAX_N1    ' )
          if ( n_bValue .gt. 0 ) then
@@ -381,11 +283,6 @@ c        Read b-values (not for activity rate cases)
 c        Read activity rate - b-value pairs
          read (10,*) nActRate 
 
-        if (runflag .eq. 3) then
-           write (*,*) 'nActRate = ', nActRate
-           write (17,*) 'nActRate = ', nActRate
-        endif
-
          if ( nActRate .ne. 0 ) then
            do ii=1,nActRate
              read (10,*) bValue2(ii), actRate(ii), actRateWt1(ii)
@@ -397,25 +294,11 @@ C     Scale activity rate for gridded source (i.e., sourcetype 3 or 4) based on 
              endif
            enddo
 
-        if (runflag .eq. 3) then
-           do ii=1,nActRAte
-              write (*,*) 'bValue, ActRate, ActRateWt = ', ii,bValue2(ii), actRate(ii), actRateWt1(ii)
-              write (17,*) 'bValue, ActRate, ActRateWt = ', ii,bValue2(ii), actRate(ii), actRateWt1(ii)
-           enddo
-        endif
-
            call CheckWt ( actRateWt1, nActRate, fName(iFlt), 'ActRate             ' )
          endif
 
 c        Read weights for rate methods
          read (10,*) wt_srBranch, wt_ActRateBranch, wt_recIntBranch, wt_MoRateBranch
-
-        if (runflag .eq. 3) then
-           write (*,*) 'wtSR, wtActRate, wtRecInt, wtMoRate = ',  wt_srBranch, wt_ActRateBranch, 
-     1                        wt_recIntBranch, wt_MoRateBranch
-           write (17,*) 'wtSR, wtActRate, wtRecInt, wtMoRate = ',  wt_srBranch, wt_ActRateBranch, 
-     1                        wt_recIntBranch, wt_MoRateBranch
-        endif
 
          sum = wt_srBranch + wt_ActRateBranch + wt_recIntBranch + wt_MoRateBranch
          if ( sum .lt. 0.999 .or. sum .gt. 1.001 ) then
@@ -425,21 +308,9 @@ c        Read weights for rate methods
 
 c        Read slip-rates
          read (10,*) nSR
-        if (runflag .eq. 3) then
-           write (*,*) 'nSR = ',  nSR
-           write (17,*) 'nSR = ',  nSR
-        endif
-
          if ( nSR .gt. 0 ) then
            read (10,*) (sr(k),k=1,nSR)
            read (10,*) (wt_sr(k),k=1,nSR)
-
-        if (runflag .eq. 3) then
-           do k=1,nSr
-              write (*,*) 'SR, wt = ',  sr(k),wt_sr(k)
-              write (17,*) 'SR, wt = ', sr(k),wt_sr(k)
-           enddo
-        endif
 
            call CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
          endif
@@ -447,21 +318,9 @@ c        Read slip-rates
 c        Read recurrence intervals
          read (10,*) nRecInt
 
-        if (runflag .eq. 3) then
-           write (*,*) 'nRecInt = ',  nRecInt
-           write (17,*) 'nRecInt = ',  nRecInt
-        endif
-
          if ( nRecInt .gt. 0 ) then
            read (10,*) (rec_Int(k),k=1,nRecInt)
            read (10,*) (wt_recInt(k),k=1,nRecInt)
-
-        if (runflag .eq. 3) then
-           do k=1,nRecInt
-              write (*,*) 'RecInt, wt = ',  rec_Int(k),wt_recInt(k)
-              write (17,*) 'RecInt, wt = ', rec_Int(k),wt_recInt(k)
-           enddo
-        endif
 
            call CheckWt (wt_recInt, nRecInt, fName(iFlt), 'Recurrence Intervals')
          endif
@@ -469,22 +328,10 @@ c        Read recurrence intervals
 c        Read moment-rates
          read (10,*) nMoRate
 
-        if (runflag .eq. 3) then
-           write (*,*) 'nMoRate = ',  nMoRate
-           write (17,*) 'nMoRate = ',  nMoRate
-        endif
-
           if ( nMoRate .gt. 0 ) then
            read (10,*) (MoRate(k),k=1,nMoRate)
            read (10,*) (MoRateDepth(k),k=1,nMoRate)
            read (10,*) (wt_MoRate(k),k=1,nMoRate)
-
-        if (runflag .eq. 3) then
-           do k=1,nMoRate
-              write (*,*) 'NoRate, MoRateDepth, wt = ',  MoRate(k),MoRateDepth(k),wt_MoRate(k)
-              write (17,*) 'MoRate, MoRateDepth, wt = ', MoRate(k),MoRateDepth(k),wt_MoRate(k)
-           enddo
-        endif
 
            call CheckWt (wt_MoRate, nMoRate, fName(iFlt), 'Moment Rates        ')
          endif
@@ -537,11 +384,6 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
 
 c        Read Mag recurrence weights (char, exp, etc.)
          read (10,*) nMagRecur
-
-        if (runflag .eq. 3) then
-              write (*,*) 'nMagRecur = ',  nMagRecur
-              write (17,*) 'nMagRecur = ', nMagRecur
-        endif
 
          call CheckDim ( nMagRecur, MAX_N1, 'MAX_N1    ' )
          read (10,*) (magRecur1(i),i=1,nMagRecur)

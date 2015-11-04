@@ -9,7 +9,7 @@ c     magprob.f
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
       real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2         
       real maxMagWA, mMag, mChar                
-      real zmL, zmU, zmagU, zmagL, d    
+      real zmL, zmU, zmagU, zmagL    
       real*8 pmL, pmU, pmagL, pmagU       
       real meanMag, sigma                                   
       real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
@@ -88,19 +88,26 @@ c            magnitude bin.
                  zmL = (mL-meanMag)/sigma    
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
-                 zmagL=(magL-meanMag)/sigma  
-                 call NDTR(zmL,Real(pmL),d)        
-                 call NDTR(zmU,Real(pmU),d)        
-                 call NDTR(zmagL,Real(pmagL),d)           
-                 call NDTR(zmagU,Real(pmagU),d)        
-
-c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
-c             FOR THE MAXIMUM MAGNITUDE MODEL.
-                 pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)                        
+                 zmagL=(magL-meanMag)/sigma 
+                 if ( zmU .lt. -4. .or. zmu .gt. 4. ) then
+                   pmag(iParam,iWidth) = 0.
+                 else
+                   call NDTR3(zmL,pmL)        
+                   call NDTR3(zmU,pmU)        
+                   call NDTR3(zmagL,pmagL)           
+                   call NDTR3(zmagU,pmagU)        
+                   pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)
+c              write (*,'( e12.4)')  pmag(iParam,iWidth)
+c              write (*,'( 4e12.3)') pmL,  pmU, pmagL, pmagU  
+c              write (*,'( 4f12.4)') zmL,  zmU, zmagL, zmagU 
+c              write (*,'( 6f10.4)') ML, MU, magU, magL, meanMag, sigma              
+c              pause 'pmag'
+                 endif                        
               endif      
 
 c             All ruptures are large mag ruptures for syn rup
               Rup1_flag = 1
+              
       
  
 c           CHARACTERISTIC MODEL (Youngs and Coppersmith)                         
@@ -319,20 +326,22 @@ c           WAACY Model
               endif  
 
 c             Brute force calc of Pmag.  Fix this later to be faster.
-              stepM = 0.01
-              nMag = int ( (MaxMagWA - minMag(iFlt)) / stepM )
-              call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA,
-     1                    minMag(iFlt), WA_Pmag, stepM, nMag)
+              call Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA, 
+     1                  minMag(iFlt), ML, MU, pMag1)
+              pMag(iParam,iWidth) = pMag1
 
-c              call Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA, 
-c     1                  minMag(iFlt), ML, MU, pMag1)
-              sum = 0.
-              do iMag=1,nMag
-               mag = minMag(iFlt) + (iMag-1)*stepM  
-               if ( mag .gt. ML .and. mag .le. MU ) sum = sum + WA_Pmag(iMag)
+c              stepM = 0.01
+c              nMag = int ( (MaxMagWA - minMag(iFlt)) / stepM )
+c              call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA,
+c     1                    minMag(iFlt), WA_Pmag, stepM, nMag)
+
+c              sum = 0.
+c              do iMag=1,nMag
+c               mag = minMag(iFlt) + (iMag-1)*stepM  
+c               if ( mag .gt. ML .and. mag .le. MU ) sum = sum + WA_Pmag(iMag)
 c               write (*,'( i5,f10.3,2e12.4)') iMag, mag, WA_Pmag(iMag), sum              
-              enddo
-              pMag(iParam,iWidth) = sum
+c              enddo
+c              pMag(iParam,iWidth) = sum
             endif                                
           endif     
 
@@ -352,11 +361,11 @@ C------WAACY Subroutine for Magnitude Prob Values --------------
       real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
       real M1, M2
       real Mmin, stepM, ML, MU, WA_Pmag
-      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
+      real pdf1, PHI_15, PHI1, x, step1, mag1
       real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
       real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer nStep, i
-      real temp1, temp2, x1, x2, x3, x4, x5
+      real temp1, temp2, oneMinusAlpha, x2, x3, x4, x5
 
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -385,9 +394,10 @@ c      call NDTR(x,PHI1)
       d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
       d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
       alpha = d2*F / ( d1*(1.-F)+d2*F )
+      oneMinusAlpha = d1*(1.-F) / ( d1*(1.-F)+d2*F )
 
 c     Compute the pdf with a small step size
-      step1 = 0.01
+      step1 = 0.001
       nStep = int ( (MU - ML ) / step1 )
 
 c     Compute the probability of mag bewteen ML and MU
@@ -395,22 +405,21 @@ c     Compute the probability of mag bewteen ML and MU
       do i=1,nStep
         mag1 = ML + (i-0.5)*step1       
         if ( mag1 .lt. Mmin) then
-          pdf1(i) = 0.
+          pdf1 = 0.
         elseif ( mag1 .lt. M1 ) then
-          pdf1(i) = alpha * beta*exp(-beta*(mag1-Mmin)) / ( 1. - exp(-beta*(M1-Mmin)) )
+          pdf1 = alpha * beta*exp(-beta*(mag1-Mmin)) / ( 1. - exp(-beta*(M1-Mmin)) )
         elseif ( mag1 .lt. M2 ) then
-          x1 = (1.-alpha)
           x2 = c2 / (1. + c1*c2*c3)
           x3 = 1./  (t1*sigM)
           x4 = exp( -((mag1-mChar)**2) / (2*sigM**2) )
-          pdf1(i) = x1 * x2 * x3 * x4
+          pdf1 = oneMinusAlpha * x2 * x3 * x4
 
         elseif ( mag1 .lt. Mmax ) then
-          pdf1(i) = (1.-alpha) * c1*c2 / ( (1.+c1*c2*c3) ) * exp( -betaTail*(mag1-M2) ) 
+          pdf1 = oneMinusAlpha * c1*c2 / ( (1.+c1*c2*c3) ) * exp( -betaTail*(mag1-M2) ) 
         else
-          pdf1(i) = 0.
+          pdf1 = 0.
         endif
-        WA_Pmag = WA_Pmag + pdf1(i)*step1   
+        WA_Pmag = WA_Pmag + pdf1*step1   
       enddo
 
       return
@@ -442,11 +451,8 @@ c     Calculate WAACY terms
       x = -0.25 / sigM
       call NDTR(x,PHI1,d) 
       phi1 = 1-phi1
-c     phi1 = 0.159       
       PHI_15 = 0.933
       c2 = 1./ ( PHI_15-phi1) 
-c      write (*,'( 3f10.4)') phi1, phi_15 , c2
-c     pause 'phi and c2'
       c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
 
 c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
@@ -460,12 +466,9 @@ c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
      1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
      2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
       Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
-c      write (*,'( 3e15.4)')  Mo_bar_exp1, Mo_bar_Char, Mo_bar_exp2
-c     pause 'Mo_bar terms'
 
       d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
       temp1 = c1*c2*c3
-c      write (*,'( 2x,4f10.4)') c1, c2, c3, temp1
       d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
       a1 = d2*F
       a2 = d1*(1.-F)+d2*F
@@ -473,25 +476,19 @@ c      write (*,'( 2x,4f10.4)') c1, c2, c3, temp1
       alpha1 = d1*(1-F) / (d1*(1.-F)+d2*F)
 
 c     Compute the pdf with a small step size
-      step1 = 0.01
       do i=1,nMag
-        mag1 = Mmin + (i-1)*step1  
+        mag1 = Mmin + (i-1)*stepM 
         if ( mag1 .lt. Mmin) then
           pdf1(i) = 0.
         elseif ( mag1 .lt. M1 ) then
           pdf1(i) = alpha * beta*exp(-beta*(mag1-Mmin)) / ( 1. - exp(-beta*(M1-Mmin)) )
-c          write (*,'( ''bin 1'', 5e12.4)') pdf1(i), alpha,  beta*exp(-beta*(mag1-Mmin))
-c     1           , ( 1. - exp(-beta*(M1-Mmin)) )
-
 
         elseif ( mag1 .lt. M2 ) then
           pdf1(i) = alpha1 * c2 / ( (1.+c1*c2*c3) * t1*sigM ) * 
      1             exp( -((mag1-mChar)**2) / (2*sigM**2) )
-c           write (*,'( 2x,''M1 to M2'', f10.4, 3e12.4)') mag1, pdf1(i), alpha1, c2
 
         elseif ( mag1 .lt. Mmax ) then
           pdf1(i) = alpha1 * c1*c2 / (1.+c1*c2*c3) * exp( -betaTail*(mag1-M2) ) 
-c           write (*,'( 2x,''> M2'', f10.4, e12.4)') mag1, pdf1(i)
           
         else
           pdf1(i) = 0.
@@ -499,21 +496,103 @@ c           write (*,'( 2x,''> M2'', f10.4, e12.4)') mag1, pdf1(i)
 
       enddo
 
-c     Compute the probability of mag
+c     Compute the probability of mag 
+c     Also compute the moment less than M1 (sum1) 
+c          and momment greater than M1 (sum2)
        sum1 = 0.
        sum2 = 0.
       do i=1,nMag
-        mag1 = Mmin + (i-1)*step1
-        WA_Pmag(i) = pdf1(i)*step1   
-c        write (44,'( f10.4,2x,e15.7)') mag1, WA_Pmag(i)
+        mag1 = Mmin + (i-1)*stepM
+        WA_Pmag(i) = pdf1(i)*stepM  
         if (mag1 .le. M1 ) then
-         sum1 = sum1 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
-       else
-         sum2 = sum2 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
-       endif
+          sum1 = sum1 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
+        else
+          sum2 = sum2 + 10.**(1.5*mag1+16.05)*WA_Pmag(i)
+        endif
       enddo
-c      write (*,'( 2x,''Check on F:'',2f10.4)') F, sum1 / (sum1+sum2)
-c      flush (44)
+        
+      return
+      end                             
+
+C------WAACY Subroutine for to correct for rupture outside of modelled flt -----
+
+      subroutine Calc_F2_Waacy ( mChar, sigM, b_value, bTail, F, Mmax,
+     1       Mmin, F2 )
+
+      implicit none
+      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
+      real M1, M2, d
+      real Mmin, stepM, ML, MU, WA_Pmag(1)
+      real F2
+      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
+      real*8  beta, betaTail, c1, c2, c3, t1
+      real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2
+      real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
+      integer nStep, i, nMag, iBin, iMag
+      real*8  temp1, temp2
+      betaTail = bTail * alog(10.)
+      beta = b_value * alog(10.)
+
+c     Calculate WAACY terms
+      M1 = mChar - 0.25
+      M2 = mChar + 1.5*sigM
+      t1 = sqrt(2*3.1415926)
+      c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
+      x = -0.25 / sigM
+      call NDTR(x,PHI1,d) 
+      phi1 = 1-phi1
+      PHI_15 = 0.933
+      c2 = 1./ ( PHI_15-phi1) 
+      c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
+
+c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
+c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
+
+      temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) 
+      temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
+      Mo_bar_exp1 = temp1/temp2
+
+      Mo_bar_exp2 = betaTail * 10**(16.05) * exp( betaTail*M2 ) *
+     1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
+     2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
+      Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
+
+      d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
+      temp1 = c1*c2*c3
+      d2 = (1./ ( 1. + c1*c2*c3)) * Mo_bar_Char + c1*c2*c3*Mo_bar_exp2 / ( 1. + c1*c2*c3 ) 
+      a1 = d2*F
+      a2 = d1*(1.-F)+d2*F
+      alpha = d2*F / ( d1*(1.-F)+d2*F )
+      alpha1 = d1*(1-F) / (d1*(1.-F)+d2*F)
+
+c     Compute the pdf of the upper tail only 
+c     and find the fraction of the moment (F2) that is released
+c     along the modelled part of the fault 
+c      sum1 = 0.
+c      sum2 = 0.
+c      i1 = int(M2/stepM + 0.5) 
+c      do i=i1,nMag
+c        mag1 = Mmin + (i-1)*stepM 
+c        moment = 10.**(1.5*mag+16.05)
+c        if ( mag1 .lt. M2) then
+c          pdf1 = 0.
+c        elseif ( mag1 .lt. Mmax ) then
+c          pdf1 = 1. / (1.+c3) * exp( -betaTail*(mag1-M2) ) 
+c        endif
+        
+c       Sum up moment including ruptures longer than modelled fault        
+c        sum1 = sum1 + pdf1 * moment
+
+c       Sum up moment excluding ruptures longer than modelled fault                
+c        area_rup = 10.**(mag -4)
+c        areaRatio = area_rup / faultArea
+c        if (areaRatio .gt. 1. ) then
+c          moment = moment / areaRatio
+c        endif
+c        sum2 = sum2 + pdf1 * moment        
+
+c      enddo
+c      F2 = sum2 / sum1
         
       return
       end                             

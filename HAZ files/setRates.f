@@ -399,21 +399,24 @@ c         write (*,'( 2i5,e12.5)') iParam, i, rate(iParam,i)
 
 c -----------------------------------------------------------
 
-      subroutine calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minmag, iFlt, iParam, iwidth, faultArea, pRatio)  
+      subroutine calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minmag,
+     1          iFlt, iParam, iwidth, faultArea, pRatio)  
       implicit none
       include 'pfrisk.h'                
 
-      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,11),                                     
+      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5),                                     
      1       beta(MAX_FLT,MAXPARAM,MAX_WIDTH), 
      1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real minMag(MAX_FLT), Mmin
       real MaxMagWA, Btail, SigM, Fract_Exp, dM1, nSig1, mChar, b_value, mMag, stepM
       real*8 sum, moment
       real step, ML, MU, pMag(10000), pMagTest(10000), WA_PMag(10000)
+      real cumProb(10000)
       real mag, dMag0
       integer iMag, nMag, iFlt, iParam, iWidth, iMag1
-      real cumProb(10000), pratio
+      real pratio
       real faultArea, areaRatio, area_rup
+
 
 c     Set WAACY model parameters (haz45 version)
       if ( mpdf_param(iFlt,iParam,iwidth,5) .eq. 0. ) then
@@ -428,21 +431,27 @@ c     Set WAACY model parameters (haz45 version)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
       write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
 
+
 c     start integration at Mag=0 for momment balance
       Mmin = 0
-      stepM =0.01
+      stepM =0.001
       nMag = inT ( (MaxMagWA - Mmin) / stepM )
-      call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_Exp, MaxMagWA, Mmin, WA_Pmag,
-     1     stepM, nMag )
+      write (*,'( i5)') nMag
+     
+c     Compute the probabilities of magnitudes using WAACY 
+c     without correction for rupture past the modelled fault      
+      call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_Exp, 
+     1                     MaxMagWA, Mmin, WA_Pmag, stepM, nMag )
 
-c     Initialize moment sum
+c     Adjust the moment release to account for the part of the rupture
+c     that is not modelled.
+
+c     First, Initialize moment sum
       sum = 0.
 
-c     Loop over all magnitudes
+c     Compute the moment * mag pdf for the part of the rupture this is modelled.
       do iMag=1,nMag
         mag = Mmin + (iMag-0.5)*stepM
-c        write (77,'( i5,f10.3,e12.4)') iMag, mag, WA_Pmag(iMag)
-c        write (*,'( i5,f10.3,e12.4)') iMag, mag, WA_Pmag(iMag)
         moment = 10.**(1.5*mag+16.05)
 
 c       Scale the moment from the eqk for the part that is released on the modelled fault
@@ -455,20 +464,17 @@ c       Just use log(A)= M-4 for now
         sum = sum + moment*WA_Pmag(iMag)
       enddo
 
-c     Find the cumulative rate
+c     Find the cumulative rate which will be used to scale the rate from M>0 to M>Mmin
       cumProb(nMag) = WA_Pmag(nMag) 
       do iMag=nMag-1,1,-1
-        mag = Mmin + (iMag-0.5)*stepM
         cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag)
-c        write (*,'( f10.3,2e12.4)')  mag, cumProb(iMag), WA_Pmag(iMag)
       enddo
+      
 
 c     Set the ratio of Prob for M>Mmin to M>0
+c     Note: cumProb(1) should be unity.
       iMag1 = Int( minMag(iFlt) / stepM ) 
       pRatio = cumProb(iMag1) / cumProb(1)
-c      write (*,'( i5,e12.5)') iMag1, pRatio
-
-c      pause 'iMag1, pRatio'
 
       return
       end

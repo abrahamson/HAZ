@@ -1083,6 +1083,7 @@ c     implicit none
     
       nx = grid_dx/step + 1
       ny = grid_dy/step + 1
+      write (*,'( 3f10.4)')grid_dx, grid_dy, step
       sum = 0.0
       minDist = 1.e10
 

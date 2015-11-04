@@ -31,6 +31,8 @@ C          P IS COMP. CUMULATIVE VALUE (OUTPUT).
 	  real x
 	  data p1, a1, a2, a3, a4, a5 / 0.3275911, 0.254829592, 
      1     -0.284496736, 1.421413741, -1.453152027, 1.061405429 /
+c       write (*,'( f10.4,2x,''test ndtr3'')') x
+     
       if ( x .lt. 0. ) then
 	    x1 = abs(x)
 	  else

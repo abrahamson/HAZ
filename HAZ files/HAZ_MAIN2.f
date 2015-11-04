@@ -213,6 +213,7 @@ c        Compute horizontal distance density function for areal sources (polygon
            call CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,
      2             x0, y0, sampleStep(iFlt), minDist )
+           
          elseif ( sourceType(iFlt) .eq. 4 ) then
            call CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
          endif  
@@ -240,7 +241,6 @@ c         using the magnitude pdf for each parameter variation
           call magProb ( mag, maxMag, minMag, magStep, beta, iFlt, 
      1           pMag, nParamVar, nWidth, MagRecur, 
      2           mpdf_param, ExpMeanMo, CharMeanMo, rup1_flag )
-
 
          do iParam=1,nparamVar(iFlt,iFltWidth)
            sum1(iParam,iFltWidth) = sum1(iParam,iFltWidth) + pmag(iParam,iFltWidth)
@@ -281,6 +281,7 @@ c------------end temporary code
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
             iDepthFlag = 0
+
             do 650 iLocX = 1, nLocX
 
                call nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
@@ -300,6 +301,7 @@ c            set the probabilities for the depths
                  iDepthFlag = 1
                endif
              endif
+
 
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
@@ -525,6 +527,11 @@ c                    Set up weight array for later output.
 c                    Set probability of this earthquake (w/o gm) - (aleatory)
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)
      1                    *phypoX*phypoZ*probSyn*synwt(iFlt,isyn)
+c                     write (*,'( 2e12.4)') wt, p1
+c                     write (*,'( 5e12.4)') pMag(iParam,iFltWidth), pArea,pWidth,
+c     1                   pLocX,pLocY(iLocY)
+c     1                    , phypoX, phypoZ, probSyn, synwt(iFlt,isyn)
+c                    pause
                     
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then

@@ -19,8 +19,10 @@ c  --------------------------------------------------------------------
 c     Read header
       read (11,*) nHead
       write (*,'( i5)') nHead
+      
       do i=1,nHead
         read (11,'( a80)') dummy
+        write (*,'( a80)') dummy
       enddo
       read (11,*) n, grid_dlong(iFlt), grid_dlat(iFlt)
 c      write (*,'( i5, 2f10.4)') n, grid_dlong(iFlt), grid_dlat(iFlt)
@@ -28,6 +30,7 @@ c      write (*,'( i5, 2f10.4)') n, grid_dlong(iFlt), grid_dlat(iFlt)
         write (*,'( 2x,''Increase MAX_GRID to '',i7)') n
         stop 99
       endif
+      write (*,'( i5)') n
           
 c     read grid data keeping only grid points with non-zero rates
 c     and between min and max long and lat
