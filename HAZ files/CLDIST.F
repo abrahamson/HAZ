@@ -753,10 +753,10 @@ c     boundary
       call Inside_OutSide ( nSeg, x, y, x0, y0, insideFlag )
 
 c     Compute closest distance for inside
-      if ( insideFlag .eq. 1 ) then
-         call CalcPlaneDist ( x0, y0, z0, x, y, z, dist )
-         return
-      endif
+c      if ( insideFlag .eq. 1 ) then
+c         call CalcPlaneDist ( x0, y0, z0, x, y, z, dist )
+c         return
+c      endif
       
 c     Compute the shortest dist to each edge
       dist = 1.0e30
