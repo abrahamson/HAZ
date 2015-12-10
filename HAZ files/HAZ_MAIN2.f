@@ -22,7 +22,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       integer icellRupStrike, icellRupDip, runflag
       real BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
       real segModelWt1(MAX_FLT,100), distDensity2(MAX_GRID), lnDir, lgIo, lgIntenscl
-      real sigDirY, sigtemp, lg1, sig1, lat1
+      real sigDirY, sigtemp, lg1, sig1, lat1, wt1
       integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
       real phi, tau, medadj, sigadj, phiSSS
       character*80 filebmode
@@ -93,7 +93,7 @@ c     read fault File
      3     nMaxmag2, segWt1, faultFlag, nDD, nFtype, ftype_wt, 
      4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag, 
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
-      
+           
 c     Loop Over Number of Sites
       read (13,*) nSite    
       do 1000 iSite = 1, nSite      
@@ -197,6 +197,8 @@ c        Turn fault into a grid
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 ) 
          endif
+         if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
+     1      write (18,'( 2x,''fault area (km^2) = '',e12.3)') faultArea
 
 c        Initialize Deterministic Values for this Fault
          call InitFltMax ( maxmag1, minDist, maxInten )
@@ -558,10 +560,11 @@ c  Note: directivity deaggregation was removed from this version
 c                     HazBinsX(iXcost,iProb,jInten) = HazBinsX(iXcost,iProb,jInten) + dble(mHaz*wt)
      
 c                    Add to mean deagg 
-                     m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt*magTotal
-                     d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt*distRup
-                     e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt*epsilon1
-                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt*Xcost
+                     wt1 = wt * gm_wt(iProb,jType,iAtten)
+                     m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
+                     d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
+                     e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
+                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
 
 c                    Set up branch hazard curves for later output for fractile analysis.
                      call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     

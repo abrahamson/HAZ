@@ -87,6 +87,7 @@ c  --------------------------------------------------------------------
       real temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       integer segModelFlag(MAX_FLT,100), nSegModel0(1), runflag
       real segModelWt1(MAX_FLT,100)
+      character*130 dummy
 
 c     Input Fault Parameters
       read (10,*) iCoor
@@ -126,7 +127,6 @@ c      Read number of segmentation models for this fault system
          write (*,*) 'nSegModel = ', nSegModel
          write (17,*) 'nSegModel = ', nSegModel
          do k=1,nSegModel
-            write (*,*) 'SegWt = ', k,segWt(iFlt0,k)
             write (17,*) 'SetWt = ', k,segWt(iFlt0,k)
          enddo
       endif
@@ -137,12 +137,14 @@ c      Read total number of fault segments
          write (*,*) 'nFlt2 = ', nFlt2
          write (17,*) 'nFlt2 = ', nFlt2
       endif
-
+      
        do i=1,nSegModel
-         read (10,*) (faultFlag(iFlt0,i,k),k=1,nFlt2)
-
-
+         read (10,*,err=44) (faultFlag(iFlt0,i,k),k=1,nFlt2)
        enddo
+       goto 43
+  44   write (*,'( 2x,''error seg flags'', i5)') i
+       stop
+  43   continue
 
        do iflt2=1,nflt2
         iFlt = iFlt + 1

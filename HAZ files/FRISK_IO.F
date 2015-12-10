@@ -1,3 +1,6 @@
+
+
+
 c     frisk_io.f
 
       subroutine RdInput ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
