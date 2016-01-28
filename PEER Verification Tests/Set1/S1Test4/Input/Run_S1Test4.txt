@@ -1,0 +1,76 @@
+Source_S1Test4.txt
+36.5 39.5 -123.5 -120.5  min max long lat
+200. maxdist
+PEER Verification, Set 1 Test 4
+1  1  (nProb, nAttenType)
+  0.0  4  0   (period, max epsilon, dir flag)
+18 
+0.001	0.01	0.05	0.1	0.15	0.2	0.25	0.3	0.35	0.4	0.45	0.5	0.55	0.6	0.7	0.8	0.9	1.0
+1      Number of GM Models for Atten Type 1
+-51 0.0 0.0 1.0 0.0 0 -2 0.0001    Sadigh 
+0  psCorFlag  (0=no, 1=yes)
+7
+4.5 5.0 5.5 6.0 6.5 7.0 7.5
+17
+-600. -20. -15. -10. -5.0 -2.5 0. 2.5  5. 10. 15. 20. 30. 50. 75. 100. 600.
+5 
+-20. -1. 0. 1. 20.
+7
+0.0 0.10 0.20 0.30 0.35 0.40 2.0
+0  soil amp
+7     nSites
+-122.000  38.113     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site1.out1
+Set1Test4_Site1.out2
+Set1Test4_Site1.out5
+Set1Test4_Site1.out6
+Set1Test4_Site1.out3
+Set1Test4_Site1.out4
+-122.114  38.113     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site2.out1
+Set1Test4_Site2.out2
+Set1Test4_Site2.out5
+Set1Test4_Site2.out6
+Set1Test4_Site2.out3
+Set1Test4_Site2.out4
+-122.570  38.111     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site3.out1
+Set1Test4_Site3.out2
+Set1Test4_Site3.out5
+Set1Test4_Site3.out6
+Set1Test4_Site3.out3
+Set1Test4_Site3.out4
+-122.000  38.000     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site4.out1
+Set1Test4_Site4.out2
+Set1Test4_Site4.out5
+Set1Test4_Site4.out6
+Set1Test4_Site4.out3
+Set1Test4_Site4.out4
+-122.000  37.910     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site5.out1
+Set1Test4_Site5.out2
+Set1Test4_Site5.out5
+Set1Test4_Site5.out6
+Set1Test4_Site5.out3
+Set1Test4_Site5.out4
+-122.000  38.22480     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+Set1Test4_Site6.out1
+Set1Test4_Site6.out2
+Set1Test4_Site6.out5
+Set1Test4_Site6.out6
+Set1Test4_Site6.out3
+Set1Test4_Site6.out4
+-121.886  38.113     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA) 
+Set1Test4_Site7.out1
+Set1Test4_Site7.out2
+Set1Test4_Site7.out5
+Set1Test4_Site7.out6
+Set1Test4_Site7.out3
+Set1Test4_Site7.out4
+
+
+
+
+
+
