@@ -9,7 +9,7 @@ Memory 16 GB 1600 MHz
 
 Approximate run times:
 
-S1
+Set1
 Test1 ~5 seconds
 Test2 ~1 minute
 Test3
@@ -23,3 +23,17 @@ Test8c ~1 minute
 Test10 ~1 minute
 Test11 ~1 minute
 
+Set2
+Test1 ~4 minutes
+Test2a ~2 hours
+Test2b ~2 hours
+Test2c ~2 hours
+Test2d ~2 hours
+Test3a ~20 seconds
+Test3b ~20 seconds
+Test3c ~20 seconds
+Test3d ~20 seconds
+Test4a ~40 seconds
+Test4b ~40 seconds
+Test5a ~10 seconds
+Test5b ~10 seconds

@@ -1,0 +1,175 @@
+PEER Verification, Set 2 Test 2b                                                
+ 
+ Summary of Attenuation relationship used in the analysis:
+ 
+Number of Problems:      1
+Number of Attenuation Types:      1
+ 
+Spectral Period  =     0.0000
+Sigma Trunc      =     8.0000
+Directivity Flag =          0
+Ground Motion Values:
+      0.0010
+      0.0100
+      0.0500
+      0.1000
+      0.1500
+      0.2000
+      0.2500
+      0.3000
+      0.3500
+      0.4000
+      0.4500
+      0.5000
+      0.5500
+      0.6000
+      0.7000
+      0.8000
+      0.9000
+      1.0000
+ 
+Attenuation Type =      1
+  Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc    iMix
+  2925     0.0000   0.0000  1.00000     0.0000                                    0
+ 
+ 
+ psCorFlag =   0
+ 
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site1.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site1.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site2.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site2.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site3.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site3.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site4.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site4.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site5.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site5.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
+  fault area (km^2) =    0.102E+04
+ 
+ Output filename for hazard curves:  Set2Test2b_Site6.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test2b                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test2b_Site6.out4                                                           
+ 
+    7      Number of Magnitude Bins
+     4.500     5.000     5.500     6.000     6.500     7.000     7.500
+   17      Number of Distance Bins 
+  -600.000   -20.000   -15.000   -10.000    -5.000    -2.500     0.000     2.500     5.000    10.000    15.000    20.000    30.000    50.000    75.000   100.000   600.000
+    5      Number of Epsilon Bins  
+   -20.000    -1.000     0.000     1.000    20.000
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000
