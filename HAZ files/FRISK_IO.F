@@ -1,8 +1,4 @@
 
-
-
-c     frisk_io.f
-
       subroutine RdInput ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
@@ -160,12 +156,12 @@ c     Read fault file name
       endif
 
 c     Read min max long and lat for grid sources
-      read (13,*) minlat, maxlat, minlong, maxlong
-      read (13,*) distmax
+      read (13,*,err=2001) minlat, maxlat, minlong, maxlong
+      read (13,*,err=2002) distmax
 
 c     Input options 
       read(13,'( a80)') title
-      read(13,*) nProb, nAttenType
+      read(13,*,err=2003) nProb, nAttenType
       
       call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )        
       call CheckDim ( nProb, MAX_Prob, 'MAX_ATTEN ' )
@@ -179,8 +175,8 @@ c     Input options
 
 c     Enter GM models for each problem
       do i=1,nProb
-        read (13,*) specT(i), sigTrunc(i), dirflag(i)
-        read (13,*) nInten(i), (testInten(i,j),j=1,nInten(i))
+        read (13,*,err=2004) specT(i), sigTrunc(i), dirflag(i)
+        read (13,*,err=2005) nInten(i), (testInten(i,j),j=1,nInten(i))
         call CheckDim ( nInten(i), MAX_INTEN, 'MAX_INTEN ' )
         do j1=1,nInten(i)
            lgTestInten(i,j1) = alog(testInten(i,j1))
@@ -199,18 +195,18 @@ c     Enter GM models for each problem
            write (18,*) ' Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc    iMix'
 
           checkattenwt = 0.0
-          read (13,*) nAtten(i,j)
+          read (13,*,err=2006) nAtten(i,j)
           call CheckDim ( nAtten(i,j), MAX_ATTEN, 'MAX_ATTEN ' )
           do k=1,nAtten(i,j)
-            read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k)  
+            read (13,*,err=2007) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k)  
 
 C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
             if (jcalc(i,j,k) .lt. 0) then
                backspace (13)
-               read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k), sCalc(i,j,k), sigfix(i,j,k)
-c               read (13,*) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), sssCalc(i,j,k)
-c               jCalc(i,j,k) = abs(jCalc(i,j,k))
-               write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,2i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
+               read (13,*,err=2006) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(j, i, k), sCalc(i,j,k), sigfix(i,j,k)
+               write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,2i6)')
+     1              jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
      1             sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), ssscalc(i,j,k), iMixture(j, i, k)  
             else
             write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,31x,i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
@@ -220,14 +216,16 @@ c               jCalc(i,j,k) = abs(jCalc(i,j,k))
 C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) selected and if so read in coefficients.
             if (abs(jcalc(i,j,k)) .gt. 10000 .and. abs(jcalc(i,j,k)) .lt. 11000) then
                 coefcountrrup = abs(jcalc(i,j,k)) - 10000
-                read (13,*) (cfcoefrrup(coefcountrrup,jj),jj=1,11)
-                write (18,'(a16,2xi8,10(2x,f12.6))') 'CF(RRup) Coefs: ', coefcountrrup,(cfcoefrrup(coefcountrrup,jj),jj=1,11)
+                read (13,*,err=2008) (cfcoefrrup(coefcountrrup,jj),jj=1,11)
+                write (18,'(a16,2xi8,10(2x,f12.6))') 
+     1             'CF(RRup) Coefs: ', coefcountrrup,(cfcoefrrup(coefcountrrup,jj),jj=1,11)
             endif
 C     Check for Common Functional Form with RJB Distance (11000<jcalc<12000) selected and if so read in coefficients.
             if (abs(jcalc(i,j,k)) .gt. 11000 .and. abs(jcalc(i,j,k)) .lt. 12000) then
                 coefcountrjb = abs(jcalc(i,j,k)) - 11000
-                read (13,*) (cfcoefrjb(coefcountrjb,jj),jj=1,11)
-                write (18,'(a16,2x,i8,10(2x,f12.6))') 'CF(RJB) Coefs:  ', coefcountrjb, (cfcoefrrup(coefcountrjb,jj),jj=1,11)
+                read (13,*,err=2008) (cfcoefrjb(coefcountrjb,jj),jj=1,11)
+                write (18,'(a16,2x,i8,10(2x,f12.6))') 
+     1              'CF(RJB) Coefs:  ', coefcountrjb, (cfcoefrrup(coefcountrjb,jj),jj=1,11)
             endif
 
             gmScale(i,j,k) = gm1 + gm2
@@ -245,30 +243,68 @@ C     Check that attenuation model weights sum to unity.
           endif
         enddo
       enddo
-      read (13,*) psCorFlag
+      read (13,*,err=2009) psCorFlag
       write (18,*)
       write (18,*) 'psCorFlag = ', psCorflag
       write (18,*)
 
 c     Read bins for de-aggregating the hazard
-      read (13,*) nMagBins
+      read (13,*,err=2010) nMagBins
       call CheckDim ( nMagBins, MAX_MAG,   'MAX_MAG   ' )
-      read (13,*) (magBins(k),k=1,nMagBins)
-      read (13,*) nDistBins
+      read (13,*,err=2011) (magBins(k),k=1,nMagBins)
+      read (13,*,err=2012) nDistBins
       call CheckDim ( nDistBins, MAX_DIST, 'MAX_DIST  ' )
-      read (13,*) (distBins(k),k=1,nDistBins)
-      read (13,*) nEpsBins
+      read (13,*,err=2013) (distBins(k),k=1,nDistBins)
+      read (13,*,err=2014) nEpsBins
       call CheckDim ( nEpsBins, MAX_EPS,   'MAX_EPS   ' )
-      read (13,*) (epsBins(k),k=1,nEpsBins)
+      read (13,*,err=2015) (epsBins(k),k=1,nEpsBins)
 
-      read (13,*) nXcostBins
+      read (13,*,err=2016) nXcostBins
       call CheckDim ( nXcostBins, MAX_Xcost, 'MAX_Xcost ' )
-      read (13,*) (XcostBins(k),k=1,nXcostBins)
+      read (13,*,err=2017) (XcostBins(k),k=1,nXcostBins)
 
-      read (13,*) soilAmpFlag
+      read (13,*,err=2018) soilAmpFlag
 
       return
+ 2001 write (*,'( 2x,''input file error: minlat, maxlat line'')') 
+      stop 99
+ 2002 write (*,'( 2x,''input file error: maxdist line'')') 
+      stop 99
+ 2003 write (*,'( 2x,''input file error: nProb, nAttenType'')') 
+      stop 99
+ 2004 write (*,'( 2x,''input file error: spectral period line, iProb='',i5)') i 
+      stop 99
+ 2005 write (*,'( 2x,''input file error: Nz & Zvalues line, iProb='', i5)') i 
+      stop 99
+ 2006 write (*,'( 2x,''input file error: Natten line for iProb and jATtenType='',2i5)') i, j 
+      stop 99
+ 2007 write (*,'( 2x,''input file error: jclac line for iProb, jATtenType, and iAtten=''),3i5)') i,j,k
+      stop 99
+ 2008 write (*,'( 2x,''input file error: common for coeff for iProb, jATtenType, and iAtten=''),3i5)') i,j,k 
+      stop 99
+ 2009 write (*,'( 2x,''input file error: pscorflag'')') 
+      stop 99
+ 2010 write (*,'( 2x,''input file error: deagg nMagbins'')') 
+      stop 99
+ 2011 write (*,'( 2x,''input file error: deagg magbins'')') 
+      stop 99
+ 2012 write (*,'( 2x,''input file error: deagg nDistbins'')') 
+      stop 99
+ 2013 write (*,'( 2x,''input file error: deagg distbins'')') 
+      stop 99
+ 2014 write (*,'( 2x,''input file error: deagg nEpsbins'')') 
+      stop 99
+ 2015 write (*,'( 2x,''input file error: deagg epsbins'')') 
+      stop 99
+ 2016 write (*,'( 2x,''input file error: deagg nXcosTbins'')') 
+      stop 99
+ 2017 write (*,'( 2x,''input file error: deagg xcosT bins'')') 
+      stop 99
+ 2018 write (*,'( 2x,''input file error: soil amp flag'')') 
+      stop 99
+
       end
+
 
 
 c  --------------------------

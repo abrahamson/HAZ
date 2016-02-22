@@ -429,14 +429,14 @@ c     Set WAACY model parameters (haz45 version)
       Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
       mChar = maxMag(iFlt,iParam,iWidth)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
-      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
+c      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
 
 
 c     start integration at Mag=0 for momment balance
       Mmin = 0
       stepM =0.001
       nMag = inT ( (MaxMagWA - Mmin) / stepM )
-      write (*,'( i5)') nMag
+c      write (*,'( i5)') nMag
      
 c     Compute the probabilities of magnitudes using WAACY 
 c     without correction for rupture past the modelled fault      

@@ -251,6 +251,7 @@ c         using the magnitude pdf for each parameter variation
 c         Echo magnitude integration step over magnitude to the screen 
 c         as a check of the programs progress.
           write (*,'( 2x,2I5,f10.3)') IFLT, ifltWidth,MAG
+          write (18,'( 2x,2I5,f10.3)') IFLT, ifltWidth,MAG
           
 c         Intergrate Over Rupture Area for this mag (aleatory)
           do 750 iArea = 1, nRupArea(iFlt)
@@ -404,7 +405,6 @@ C               Ground Motions will be SRSS with main rupture median ground moti
 
 c               Temp: set probability of syn rupture to unity
 c               Later, this will be an input
-c           write (*,'( 2i5)') iFlt, synchron(iFlt)
                 probSyn = 1.
 
 c               Loop over synchronous ruptures (aleatory)          
