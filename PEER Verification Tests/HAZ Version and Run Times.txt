@@ -1,0 +1,39 @@
+All tests were run with HAZ version:
+
+HAZ (develop with commits through Jan 26 2016)
+
+All tests were run on a personal mac laptop with specifications:
+
+Processor 2.2 GHz 
+Memory 16 GB 1600 MHz
+
+Approximate run times:
+
+Set1
+Test1 ~5 seconds
+Test2 ~1 minute
+Test3
+Test4 ~1 minute
+Test5 ~2 hours 10 minutes
+Test6 ~2 hours 10 minutes
+Test7 ~2 hours 10 minutes
+Test8a ~1 minute
+Test8b ~1 minute
+Test8c ~1 minute
+Test10 ~1 minute
+Test11 ~1 minute
+
+Set2
+Test1 ~4 minutes
+Test2a ~2 hours
+Test2b ~2 hours
+Test2c ~2 hours
+Test2d ~2 hours
+Test3a ~20 seconds
+Test3b ~20 seconds
+Test3c ~20 seconds
+Test3d ~20 seconds
+Test4a ~40 seconds
+Test4b ~40 seconds
+Test5a ~10 seconds
+Test5b ~10 seconds

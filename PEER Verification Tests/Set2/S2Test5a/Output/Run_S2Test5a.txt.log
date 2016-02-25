@@ -1,0 +1,60 @@
+PEER Verification, Set 2 Test 5a                                                
+ 
+ Summary of Attenuation relationship used in the analysis:
+ 
+Number of Problems:      1
+Number of Attenuation Types:      1
+ 
+Spectral Period  =     0.0000
+Sigma Trunc      =     8.0000
+Directivity Flag =          0
+Ground Motion Values:
+      0.0010
+      0.0100
+      0.0500
+      0.1000
+      0.2000
+      0.4000
+      0.6000
+      0.8000
+      1.0000
+      1.2500
+      1.5000
+      2.0000
+      2.5000
+      3.0000
+      4.0000
+      5.0000
+      6.0000
+      7.0000
+ 
+Attenuation Type =      1
+  Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc    iMix
+ -2798     0.0000   0.0000  1.00000     0.0000      -1    0.6500       0     0
+ 
+ 
+ psCorFlag =   0
+ 
+  fault area (km^2) =    0.300E+03
+ 
+ Output filename for hazard curves:  Set2Test5a_Site1.out3                                                           
+ 
+ Summary of Faults used in the analysis:
+ 
+       1          Number of faults
+ 
+    Fault Name                  nFlt System Number
+ --------------------------------------------------
+01_Set2Test5a                     1    1
+ -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+ 
+ Filename for deaggregation output:  Set2Test5a_Site1.out4                                                           
+ 
+    3      Number of Magnitude Bins
+     5.900     6.100     6.200
+    3      Number of Distance Bins 
+     0.000    10.000    20.000
+    9      Number of Epsilon Bins  
+   -10.000     0.000     6.000     6.200     6.400     6.600     6.800     7.000     7.500
+    7      Number of Xcos(T) Bins  
+     0.000     0.100     0.200     0.300     0.350     0.400     2.000

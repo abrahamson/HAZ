@@ -74,18 +74,22 @@ c ------------------------------------------------------------------
       real*8 function pxceed3 ( eti, ti, siga, jj, i, sigTrunc )                   
       include 'pfrisk.h'                                                        
       real eti, ti(MAX_PROB,MAX_INTEN), siga, sigTrunc, w
-	  real*8 g, g1
+      real*8 g, g1
+
+c     truncates and renormalizes on both low and high end
                                                                                 
-      W = (ti(JJ,I)-ETI)/SIGA                                                   
-      CALL NDTR3(W,G)     
-                                                                                
-c     TRUNCATE DISTRIBUTION AT SigTrunc                                         
+      w = (ti(jj,i)-eti)/siga                                                   
+      call NDTR3(w,g)     
+                                                                                                                         
       if (w .gt. sigTrunc) then                                                 
-        pxceed3 = 0.0                                                                   
+        pxceed3 = 0.0  
+      else if (w .lt. (sigTrunc*(-1.))) then
+        pxceed3 = 1.0                                                                 
       else                                                                      
-        CALL NDTR3(sigTrunc,g1)                                                       
-        pxceed3 = (g-g1)*(1.+g1)                                                             
-      endif                                                                     
+        call NDTR3(sigTrunc,g1)                                                       
+        pxceed3 = (g-g1)/(1.-(2.*g1))                                                             
+      endif 
+                                                                    
       return                                                                    
       end                                                                                                                                             
 
