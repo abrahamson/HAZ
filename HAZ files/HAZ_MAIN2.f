@@ -95,11 +95,11 @@ c     read fault File
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
            
 c     Loop Over Number of Sites
-      read (13,*) nSite    
+      read (13,*,err=2100) nSite    
       do 1000 iSite = 1, nSite      
             
 c      Read site coordinates and properties
-       read (13,*) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
+       read (13,*,err=2101) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
        
 c      Read site-specific site amplification
        if ( soilAmpFlag .eq. 1 ) then
@@ -107,22 +107,30 @@ c      Read site-specific site amplification
        endif
 
 c      Output1 file which will contain the individual hazard curves. 
-       read (13,'( a80)') file1
+       read (13,'( a80)',err=2102) file1
        open (11,file=file1,status='unknown')
        
 c      Open Output2 file for Probability of Magnitude Density for each parameter combination.
-       read (13,'( a80)') file2
+       read (13,'( a80)',err=2104) file2
        open (17,file=file2,status='unknown')
        write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
        write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
        
 c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
-       read (13,'( a80)') file1
+       read (13,'( a80)',err=2105) file1
        open (27,file=file1,status='unknown')
        
 c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
-       read (13,'( a80)') file1
+       read (13,'( a80)',err=2106) file1
        open (28,file=file1,status='unknown')
+
+c     Open output3 file
+      read (13,'( a80)',err=2106) file1
+      open (12,file=file1,status='new')
+
+c     Open output4 file
+      read (13,'( a80)') file1
+      open (14,file=file1,status='new')
 
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
@@ -669,6 +677,22 @@ c      Write out the deagrregated hazard
       close (77)
 
       stop
+      
+ 2100 write (*,'( 2x,''input file error: number of sites'')')
+      stop 99
+ 2101 write (*,'( 2x,''input file error: site long lat line'')')
+      stop 99
+ 2102 write (*,'( 2x,''input file error: output file name'')')
+      stop 99
+ 2103 write (*,'( 2x,''input file error: output file name'')')
+      stop 99
+ 2104 write (*,'( 2x,''input file error: output file name'')')
+      stop 99
+ 2105 write (*,'( 2x,''input file error: output file name'')')
+      stop 99
+ 2106 write (*,'( 2x,''input file error: output file name'')')
+      stop 99
+     
       end
 
       

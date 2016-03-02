@@ -190,6 +190,7 @@ c -------------------------------------------------------------
       include 'pfrisk.h'                                                        
       real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       
+      
       do iParam=1,MAXPARAM
         do iFltWidth=1,MAX_WIDTH
           do iInten=1,MAX_INTEN
@@ -208,7 +209,7 @@ c -------------------------------------------------------------
 
       subroutine Init_tempHaz2 ( tempHaz2 )
       include 'pfrisk.h'                                                        
-      real*8 tempHaz2(4, MAX_ATTEN, MAX_INTEN, MAX_PROB )
+      real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
       
       do i=1,4  
        do iInten=1,MAX_INTEN

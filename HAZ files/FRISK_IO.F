@@ -55,7 +55,7 @@ c     Open Input and Output Files
             read (77, '(a80)') file1
          endif
 
-         open (13,file=file1,status='old')
+         open (13,file=file1,status='old',err=2100)
 c     Create log filename for PHSA run.
          charcount = 80
          do ichart=80,1,-1
@@ -144,7 +144,7 @@ c         stop
  
 c     Read fault file name      
       read (13,'( a80)') filein
-      open (10,file=filein,status='old')
+      open (10,file=filein,status='old',err=2101)
 
       if (runflag .eq. 4) then
          write (19,*) 'Distance Checking Results:'
@@ -301,6 +301,12 @@ c     Read bins for de-aggregating the hazard
  2017 write (*,'( 2x,''input file error: deagg xcosT bins'')') 
       stop 99
  2018 write (*,'( 2x,''input file error: soil amp flag'')') 
+      stop 99
+ 2100 write (*,'( 2x,''run file does not exist'')')
+      write (*,'( 2x,a80)') file1
+      stop 99
+ 2101 write (*,'( 2x,''fault file does not exist'')')
+      write (*,'( 2x,a80)') filein
       stop 99
 
       end
@@ -510,11 +516,6 @@ c  -------------------------------------------------------------------
       integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount
       real ftype(1), vs, specT(MAX_PROB)
       character*80 fName(MAX_FLT), file1, attenName(4,MAX_ATTEN)
-      nwr = 12
-
-c     Open output file
-      read (13,'( a80)') file1
-      open (nwr,file=file1,status='new')
 
 c     Loop over different maximum magnitude values to get 
 c     a total number of fault listings in the output file.
@@ -697,11 +698,6 @@ c  ------------------------------------------------------------------
       integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
       integer nMagBins, nDistBins, nEpsBins, nXcostBins, iXcostBins
       character*80 file1, attenName(4,MAX_ATTEN) 
-      nwr = 14
-
-c     Open output file
-      read (13,'( a80)') file1
-      open (nwr,file=file1,status='new')
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'
       write (18,*)
