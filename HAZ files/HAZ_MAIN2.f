@@ -34,7 +34,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real Pmag_all(MAXPARAM)
       integer rup1_flag
       
-      real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
+      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
 
    
@@ -162,13 +162,14 @@ c       Initialize closest distance for each distance metric
           enddo
         enddo
 
-C       Initialize temp hazard array for this source
-        call Init_tempHaz ( tempHaz )
-        call Init_tempHaz1 ( tempHaz1 )
 
 c       Loop over alternative Fault Widths (epistemic)
 c       (This changes the geometry of the source)
         do 860 iFltWidth=1,nWidth(iFlt)
+
+C         Initialize temp hazard array for this source
+          call Init_tempHaz ( tempHaz )
+          call Init_tempHaz1 ( tempHaz1 )
         	
 c        Set bottom of fault for standard faults (source type 1)
           if ( sourceType(iFlt) .eq. 1. ) then
@@ -537,11 +538,6 @@ c                    Set up weight array for later output.
 c                    Set probability of this earthquake (w/o gm) - (aleatory)
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)
      1                    *phypoX*phypoZ*probSyn*synwt(iFlt,isyn)
-c                     write (*,'( 2e12.4)') wt, p1
-c                     write (*,'( 5e12.4)') pMag(iParam,iFltWidth), pArea,pWidth,
-c     1                   pLocX,pLocY(iLocY)
-c     1                    , phypoX, phypoZ, probSyn, synwt(iFlt,isyn)
-c                    pause
                     
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then
@@ -558,8 +554,6 @@ c                     write (*,'( 4e12.4)') rate(iParam,iFltWidth) , prock , p1 
 
 c                    Add marginal rate of exceed to total
                      Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt* gm_wt(iProb,jType,iAtten)
-c                     write (*,'( 3e12.4)') mHaz, wt,  gm_wt(iProb,jType,iAtten)
-c                    pause
                      
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) = 
      1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt)
@@ -580,11 +574,11 @@ c                    Set up branch hazard curves for later output for fractile a
      2                                iParam, nNode, jInten, iProb, iSeg )                      
 
 c                    Save Marginal Hazard to temp array for fractile output
-                     tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype) = mHaz
-     1                        + tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype)
+                     tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
+     1                        + tempHaz(iParam,jInten,iProb,iAtten,iFtype)
 
-                     tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
-     1                        + tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype)
+                     tempHaz1(iParam,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
+     1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
                      tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
      1                        + tempHaz2(jType, jInten,iProb,iAtten)
@@ -633,14 +627,14 @@ c           Set the weight for this set of parameters (epistemic)
  
  850     shortDist(iFlt) = minDist
 
+c        Write temp Haz array to file
+         call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth )
+         call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth )
 
  860    continue
 
-c       Write temp Haz array to file
-        call WriteTempHaz ( tempHaz, nParamVar, nWidth, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype )
-        call WriteTempHaz1 ( tempHaz1, nParamVar, nWidth, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype )
 
 c       Write p1_sum as a check
         write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt

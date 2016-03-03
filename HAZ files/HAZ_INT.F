@@ -166,20 +166,18 @@ c -------------------------------------------------------------
 
       subroutine Init_tempHaz ( tempHaz )
       include 'pfrisk.h'                                                        
-      real*8 tempHaz(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB, MAX_ATTEN,MAX_FTYPE)
+      real*8 tempHaz(MAXPARAM,MAX_INTEN, MAX_PROB, MAX_ATTEN,MAX_FTYPE)
       
       do iParam=1,MAXPARAM
-        do iFltWidth=1,MAX_WIDTH
           do iInten=1,MAX_INTEN
             do iProb=1,MAX_PROB
               do iAtten=1,MAX_ATTEN
                 do iFtype=1,MAX_FTYPE
-                  tempHaz(iParam,iFltWidth,iInten,iProb,iAtten,iFtype) = 0.0
+                  tempHaz(iParam,iInten,iProb,iAtten,iFtype) = 0.0
                 enddo
               enddo
             enddo
           enddo
-        enddo
       enddo
       return
       end                                                            
@@ -188,19 +186,17 @@ c -------------------------------------------------------------
 
       subroutine Init_tempHaz1 ( tempHaz1 )
       include 'pfrisk.h'                                                        
-      real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
+      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       
       
       do iParam=1,MAXPARAM
-        do iFltWidth=1,MAX_WIDTH
           do iInten=1,MAX_INTEN
             do iProb=1,MAX_PROB
                 do iFtype=1,MAX_FTYPE
-                  tempHaz1(iParam,iFltWidth,iInten,iProb,iFtype) = 0.0
+                  tempHaz1(iParam,iInten,iProb,iFtype) = 0.0
                 enddo
             enddo
           enddo
-        enddo
       enddo
       return
       end                                                            

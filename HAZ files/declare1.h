@@ -1,6 +1,6 @@
       real*8 Haz(MAX_INTEN, MAX_PROB, MAX_FLT)
       real*8 magbar1(MAX_INTEN, MAX_PROB, MAX_FLT)
-      real*8 tempHaz(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB, MAX_ATTEN,MAX_FTYPE)
+      real*8 tempHaz(MAXPARAM,MAX_INTEN, MAX_PROB, MAX_ATTEN,MAX_FTYPE)
       
       real siteX, siteY, 
      1     fLong(MAX_FLT, MAX_DD, MAX_SEG), fLat(MAX_FLT, MAX_DD, MAX_SEG), 
