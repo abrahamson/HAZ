@@ -1,4 +1,4 @@
-      program haz45a
+      program haz45_2
 
 c     Probabilisitic Seismic Hazard Program (PSHA) 
 
@@ -40,8 +40,8 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*   Hazard Code: Version 45     *'
-      write (*,*) '*         January, 2016         *'
+      write (*,*) '*   Hazard Code: Version 45.2a     *'
+      write (*,*) '*         March, 2016         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -629,9 +629,9 @@ c           Set the weight for this set of parameters (epistemic)
 
 c        Write temp Haz array to file
          call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth )
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
          call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth )
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
  860    continue
 

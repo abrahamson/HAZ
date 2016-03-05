@@ -391,15 +391,15 @@ c  --------------------------
 
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz ( tempHaz,nParamVar, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth )
+     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
  
       include 'pfrisk.h'
       include 'declare1.h'
 
       do iProb=1,nProb
 
-      write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
-     1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
+      if ( iFltWidth .eq. 1 ) write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType),
+     1         nWidth(iFlt), nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
      1         nInten(iProb)
 
        do iAtten = 1,nAtten(iProb,jType)
@@ -415,7 +415,7 @@ c  -------------------------------------------------------------------
       end
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth )
+     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
  
       include 'pfrisk.h'
       include 'declare1.h'
