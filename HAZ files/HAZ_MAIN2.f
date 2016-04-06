@@ -676,6 +676,7 @@ c      Write out the deagrregated hazard
  2000 continue
       close (77)
 
+      write (*,'( 2x,''Normal termination'')')
       stop
       
  2100 write (*,'( 2x,''input file error: number of sites'')')

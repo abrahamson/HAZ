@@ -517,6 +517,7 @@ c  -------------------------------------------------------------------
       real ftype(1), vs, specT(MAX_PROB)
       character*80 fName(MAX_FLT), file1, attenName(4,MAX_ATTEN)
 
+      nwr = 12
 c     Loop over different maximum magnitude values to get 
 c     a total number of fault listings in the output file.
       casecount = 0     
@@ -703,6 +704,8 @@ c  ------------------------------------------------------------------
       write (18,*)
       write (18,'(1x,a34,2xa80)') 'Filename for deaggregation output:', file1
       write (18,*) 
+      
+      nwr = 14
 
 c     Write number of bins and bin values.
       write (nwr,'(i5,5x,a25)') nMagbins,  'Number of Magnitude Bins'
