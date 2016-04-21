@@ -41,7 +41,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45     *'
-      write (*,*) '*         January, 2016         *'
+      write (*,*) '*          April, 2016          *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -313,32 +313,18 @@ c            set the probabilities for the depths
                endif
              endif
 
-
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
 
-c             SourceType 1 fixed, assumes hypocenter is in middle of rupture
-c             Set the hypocentral depth (is this really ztor??)
-              if (sourceType(iFlt) .eq. 1 ) then
-                hypoDepth = (iLocY-1.)*ystep(iFlt)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0) + zFlt(1,1)
-     1          + ((0.5*rupWidth)*sin(abs(dip(iFlt,iWidth,1))*3.14159/180.0))
-              elseif (sourceType(iFlt) .eq. 5 ) then
-                hypoDepth = fltgrid_Z(iLocY,iLocX)
-              elseif ( sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 ) then
-                hypoDepth = (iLocY-0.5)*ystep(iFlt) + grid_top(iFlt,1)
-              elseif ( sourceType(iFlt) .eq. 4 ) then
-                hypoDepth = (iLocY-0.5)*ystep(iFlt) + grid_top(iFlt,1)
-              endif  
-
 c            Find the Closest Distances for this rupture
 c            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
-             call CalcDist (sourceType(iflt), pscorflag, hypoDepth, RupWidth, RupLen, 
-     1             r_horiz, mindepth(iflt), nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, 
-     3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb,
-     5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip, dip, iFltWidth, iFlt) 
+             call CalcDist (sourceType(iFlt), pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS,
+     1             iFltWidth, iFlt, ystep(iFlt), grid_top(iFlt,1), RupWidth, RupLen, r_horiz, mindepth(iFlt), 
+     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
+     3             fltgrid_y2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
+     4             fltGrid_Rrup, fltGrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
+     5             hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo, 
+     6             dipavg, Rx, Ry, Ry0)
 
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
