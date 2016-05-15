@@ -142,8 +142,8 @@ c     Dirflag = 106
       if (dirflag .eq. 106) then
         call DirJWL_V3Pre (specT, rRup, Rx, Ry, RupLength, Mag, ftype, 
      1                    RupWidth, Dipaverage, HWflag, medadj, sigadj )
-c        lgInten = lgIntenscl + medadj 
-c        sigmaTotal = sqrt(sigmaY*sigmaY + sigadj*sigadj)
+c        write (*,'( 2f10.3)') medadj, sigadj
+c        pause
       endif
 
 c     Choiu and Spudich DPP model

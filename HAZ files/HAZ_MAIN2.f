@@ -31,8 +31,8 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
       real*8 prock1, prock2
       real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
-      real Pmag_all(MAXPARAM)
-      integer rup1_flag
+      real Pmag_all(MAXPARAM), lgInten0
+      integer rup1_flag, dirFlag1
       
       real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
@@ -461,28 +461,31 @@ c               Check that sigma is not less than zero (0.0001)
 c               Reset SigmaTotal variable
                 sigmaTotal = sigmaY
 
+c               Set values for use with directivity                
+                lgInten0 = lgInten
+                sigma0 = sigmaTotal
+                
+c               Set default for no randomization of hypocenters                
+                nHypoX = 1
+                pHypoX = 1.
+                nHypoXStep = 1
+                nHypoZ = 1
+                pHypoZ = 1.
+                nHypoZStep = 1
+
 C               Application of Directivity model. 
                 if ( fltDirect(iFlt) .eq. 1 .and. dirflag(iProb) .ge. 1
-     1              .and. dirflag(iProb) .lt. 100 .and. mag .gt. 5.6          
-     1                      .and. specT(iProb) .ge. 0.50 ) then
-
-C      First set up the number of hypocenter locations for a given fault rupture area
-C      If there are less than 10 cells in either along strike or along dip direction
-C      just use each cell. Otherwise take 10 locations along strike and dip
-                   call SetnRupLoc ( n1, n2, nHypoX, pHypoX, nHypoXStep, 
-     1                               nHypoZ, pHypoZ, nHypoZstep ) 
-
-C      Directivity not needed based on fault flag, magnitude, spectral period range or Directivity model (i.e., JWL not hypo dependent). 
-C      Set -->  nHypoX = nHypoZ = 1
-                   else
-                      nHypoX = 1
-                      pHypoX = 1.
-                      nHypoXStep = 1
-
-                      nHypoZ = 1
-                      pHypoZ = 1.
-                      nHypoZStep = 1
-                   endif
+     1              .and. mag .gt. 5.6 .and. specT(iProb) .ge. 0.50 ) then
+                 dirFlag1 = 1
+                 if ( dirflag(iProb) .lt. 100 ) then     
+                   nHypoX = 9
+                   nHypoZ = 9
+                   pHypoX = 1./ 9.
+                   pHypoZ = 1./ 9.
+                 endif
+                else
+                 dirFlag1 = 0
+                endif
                     
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
@@ -491,11 +494,25 @@ c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
 
 C                 Call to the rupture directivity Subroutine if applicable
-                  if ( dirflag(iProb) .ge. 1 .and. fltDirect(iFlt) .eq. 1) then
-c                    call Directivity ( dirFlag(iProb), specT, DistRup, 
-c     1                    Rx, Ry, Ruplen, mag, ftype(iFlt,iFtype), 
-c     2                    RupWidth, Dipaverage(1), HWflag, lgIntenscl,
-c     3                    lgInten, sigmaTotal )
+                  if ( dirflag1 .eq. 1) then
+c       JWL 4/10/16 changes
+                    call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
+     1                 x0, y0, z0,
+     1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
+     2                 RupWidth, RupLen, Dipaverage(1), HWflag, dirMed, dirSigma, 
+     3                 fltgrid_x, fltgrid_y, fltgrid_z, 
+     6                 n1, n2, icellRupstrike, icellRupdip, 
+     7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+
+c                   Add directivity to median and sigma
+                    lgInten = lgInten0 + dirMed
+                    if ( dirSigma .lt. 0. ) then
+                      t1 = sigma0**2 - dirSigma**2
+                    else
+                      t1 = sigma0**2 + dirSigma**2
+                    endif
+                    if ( t1 .lt. 0. ) t1 = 0.01
+                    sigmaTotal = sqrt( t1 )  
                   endif 
   
 c                  Loop over test ground motion values                  
