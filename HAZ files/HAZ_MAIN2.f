@@ -1,4 +1,4 @@
-      program haz45a
+      program haz45_2
 
 c     Probabilisitic Seismic Hazard Program (PSHA) 
 
@@ -31,17 +31,17 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
       real*8 prock1, prock2
       real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
-      real Pmag_all(MAXPARAM)
-      integer rup1_flag
+      real Pmag_all(MAXPARAM), lgInten0
+      integer rup1_flag, dirFlag1
       
-      real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
+      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
 
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*   Hazard Code: Version 45     *'
-      write (*,*) '*         January, 2016         *'
+      write (*,*) '*   Hazard Code: Version 45.2a     *'
+      write (*,*) '*         March, 2016         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -162,13 +162,14 @@ c       Initialize closest distance for each distance metric
           enddo
         enddo
 
-C       Initialize temp hazard array for this source
-        call Init_tempHaz ( tempHaz )
-        call Init_tempHaz1 ( tempHaz1 )
 
 c       Loop over alternative Fault Widths (epistemic)
 c       (This changes the geometry of the source)
         do 860 iFltWidth=1,nWidth(iFlt)
+
+C         Initialize temp hazard array for this source
+          call Init_tempHaz ( tempHaz )
+          call Init_tempHaz1 ( tempHaz1 )
         	
 c        Set bottom of fault for standard faults (source type 1)
           if ( sourceType(iFlt) .eq. 1. ) then
@@ -460,28 +461,31 @@ c               Check that sigma is not less than zero (0.0001)
 c               Reset SigmaTotal variable
                 sigmaTotal = sigmaY
 
+c               Set values for use with directivity                
+                lgInten0 = lgInten
+                sigma0 = sigmaTotal
+                
+c               Set default for no randomization of hypocenters                
+                nHypoX = 1
+                pHypoX = 1.
+                nHypoXStep = 1
+                nHypoZ = 1
+                pHypoZ = 1.
+                nHypoZStep = 1
+
 C               Application of Directivity model. 
                 if ( fltDirect(iFlt) .eq. 1 .and. dirflag(iProb) .ge. 1
-     1              .and. dirflag(iProb) .lt. 100 .and. mag .gt. 5.6          
-     1                      .and. specT(iProb) .ge. 0.50 ) then
-
-C      First set up the number of hypocenter locations for a given fault rupture area
-C      If there are less than 10 cells in either along strike or along dip direction
-C      just use each cell. Otherwise take 10 locations along strike and dip
-                   call SetnRupLoc ( n1, n2, nHypoX, pHypoX, nHypoXStep, 
-     1                               nHypoZ, pHypoZ, nHypoZstep ) 
-
-C      Directivity not needed based on fault flag, magnitude, spectral period range or Directivity model (i.e., JWL not hypo dependent). 
-C      Set -->  nHypoX = nHypoZ = 1
-                   else
-                      nHypoX = 1
-                      pHypoX = 1.
-                      nHypoXStep = 1
-
-                      nHypoZ = 1
-                      pHypoZ = 1.
-                      nHypoZStep = 1
-                   endif
+     1              .and. mag .gt. 5.6 .and. specT(iProb) .ge. 0.50 ) then
+                 dirFlag1 = 1
+                 if ( dirflag(iProb) .lt. 100 ) then     
+                   nHypoX = 9
+                   nHypoZ = 9
+                   pHypoX = 1./ 9.
+                   pHypoZ = 1./ 9.
+                 endif
+                else
+                 dirFlag1 = 0
+                endif
                     
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
@@ -490,11 +494,25 @@ c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
 
 C                 Call to the rupture directivity Subroutine if applicable
-                  if ( dirflag(iProb) .ge. 1 .and. fltDirect(iFlt) .eq. 1) then
-c                    call Directivity ( dirFlag(iProb), specT, DistRup, 
-c     1                    Rx, Ry, Ruplen, mag, ftype(iFlt,iFtype), 
-c     2                    RupWidth, Dipaverage(1), HWflag, lgIntenscl,
-c     3                    lgInten, sigmaTotal )
+                  if ( dirflag1 .eq. 1) then
+c       JWL 4/10/16 changes
+                    call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
+     1                 x0, y0, z0,
+     1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
+     2                 RupWidth, RupLen, Dipaverage(1), HWflag, dirMed, dirSigma, 
+     3                 fltgrid_x, fltgrid_y, fltgrid_z, 
+     6                 n1, n2, icellRupstrike, icellRupdip, 
+     7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+
+c                   Add directivity to median and sigma
+                    lgInten = lgInten0 + dirMed
+                    if ( dirSigma .lt. 0. ) then
+                      t1 = sigma0**2 - dirSigma**2
+                    else
+                      t1 = sigma0**2 + dirSigma**2
+                    endif
+                    if ( t1 .lt. 0. ) t1 = 0.01
+                    sigmaTotal = sqrt( t1 )  
                   endif 
   
 c                  Loop over test ground motion values                  
@@ -537,11 +555,6 @@ c                    Set up weight array for later output.
 c                    Set probability of this earthquake (w/o gm) - (aleatory)
                      p1 = pMag(iParam,iFltWidth)*pArea*pWidth*pLocX*pLocY(iLocY)
      1                    *phypoX*phypoZ*probSyn*synwt(iFlt,isyn)
-c                     write (*,'( 2e12.4)') wt, p1
-c                     write (*,'( 5e12.4)') pMag(iParam,iFltWidth), pArea,pWidth,
-c     1                   pLocX,pLocY(iLocY)
-c     1                    , phypoX, phypoZ, probSyn, synwt(iFlt,isyn)
-c                    pause
                     
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then
@@ -558,8 +571,6 @@ c                     write (*,'( 4e12.4)') rate(iParam,iFltWidth) , prock , p1 
 
 c                    Add marginal rate of exceed to total
                      Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt* gm_wt(iProb,jType,iAtten)
-c                     write (*,'( 3e12.4)') mHaz, wt,  gm_wt(iProb,jType,iAtten)
-c                    pause
                      
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) = 
      1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt)
@@ -580,11 +591,11 @@ c                    Set up branch hazard curves for later output for fractile a
      2                                iParam, nNode, jInten, iProb, iSeg )                      
 
 c                    Save Marginal Hazard to temp array for fractile output
-                     tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype) = mHaz
-     1                        + tempHaz(iParam,iFltWidth,jInten,iProb,iAtten,iFtype)
+                     tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
+     1                        + tempHaz(iParam,jInten,iProb,iAtten,iFtype)
 
-                     tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
-     1                        + tempHaz1(iParam,iFltWidth,jInten,iProb,iFtype)
+                     tempHaz1(iParam,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
+     1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
                      tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
      1                        + tempHaz2(jType, jInten,iProb,iAtten)
@@ -633,14 +644,14 @@ c           Set the weight for this set of parameters (epistemic)
  
  850     shortDist(iFlt) = minDist
 
+c        Write temp Haz array to file
+         call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
+         call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
  860    continue
 
-c       Write temp Haz array to file
-        call WriteTempHaz ( tempHaz, nParamVar, nWidth, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype )
-        call WriteTempHaz1 ( tempHaz1, nParamVar, nWidth, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype )
 
 c       Write p1_sum as a check
         write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt

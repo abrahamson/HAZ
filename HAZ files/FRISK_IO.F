@@ -392,45 +392,37 @@ c  --------------------------
       end
 
 c  -------------------------------------------------------------------
-      subroutine WriteTempHaz ( tempHaz,nParamVar, nWidth, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype )
+      subroutine WriteTempHaz ( tempHaz,nParamVar, nInten, 
+     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
  
       include 'pfrisk.h'
       include 'declare1.h'
 
-c      real*8 tempHaz(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB, MAX_ATTEN)
-c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
-c      integer nAtten(MAX_PROB)
-
-      nwr = 11
-
       do iProb=1,nProb
 
-      write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
-     1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
+      if ( iFltWidth .eq. 1 ) write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType),
+     1         nWidth(iFlt), nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
      1         nInten(iProb)
 
        do iAtten = 1,nAtten(iProb,jType)
-         do iFltWidth=1,nWidth(iFlt)
           do iFtype=1,nFtype(iFlt)
            do iParam=1,nParamVar(iFlt,iFltWidth)
-             write (11,'( 20e15.6 )')  (tempHaz(iParam,iFltWidth,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
+             write (11,'( 20e15.6 )')  (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
            enddo
           enddo
-         enddo
        enddo
       enddo
     
       return
       end
 c  -------------------------------------------------------------------
-      subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nWidth, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype )
+      subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nInten, 
+     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
  
       include 'pfrisk.h'
       include 'declare1.h'
 
-      real*8 tempHaz1(MAXPARAM,MAX_WIDTH,MAX_INTEN, MAX_PROB,MAX_FTYPE)
+      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
 c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
 c      integer nAtten(MAX_PROB,4)
 
@@ -445,14 +437,11 @@ c      write (27) iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt),
      1         nInten(iProb)
 
 c       do iAtten = 1,nAtten(iProb,jType)
-         do iFltWidth=1,nWidth(iFlt)
           do iFtype=1,nFtype(iFlt)
            do iParam=1,nParamVar(iFlt,iFltWidth)
-c             write (11,'( 20e15.6 )')  (tempHaz1(iParam,iFltWidth,j,iProb,iFtype),j=1,nInten(iProb))
-             write (27, '( 15e12.4)')  (tempHaz1(iParam,iFltWidth,j,iProb,iFtype),j=1,nInten(iProb))
+             write (27, '( 15e12.4)')  (tempHaz1(iParam,j,iProb,iFtype),j=1,nInten(iProb))
            enddo
           enddo
-         enddo
 c       enddo
       enddo
     
@@ -531,6 +520,7 @@ c     a total number of fault listings in the output file.
          enddo
       enddo
 
+      nwr = 12
       write (nwr,'(2i8,10x,''Number of faults, fault cases'')')
      1       nFlt,casecount
       write (nwr,'(a28,5x,a19,a61,a33)') 
@@ -707,6 +697,8 @@ c  ------------------------------------------------------------------
       write (18,'(1x,a34,2xa80)') 'Filename for deaggregation output:', file1
       write (18,*) 
       
+      nwr = 14
+
       nwr = 14
 
 c     Write number of bins and bin values.
