@@ -282,7 +282,7 @@ c     Read bins for de-aggregating the hazard
       write (*,'( 3i5)') i,j,k
       pause 'test 2'
       stop 99
- 2008 write (*,'( 2x,''input file error: common for coeff for iProb, jATtenType, and iAtten=''),3i5)') i,j,k 
+ 2008 write (*,'( 2x,''input file error: common for coeff for iProb, jATtenType, and iAtten='',3i5)') i,j,k 
       stop 99
  2009 write (*,'( 2x,''input file error: pscorflag'')') 
       stop 99

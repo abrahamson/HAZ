@@ -87,7 +87,7 @@ c     Bayless and Somerville model, DIRFLAG = X
       if (dirflag .eq. 30 ) then 
 c       Temp set for simplified geometry
         len1 = RupLength * fs
-        hypoX = len1 + fltGrid_x(iLocAS)
+        hypoX = len1 + fltGrid_x(iLocDD,iLocAS)
         theta = 180./3.14 * atan(fltgrid_y(1,1)/hypoX)
         rake = 0.
         X = abs(hypoX/rupLength)
