@@ -69,8 +69,6 @@ c           COMPUTE PROBABILITY OF depth BETWEEN depth1 and depth2
 c       Faults
 
 c      Use uniform distribution for faults
-c        ** Faults **
-c         write (*,'( 2x, ''in flt part'')')
 
         if (iDepthModel .eq. 0 ) then
 c         Uniform distribution 

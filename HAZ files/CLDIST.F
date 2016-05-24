@@ -1,12 +1,12 @@
 c closestDist.f
 
-      subroutine CalcDist (sourceType, pscorflag, hypoDepth, RupWidth, RupLen, 
-     1             r_horiz, seismoDepth, nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, 
-     3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb,
-     5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip, dip, iFltWidth, iFlt)
+      subroutine CalcDist (sourceType, pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS, 
+     1             iFltWidth, iFlt, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 
+     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
+     3             fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
+     4             fltgrid_Rrup, fltgrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
+     5             hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo, 
+     6             dipavg, Rx, Ry, Ry0)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -17,25 +17,24 @@ c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
 c     declarations passed in 
       integer sourceType, pscorflag, nfltGrid(2), n1AS(MAXFLT_AS), iLocX, 
      1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt
-      real hypoDepth, RupWidth, RupLen, r_horiz, seismoDepth,
+      real ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
      3     fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_z1(MAXFLT_DD,MAXFLT_AS), 
-     4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), 
+     4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_z2(MAXFLT_DD,MAXFLT_AS),
      5     fltgrid_x3(MAXFLT_DD,MAXFLT_AS), fltgrid_y3(MAXFLT_DD,MAXFLT_AS), 
      6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS), 
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS)
-       real dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
 
 c     declarations passed out
-      real distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
-     1     dipavg, Rx, Ry, Ry0
       integer HWFlag, n1, n2, icellRupstrike, icellRupdip  
+      real hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
+     1     dipavg, Rx, Ry, Ry0
 
 c     declarations only used within subroutine
-      integer i, j
-      real hypo1, distRx, rupLength2, r_horiz1 
+      integer i, j, celly, cellx
+      real hypo1, distRx, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
       
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -47,10 +46,13 @@ c     Initialize closest distance
       
 c     Compute distances for areal sources      
         if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
+
+c         Set hypoDepth for areal sources
+          hypoDepth = (iLocY-0.5)*ystep + grid_top
  
 c         Approximate correction for using point source with extended source model
 C         added limit on only shallow areal sources (Hypo>30.0km)
-          if ( psCorFlag .eq. 1  .and. hypodepth .le. 30.0) then
+          if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
             hypo1=hypoDepth-rupWidth/2.   
           if (hypo1 .lt. 0.0) hypo1=0.0
           rupLength2 = rupLen/2.
@@ -77,9 +79,7 @@ c         Set other distance values equal to corresponding distance measures.
           distRx = distJB
           disthypo = distRup
 C         Set HWflag = 0 for areal or grid sources.
-          HWFlag = 0
-C         Set Dipaverage equal to 90 for gridded sources.
-c          dipavg = 3.14159/2.0      
+          HWFlag = 0    
           dipavg = dip(iFlt,ifltWidth,1) * 3.1415926/180.
           return
 
@@ -90,15 +90,34 @@ c         n1 is the last cell that makes up the rupture plane down dip
 c         n2 is the last cell that makes up the rupture plane along strike       
           n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
           n2 = n2AS(iLocX)
-       
-c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag
-c         Average Strike method
-c          call AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1,
-c     1                    fltgrid_y1, fltgrid_x2, fltgrid_y2, fltgrid_x4,
-c     2                    fltgrid_y4, rupLen, distRx, iLocX, iLocY, n2, 
-c     3                    n1, Rx, Ry, Ry0, HWFlag, dipavg)
+          
+c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
+         if (sourceType .eq. 1 .or. sourceType .eq. 5) then       
+           testy = ((n1-iLocY)+1.)/2.
+           celly = int(iLocY+testy) 
+           testx = ((n2-iLocX)+1.)/2.
+           cellx = int(iLocX+testx)           
+           if (int(testy) .eq. testy .and. int(testx) .eq. testx) then                    
+             hypoDepth = fltgrid_z1(celly,cellx)
+             hypox = fltgrid_x1(celly,cellx)
+             hypoy = fltgrid_y1(celly,cellx) 
+           else if (int(testy) .eq. testy .and. int(testx) .ne. testx) then
+             hypoDepth = (fltgrid_z2(celly,cellx) + fltgrid_z1(celly,cellx))/2.
+             hypox = (fltgrid_x2(celly,cellx) + fltgrid_x1(celly,cellx))/2.
+             hypoy = (fltgrid_y2(celly,cellx) + fltgrid_y1(celly,cellx))/2.
+           else if (int(testy) .ne. testy .and. int(testx) .eq. testx) then
+             hypoDepth = (fltgrid_z4(celly,cellx) + fltgrid_z1(celly,cellx))/2.  
+             hypox = (fltgrid_x4(celly,cellx) + fltgrid_x1(celly,cellx))/2.   
+             hypoy = (fltgrid_y4(celly,cellx) + fltgrid_y1(celly,cellx))/2.             
+           else 
+             hypoDepth = fltgrid_z(celly,cellx)    
+             hypox = fltgrid_x(celly,cellx)
+             hypoy = fltgrid_y(celly,cellx)                 
+           endif
+         endif
 
-c         OR Global Coordinate System 2 method
+c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag        
+c         Global Coordinate System 2 method
           call GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
      1              fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
      2              fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
@@ -132,9 +151,9 @@ C         Compute the DistSeismo value based on min depth being equal to seismoD
             enddo
           enddo
 
-C         Set the JB and Hypo distances for faults.
-          distepi = fltgrid_Rjb(iLocY,iLocX)
-          disthypo = fltgrid_Rrup(iLocY,iLocX)
+C         Set the Epi and Hypo distances for faults.
+          distepi = sqrt(hypox**2.+hypoy**2.)
+          disthypo = sqrt(hypox**2.+hypoy**2.+hypoDepth**2.)
       
         endif
 
