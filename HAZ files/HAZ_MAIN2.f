@@ -41,7 +41,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2a  *'
-      write (*,*) '*         May, 2016             *'
+      write (*,*) '*           May, 2016           *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -320,7 +320,7 @@ c            Integrate Over Rupture Location - Down Dip (aleatory)
 c            Find the Closest Distances for this rupture
 c            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
              call CalcDist (sourceType(iFlt), pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     1             iFltWidth, iFlt, ystep(iFlt), grid_top(iFlt,1), RupWidth, RupLen, r_horiz, mindepth(iFlt), 
+     1             iFltWidth, iFlt, ystep(iFlt), grid_top(iFlt,iLocX), RupWidth, RupLen, r_horiz, mindepth(iFlt), 
      2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
      3             fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
      4             fltGrid_Rrup, fltGrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
