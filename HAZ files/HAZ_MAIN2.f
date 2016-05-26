@@ -184,7 +184,7 @@ c        Convert Long, Lat to x,y in km and put into new array (1-D)
      3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
 
 c        Turn fault into a grid 
-         if ( sourceType(iFlt) .eq. 1 .or. sourceTpe(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
+         if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
