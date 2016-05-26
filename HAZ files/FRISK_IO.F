@@ -430,8 +430,6 @@ c      integer nAtten(MAX_PROB,4)
 
       do iProb=1,nProb
 
-c      write (27) iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
-
       write (27,'( 20i5)') iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
      1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
      1         nInten(iProb)

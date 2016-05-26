@@ -608,7 +608,6 @@ c             read mag-displacement models
         endif
 
 C     Allow hxstep and hystep to be different for sourceType 2
-C     cdh 4/29/2015
         if (sourceType(iFlt).ne.2) then
 C     Check that Hxstep = Hystep
           if (hxstep(iFlt) .ne. hystep(iFlt) ) then
@@ -735,7 +734,6 @@ c                Scale moment rate by reference thickness.
                  else
                    beta(iFlt,i,iWidth) = bValue1(i_bValue)*alog(10.)
                  endif
-c                refMag(iFlt,i,iWidth) = refMag1(iThick1,iRefMag)
                  if ( rateType1(iRate) .eq. 2 ) then
                    RateParamWt(iFlt,i,iWidth) = RateWt1(iRate)
                  else
@@ -767,7 +765,7 @@ c                Set max mag
                    testMaxMag = maxMag(iFlt,i,iWidth)
                  endif               
 
-c  temp fix - the maxmag, refmag probelem for waacy
+c  temp fix - the maxmag, refmag problem for waacy
                  if (magRecur1(iRecur) .eq. 10 ) then
                      maxMag(iFlt,i,iWidth) = refMag1(iWidth,iRefMag)
                  endif

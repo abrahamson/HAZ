@@ -184,27 +184,13 @@ c        Convert Long, Lat to x,y in km and put into new array (1-D)
      3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
 
 c        Turn fault into a grid 
-         if ( sourceType(iFlt) .eq. 1 ) then
+         if ( sourceType(iFlt) .eq. 1 .or. sourceTpe(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
      3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
-         elseif ( sourceType(iFlt) .eq. 5 ) then
-           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
-     1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
-     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
-     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
-     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
-         elseif ( sourceType(iFlt) .eq. 6 ) then
-           call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
-     1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
-     2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
-     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
-     4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
-     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 ) 
          endif
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
      1      write (18,'( 2x,''fault area (km^2) = '',e12.3)') faultArea
