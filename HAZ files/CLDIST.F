@@ -92,7 +92,7 @@ c         n2 is the last cell that makes up the rupture plane along strike
           n2 = n2AS(iLocX)
           
 c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
-         if (sourceType .eq. 1 .or. sourceType .eq. 5) then       
+         if (sourceType .eq. 1 .or. sourceType .eq. 5 .or. sourceType .eq. 6) then       
            testy = ((n1-iLocY)+1.)/2.
            celly = int(iLocY+testy) 
            testx = ((n2-iLocX)+1.)/2.
