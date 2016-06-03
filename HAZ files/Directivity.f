@@ -165,9 +165,9 @@ c       Check for bad value of aveDPP
 c       Compute the coordinates of the hypocenter 
         len1 = RupLength * fs
         Wid1 = RupWidth * fd
-        hypoX = len1 + fltGrid_x(iLocAS)
+        hypoX = len1 + fltGrid_x(iLocDD,iLocAS)
         hypoY = 0.
-        hypoZ = Wid1 + fltGrid_z(iLocDD)
+        hypoZ = Wid1 + fltGrid_z(iLocDD,iLocAS)
 
         
 c        write (*,'( 2x,''Hypo:'',5f10.3)') hypox, hypoY, hypoZ, fs, rupLength

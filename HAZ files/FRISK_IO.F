@@ -862,7 +862,7 @@ c       Write Results
       
 c ----------------------------------------------------------------------
       real function f_magModel(c,x, i) 
-      real c(1), x
+      real c(4), x
       integer i
       
       if ( x .lt. c(3) .or. c(3) .eq. 0.) then

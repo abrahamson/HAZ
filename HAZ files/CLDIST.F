@@ -904,7 +904,7 @@ c     implicit none
       integer arow, acol, i, nterm, npts
       real*8 A(MAXPTS,MAXTERM), b(MAXPTS,1)
       real*8 xhat(MAXPTS,1), eps, deter, work(1000)
-      real x(1), y(1), z(1), x0, y0, z0, dist, cx, cy, cz, c
+      real x(5), y(5), z(5), x0, y0, z0, dist, cx, cy, cz, c
       eps = 1.0e-11
       arow = MAXPTS
       acol = MAXTERM
@@ -1294,7 +1294,7 @@ c     implicit none
       integer arow, acol, i, nterm, npts
       real*8 A(MAXPTS,MAXTERM), b(MAXPTS,1)
       real*8 xhat(MAXPTS,1), eps, deter, work(1000)
-      real x(1), y(1), z(1), x0, y0, z0, dist, cx, cy, cz, c
+      real x(4), y(4), z(4), x0, y0, z0, dist, cx, cy, cz, c
       eps = 1.0e-11
       arow = MAXPTS
       acol = MAXTERM
