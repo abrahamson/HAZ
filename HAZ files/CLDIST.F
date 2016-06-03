@@ -17,7 +17,7 @@ c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
 c     declarations passed in 
       integer sourceType, pscorflag, nfltGrid(2), n1AS(MAXFLT_AS), iLocX, 
      1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt
-      real ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth,
+      real ystep, grid_top(MAX_FLT,MAX_GRID), RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
      3     fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_z1(MAXFLT_DD,MAXFLT_AS), 
@@ -34,7 +34,7 @@ c     declarations passed out
 
 c     declarations only used within subroutine
       integer i, j, celly, cellx
-      real hypo1, distRx, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
+      real top_grid, hypo1, distRx, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
       
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -44,11 +44,18 @@ c     Initialize closest distance
       distepi = 1.0e30
       distRx = 1.0e30
       
+c     Set top_grid for sourceTypes 2/3 and 4 (different)
+        if (sourceType .eq. 2 .or. sourceType .eq. 3) then
+          top_grid = grid_top(iFlt,1)
+        else if (sourceType .eq. 4) then
+          top_grid = grid_top(iFlt,iLocX)
+        endif
+      
 c     Compute distances for areal sources      
         if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
 
 c         Set hypoDepth for areal sources
-          hypoDepth = (iLocY-0.5)*ystep + grid_top
+          hypoDepth = (iLocY-0.5)*ystep + top_grid
  
 c         Approximate correction for using point source with extended source model
 C         added limit on only shallow areal sources (Hypo>30.0km)
