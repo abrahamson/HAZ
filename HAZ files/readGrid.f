@@ -2,17 +2,17 @@ c  --------------------------------------------------------------------
 
        subroutine RdGrid1 ( iFlt, grid_a,grid_dlong,grid_dlat,grid_n,
      1           grid_long, grid_lat, minLat, minLong, maxLat, maxLong, rate_scale )
+
+      implicit none
       include 'pfrisk.h'
          
-      character*80 filein, dummy
-      real*8 sum, sum1
-      real minLat, minLong, maxLat, maxLong
+      integer grid_n(MAX_FLT), iFlt, nHead, i, n, j
       real grid_long(MAX_FLT,MAX_GRID), grid_lat(MAX_FLT,MAX_GRID),
-     1     grid_a(MAX_FLT,MAX_GRID)
-      real grid_dlong(MAX_FLT), grid_dlat(MAX_FLT)
-      integer grid_n(MAX_FLT)
+     1     grid_a(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT), 
+     2     grid_dlat(MAX_FLT), minLat, minLong, maxLat, maxLong, rate_scale     
+      real*8 sum, sum1  
+      character*80 filein, dummy  
                 
-
       read (10,'( a80)') filein
       open (11,file=filein,status='old',err=2100)
           
@@ -25,7 +25,6 @@ c     Read header
         write (*,'( a80)') dummy
       enddo
       read (11,*,err=2003) n, grid_dlong(iFlt), grid_dlat(iFlt)
-c      write (*,'( i5, 2f10.4)') n, grid_dlong(iFlt), grid_dlat(iFlt)
       if ( n .gt. MAX_GRID ) then
         write (*,'( 2x,''Increase MAX_GRID to '',i7)') n
         stop 99
@@ -55,7 +54,7 @@ c     and between min and max long and lat
 
       
 c     Note: Rate_scale keeps track of the activity rate that is removed because
-c     it is at to large a distance (but is still in the activity rate of the input)            
+c     it is at too large a distance (but is still in the activity rate of the input)            
 
       return
       
@@ -79,15 +78,16 @@ c ----------------------------------------------------------------------
       subroutine RdGrid2 ( iFlt, grid_a,grid_dlong,grid_dlat,grid_n,
      1           grid_long, grid_lat, minLat, minLong, maxLat, maxLong, rate_scale,
      2           grid_top )
+
+      implicit none
       include 'pfrisk.h'
-         
-      character*80 filein
-      real*8 sum, sum1
-      real minLat, minLong, maxLat, maxLong
-      real grid_long(MAX_FLT,1), grid_lat(MAX_FLT,1), grid_a(MAX_FLT,1)
-      real grid_dlong(1), grid_dlat(1), grid_top(MAX_FLT,1)
-      integer grid_n(1)
-                      
+
+      integer grid_n(1), iFlt, nHead, i, n, j
+      real grid_long(MAX_FLT,1), grid_lat(MAX_FLT,1), grid_a(MAX_FLT,1),
+     1     grid_dlong(1), grid_dlat(1), grid_top(MAX_FLT,1), minLat, 
+     2     minLong, maxLat, maxLong, dummy, rate_scale
+      real*8 sum, sum1    
+      character*80 filein                     
 
       read (10,'( a80)') filein
       open (11,file=filein,status='old')
@@ -125,7 +125,7 @@ c     and between min and max long and lat
       rate_scale = sum1/sum
       
 c     Note: Rate_scale keeps track of the activity rate that is removed because
-c     it is at to large a distance (but is still in the activity rate of the input)            
+c     it is at too large a distance (but is still in the activity rate of the input)            
 
       return
       end

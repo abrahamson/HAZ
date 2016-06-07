@@ -252,13 +252,13 @@ C     Last Updated: 9/16/13
       real f5(MAXPER), rjbbar(MAXPER), Dfr(MAXPER), Dfv(MAXPER)
       real R1(MAXPER), R2(MAXPER), DC3Global(MAXPER), f6(MAXPER), f7(MAXPER)
 
-      real Mref, Rref, Vref, f1, f3, DC3Glb, specT
+      real Mref, Rref, Vref, f1, f3, specT
       REAL MAG, RBJF, VS, z10
       real ftype, Rp, R
       INTEGER iFlag, count1, count2, regionflag, basinflag
-      real sigmaT, lnY, mechS, mechN, mechR, pga4nl
+      real lnY, mechS, mechN, mechR, pga4nl
       real f2, flin, fBasin, phi, tau
-      real c1T, c2T, c3T, hT, Dc3ctkT, Dc3JpnT, e0T, e1T, e2T, e3T, e4T
+      real c1T, c2T, c3T, hT, e0T, e1T, e2T, e3T, e4T
       real e5T, e6T, mhT, cT, VcT, phi2T, phi3T, f4T, l1T, l2T, t1T, t2T
       real deltaz1, f5T, rjbbarT, DfrT, DfvT, R1T, R2T, DC3GlobalT
       real DC3ChinaTrkT, DC3ItalyJapanT, f6T, f7T
@@ -996,7 +996,7 @@ C     Minor change to T=5, 7.5, and 10 sec for coefficient C6
       REAL flnAF(MAXPER), rho(MAXPER)
 
       REAL MAG, RRUP, RBJF, VS, D25, FHWR, FHWM, FHWZ, FHWD, PGAROCK, C, N
-      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil, Rx, R1, R2, f1, f2
+      real lnY, ftype, Dip, pgasoil, Rx, R1, R2, f1, f2
       real fhypH, D25_RK
       INTEGER count1, count2, HWFlag, regionflag
 
@@ -1006,7 +1006,7 @@ C     Minor change to T=5, 7.5, and 10 sec for coefficient C6
       real t1T, t2T, phi1T, phi2T, phicT
       real rhoT, flnAFT
 
-      real alpha, tau, s
+      real alpha, tau
       real tau_lnyB, tau_lnPGAB, phi_lnY, phi_lnyB, phi_lnPGAB, phi, sigmatot
 
 C.....MODEL COEFFICIENTS.....................
@@ -1794,8 +1794,8 @@ C     Last Updated: 8/1/13
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
       integer iflag, count1, count2, hwflag, vs30_class, regionflag
       REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
-      REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
-      real c8, c8a, c8bT, deltaZ1, fd, cDPP
+      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth
+      real c8, c8a, c8bT, deltaZ1, fd
       real NL0, sigma_NL0, F_Measured, F_Inferred, mz_TOR, deltaZ_TOR, coshM
       real gscaleJapItT, gscaleWenT, sigma2JapT, phi
       real phi1jpT, phi5jpT, phi6jpT
@@ -2494,15 +2494,15 @@ c      implicit none
       real s3T, s4T, s5T, s6T, c4_mag
       real phiA_est, phiA_msr
       
-      real M2, M3 
+      real M2
       real lnSa, SA1180, rjb, rRup, Rx, Ry0, dip, mag, vs30
       real HW_taper1, HW_taper2, HW_taper3, HW_taper4, HW_taper5
-      real damp_dSA1180, sigAmp, fltWidth, testv1
+      real damp_dSA1180, sigAmp, fltWidth
       real f1, f4, f5, f6, f7, f8, f9, f10, f11, fReg, f12, f13
       real Ry1, ZTOR, Frv, Fn, SpecT
       real phiA, phiB, tauA, tauB, phi, tau
       integer vs30_class, hwflag, iflag, nPer, regionflag, msasflag
-      real n, c, z1, c2, e2, a21, a22, test, zhat
+      real n, c, z1
       real R, V1, Vs30Star, hw_a2, h1, h2, h3, R1, R2, CRjb
       integer count1, count2
       real y1, y2, x1, x2, y1z, y2z, x1z, x2z

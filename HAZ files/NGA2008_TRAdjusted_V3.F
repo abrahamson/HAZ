@@ -10,9 +10,9 @@ c ------------------------------------------------------------------
      2                     specT, period1, depthtop, iflag, vs30_class,
      3                     depthvs10, Rx )
      
-      real mag, dip, fType, aspectratio, rRup, rjb, vs30, pgaRock,
+      real mag, dip, fType, rRup, rjb, vs30, pgaRock,
      1       Rx, lnSa, sigma, tau, period1, sigma1, depthtop, width,
-     2       depthvs10, lnSaTD, lnSa1, lnSa2, lnSaRock
+     2       depthvs10
       integer hwflag, iflag, vs30_class
 
 c     VS30 class is to distinguish between the sigma if the VS30 is measured
@@ -115,16 +115,16 @@ c ----------------------------------------------------------------------
      1     a12(MAXPER), a13(MAXPER), a14(MAXPER), a15(MAXPER),
      1     c4(MAXPER), a16(MAXPER), a18(MAXPER),
      2     s1e(MAXPER), s2e(MAXPER), s1m(MAXPER), s2m(MAXPER), s3(MAXPER), s4(MAXPER)
-      real period(MAXPER), b_soil(MAXPER), vLin(MAXPER), M1
-      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup, aspectratio, rake,
+      real period(MAXPER), b_soil(MAXPER), vLin(MAXPER)
+      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup, rake,
      1     dip, mag, sigcorr(MAXPER), taucorr(MAXPER) 
 c      real sig1(MAXPER), sig2(MAXPER), tau1(MAXPER), tau2(MAXPER)
 c      real tauCorr, sigCorr
       real taper1, taper2, taper3, taper4, taper5
       real a1T, a2T, a3T, a5T, a8T, c3_TAT
       real a10T, a11T, a12T, a13T, a14T, a15T, a18T
-      real c4T, M1T, a4T, vHingeT 
-      real s1eT, s2eT, s1mT, s2mT, s3T, s4T, s1T, s2T
+      real c4T, a4T
+      real s3T, s4T, s1T, s2T
       real sigcorrT, taucorrT, vLinT, b_soilT, sum, Frv, Fn
       real damp_dpga, sigamp, width, testv1, soilampTR
       real sigmanot, sigmanotPGA, taunot, taunotPGA, sigmaB, sigmaBPGA
@@ -903,11 +903,11 @@ c ---------------------------------------------------------------------
       REAL phi1(MAXPER), phi2(MAXPER), phi3(MAXPER), phi4(MAXPER)
       REAL phi5(MAXPER), phi6(MAXPER), phi7(MAXPER), phi8(MAXPER)
       REAL tau1(MAXPER), tau2(MAXPER), sigma1(MAXPER), sigma2(MAXPER)
-      REAL sigma3(MAXPER), sigma4(MAXPER), c9a(MAXPER)
+      REAL sigma3(MAXPER), c9a(MAXPER)
  
       REAL c1T, c1aT, c1bT, cnT, cmT, c5T, c6T, c7T, c9T, c9aT
       REAL c1_TAT, c3_TAT, c2_TAT, d, vHinge
-      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T, sigma4T
+      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c3, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
@@ -1704,7 +1704,7 @@ c ---------------------------------------------------------------------
       REAL M, RRUP
       REAL SOF, period2, lnY, PhiT, gamT, ftype
 
-      real a1T, a2T, b1T, b2T, a1mlt6T, a2mlt6T, b1mlt6T, b2mlt6T, c1_TAT
+      real a1T, a2T, b1T, b2T, c1_TAT
       integer iflag, count1, count2
 
       Data period / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08,  
@@ -1916,7 +1916,7 @@ c ---------------------------------------------------------------------
       real c0T, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, c10T, c11T, c12T
       real k1T, k2T, k3T, sigT, c1_TAT
       real tlnyT, slnyT, cortT, corsT
-      real alpha, tau, s
+      real tau
 
 C.....MODEL COEFFICIENTS.....................
       data Period /  0.00, -1.0, -2.0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 
@@ -2729,4 +2729,3 @@ C     Convert ground motion to units of gals.
 
 
  
-

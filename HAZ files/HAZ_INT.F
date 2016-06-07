@@ -69,7 +69,7 @@ c --------------------------------------------------------------
       subroutine InitHazBinsX ( HazBinsX )                                      
       include 'pfrisk.h'                                                        
       real HazBinsX(MAX_XCost,MAX_PROB, MAX_INTEN )          
-      integer i1, i2, i2b, i3, i4                                               
+      integer i2b, i3, i4                                               
                                                                                 
          do 80 i2b = 1, MAX_XCost                                                
           do 70 i3 = 1, MAX_PROB                                                       
@@ -264,7 +264,7 @@ c -------------------------------------------------------------
 
       subroutine InitMinDist ( nWidth, FaultDist )
       include 'pfrisk.h'                                                        
-      integer nInten(MAX_PROB), iWidth
+      integer iWidth
       real faultDist(MAX_FLT,MAX_WIDTH,3), minDist
 
       minDist = 1.e10

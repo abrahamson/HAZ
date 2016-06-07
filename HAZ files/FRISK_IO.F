@@ -19,7 +19,7 @@
       integer sCalc(MAX_PROB,4,MAX_ATTEN),sssCalc(MAX_PROB,4,MAX_ATTEN)
       real sigfix(MAX_PROB,4,MAX_ATTEN)
       character*80 filein, title, file1, filelog, filehyp
-      real minlat, maxlat, minlong, maxlong, vs
+      real minlat, maxlat, minlong, maxlong
       integer nProb, nAttenType, nAtten(MAX_PROB,4), soilAmpFlag
       real specT(MAX_PROB)
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
@@ -687,7 +687,7 @@ c  ------------------------------------------------------------------
 
       integer csrflag(MAX_PROB), attenType(MAX_FLT)
       integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
-      integer nMagBins, nDistBins, nEpsBins, nXcostBins, iXcostBins
+      integer nMagBins, nDistBins, nEpsBins, nXcostBins
       character*80 file1, attenName(4,MAX_ATTEN) 
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'

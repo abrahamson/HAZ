@@ -2513,7 +2513,7 @@ c    Campbell (2003) Horizontal Hybrid CEUS
 C    Hard Rock Site Conditions
 C    Functional fit to Epistemic Values
 
-      real mag, rupDist, lnY, sigmaeps, period                                    
+      real mag, rupDist, sigmaeps, period                                    
       real EU1(19), EU2(19), EU3(19), EU4(19) 
       real EU5(19), EU6(19), EU7(19), EU8(19) 
       real EU1T, EU2T, EU3T, EU4T, EU5T, EU6T, EU7T, EU8T

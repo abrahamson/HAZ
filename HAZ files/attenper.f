@@ -6,8 +6,9 @@ C     deterministic spectra.
       subroutine attenper ( jcalc, anper, minaper, maxaper )
       
       include 'pfrisk.h'
-      real minaper, maxaper
+      
       integer jcalc, anper
+      real minaper, maxaper
 
 c     Set number of attenuation spectral periods to -99 for 
 c     checking of valid jcalc values. 
@@ -306,8 +307,6 @@ C     Model Number = 787
          anper = 105
          minaper = 0.01
          maxaper = 10.0
-c         call AS_NGA_2008 ( mag, dip, ftype, AR, rupDist, jbdist,
-c     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, vs30_Class, srcSiteA  ) 
       endif
 
 C     Abrahamson&Silva 072007 Model - horizontal, No Soil Depth, Measured Vs30m
@@ -316,8 +315,6 @@ C     Model Number = 788
          anper = 105
          minaper = 0.01
          maxaper = 10.0
-c         call AS_NGA_2008 ( mag, dip, ftype, AR, rupDist, jbdist,
-c     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, vs30_Class, srcSiteA  ) 
       endif
 
 c ******* Chiou and Youngs Model *********
@@ -328,12 +325,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 0
-c         call CY_NGA_2008 ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Estimated Vs30m'
        endif
 
 c ******* Chiou and Youngs Model *********
@@ -344,12 +335,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 1
-c         call CY_NGA_2008 ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Measured Vs30m'
        endif
 
 c ******* Chiou and Youngs Model *********
@@ -361,12 +346,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 0
-c         call CY_NGA_2008SC ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Estimated Vs30m,SCal SMM'
        endif
 
 c ******* Chiou and Youngs Model *********
@@ -378,12 +357,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 1
-c         call CY_NGA_2008SC ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Measured Vs30m,SCal SMM'
        endif
 
 c ******* Chiou and Youngs Model *********
@@ -395,12 +368,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 0
-c         call CY_NGA_2008CC ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Estimated Vs30m,CCal SMM'
        endif
 
 c ******* Chiou and Youngs Model *********
@@ -412,12 +379,6 @@ c
           anper = 105
           minaper = 0.01
           maxaper = 10.0
-c         vs30_class = 1
-c         call CY_NGA_2008CC ( mag, rupDist, jbdist, specT,
-c     1                     period2, lnY, sigma, iflag, 
-c     2                     vs, dip1(1), Depthtop, Ftype, 
-c     3                     depthvs10, vs30_class, hwflag, srcsiteA )
-c         attenname1 = 'Chiou&Youngs(11-07)-Hor,Measured Vs30m,CCal SMM'
        endif
 
 
@@ -427,9 +388,6 @@ C     Model Number = 836
          anper = 21
          minaper = 0.01
          maxaper = 10.0
-c         call CB_NGA_2008 ( mag, rupdist, jbdist, ftype, specT,
-c     1                    period2, lnY, sigma, iflag, vs, 
-c     2                    depthTop, D25, dip1(1) )
        endif
 
 c ******* Idriss (June 2010) *********
@@ -448,8 +406,6 @@ C     Model Number = 922
          anper = 21
          minaper = 0.01
          maxaper = 10.0
-c         call BA_NGA_2008 ( mag, jbdist, specT,
-c     1                    period2, lnY, sigma, iflag, vs, ftype, pga4nl )
        endif
 
 c ******* Boore and Atkinson (July 2007/2010) *********
@@ -459,8 +415,6 @@ C     Model Number = 923
          anper = 21
          minaper = 0.01
          maxaper = 10.0
-c         call BA_NGA_2008 ( mag, jbdist, specT,
-c     1                    period2, lnY, sigma, iflag, vs, ftype, pga4nl )
        endif
 
 C ******* End of PEER NGA 2008 Attenuation Models ****
@@ -471,9 +425,6 @@ C     Model Number = 070
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Horizontal, Very Firm Soil, SS and Reverse
@@ -482,9 +433,6 @@ C     Model Number = 071
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Horizontal, Soft Rock, SS and Reverse
@@ -493,9 +441,6 @@ C     Model Number = 072
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Horizontal, Firm Rock, SS and Reverse
@@ -504,9 +449,6 @@ C     Model Number = 073
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Horizontal, Generic Rock, SS and Reverse
@@ -515,9 +457,6 @@ C     Model Number = 074
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Horizontal, Generic Soil, SS and Reverse
@@ -526,9 +465,6 @@ C     Model Number = 075
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_H ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Firm Soil, SS and Reverse
@@ -537,9 +473,6 @@ C     Model Number = 076
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Very Firm Soil, SS and Reverse
@@ -548,9 +481,6 @@ C     Model Number = 077
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Soft Rock, SS and Reverse
@@ -559,9 +489,6 @@ C     Model Number = 078
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Firm Rock, SS and Reverse
@@ -570,9 +497,6 @@ C     Model Number = 079
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Generic Rock, SS and Reverse
@@ -581,9 +505,6 @@ C     Model Number = 080
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 C     Campbell and Bozorgnia (2003), Vertical, Generic Soil, SS and Reverse
@@ -592,9 +513,6 @@ C     Model Number = 081
          anper = 15
          minaper = 0.05
          maxaper = 4.0
-c         call Camp03_V ( mag, seismoDist, jbDist, lnY, sigma, 
-c     1        specT, period2, s03vfs, s03sr, s03fr, frv, fth, hwflag, 
-c     2        iflag)
       endif
 
 c ******* Abrahamson and Silva Models *********
@@ -604,8 +522,6 @@ C     Model Number = 001
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Rock) - vertical
@@ -614,8 +530,6 @@ C     Model Number = 002
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_V ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Soil) - horizontal
@@ -624,8 +538,6 @@ C     Model Number = 003
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1995 (Soil) - vertical
@@ -634,8 +546,6 @@ C     Model Number = 004
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_V ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Rock) - horizontal with Normal Faulting factors.
@@ -644,8 +554,6 @@ C     Model Number = 005
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Rock) - vertical
@@ -654,8 +562,6 @@ C     Model Number = 006
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_V_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Soil) - horizontal with Normal faulting factors.
@@ -664,8 +570,6 @@ C     Model Number = 007
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Soil) - vertical with Normal faulting factors
@@ -674,8 +578,6 @@ C     Model Number = 008
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_V_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Rock) - horizontal with Normal Faulting factors scaled
@@ -685,8 +587,6 @@ C     Model Number = 2005
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 C     Abrahamson&Silva 1997 (Rock) - horizontal with Normal Faulting factors scaled
@@ -696,8 +596,6 @@ C     Model Number = 3005
          anper = 27
          minaper = 0.03
          maxaper = 5.0
-c         call AS_97_H_NF ( mag, rupDist, ftype, soil, hwflag, specT,
-c     1                     period2, lnY, sigma,iflag )
        endif
 
 c ********* Boore, Joyner and Fumal Models ******************
@@ -707,8 +605,6 @@ C     Model Number = 010
          anper = 11
          minaper = 0.1
          maxaper = 2.0
-c         call bjf94 ( mag, jbDist, ftype, lnY, sigma, GB, GC, specT,
-c     1            attenName1, period2,iflag )
 
 c     BJF94, Horizontal, Class B
 C     Model Number = 011
@@ -716,8 +612,6 @@ C     Model Number = 011
          anper = 11
          minaper = 0.1
          maxaper = 2.0
-c         call bjf94 ( mag, jbDist, ftype, lnY, sigma, GB, GC, specT,
-c     1            attenName1, period2,iflag )
 
 c     BJF94, Horizontal, Class c
 C     Model Number = 012
@@ -725,8 +619,6 @@ C     Model Number = 012
          anper = 11
          minaper = 0.1
          maxaper = 2.0
-c         call bjf94 ( mag, jbDist, ftype, lnY, sigma, GB, GC, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c     BJF97, Horizontal, Vs top 30 meters
@@ -735,8 +627,6 @@ C     Model Number = 013
          anper = 12
          minaper = 0.1
          maxaper = 2.0
-c         call bjf97 ( mag, jbDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2, vs,iflag )
       endif
 
 c     BJF97, Horizontal, Vs top 30 meters scaled by factor 1.0/1.67
@@ -745,8 +635,6 @@ C     Model Number = 2013
          anper = 12
          minaper = 0.1
          maxaper = 2.0
-c         call bjf97 ( mag, jbDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2, vs,iflag )
       endif
 
 c     BJF97, Horizontal, Vs top 30 meters scaled by factor 1.67
@@ -755,8 +643,6 @@ C     Model Number = 3013
          anper = 12
          minaper = 0.1
          maxaper = 2.0
-c         call bjf97 ( mag, jbDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2, vs,iflag )
       endif
 
 c ******** Campbell Models ******
@@ -766,8 +652,6 @@ C     Model Number = 020
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Camp90 ( mag, seismoDist, ftype, lnY, sigma, baseDepth,
-c     1            specT, attenName1, period2,iflag )
       endif
 
 c     Campbell (1990) - vertical, Rock
@@ -776,8 +660,6 @@ C     Model Number = 021
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Camp90v ( mag, seismoDist, ftype, lnY, sigma, baseDepth,
-c     1            specT, attenName1, period2,iflag )
       endif
 
 c     Campbell (1990/1994), Horizontal, Rock
@@ -786,8 +668,6 @@ C     Model Number = 022
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Camp90_94 ( mag, seismoDist, ftype, lnY, sigma, baseDepth,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Campbell (1993-1994), Horizontal Soil
@@ -796,9 +676,6 @@ C     Model Number = 023
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Campbell_94 ( mag, seismoDist, ftype, lnY, sigma, specT,
-c     1                soilFlag, softRock, hardRock, baseDepth,
-c     1                attenName1, period2,iflag )
 
 c     Campbell (1993-1994), Horizontal Soft Rock
 C     Model Number = 024
@@ -806,9 +683,6 @@ C     Model Number = 024
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Campbell_94 ( mag, seismoDist, ftype, lnY, sigma, specT,
-c     1                soilFlag, softRock, hardRock, baseDepth,
-c     1                attenName1, period2,iflag )
 
 c     Campbell (1993-1994), Horizontal Hard Rock
 C     Model Number = 025
@@ -816,9 +690,6 @@ C     Model Number = 025
          anper = 16
          minaper = 0.04
          maxaper = 4.0
-c         call Campbell_94 ( mag, seismoDist, ftype, lnY, sigma, specT,
-c     1                soilFlag, softRock, hardRock, baseDepth,
-c     1                attenName1, period2,iflag )
       endif
 
 c     Campbell (1997), Horizontal, Soil
@@ -827,9 +698,6 @@ C     Model Number = 026
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_H ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,
-c     1                attenName1, period2, softrock, hardRock,iflag )
 
 c     Campbell (1997), Horizontal, Soft Rock
 C     Model Number = 027
@@ -837,9 +705,6 @@ C     Model Number = 027
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_H ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,
-c     1                attenName1, period2, softrock, hardRock,iflag )
 
 c     Campbell (1997), Horizontal, Hard Rock
 C     Model Number = 028
@@ -847,9 +712,6 @@ C     Model Number = 028
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_H ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,                  
-c     1                attenName1, period2, softrock, hardRock,iflag )
       endif
 
 c     Campbell (1997)  vertical, Soil
@@ -858,9 +720,6 @@ C     Model Number = 029
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_Z ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,                  
-c     1                attenName1, period2, softrock, hardRock,iflag )
 
 c     Campbell (1997)  vertical, Soft Rock
 C     Model Number = 030
@@ -868,9 +727,6 @@ C     Model Number = 030
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_Z ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,
-c     1                attenName1, period2, softrock, hardRock,iflag )
 
 c     Campbell (1997)  vertical, Hard Rock
 C     Model Number = 031
@@ -878,9 +734,6 @@ C     Model Number = 031
          anper = 14
          minaper = 0.05
          maxaper = 4.0
-c         call Camp97_Z ( mag, seismoDist, ftype, lnY, sigma,
-c     1                baseDepth, specT,                  
-c     1                attenName1, period2, softrock, hardRock,iflag )
       endif
 
 c ******** Idriss Models *******
@@ -890,8 +743,6 @@ C     Model Number = 040
          anper = 24
          minaper = 0.03
          maxaper = 5.0
-c         call Idriss91_rock (mag, rupDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 C     Idriss (1991), Horizontal, Soft-soil, PGA
@@ -900,8 +751,6 @@ C     Model Number = 041
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c         call Idriss91_soft (mag, rupDist, ftype, lnY, sigma,
-c     1            attenName1, period2 )
       endif
 
 c     Idriss 1997 Horizontal, soft-soil, PGA
@@ -910,8 +759,6 @@ C     Model Number = 042
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c         call Idriss97_soft (mag, rupDist, ftype, lnY, sigma,
-c     1            attenName1, period2 )
       endif
 
 c     Idriss (1991:1995), Horizontal, Rock
@@ -920,8 +767,6 @@ C     Model Number = 043
          anper = 24
          minaper = 0.03
          maxaper = 5.0
-c         call Idriss91_95_rock (mag, rupDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c     Idriss (1991:1995), Horizontal, Rock scaled by factor 1.0/1.67
@@ -930,8 +775,6 @@ C     Model Number = 2043
          anper = 24
          minaper = 0.03
          maxaper = 5.0
-c         call Idriss91_95_rock (mag, rupDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c     Idriss (1991:1995), Horizontal, Rock scaled by factor 1.67
@@ -940,8 +783,6 @@ C     Model Number = 3043
          anper = 24
          minaper = 0.03
          maxaper = 5.0
-c         call Idriss91_95_rock (mag, rupDist, ftype, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c  ******* Sadigh/Geomatrix Models *******
@@ -951,8 +792,6 @@ C     Model Number = 050
          anper = 22
          minaper = 0.04
          maxaper = 3.0
-c         call Geomatrix93_V_rock ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Sadigh et al. 97 (rock) Horizontal
@@ -961,8 +800,6 @@ C     Model Number = 051
          anper = 22
          minaper = 0.04
          maxaper = 7.5
-c         call Geomatrix93_H_rock ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Sadigh et al. 97 (rock) Horizontal scaled by factor 1.0/1.67
@@ -971,8 +808,6 @@ C     Model Number = 2051
          anper = 22
          minaper = 0.04
          maxaper = 7.5
-c         call Geomatrix93_H_rock ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Sadigh et al. 97 (rock) Horizontal scaled by factor 1.67
@@ -981,8 +816,6 @@ C     Model Number = 3051
          anper = 22
          minaper = 0.04
          maxaper = 7.5
-c         call Geomatrix93_H_rock ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Sadigh et al. 97 (soil) horizontal
@@ -991,8 +824,6 @@ C     Model Number = 052
          anper = 13
          minaper = 0.075
          maxaper = 4.0
-c         call Sadigh97_H_soil ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c     Sadigh et al. 97 (rock) Horizontal - Sigma = 0.0
@@ -1001,8 +832,6 @@ C     Model Number = 053
          anper = 22
          minaper = 0.04
          maxaper = 7.5
-c         call Geomatrix93_H_rock ( mag, rupDist, ftype, lnY, sigma,
-c     1             specT, attenName1, period2,iflag )
       endif
 
 c ******** Spudich et al. (1997) Models *******
@@ -1011,9 +840,7 @@ C     Model Number = 060
       if (jcalc .eq. 60) then
          anper = 11
          minaper = 0.1
-         maxaper = 2.0
-c         call Spudich96 ( mag, JBdist, lnY, sigma, 0, specT,           
-c     1                   attenName, period1,iflag )  
+         maxaper = 2.0 
       endif
 
 C     Spudich et al. (1997), Horizontal, Rock, Extensional Regimes
@@ -1022,8 +849,6 @@ C     Model Number = 061
          anper = 11
          minaper = 0.1
          maxaper = 2.0
-c         call Spudich96 ( mag, JBdist, lnY, sigma, 1, specT,           
-c     1                   attenName, period1,iflag )  
       endif
 
 c ******** Youngs Models *******
@@ -1033,8 +858,6 @@ C     Model Number = 200
          anper = 10
          minaper = 0.067
          maxaper = 3.0
-c         call youngs93 ( mag, rupDist, lnY, sigma, attenName1,
-c     1       period2, specT, ftype,iflag )
       endif
 
 c     Youngs et al (1997) Horizontal, subduction, rock
@@ -1043,8 +866,6 @@ C     Model Number = 201
          anper = 12
          minaper = 0.075
          maxaper = 3.0
-c         call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1       period2, specT, ftype, depth,iflag )
       endif
 
 c     Youngs et al (1997) Horizontal, subduction, soil
@@ -1053,8 +874,6 @@ C     Model Number = 202
          anper = 13
          minaper = 0.075
          maxaper = 4.0
-c         call youngs97_soil ( mag, rupDist, lnY, sigma, attenName1,
-c     1       period2, specT, ftype, depth,iflag )
       endif
 
 c ***** Synchronous Rupture Ground Motion Models for HBIP *****
@@ -1076,37 +895,25 @@ c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Abrahamson&Silva (1997) Horizontal Crustal
 C     Model Number = 7201001
          if (jcalc .eq. 7201001) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call AS_97_H ( magc, rupDistc, ftypec, soil, hwflag, specT,
-c     1                     period2, lnYc, sigmac,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
 
 c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Idriss (1991:1995) Horizontal Crustal
 C     Model Number = 7201043
          elseif ( jcalc .eq. 7201043 ) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call Idriss91_95_rock (magc, rupDistc, ftypec, lnYc, sigmac, specT,
-c     1            attenName1, period2,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
 
 c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Sadigh et al. (1997) Horizontal Crustal
 C     Model Number = 7201051
          elseif ( jcalc .eq. 7201051 ) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call Geomatrix93_H_rock ( magc, rupDistc, ftypec, lnYc, sigmac,
-c     1             specT, attenName1, period2,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
          endif
       endif
 
@@ -1125,37 +932,25 @@ c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Abrahamson&Silva (1997) Horizontal Crustal
 C     Model Number = 8201001
          if (jcalc .eq. 8201001) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call AS_97_H ( magc, rupDistc, ftypec, soil, hwflag, specT,
-c     1                     period2, lnYc, sigmac,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
 
 c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Idriss (1991:1995) Horizontal Crustal
 C     Model Number = 8201043
          elseif ( jcalc .eq. 8201043 ) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call Idriss91_95_rock (magc, rupDistc, ftypec, lnYc, sigmac, specT,
-c     1            attenName1, period2,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
 
 c     Youngs et al (1997) Horizontal, subduction, Rock
 c     with Sadigh et al. (1997) Horizontal Crustal
 C     Model Number = 8201051
          elseif ( jcalc .eq. 8201051 ) then
-         anper = 12
-         minaper = 0.075
-         maxaper = 3.0
-c            call youngs97_rock ( mag, rupDist, lnY, sigma, attenName1,
-c     1          period2, specT, ftype, depth,iflag )
-c            call Geomatrix93_H_rock ( magc, rupDistc, ftypec, lnYc, sigmac,
-c     1             specT, attenName1, period2,iflag )
+           anper = 12
+           minaper = 0.075
+           maxaper = 3.0
          endif
       endif
            
@@ -1166,8 +961,6 @@ C     Model Number = 210
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1176,8 +969,6 @@ C     Model Number = 211
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1186,8 +977,6 @@ C     Model Number = 212
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1196,8 +985,6 @@ C     Model Number = 213
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-B, Subduction
@@ -1206,8 +993,6 @@ C     Model Number = 220
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1216,8 +1001,6 @@ C     Model Number = 221
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1226,8 +1009,6 @@ C     Model Number = 222
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1236,8 +1017,6 @@ C     Model Number = 223
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-B, Subduction
@@ -1246,8 +1025,6 @@ C     Model Number = 230
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1256,8 +1033,6 @@ C     Model Number = 231
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1266,8 +1041,6 @@ C     Model Number = 232
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1276,8 +1049,6 @@ C     Model Number = 233
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c ***** Atkinson and Boore Subduction Models with Errata Correction *****
@@ -1287,8 +1058,6 @@ C     Model Number = 310
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1297,8 +1066,6 @@ C     Model Number = 311
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1307,8 +1074,6 @@ C     Model Number = 312
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1317,8 +1082,6 @@ C     Model Number = 313
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-B, Subduction
@@ -1327,8 +1090,6 @@ C     Model Number = 320
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1337,8 +1098,6 @@ C     Model Number = 321
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1347,8 +1106,6 @@ C     Model Number = 322
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1357,8 +1114,6 @@ C     Model Number = 323
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-B, Subduction
@@ -1367,8 +1122,6 @@ C     Model Number = 330
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-C, Subduction
@@ -1377,8 +1130,6 @@ C     Model Number = 331
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-D, Subduction
@@ -1387,8 +1138,6 @@ C     Model Number = 332
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-E, Subduction
@@ -1397,8 +1146,6 @@ C     Model Number = 333
          anper = 8
          minaper = 0.04
          maxaper = 3.0
-c         call AB03Jap ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag, ftype, depth, Sc, Sd, Se)
       endif
 
 c ***** Gregor et al. Cascadia Subduction Model *****
@@ -1408,8 +1155,6 @@ C     Model Number = 240
          anper = 25
          minaper = 0.02
          maxaper = 5.0
-c         call Gregor02CasR ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag)
       endif
 
 c     Gregor et al. (2002) - Horizontal, Soil, Cascadia Subduction
@@ -1418,8 +1163,6 @@ C     Model Number = 241
          anper = 25
          minaper = 0.02
          maxaper = 5.0
-c         call Gregor02CasS ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag)
       endif
 
 c ***** Gregor et al. Cascadia Subduction Model *****
@@ -1429,8 +1172,6 @@ C     Model Number = 242
          anper = 25
          minaper = 0.02
          maxaper = 5.0
-c         call Gregor06Cas ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, vs, period2, iflag)
       endif
 
 c     Zhao et al. (2006), Horizontal, Subduction, Hard Rock
@@ -1591,8 +1332,6 @@ C     Model Number = 100
          anper = 12
          minaper = 0.05
          maxaper = 2.0
-c         call AB95 ( mag, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c     Atkinson and Boore (1994), Horizontal, EUS Hard Rock, magnitude Nuttli
@@ -1601,8 +1340,6 @@ C     Model Number = 101
          anper = 12
          minaper = 0.05
          maxaper = 2.0
-c          call AB95Mn ( mag1, rupdist, lnY, sigma, specT,
-c     1            attenName1, period2,iflag )
       endif
 
 c     Atkinson and Boore (2006), Horizontal, CEUS Hard Rock
@@ -1683,9 +1420,7 @@ C     Model Number = 110
       if (jcalc .eq. 110) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0
-c         call TAS96 ( mag, jbdist, lnY, sigma, specT,                             
-c     1                  attenName, period1,iflag )                                    
+         maxaper = 2.0                                   
       endif 
 
 C Toro et al. (1996) MidCon., Horizontal, Rock, MLg magnitude
@@ -1693,9 +1428,7 @@ C     Model Number = 111
       if (jcalc .eq. 111) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0
-c         call TAS96MLg ( mag, jbdist, lnY, sigma, specT,                             
-c     1                  attenName, period1,iflag)                                    
+         maxaper = 2.0                                   
       endif 
 
 C Toro et al. (1996) Gulf, Horizontal, Rock
@@ -1703,9 +1436,7 @@ C     Model Number = 112
       if (jcalc .eq. 112) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0
-c         call TAS96Gulf ( mag, jbdist, lnY, sigma, specT,                            
-c     1                  attenName, period1,iflag )                                    
+         maxaper = 2.0                                  
       endif 
 
 C Toro et al. (1996) Gulf, Horizontal, Rock, MLg magnitude
@@ -1713,9 +1444,7 @@ C     Model Number = 113
       if (jcalc .eq. 113) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0
-c         call TAS96GulfMLg ( mag, jbdist, lnY, sigma, specT,                             
-c     1                  attenName, period1,iflag )                                    
+         maxaper = 2.0                                   
       endif 
 
 c     Campbell Hybrid (2003), Horizontal, CEUS Hard Rock
@@ -1925,8 +1654,6 @@ C     Model Number = 300
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c        call mcverry93 ( mag, rupDist, lnY, sigma, attenName1,
-c     1       ftype )
       endif
 
 c     fukushima (1990) rock
@@ -1935,7 +1662,6 @@ C     Model Number = 301
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c          call fukushima90 ( mag, rupDist, lnY, sigma, attenName1)
       endif
 
 c     Loh high speed rail (New Joyner-Boore form)
@@ -1944,8 +1670,6 @@ C     Model Number = 302
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c         call HighSpeedRail ( mag, rupDist, lnY, sigma, 
-c     1                      attenName1, period2 )
       endif
          
 c     New Loh (1996) model (unpublished)
@@ -1954,7 +1678,6 @@ C     Model Number = 303
          anper = 1
          minaper = 0.0
          maxaper = 0.0
-c         call Loh96 ( mag, rupDist, lnY, sigma, attenName1, period2)
       endif
 
 c ******* Ambraseys et al 2005 Model *********
@@ -1963,8 +1686,6 @@ C     Model Number = 601
           anper = 62
           minaper = 0.05
           maxaper = 2.50
-c         call Ambraseys_2005 ( mag, jbDist, ftype, specT,
-c     1                     period2, lnY, sigma, iflag )
       endif
 
 

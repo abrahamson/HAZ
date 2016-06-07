@@ -5,8 +5,10 @@ C of the given input values. This routine is used to interpolate
 C the regression cofficients of the attenuation models for 
 C spectral periods other than those defined in the model.
 
-       real x1, x2, y1, y2, x, y
+       implicit none
+
        integer iflag
+       real x1, x2, y1, y2, x, y
 
 C Check to see if the interpolation period is at an end point.
 C Return the 'iflag' for output purposes with 

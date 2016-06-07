@@ -5,8 +5,8 @@ C  ***** PEER NGA-West 2 MODELS Vertical (2013) **********
 c ---------------------------------------------------------------------------            
 C     *** Stewart, Boore, Seyhan and Atkinson NGA West 2 (NGA West2-2013) ***
 C         Earthquake Spectra Report:
-C            "NGA-West2 Equations for Predicting Vertical-Component PGA, PGV,
-C             and 5%-Damped PSA from Shallow Crustal Earthquakes"
+C            NGA-West2 Equations for Predicting Vertical-Component PGA, PGV,
+C            and 5%-Damped PSA from Shallow Crustal Earthquakes
 C          Earthquake Spectra
 C     Notes:
 C        Applicable Range:
@@ -38,16 +38,16 @@ C     Last Updated: 12/07/15
       real f4(MAXPER), f5(MAXPER), DC3Global(MAXPER), cv(MAXPER)
       real phi1(MAXPER), phi2(MAXPER), tau1(MAXPER), tau2(MAXPER)
 
-      real Mref, Rref, Vref, f1, f3, DC3Glb, specT
+      real Mref, Rref, Vref, f1, f3, specT
       REAL MAG, RBJF, VS, Z10
       real ftype, Rp, R
       INTEGER iFlag, count1, count2, regionflag, basinflag
-      real sigmaT, lnY, mechS, mechN, mechR, pga4nl
-      real f2, flin, fBasin
-      real c1T, c2T, c3T, hT, Dc3ctkT, Dc3JpnT, e0T, e1T, e2T, e3T, e4T
+      real lnY, mechS, mechN, mechR, pga4nl
+      real f2, flin
+      real c1T, c2T, c3T, hT, e0T, e1T, e2T, e3T, e4T
       real e5T, e6T, mhT, VcT, f4T, f5T, DC3GlobalT
       real DC3ChinaTrkT, DC3ItalyJapanT
-      real ckT, cvT, phi1T, phiT2, tau1T, tauT2, Phi, Tau
+      real cvT, phi1T, tau1T, Phi, Tau
 
       data  period  / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 0.035, 0.036, 0.04, 
      1                0.042, 0.044, 0.045, 0.046, 0.048, 0.05, 0.055, 0.06, 0.065, 0.067, 0.07, 0.075,
@@ -568,9 +568,9 @@ C     Convert ground motion to units of gals.
 c ---------------------------------------------------------------------            
 C     *** Campbell and Bozorgnia NGA West2 (NGA-2013) ***
 C         Earthquake Spectra Paper:
-C            "Campbell-Bozorgnia NGA-West2 ground motion model
-C                 for the average horizontal components of PGA, 
-C                 PGV, and 5%-damped linear Response Spectra"
+C            Campbell-Bozorgnia NGA-West2 ground motion model
+C                for the average horizontal components of PGA, 
+C                PGV, and 5%-damped linear Response Spectra
 C             K. W. Campbel and Y. Bozorgnia
 C     Notes:
 C        Applicable Range:
@@ -605,7 +605,7 @@ C     Last Updated: 5/22/14
       REAL flnAF(MAXPER), rho(MAXPER)
 
       REAL MAG, RRUP, RBJF, VS, D25, FHWR, FHWM, FHWZ, FHWD, PGAROCK, C, N
-      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil, Rx, R1, R2, f1, f2
+      real lnY, ftype, Dip, pgasoil, Rx, R1, R2, f1, f2
       real fhypH, D25_RK
       INTEGER count1, count2, HWFlag, regionflag
 
@@ -615,7 +615,7 @@ C     Last Updated: 5/22/14
       real t1T, t2T, phi1T, phi2T, phicT
       real rhoT, flnAFT
 
-      real alpha, tau, s
+      real alpha, tau
       real tau_lnyB, tau_lnPGAB, phi_lnY, phi_lnyB, phi_lnPGAB, phi, sigmatot
 
 C.....MODEL COEFFICIENTS.....................
@@ -1376,9 +1376,9 @@ C     Last Updated: 9/26/13
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
       integer iflag, count1, count2, hwflag, vs30_class, regionflag
       REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
-      REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
-      real c8, c8a, c8bT, deltaZ1, fd, cDPP
-      real NL0, sigma_NL0, F_Measured, F_Inferred, mz_TOR, deltaZ_TOR, coshM
+      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth
+      real c8, c8a, c8bT, deltaZ1, fd
+      real sigma_NL0, F_Measured, F_Inferred, mz_TOR, deltaZ_TOR, coshM
       real gscaleJapItT, gscaleWenT, sigma2JapT
       real phi1aT, phi1bT
       real phi1JPT, phi1aJPT, phi1bJPT, phi5JPT, phi6JPT, phi1TWT
@@ -2118,15 +2118,15 @@ c      implicit none
       real phiA_est, phiA_msr
       real cT, a4T
       
-      real M2, M3 
+      real M2
       real lnSa, SA1180, rjb, rRup, Rx, Ry0, dip, mag, vs30
       real HW_taper1, HW_taper2, HW_taper3, HW_taper4, HW_taper5
-      real damp_dSA1180, sigAmp, fltWidth, testv1
+      real damp_dSA1180, sigAmp, fltWidth
       real f1, f4, f5, f6, f7, f8, f9, f10, f11, fReg, f12, f13
-      real Ry1, ZTOR, Frv, Fn, SpecT
+      real ZTOR, Frv, Fn, SpecT
       real phiA, phiB, tauA, tauB, phi, tau
       integer vs30_class, hwflag, iflag, nPer, regionflag, msasflag
-      real n, z1, c2, e2, a21, a22, test, zhat
+      real n, z1
       real R, V1, Vs30Star, hw_a2, h1, h2, h3, R1, R2, CRjb
       integer count1, count2
       real y1, y2, x1, x2, y1z, y2z, x1z, x2z

@@ -1147,7 +1147,7 @@ c -------------------------------------------------------------
 
 c     This  subroutine calculates the LOG SA for the ave horizontal             
 c     component using the Campbell (1990) attenuation relation.                 
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
                                                                                 
       parameter (MAXPER=16)                                                     
@@ -1274,7 +1274,7 @@ c ----------------------------------------------------------
 
 c     This  subroutine calculates the LOG SA for the ave horizontal             
 c     component using the Campbell (1990) attenuation relation.                 
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
                                                                                 
       parameter (MAXPER=16)                                                     
@@ -1400,7 +1400,7 @@ c -------------------------------------------------------------
 c     This  subroutine calculates the LOG SA/PGA for the ave horizontal         
 c     component using the Campbell (1990) attenuation relation.                 
 c     The LOG SA curve is calculated from the LOG PGA of Campbell 1994          
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
                                                                                 
       parameter (MAXPER=16)                                                     
@@ -7097,7 +7097,7 @@ c ---------------------------------------------------------------------
       Real a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real sigtot(MAXPER), Blin(MAXPER), b1(MAXPER), b2(MAXPER)
       real specT, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T, sigmaT
-      real mag, Rbjf, Vs, Ftype, Fn, Fr, Flin, Fnl, pga4nl
+      real mag, Rbjf, Vs, Ftype, Fn, Fr, pga4nl
       real blinT, b1T, b2T, c1, vref, v1, v2, pga_low, bnl, LnY
       real deltaX, deltaY, a1slope, a2slope, c, d, term1, term3
       INTEGER iFlag, count1, count2
@@ -7808,10 +7808,10 @@ c ---------------------------------------------------------------------
       REAL phi1(MAXPER), phi2(MAXPER), phi3(MAXPER), phi4(MAXPER)
       REAL phi5(MAXPER), phi6(MAXPER), phi7(MAXPER), phi8(MAXPER)
       REAL tau1(MAXPER), tau2(MAXPER), sigma1(MAXPER), sigma2(MAXPER)
-      REAL sigma3(MAXPER), sigma4(MAXPER), c9a(MAXPER)
+      REAL sigma3(MAXPER), c9a(MAXPER)
       real c3(MAXPER), c8(MAXPER) , ctvz(MAXPER)
       REAL c1T, c1aT, c1bT, cnT, cmT, c5T, c6T, c7T, c9T, c9aT, c3T, c8T, ctvzT
-      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T, sigma4T
+      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c

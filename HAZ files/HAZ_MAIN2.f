@@ -2,46 +2,34 @@
 
 c     Probabilisitic Seismic Hazard Program (PSHA) 
 
-
       include 'pfrisk.h'
       include 'declare1.h'
-      integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT)
-      real segWt1(MAX_FLT)
-      real fltGrid_X(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1     fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_fLen(MAXFLT_DD,MAXFLT_AS)
-      real rupGrid_X(MAXFLT_DD,MAXFLT_AS), rupGrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1     rupGrid_z(MAXFLT_DD,MAXFLT_AS), hDD(MAX_FLT), hAS(MAX_FLT)
-      integer nfltGrid(2), nRupGrid(2), hDDcell, hAScell
-      real fltGrid_w(MAXFLT_DD,MAXFLT_AS),  fltGrid_a(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS)
-      real testsum(1000), sum1(1000,10), dipaverage(1), Rx, Ry, Ry0
-      real*8 p1_sum, wt, p1
-      real*8 BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-      integer BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE)
-      integer segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT)
-      integer icellRupStrike, icellRupDip, runflag
-      real BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
-      real segModelWt1(MAX_FLT,100), distDensity2(MAX_GRID), lnDir, lgIo, lgIntenscl
-      real sigDirY, sigtemp, lg1, sig1, lat1, wt1
-      integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
-      real phi, tau, medadj, sigadj, phiSSS
-      character*80 filebmode
-      integer bnum, bnumflag, coefcountRrup, coefcountRjb
-      integer iMixture(4, MAX_PROB, MAX_ATTEN)
-      real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
-      real*8 prock1, prock2
-      real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
-      real Pmag_all(MAXPARAM), lgInten0
-      integer rup1_flag, dirFlag1
       
-      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
-      real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
+      integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
+     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE),
+     2        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
+     3        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip, 
+     4        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
+      integer dirFlag1, iMixture(4, MAX_PROB, MAX_ATTEN)
+      real segWt1(MAX_FLT), fltGrid_X(MAXFLT_DD,MAXFLT_AS), 
+     1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS), 
+     2     fltGrid_fLen(MAXFLT_DD,MAXFLT_AS), fltGrid_w(MAXFLT_DD,MAXFLT_AS), 
+     3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), 
+     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), sum1(1000,10), dipaverage(1)
+      real Rx, Ry, Ry0, BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), 
+     1     br_wt1(MAX_BRANCH,MAX_NODE), lgInten0, pLocY(MAXFLT_AS),  
+     2     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
+     3     segModelWt1(MAX_FLT,100)
+      real*8 p1_sum, wt, p1, BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE),
+     1       tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE), 
+     2       tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
+      character*80 filebmode   
 
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2a  *'
-      write (*,*) '*           May, 2016           *'
+      write (*,*) '*          June, 2016           *'
       write (*,*) '*********************************'
       write (*,*)
 

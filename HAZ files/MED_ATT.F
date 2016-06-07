@@ -17,9 +17,9 @@ c meanpga.f
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
 
       real sc, sd, se, D25, RupWidth, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
-      real magc, rupdistc, ftypec, lnYc, mcb, depthTop
+      real magc, rupdistc, ftypec, lnYc, depthTop
       real disthypo, depthvs10, depthvs15, AR, dip1(1), dip
-      real F_RV, F_NM, Theta_Site, Z1
+      real Theta_Site
       real lnY01, lnY02, lnY04, lnY10, lnY02p, lnY04p
       real sigma01, sigma02, sigma04, sigma10
       real specT01, specT02, specT04, specT10, period02, Rx, SF2, Ry0

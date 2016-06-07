@@ -12,21 +12,20 @@ c     implicit none
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH),                                    
      1     minMag(MAX_FLT), maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH),                 
      1     rate(MAXPARAM,MAX_WIDTH),charMeanMo(MAXPARAM,MAX_WIDTH),    
-     1     expMeanMo(MAXPARAM,MAX_WIDTH),
-     2     faultWidth(MAX_FLT,MAX_WIDTH), fLength,                              
+     1     expMeanMo(MAXPARAM,MAX_WIDTH),                             
      2     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
      3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)                                     
       real magStep(MAX_FLT)             
-      real mU, mL, momentMU, rigidity, momentRate1, momentRate2                 
-      real b, c, beta1, t1, t2, t3, t4, t5, c1, deltaM1, deltaM2             
+      real mU, mL, rigidity, momentRate1, momentRate2                 
+      real c, beta1, t1, t2, t3, c1, deltaM1, deltaM2             
       real mean, sigma, zmagL, zmagU, pmagL, pmagU, dd, mag                     
       real mU1, mL1, mch, mchr, mexp, aexp, achr, m1
       real*8 sum
       real term1,term2, term3
-      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH), nWidth(1)                  
+      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH)                  
       integer nmstep                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
-      real maxmag1, magstep1, nsigma
+      real maxmag1, magstep1
       real bAC, gamma, bGR, fGR, fAC, gAC
       real c2, c3, c4, bM2, bM1, scale1
       real meanMoRelease1, meanMoRelease2, meanMoRelease3
@@ -408,11 +407,11 @@ c -----------------------------------------------------------
      1       beta(MAX_FLT,MAXPARAM,MAX_WIDTH), 
      1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real minMag(MAX_FLT), Mmin
-      real MaxMagWA, Btail, SigM, Fract_Exp, dM1, nSig1, mChar, b_value, mMag, stepM
+      real MaxMagWA, Btail, SigM, Fract_Exp, mChar, b_value, stepM
       real*8 sum, moment
-      real step, ML, MU, pMag(10000), pMagTest(10000), WA_PMag(10000)
+      real WA_PMag(10000)
       real cumProb(10000)
-      real mag, dMag0
+      real mag
       integer iMag, nMag, iFlt, iParam, iWidth, iMag1
       real pratio
       real faultArea, areaRatio, area_rup
