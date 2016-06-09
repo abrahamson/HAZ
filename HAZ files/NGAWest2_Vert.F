@@ -30,6 +30,9 @@ c ---------------------------------------------------------------------------
 
 C     Last Updated: 12/07/15
 
+      implicit none
+   
+      integer MAXPER, i, nPer
       parameter (MAXPER=107)
       REAL Period(MAXPER), c1(MAXPER), c2(MAXPER), c3(MAXPER)
       real h(MAXPER), DC3ChinaTrk(MAXPER), DC3ItalyJapan(MAXPER), e0(MAXPER)
@@ -38,9 +41,9 @@ C     Last Updated: 12/07/15
       real f4(MAXPER), f5(MAXPER), DC3Global(MAXPER), cv(MAXPER)
       real phi1(MAXPER), phi2(MAXPER), tau1(MAXPER), tau2(MAXPER)
 
-      real Mref, Rref, Vref, f1, f3, specT
-      REAL MAG, RBJF, VS, Z10
-      real ftype, Rp, R
+      real Mref, Rref, Vref, f1, f3, specT, sigma
+      REAL MAG, RBJF, VS, Z10, phi2T, tau2T
+      real ftype, Rp, R, period2, period1, term1, term2, term3
       INTEGER iFlag, count1, count2, regionflag, basinflag
       real lnY, mechS, mechN, mechR, pga4nl
       real f2, flin
@@ -593,6 +596,9 @@ c ---------------------------------------------------------------------------
 
 C     Last Updated: 5/22/14
 
+      implicit none
+
+      integer MAXPER, iflag, i, nPer
       parameter (MAXPER=23)
       REAL Period(MAXPER), C0(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
       REAL C6(MAXPER), C7(MAXPER), C8(MAXPER), C9(MAXPER), C10(MAXPER), C11(MAXPER), C12(MAXPER)
@@ -602,18 +608,19 @@ C     Last Updated: 5/22/14
       REAL K1(MAXPER), K2(MAXPER), K3(MAXPER)
       REAL C20(MAXPER), DC20CA(MAXPER), DC20JP(MAXPER), DC20CH(MAXPER)
       REAL T1(MAXPER), T2(MAXPER), phi1(MAXPER), Phi2(MAXPER), phic(MAXPER)
-      REAL flnAF(MAXPER), rho(MAXPER)
+      REAL flnAF(MAXPER), rho(MAXPER), period2, specT, sigma, depthtop, depth
 
       REAL MAG, RRUP, RBJF, VS, D25, FHWR, FHWM, FHWZ, FHWD, PGAROCK, C, N
       real lnY, ftype, Dip, pgasoil, Rx, R1, R2, f1, f2
-      real fhypH, D25_RK
+      real fhypH, D25_RK, TERM1, TERM2, TERM3, TERM4, term5, TERM5_RK, TERM6
+      real TERM6_RK, term7, term8, term9, R, rupwidth, period1, psoil2 
       INTEGER count1, count2, HWFlag, regionflag
 
       real c0T, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, c10T, c11T, c12T
       real c13T, c14T, c15T ,c16T, c17T, c18T, c19T, c20T, Dc20CAT, Dc20JPT, Dc20CHT
       real k1T, k2T, k3T, a2T, h1T, h2T, h3T, h4T, h5T, h6T
       real t1T, t2T, phi1T, phi2T, phicT
-      real rhoT, flnAFT
+      real rhoT, flnAFT, fhwrrup
 
       real alpha, tau
       real tau_lnyB, tau_lnPGAB, phi_lnY, phi_lnyB, phi_lnPGAB, phi, sigmatot
@@ -1016,10 +1023,8 @@ C     For Rock PGA the D25 value should be set at the recommended value of D25=0
       D25_RK = 0.398
       if (D25_RK .le. 1.0) then
          if (regionflag .eq. 1) then
-c            TERM6 = (C14(1)+c15(1))*(D25-1.0)
             TERM6_RK = (C14(1)+c15(1))*(D25_RK-1.0)
          else
-c            TERM6 = C14(1)*(D25-1.0)
             TERM6_RK = C14(1)*(D25_RK-1.0)
          endif   
       elseif (D25_RK .GT. 1.0 .AND. D25_RK .LE. 3.0) then
@@ -1251,12 +1256,6 @@ C.....Compute anelastic attenuation term.....
 
       LnY = (TERM1+TERM2+TERM3+TERM4+TERM5+TERM6+TERM7+TERM8+TERM9)
 
-c      write (*,*) term1, term2, term3, term4, term5, term6, term7, term8, term9
-c      write (*,*) exp(lnY)
-c      write (*,*) term5, exp(pgasoil)
-c      write (*,*) exp(pgasoil), exp(psoil2)
-c      pause
-
 C    Check that SA is not less than PGA for T<0.25sec
       if (specT .lt. 0.25) then
          if (lnY .lt. pgasoil ) then
@@ -1264,17 +1263,8 @@ C    Check that SA is not less than PGA for T<0.25sec
          endif
       endif
 
-C.....Now compute the sigma value..........
-c      IF (Vs .LT. k1T) THEN
-c        alpha = k2T*pgarock*(1/(pgarock  
-c     &    +c*(Vs/k1T)**n) 
-c     &    -1/(pgarock + c))
-c      ELSE
-
 C  Set alhpa = 0.0 for current vertical model (8/22/13)
         alpha = 0.0
-
-c      ENDIF
 
       If (Mag.le.4.5) then
 	   tau_lnyB = t1T
@@ -1352,6 +1342,9 @@ c ---------------------------------------------------------------------
 
 C     Last Updated: 9/26/13
 
+      implicit none
+      
+      integer MAXPER, i, nPer
       parameter (MAXPER=25)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -1366,7 +1359,7 @@ C     Last Updated: 9/26/13
       real gscaleJapIt(MAXPER), gscaleWen(MAXPER), sigma2Jap(MAXPER)
       real phi1a(MAXPER), phi1b(MAXPER)
       real phi1JP(MAXPER), phi1aJP(MAXPER), phi1bJP(MAXPER), phi5JP(MAXPER), phi6JP(MAXPER)
-      real phi1TW(MAXPER)
+      real phi1TW(MAXPER), vs, phi
  
       REAL c1T, c1aT, c1bT, cnT, cmT, c5T, c6T, c7T, c9T, c9aT, c3T
       REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T
@@ -1380,7 +1373,7 @@ C     Last Updated: 9/26/13
       real c8, c8a, c8bT, deltaZ1, fd
       real sigma_NL0, F_Measured, F_Inferred, mz_TOR, deltaZ_TOR, coshM
       real gscaleJapItT, gscaleWenT, sigma2JapT
-      real phi1aT, phi1bT
+      real phi1aT, phi1bT, period1
       real phi1JPT, phi1aJPT, phi1bJPT, phi5JPT, phi6JPT, phi1TWT
 
 
@@ -1836,23 +1829,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_NM = 0.0
          endif
 
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
-
 C     Constant terms
         c2 = 1.06
         c4 = -2.1
@@ -2022,9 +1998,11 @@ c ------------------------------------------------------------------
 
 C     Last Updated: 6/03/14
 
+      implicit none
+
       real mag, dip, fType, rRup, rjb, Rx, Ry0, vs30, SA1180,
-     1      Z10,  ZTOR, fltWidth, lnSa, sigma, lnY
-      real Fn, Frv, specT, period2, CRjb
+     1      Z10,  ZTOR, fltWidth, lnSa, sigma, lnY, vs30_rock
+      real Fn, Frv, specT, period2, CRjb, phi, tau, SA_rock, z10_rock
       integer hwflag, iflag, vs30_class, regionflag, msasflag
 
 c     Vs30 class is to distinguish between the sigma if the Vs30 is measured
@@ -2093,8 +2071,9 @@ c ----------------------------------------------------------------------
      1                     vs30, Sa1180, Z1, hwflag, vs30_class,
      3                     specT, lnSa, phi, tau, iflag, regionflag, msasflag, CRjb)
  
-c      implicit none
-      integer MAXPER     
+      implicit none
+      
+      integer MAXPER, i     
       parameter (MAXPER=24)
       
       real Vlin(MAXPER), b(MAXPER), c4(MAXPER), M1(MAXPER), a1(MAXPER)
@@ -2118,7 +2097,7 @@ c      implicit none
       real phiA_est, phiA_msr
       real cT, a4T
       
-      real M2
+      real M2, period1, z1_ref
       real lnSa, SA1180, rjb, rRup, Rx, Ry0, dip, mag, vs30
       real HW_taper1, HW_taper2, HW_taper3, HW_taper4, HW_taper5
       real damp_dSA1180, sigAmp, fltWidth
