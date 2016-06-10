@@ -3,7 +3,7 @@ c  --------------------------------------------------------------------
       subroutine Rd_Fault_Data ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, 
-     3     maxMag,  maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
+     3     maxMag, maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
      4     ftype, sourceType, nRupArea, coef_area, sigArea, nRupWidth, 
      5     coef_width, sigWidth, nParamVar, iCoor, minDepth, 
      6     fIndex, probAct, nWidth, mpdf_param, 
@@ -18,6 +18,7 @@ c  --------------------------------------------------------------------
      6     br_index, br_wt, segModelFlag, nSegModel0, segModelWt1, runflag,
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
 
+      implicit none
       include 'pfrisk.h'
       
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN)
@@ -86,7 +87,14 @@ c  --------------------------------------------------------------------
       integer temp_BR(MAXPARAM), BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       real temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       integer segModelFlag(MAX_FLT,100), nSegModel0(1), runflag
-      real segModelWt1(MAX_FLT,100)
+      real segModelWt1(MAX_FLT,100), dip1, top, wt_MoRateBranch
+      real dip2, testMaxMag, sum, ProbAct0
+      integer kk, nMagArea, nMagDisp, nDisp, iDip, iWidth, nThick1
+      integer nSR, nMoRate, nRecInt, ii, ipt, nFlt, iCoor, iFlt0, k
+      integer nFlt2, i, iflt2, isyn, igrid, n_Dip, nActRate, iRecur
+      integer iThickDip, iThick1, nRefMag0, iFM, iflt, nSegModel
+      integer nMagRecur, iOverRideMag, nFtypeModels, nFM, iRefMag
+      integer i_bValue, iRate, nb1
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -687,18 +695,10 @@ c        Load up parameter variations into large single dimension arrays
            iWidth = iWidth + 1
            call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )   
            
-c           if ( sourceType(iFlt) .eq. 1 ) then
              dip2 = dip1 + deltaDip1(iDip)
              dip(iFlt,iWidth,1) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
-c          else
-
-c            For areal source only set the first point and use thickness not width
-c            faultWidth(iFlt,iWidth) = faultThick1(iThick1)
-c           faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
-                
-c           endif
 
            i = 0
            mtest = 0.0

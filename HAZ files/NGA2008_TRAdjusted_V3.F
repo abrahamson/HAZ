@@ -9,10 +9,12 @@ c ------------------------------------------------------------------
      1                     vs30, hwflag, lnSa, sigma1, 
      2                     specT, period1, depthtop, iflag, vs30_class,
      3                     depthvs10, Rx )
+
+      implicit none
      
       real mag, dip, fType, rRup, rjb, vs30, pgaRock,
      1       Rx, lnSa, sigma, tau, period1, sigma1, depthtop, width,
-     2       depthvs10
+     2       depthvs10, Frv, Fn, specT, period0, vs30_rock, depthvs10rock
       integer hwflag, iflag, vs30_class
 
 c     VS30 class is to distinguish between the sigma if the VS30 is measured
@@ -40,61 +42,25 @@ C
         Frv = 0.0
         Fn = 0.0
       endif
-
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
      
 c     compute pga on rock
       period0 = 0.0
       pgaRock = 0.0
       vs30_rock = 1100.
       depthvs10rock = 0.006
-      call AS_072007_modelTR ( mag, dip, rake, width, rRup, rjb,
+      call AS_072007_modelTR ( mag, dip, width, rRup, rjb,
      1                     vs30_rock, pgaRock, Rx, lnSa, sigma, tau,
      2                     period0, depthTop, Frv, Fn, iflag, vs30_class,
      3                     depthvs10rock, hwflag )
 
       pgaRock = exp(lnSa)
-
-c     Compute the spectral period for the constant displacement model
-c     (Eq. 21)
-c      TD = 10**(-1.25+0.3*mag)
-c      if (specT .ge. TD) then
-c         Compute Sa at TD spectral period for Vs30=1,100m/sec
-c          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
-c     1                     vs30_rock, pgaRock, Rx, lnSaTD, sigmaX, tauX, 
-c     2                     TD, depthtop, Frv, Fn, iflag, vs30_class, 
-c     3                     depthvs10rock, hwflag )
-
-c          lnSaRock = lnSaTD + alog((TD*TD)/(specT*specT))
-
-c         Compute Sa at spectral period for Vs30
-c          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
-c     1                     vs30, pgaRock, Rx, lnSa1, sigma, tau, 
-c     2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
-c     3                     depthvs10, hwflag )
-c         Compute Sa at spectral period for Vs30=1,100m/sec
-c          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
-c     1                     vs30_rock, pgaRock, Rx, lnSa2, sigmaX, tauX, 
-c     2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
-c     3                     depthvs10rock, hwflag )
-C         Compute soil amplification (i.e., 'lnSa1-lnSa2') and add to Constant displcaement rock spectrum
-c          lnSa = lnSaRock + (lnSa1-lnSa2)
- 
-c      else
-C         For cases where specT < TD compute regular ground motions. 
-          call AS_072007_modelTR ( mag, dip, rake, width, rRup, rjb,
+      
+c     compute Sa (given the PGA rock value)      
+          call AS_072007_modelTR ( mag, dip, width, rRup, rjb,
      1                     vs30, pgaRock, Rx, lnSa, sigma, tau, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
      3                     depthvs10, hwflag )
-c      endif
 
-c     compute Sa (given the PGA rock value)
       sigma1 = sqrt( sigma**2 + tau**2 )
       period1 = specT
 
@@ -104,11 +70,14 @@ c     Convert units spectral acceleration in gal
       end
 c ----------------------------------------------------------------------
 
-      subroutine AS_072007_modelTR ( mag, dip, rake, width, rRup, rjb,
+      subroutine AS_072007_modelTR ( mag, dip, width, rRup, rjb,
      1                     vs30, pgaRock, Rx, lnSa, sigma, tau, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class,
      3                     z10, hwflag )
-      
+
+      implicit none
+
+      integer MAXPER, i, i1, nPer      
       parameter (MAXPER=107)
       real a1(MAXPER), a2(MAXPER), a3(MAXPER), a4(MAXPER), a5(MAXPER),
      1     a8(MAXPER), c3_TA(MAXPER), a10(MAXPER), a11(MAXPER),
@@ -116,13 +85,11 @@ c ----------------------------------------------------------------------
      1     c4(MAXPER), a16(MAXPER), a18(MAXPER),
      2     s1e(MAXPER), s2e(MAXPER), s1m(MAXPER), s2m(MAXPER), s3(MAXPER), s4(MAXPER)
       real period(MAXPER), b_soil(MAXPER), vLin(MAXPER)
-      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup, rake,
-     1     dip, mag, sigcorr(MAXPER), taucorr(MAXPER) 
-c      real sig1(MAXPER), sig2(MAXPER), tau1(MAXPER), tau2(MAXPER)
-c      real tauCorr, sigCorr
+      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup,
+     1     dip, mag, sigcorr(MAXPER), taucorr(MAXPER), specT 
       real taper1, taper2, taper3, taper4, taper5
       real a1T, a2T, a3T, a5T, a8T, c3_TAT
-      real a10T, a11T, a12T, a13T, a14T, a15T, a18T
+      real a10T, a11T, a12T, a13T, a14T, a15T, a16T, a18T
       real c4T, a4T
       real s3T, s4T, s1T, s2T
       real sigcorrT, taucorrT, vLinT, b_soilT, sum, Frv, Fn
@@ -130,7 +97,8 @@ c      real tauCorr, sigCorr
       real sigmanot, sigmanotPGA, taunot, taunotPGA, sigmaB, sigmaBPGA
       integer count1, count2, iflag, vs30_class, hwflag
       real n, c, z10, c2, e2, a21, a22, test, zhat
-      real  vHinge
+      real vHinge, R, period1, T6, depthtop, c1, v1, Rx, vs,
+     1     soilamp
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029,
      1              0.03, 0.032, 0.035, 0.036, 0.04, 0.042, 0.044, 
@@ -491,22 +459,6 @@ c      real tauCorr, sigCorr
      1               0.431, 0.407, 0.385, 0.374, 0.364, 0.346, 0.328, 0.312, 
      2               0.296, 0.289, 0.282, 0.268, 0.255, 0.243, 0.231, 0.22,
      3               0.209, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 /
-
-C      data vHinge / 470.0, 400.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C    1            470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C     2           470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C     3           470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C     4           470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C     5            470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 470.0, 
-C     6            470.0, 470.0, 470.0, 470.0, 470.0, 465.1, 460.4, 
-C     7            458.2, 456.1, 451.9, 448.0, 444.3, 440.7, 439.0, 
-C     8            437.3, 434.1, 431.0, 423.7, 417.0, 410.9, 409.0, 
-C     9            405.3, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0,
-C     1            400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 
-C     1            400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0,
-C     2            400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 
-C     3            400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0,
-C     4            400.0, 400.0, 400.0, 400.0 / 
       
       n = 1.18
       c = 1.88
@@ -539,7 +491,6 @@ C First check for the PGA, PGV, PGD cases
          c4T = c4(i1)
          b_soilT = b_soil(i1)
          vLinT   = vLin(i1)
-c         vHingeT   = vHinge(i1)
          if (vs30_class .eq. 0) then
             s1T = s1e(i1)
             s2T = s2e(i1)
@@ -637,8 +588,6 @@ c     +                   specT,vHingeT,iflag)
      +                   specT,taucorrT,iflag)
 
  1011 period1 = specT                                                                                                              
-
-c 	write (*,*) specT, a4T
  
 c     Set distance (Eq. 3)
       R = sqrt(rRup**2 + c4T**2)
@@ -732,11 +681,7 @@ c     Compute site amplification (Eq. 4)
       
 c     Add Turkey site amplification correction
       
-c      if (vs30 .lt. vHingeT) then
-c          soilampTR = 0
-c      else
      	  soilampTR = (c3_TAT) * alog(vs/vHinge)
-c      endif
       sum = sum + soilampTR
       
 C     Soil Depth Model
@@ -895,6 +840,9 @@ c ---------------------------------------------------------------------
      2                     vs, Delta, DTor, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
 
+      implicit none
+
+      integer MAXPER, i, nPer
       parameter (MAXPER=107)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -914,6 +862,7 @@ c ---------------------------------------------------------------------
       integer iflag, count1, count2, hwflag, vs30_class
       REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
       REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
+      real vs, period1
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 0.035, 0.036, 0.04, 
      1              0.042, 0.044, 0.045, 0.046, 0.048, 0.05, 0.055, 0.06, 0.065, 0.067, 
@@ -1358,22 +1307,6 @@ c ---------------------------------------------------------------------
      1    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 
      1    0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000 /
 
-c      data vHinge / 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 492.7, 
-c     1   491.3, 488.5, 487.2, 485.9, 483.5, 481.3, 480.2, 
-c     1   479.1, 477.1, 475.2, 473.4, 471.6, 470.8, 470.0,  
-c     1   468.4, 466.9, 463.3, 460.1, 457.1, 456.1, 454.3, 
-c     1   451.7, 449.3, 447.1, 444.9, 442.9, 441.0, 437.4, 
-c     1   434.2, 431.2, 428.4, 425.9, 423.5, 421.2, 419.1, 
-c     1   417.0, 415.1, 411.6, 408.3, 406.8, 405.3, 402.6, 
-c     1   400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 
-c     1   400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 
-c     1   400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0, 400.0 /
-
       data c2_TA   / 0.00360, 0.0, 0.00360, 0.00360, 0.00360, 0.00360, 0.00360, 
      1      0.00360, 0.00360, 0.00360, 0.00360, 0.00360, 
      1      0.00360, 0.00360, 0.00360, 0.00360, 0.00360, 
@@ -1418,7 +1351,6 @@ C First check for the PGA case (i.e., specT=0.0)
          gamma1T  = gamma1(1)
          gamma2T  = gamma2(1)
          c2_TAT = c2_TA(1)
-c         vHingeT = vHinge(1)
          phi1T    = phi1(1)
          phi2T    = phi2(1)
          phi3T    = phi3(1)
@@ -1450,7 +1382,6 @@ c         vHingeT = vHinge(1)
          gamma1T  = gamma1(2)
          gamma2T  = gamma2(2)
          c2_TAT = c2_TA(2)
-c         vHingeT = vHinge(2)
          phi1T    = phi1(2)
          phi2T    = phi2(2)
          phi3T    = phi3(2)
@@ -1513,8 +1444,6 @@ C Interpolate the coefficients for the requested spectral period.
      +                   specT,c1_TAT,iflag)
             call interp (period(count1),period(count2),c3_TA(count1),c3_TA(count2),
      +                   specT,c3_TAT,iflag)
-c            call interp (period(count1),period(count2),vHinge(count1),vHinge(count2),
-c     +                   specT,vHingeT,iflag)
             call interp (period(count1),period(count2),c2_TA(count1),c2_TA(count2),
      +                   specT,c2_TAT,iflag)          
             call interp (period(count1),period(count2),c9a(count1),c9a(count2),
@@ -1549,8 +1478,6 @@ c     +                   specT,vHingeT,iflag)
      +                   specT,sigma2T,iflag)
             call interp (period(count1),period(count2),sigma3(count1),sigma3(count2),
      +                   specT,sigma3T,iflag)
-c            call interp (period(count1),period(count2),sigma4(count1),sigma4(count2),
-c     +                   specT,sigma4T,iflag)
 
  1011 period1 = specT                                                                                                              
 
@@ -1570,23 +1497,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_RV = 0.0
             F_NM = 0.0
          endif
-
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
 
         c2 = 1.06
         c3 = 3.45
@@ -1651,13 +1561,9 @@ c Nonlinear soil amplification
      1      (exp(phi3T*(min(Vs,1130.0)-360.0)) - exp(phi3T*(1130.0-360.0)))
         c = phi4T
 
-c  Turkey site amplification
-      
-c      if (Vs .lt. vHingeT) then
-c          d = 0
-c      else
+c  Turkey site amplification      
      	  d = (c3_TAT) * alog(Vs/vHinge)
-c      endif
+
       
 C Deviation from ln(Vs30) scaling: bedrock depth (Z1) effect
 C NOTE: max(0,z1-15) is capped at 300 to avoid overflow of function cosh
@@ -1696,15 +1602,19 @@ c ---------------------------------------------------------------------
       Subroutine I_NGA_2008TR ( m, Rrup, ftype, specT,
      1                     period2, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER, i, nPer
       parameter (MAXPER=32)
       REAL Period(MAXPER), a1mlt675(MAXPER), a2mlt675(MAXPER), b1mlt675(MAXPER), b2mlt675(MAXPER) 
       REAL a1(MAXPER), a2(MAXPER), b1(MAXPER), b2(MAXPER) 
-      real gam(MAXPER), phi(MAXPER), c1_TA(MAXPER)
+      real gam(MAXPER), phi(MAXPER), c1_TA(MAXPER), sigma
 
       REAL M, RRUP
       REAL SOF, period2, lnY, PhiT, gamT, ftype
 
-      real a1T, a2T, b1T, b2T, c1_TAT
+      real a1T, a2T, b1T, b2T, c1_TAT, period1, a1mlt675T, a2mlt675T
+      real b1mlt675T, b2mlt675T, specT
       integer iflag, count1, count2
 
       Data period / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08,  
@@ -1902,6 +1812,9 @@ c ---------------------------------------------------------------------
      1                     period2, lnY, sigma, iflag, vs,
      2                     depthtop, D25, Dip ) 
 
+      implicit none
+
+      integer MAXPER, i, nPer, iflag
       parameter (MAXPER=24)
       REAL Period(MAXPER), C0(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
       REAL C6(MAXPER), C7(MAXPER), C8(MAXPER), C9(MAXPER), C10(MAXPER), C11(MAXPER), C12(MAXPER)
@@ -1910,13 +1823,14 @@ c ---------------------------------------------------------------------
       REAL cort(MAXPER), cors(MAXPER)
 
       REAL MAG, RRUP, RBJF, VS, D25, FHWR, FHWM, FHWZ, FHWD, PGAROCK, C, N
-      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil
+      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil, specT
       INTEGER count1, count2
 
       real c0T, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, c10T, c11T, c12T
       real k1T, k2T, k3T, sigT, c1_TAT
       real tlnyT, slnyT, cortT, corsT
-      real tau
+      real tau, TERM1, TERM2, TERM3, TERM4, term5, TERM5_RK, TERM6, R
+      real period1, depthtop, period2, sigma, dAmp_dPGA
 
 C.....MODEL COEFFICIENTS.....................
       data Period /  0.00, -1.0, -2.0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 
@@ -2326,13 +2240,11 @@ C.....NOW COMPUTE THE SEDIMENT DEPTH DEPENDENCE.............
 
 C.....Check SA<PGAsoil for periods less than T=0.2 sec. Set SA equal to 
 C     PGASoil value if this case happens...........
-c      pgasoil = exp(alog(pgarock) + term5 + term6)
       IF (period1 .lt. 0.2 .and. exp(lnY) .lt. pgasoil) then
          lnY = alog(pgasoil)
       endif
 
 C.....Now compute the sigma value..........
-c      SIGMAT = SIGT
 
 C     Set the Sigma Values
 c     Compute parital derivative of alog(soil amp) w.r.t. alog(rock PGA)
@@ -2343,9 +2255,6 @@ c     Compute parital derivative of alog(soil amp) w.r.t. alog(rock PGA)
      1              + 1./ (pgaRock + 1.88*(vs/k1T)**(1.18)) )
       endif
 
-C     Compute the tau term
-c      tau =   sqrt (tlnYT**2.0 + dAmp_dPGA*dAmp_dPGA*tlnY(1)*tlnY(1) +
-c     1            2.0*dAmp_dPGA*cortT*tlnYT*tlnY(1) )
       tau = tlnYt
 
 C     Compute the sigma term (SigmaAF=0.3)
@@ -2370,17 +2279,20 @@ c ---------------------------------------------------------------------
       subroutine BA_NGA_2008TR ( mag, Rbjf, specT, 
      1                     period2, lnY, sigma, iflag, vs, ftype, pga4nl ) 
 
+      implicit none
+    
+      integer MAXPER, i, nPer
       parameter (MAXPER=23)
       REAL Period(MAXPER), e01(MAXPER), e02(MAXPER), e03(MAXPER), e04(MAXPER)
       real e05(MAXPER), e06(MAXPER), e07(MAXPER), e08(MAXPER)
       real c01(MAXPER), c02(MAXPER), c03(MAXPER), c04(MAXPER)
       real h(MAXPER), blin(MAXPER), b1(MAXPER), b2(MAXPER)
-      real sigt(MAXPER), c1_TA(MAXPER)
-      real a1, a2, c, d, deltaX, deltaY, specT
+      real sigt(MAXPER), c1_TA(MAXPER), R, bnl, period1
+      real a1, a2, c, d, deltaX, deltaY, specT, term1, TERM2, TERM3
 
       real e01p, e02p, e03p, e04p, e05p, e06p, e07p, e08p, mhp
       real c01p, c02p, c03p, c04p, rrefp, hp, c1_TAp
-      real mrefp
+      real mrefp, sigma
 
       REAL MAG, RBJF, VS, mh(MAXPER), mref, rref, vref, v1, v2, pga_low
       real ftype, Rp
@@ -2389,7 +2301,8 @@ c ---------------------------------------------------------------------
 
       real e01T, e02T, e03T, e04T, e05T, e06T, e07T, e08T
       real c01T, c02T, c03T, c04T, hT, blinT, b1T, b2T, mhT
-      real c1_TAT
+      real c1_TAT, period2
+      
       DATA Period / 0.00, -1.00, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 
      1              0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 1.00, 1.5, 
      2              2.00, 3.00, 4.00, 5.00, 7.5, 10.00 /

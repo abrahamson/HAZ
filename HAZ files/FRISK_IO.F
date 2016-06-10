@@ -4,31 +4,65 @@
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
-     5               sCalc, sigfix, sssCalc, bnumflag, cfcoefrrup, cfcoefrjb, coefcountrrup, coefcountRjb,
-     6               iMixture )
+     5               sCalc, sigfix, sssCalc, bnumflag, cfcoefrrup, cfcoefrjb, 
+     6               coefcountrrup, coefcountRjb, iMixture )
 
+      implicit none
       include 'pfrisk.h'
 
-      real testInten(MAX_PROB, MAX_INTEN), lgTestInten(MAX_PROB, MAX_INTEN)
-      real magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS),  XcostBins(MAX_Xcost)
-      real sigTrunc(MAX_PROB) 
-      integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag
-      integer nMagBins, nDistBins, nEpsBins, nXcostBins
-      integer psCorFlag,dirflag(MAX_PROB)
-      integer jCalc(MAX_PROB,4,MAX_ATTEN)
-      integer sCalc(MAX_PROB,4,MAX_ATTEN),sssCalc(MAX_PROB,4,MAX_ATTEN)
-      real sigfix(MAX_PROB,4,MAX_ATTEN)
-      character*80 filein, title, file1, filelog, filehyp
-      real minlat, maxlat, minlong, maxlong
-      integer nProb, nAttenType, nAtten(MAX_PROB,4), soilAmpFlag
-      real specT(MAX_PROB)
+      integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag,
+     1        nMagBins, nDistBins, nEpsBins, nXcostBins, nProb, nwr,
+     2        psCorFlag, dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN),
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), sssCalc(MAX_PROB,4,MAX_ATTEN),
+     4        nAttenType, nAtten(MAX_PROB,4), soilAmpFlag, iCoor
+      integer ichart, charcount, coefcountrrup, coefcountrjb,
+     1        iMixture(4,MAX_PROB,MAX_ATTEN), nFlt, i, j, j1, k, jj,
+     2        nSegModel(1), nFtype(MAX_FLT), nfp(MAX_FLT),
+     3        nMag(MAX_FLT), sourceType(MAX_FLT), nRupArea(MAX_FLT),
+     4        nRupWidth(MAX_FLT), nParamVar(MAX_FLT,MAX_WIDTH)  
+      integer fIndex(3,MAX_FLT), nWidth(MAX_FLT), grid_n(MAX_FLT),
+     1        fsys(MAX_FLT), fltDirect(MAX_FLT), synchron(MAX_FLT),
+     2        nsyn_Case(MAX_FLT), synatten(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
+     3        iDepthModel(MAX_FLT), nMaxMag2(MAX_FLT),
+     4        faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT) 
+      integer br_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
+     1        segModelFlag(MAX_FLT,100)  
+      real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
+     1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
+     2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
+     3     sigTrunc(MAX_PROB), sigfix(MAX_PROB,4,MAX_ATTEN),
+     4     magBins(MAX_MAG), specT(MAX_PROB), gm1, gm2
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
-     1     sigvaradd(MAX_PROB,4,MAX_ATTEN)
-      integer ichart, charcount, coefcountrrup, coefcountrjb, nDD(MAX_FLT)
-      integer iMixture(4, MAX_PROB, MAX_ATTEN)
-      real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11)
-      real syn_dip(MAX_FLT,MAX_SYN), syn_zTOR(MAX_FLT,MAX_SYN)
-      real syn_RupWidth(MAX_FLT,MAX_SYN), syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
+     1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
+     2     cfcoefrjb(MAX_Atten,11), syn_dip(MAX_FLT,MAX_SYN),
+     3     syn_zTOR(MAX_FLT,MAX_SYN), syn_RupWidth(MAX_FLT,MAX_SYN), 
+     4     syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
+      real checkattenwt, segModelWt1(MAX_FLT,100), 
+     1     br_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), ftype_wt(MAX_FLT,MAX_N1),    
+     2     minMag(MAX_FLT), magStep(MAX_FLT), xStep(MAX_FLT), yStep(MAX_FLT),
+     3     segModelWt(MAX_FLT), rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH)
+      real rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), 
+     1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
+     2     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), faultWidth(MAX_FLT,MAX_WIDTH),
+     3     faultWidthWt(MAX_FLT,MAX_WIDTH), maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH),
+     4     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), fLong(MAX_FLT,MAX_DD,MAX_SEG)
+      real fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
+     1     dip(MAX_FLT,MAX_WIDTH, MAX_SEG), ftype(MAX_FLT,MAX_N1),
+     2     coeff_area(2,MAX_FLT), sigArea(MAX_FLT), coeff_width(2,MAX_FLT),
+     3     sigWidth(MAX_FLT), minDepth(MAX_FLT), probAct(MAX_FLT),
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), al_segWt(MAX_FLT) 
+      real sampleStep(MAX_FLT), grid_a(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT),
+     1     grid_dlat(MAX_FLT), grid_long(MAX_FLT,MAX_GRID),
+     2     grid_lat(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID),
+     3     scaleRate(MAX_FLT), mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM),
+     4     mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), synmag(MAX_FLT,MAX_SYN)  
+      real syndistRup(MAX_FLT,MAX_SYN), syndistJB(MAX_FLT,MAX_SYN),
+     1     syndistSeismo(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN),
+     2     synftype(MAX_FLT,MAX_SYN), synwt(MAX_FLT,MAX_SYN),
+     3     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), depthParam(MAX_FLT,5),
+     4     segWt1(MAX_FLT)
+      character*80 filein, title, file1, filelog, filehyp, 
+     1             fName(MAX_FLT)
 
 c     Set Data file units
       nwr = 11
@@ -101,10 +135,10 @@ c     read fault File
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, 
      3     maxMag,  maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
      4     ftype, sourceType, nRupArea, coeff_area, sigArea, nRupWidth, 
-     5     coeff_width, sigWidth, nParamVar, iCoor,minDepth,
+     5     coeff_width, sigWidth, nParamVar, iCoor, minDepth,
      6     fIndex, probAct, nWidth, mpdf_param, 
      7     al_segWt, attenType, sampleStep,
-     8     grid_a,grid_dlong,grid_dlat,grid_n,grid_long, grid_lat,
+     8     grid_a, grid_dlong, grid_dlat, grid_n, grid_long, grid_lat,
      9     grid_top, minlat, maxlat, minlong, maxlong, scaleRate, fsys,
      1     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synatten,
      1     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
@@ -317,6 +351,9 @@ c     Read bins for de-aggregating the hazard
 
 c  --------------------------
       subroutine CheckDim ( n, nMax, name )
+
+      implicit none
+      
       character*10 name
       integer n, nMax
       
@@ -332,7 +369,11 @@ c  --------------------------
 c  --------------------------
 
       subroutine CheckWt ( x, n, fName, name )
-      real x(1)
+
+      implicit none
+      
+      integer i, n
+      real x(1), sum
       character*20 name, fName
       
       sum = 0.
@@ -354,7 +395,11 @@ c  --------------------------
 c  --------------------------
 
       subroutine CheckWt1 ( x, n, j, n1, fName, name  )
-      real x(n1,1)
+
+      implicit none
+
+      integer n, j, n1, i
+      real x(n1,1), sum
       character*20 fName, name
 
       sum = 0.
@@ -373,8 +418,12 @@ c  --------------------------
 c  --------------------------
 
       subroutine CheckWt1a ( x, n, j, n1, fName, name  )
+
+      implicit none
       include 'pfrisk.h'
-      real x(MAX_FLT,MAX_N1)
+      
+      integer n, j, n1, i
+      real x(MAX_FLT,MAX_N1), sum
       character*20 fName, name
 
       sum = 0.
@@ -392,11 +441,14 @@ c  --------------------------
       end
 
 c  -------------------------------------------------------------------
-      subroutine WriteTempHaz ( tempHaz,nParamVar, nInten, 
+      subroutine WriteTempHaz ( tempHaz, nParamVar, nInten, 
      1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
- 
+
+      implicit none 
       include 'pfrisk.h'
       include 'declare1.h'
+
+      integer nProb, jType, iProb, i, iFtype, j
 
       do iProb=1,nProb
 
@@ -418,13 +470,13 @@ c  -------------------------------------------------------------------
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nInten, 
      1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
- 
+
+      implicit none 
       include 'pfrisk.h'
       include 'declare1.h'
 
+      integer nProb, jType, nwr, iProb, i, iFtype, j
       real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
-c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
-c      integer nAtten(MAX_PROB,4)
 
       nwr = 27
 
@@ -434,7 +486,6 @@ c      integer nAtten(MAX_PROB,4)
      1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
      1         nInten(iProb)
 
-c       do iAtten = 1,nAtten(iProb,jType)
           do iFtype=1,nFtype(iFlt)
            do iParam=1,nParamVar(iFlt,iFltWidth)
              write (27, '( 15e12.4)')  (tempHaz1(iParam,j,iProb,iFtype),j=1,nInten(iProb))
@@ -449,12 +500,12 @@ c       enddo
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
+      implicit none
       include 'pfrisk.h'
       include 'declare1.h'
 
+      integer nProb, nwr, iProb, jType, j
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB,MAX_ATTEN)
-c      integer nInten(1), nWidth(1), nParamVar(MAX_FLT,1)
-c      integer nAtten(MAX_PROB,4)
 
       nwr = 28
 
@@ -463,7 +514,7 @@ c      integer nAtten(MAX_PROB,4)
         do jType=1,nattenType
            do iAtten = 1,nAtten(iProb,jType)
                write (28,'( 3i5, 100e12.4 )')  iProb, jType, iAtten, 
-     1             (tempHaz2(jType, j,iProb,iAtten),j=1,nInten(iProb))
+     1             (tempHaz2(jType,j,iProb,iAtten),j=1,nInten(iProb))
            enddo
          enddo
       enddo
@@ -482,27 +533,29 @@ c  -------------------------------------------------------------------
      7           dirflag,tapflag, intflag, fsys, faultdist,mMagout,
      8           hwflagout, ftype, vs, nmaxmag2, mMagoutwt, specT)
 
+      implicit none
       include 'pfrisk.h'
 
       real siteX, siteY, ati(MAX_PROB, MAX_INTEN) 
-      real*8     risk(MAX_INTEN,MAX_PROB,MAX_FLT)
+      real*8 risk(MAX_INTEN,MAX_PROB,MAX_FLT)
       real al_segWt(MAX_FLT), segWt1(MAX_FLT), magbins(MAX_MAG), distbins(MAX_DIST), 
      1     epsBins(MAX_EPS)
       real*8 m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
      3     e_bar(MAX_PROB,MAX_INTEN)
-      real    riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
+      real riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
      5     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
-     9     sumbar
+     9     sumbar, xx
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM)
       real minDist(MAX_FLT), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
       real*8 risk2(MAX_INTEN), sum, risk2t(MAX_INTEN)
       real  period1(4,MAX_PROB),
      1     sigTrunc(MAX_PROB), probAct(MAX_FLT), faultdist(MAX_FLT,MAX_WIDTH,3)
       integer csrflag(MAX_PROB), attenType(MAX_FLT), nAttenType, dirflag(MAX_PROB)
-      integer tapflag(MAX_PROB), intflag(4,MAX_PROB)
-      integer nMagBins, nDistBins, nEpsBins, fsys(MAX_FLT)
+      integer tapflag(MAX_PROB), intflag(4,MAX_PROB), nAtten, nwr, ii, k, l
+      integer nMagBins, nDistBins, nEpsBins, fsys(MAX_FLT), kk
       integer isite, nInten(MAX_PROB), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(MAX_FLT) 
-      integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount
+      integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount, iProb
+      integer J2, iInten, iFlt, M, iMagBin, iDistBin, iEpsBin
       real ftype(1), vs, specT(MAX_PROB)
       character*80 fName(MAX_FLT), file1, attenName(4,MAX_ATTEN)
 
@@ -669,6 +722,7 @@ c  ------------------------------------------------------------------
      4           nAttenType, attenType, Xcost_bar, nXcostBins, 
      5           XcostBins, RiskBinsX )
 
+      implicit none
       include 'pfrisk.h'
 
       real siteX, siteY,  
@@ -684,10 +738,11 @@ c  ------------------------------------------------------------------
       real*8  m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
      5     e_bar(MAX_PROB,MAX_INTEN),Xcost_bar(MAX_PROB,MAX_INTEN)
 
-
-      integer csrflag(MAX_PROB), attenType(MAX_FLT)
+      integer csrflag(MAX_PROB), attenType(MAX_FLT), nProb, i
       integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
-      integer nMagBins, nDistBins, nEpsBins, nXcostBins
+      integer nMagBins, nDistBins, nEpsBins, nXcostBins, J2,
+     1        iEpsBin, iDistBin, iMagBin, iXcostBin, iInten,
+     2        iMagbins, iDistbins, iProb, nwr, nAttenType
       character*80 file1, attenName(4,MAX_ATTEN) 
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'
@@ -695,8 +750,6 @@ c  ------------------------------------------------------------------
       write (18,'(1x,a34,2xa80)') 'Filename for deaggregation output:', file1
       write (18,*) 
       
-      nwr = 14
-
       nwr = 14
 
 c     Write number of bins and bin values.
@@ -862,6 +915,9 @@ c       Write Results
       
 c ----------------------------------------------------------------------
       real function f_magModel(c,x, i) 
+
+      implicit none
+      
       real c(4), x
       integer i
       
@@ -877,11 +933,13 @@ c  -------------------------------------------------------------------
  
       subroutine Write_BR_Haz ( iFlt, nInten, nBr, nNode, Br_haz, Br_wt1, nProb )
 
+      implicit none
       include 'pfrisk.h'
-      integer iFlt, nNode(MAX_NODE), nInten(MAX_PROB), nBr, nProb
-      real*8  BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-      real    Br_wt1(MAX_BRANCH,MAX_NODE)
-
+      
+      integer iFlt, nNode(MAX_NODE), nInten(MAX_PROB), nBr, nProb,
+     1        iNode, iBR, jInten, iProb 
+      real*8 BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
+      real Br_wt1(MAX_BRANCH,MAX_NODE)
 
       do iProb=1,nProb
         do jInten = 1, nInten(iProb)
@@ -902,14 +960,16 @@ c  -------------------------------------------------------------------
      1            iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
      2            iParam, nNode, jInten, iProb, iSeg )
 
+      implicit none
       include 'pfrisk.h'
+      
       integer nBR, iFtype, nSegModel(MAX_FLT), iFlt, iFltwidth, iParam
-      integer jInten, iProb, iSeg
+      integer jInten, iProb, iSeg, iBR, iNode
       integer BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE)
       real    BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
-      real    ftype_wt(MAX_FLT,MAX_N1), segModelWt1(MAX_FLT,100)
+      real    ftype_wt(MAX_FLT,MAX_N1), segModelWt1(MAX_FLT,100), wt5,
+     1        wt, mHaz
       real*8  BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-
 
 C     Program is currently set for 13 main branches. 
        nBr = 13
@@ -951,7 +1011,9 @@ C     Program is currently set for 13 main branches.
       
 c  -------------------------------------------------------------------
       subroutine writedisthead (ioflag)
-      
+
+      implicit none 
+     
       integer ioflag
       if (ioflag .eq. 1) then
          write (19,*) 'Column Heading Information:   '

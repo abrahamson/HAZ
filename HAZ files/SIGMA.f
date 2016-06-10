@@ -1,9 +1,10 @@
 C     Main subroutine for Single Station Sigma (Phi) models
       subroutine SSSPhiModel (ssscalc1, specT, mag, Rrup, phiSSS) 
+
+      implicit none
       
       real specT, mag, Rrup, phiSSS
       integer ssscalc1, modelflag, zoneflag
-
 
 C     Select the Single Station Sigma model based on the SSSCalc1 value. 
       if (ssscalc1 .eq. 1 ) then

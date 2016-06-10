@@ -479,9 +479,12 @@ C *** BCHydro Subduction (06/2010 - Model) Horizontal ***********
 c ------------------------------------------------------------------            
       subroutine BCHydroSub_V3 ( mag, fType, rRup, vs30, lnSa, sigma1, 
      2           specT, period1, iflag, forearc, depth, disthypo, deltac1 )
+
+      implicit none
      
-      real mag, fType, rRup, vs30, pgaRock,
-     1       lnSa, sigma, tau, period1, sigma1, disthypo, deltac1
+      real mag, fType, rRup, vs30, pgaRock, faba, vs30_rock, period0,
+     1     lnSa, sigma, tau, period1, sigma1, disthypo, deltac1,
+     2     depth, specT
       integer iflag, forearc
 
 c     Ftype defines an interface event or intraslab events      
@@ -522,7 +525,10 @@ c     Convert units spectral acceleration in gal
 c ----------------------------------------------------------------------
       subroutine BCHydroSub2010_model ( mag, rRup, vs30, pgaRock, lnSa, sigma, tau, 
      2                     specT, Ftype, iflag, faba, depth, disthypo, deltac1 )
+
+      implicit none
       
+      integer MAXPER, nPer, i1, i      
       parameter (MAXPER=23)
       real a1(MAXPER), a2(MAXPER),
      1     a6(MAXPER), a7(MAXPER), a8(MAXPER), a10(MAXPER), a11(MAXPER),
@@ -532,9 +538,9 @@ c ----------------------------------------------------------------------
      1     mag, a3, a4, a5, a9 
       real a1T, a2T, a6T, a7T, a8T
       real a10T, a11T, a12T, a13T, a14T, a15T, a16T, sigsT, sigtT
-      real vLinT, b_soilT, sumgm, Ftype
+      real vLinT, b_soilT, sumgm, Ftype, tau, period1
       integer count1, count2, iflag
-      real n, c, c4, c1, deltac1, faba
+      real n, c, c4, c1, deltac1, faba, R, testmag, VsStar, depth, specT
 
       data period /  0.00, 0.02, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5,
      1               0.6,  0.75, 1.00,  1.5, 2.00, 2.5, 3.00, 4.0, 5.0, 
@@ -737,11 +743,14 @@ c     Set SA to return
 
 c ----------------------------------------------------------------------
       subroutine BCHHR2Vs760 ( saRock, specT, lnSa )
-      
+
+      implicit none
+
+      integer MAXPER, nPer, i1, i      
       parameter (MAXPER=16)
       real b1(MAXPER), b2(MAXPER), b3(MAXPER)
       real c1(MAXPER), c2(MAXPER), period(MAXPER)
-      real saRock, lnSa, specT 
+      real saRock, lnSa, specT, period1 
       real b1T, b2T, b3T, c1T, c2T, LsaRock, ampfac
       integer count1, count2, iflag
 

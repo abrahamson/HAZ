@@ -2,11 +2,10 @@ c ------------------------------------------------------------------
 
       subroutine Set_Rates ( nParamVar, magRecur, rate, beta, minMag,           
      1           maxMag, iFlt, iWidth, faultArea, 
-     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                     
+     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
 
-      include 'pfrisk.h'                
-
-c     implicit none                     
+      implicit none
+      include 'pfrisk.h'                       
 
       real magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH),                                    
@@ -17,24 +16,23 @@ c     implicit none
      3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)                                     
       real magStep(MAX_FLT)             
       real mU, mL, rigidity, momentRate1, momentRate2                 
-      real c, beta1, t1, t2, t3, c1, deltaM1, deltaM2             
+      real c, beta1, t1, t2, t3, c1, deltaM1, deltaM2, deltaM3             
       real mean, sigma, zmagL, zmagU, pmagL, pmagU, dd, mag                     
       real mU1, mL1, mch, mchr, mexp, aexp, achr, m1
       real*8 sum
-      real term1,term2, term3
+      real term1, term2, term3, scale, pL1, pU1, contrmaxmag
       integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH)                  
-      integer nmstep                    
+      integer nmstep, iWidth, i1                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
-      real maxmag1, magstep1
-      real bAC, gamma, bGR, fGR, fAC, gAC
-      real c2, c3, c4, bM2, bM1, scale1
+      real maxmag1, magstep1, texp, contrexp, rate_M_gt_0
+      real bAC, gamma, bGR, fGR, fAC, gAC, meanMoChar, pRatio
+      real c2, c3, c4, bM2, bM1, scale1, faultArea, x, deltamac
       real meanMoRelease1, meanMoRelease2, meanMoRelease3
       
       rigidity = 3.0e11       
 
       i = iWidth          
-        do iParam=1,nParamVar(iFlt,i)   
-        
+        do iParam=1,nParamVar(iFlt,i)          
      
           beta1 = beta(iFlt,iParam,i) 
           mU = maxMag(iFlt,iParam,i)           
@@ -183,9 +181,7 @@ c        calculate the rate
 
 c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)                       
              mean =  mU - mpdf_param(iFlt,iParam,i,1) 
-cnjg             mean =  mU 
              sigma = mpdf_param(iFlt,iParam,i,2)       
-cnjg             mu = mu + mpdf_param(iFlt,iParam,i,1)*sigma
 
              if (sigma .eq. 0.0) then 
                 sum = 10.**(1.5*mean+16.05)
@@ -204,8 +200,7 @@ c    Use a fixed mag step of 0.01 for getting the moment balance
                mL1 = mag - 0.01/2.    
                mU1 = mag + 0.01/2.    
                call NDTR((mL1-mean)/sigma,pL1,dd)                                      
-               call NDTR((mU1-mean)/sigma,pU1,dd)                                      
-c               sum = sum + (pL1-pU1)/(pmagL-pmagU)*(10.**(1.5*mag+16.05))    
+               call NDTR((mU1-mean)/sigma,pU1,dd)                                       
                sum = sum + (pL1-pU1)/(1.-pmagU)*(10.**(1.5*mag+16.05))    
                mag = mag + magStep(iFlt)       
              enddo                       
@@ -220,9 +215,7 @@ c     WAACY Model
  
 c            Set the rate for M> Mmin (scale the rate for M>0 by pRatio,
 c            where pRatio is the ratio of eqk with M>Mmin / M>0
-             rate(iParam,i) = rate_M_gt_0 * pRatio 
-c             write (*,'( 3e12.5)')   rate(iParam,i), rate_M_gt_0,  pRatio 
-c             pause 'out of waacy rate'   
+             rate(iParam,i) = rate_M_gt_0 * pRatio   
 
 C..........Working Group Model...................
            elseif (magRecur(iFlt,iParam,i) .eq. 4.) then     
@@ -389,8 +382,7 @@ c........does not work with BC Hydro Alternative Characteristic Model
                write (*,*) 'with BC Hydro Alternative model!!!!'
                stop 99
            endif
-         endif
-c         write (*,'( 2i5,e12.5)') iParam, i, rate(iParam,i)           
+         endif           
         enddo                                  
 
       return                            
@@ -400,6 +392,7 @@ c -----------------------------------------------------------
 
       subroutine calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minmag,
      1          iFlt, iParam, iwidth, faultArea, pRatio)  
+
       implicit none
       include 'pfrisk.h'                
 
@@ -428,8 +421,6 @@ c     Set WAACY model parameters (haz45 version)
       Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
       mChar = maxMag(iFlt,iParam,iWidth)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
-c      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
-
 
 c     start integration at Mag=0 for momment balance
       Mmin = 0
