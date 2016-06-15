@@ -50,6 +50,7 @@ c         Is this a slip-rate or moment rate?
 
             if ( RateType(iFlt,iParam,i) .eq. 1 ) then
               momentRate2 = rateParam(iFlt,iParam,i)*faultArea * rigidity * 1.0e9
+c              write (80,'( 3i5,2e12.4)') iflt, i, iParam,faultArea, rateParam(iFlt,iParam,i)
             else
               momentRate2 = rateParam(iFlt,iParam,i)
             endif          
@@ -182,6 +183,7 @@ c        calculate the rate
              endif		 
            elseif (magRecur(iFlt,iParam,i) .eq. 3.) then                              
 
+             pause 'test 1'
 c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)                       
              mean =  mU - mpdf_param(iFlt,iParam,i,1) 
 cnjg             mean =  mU 
@@ -205,14 +207,20 @@ c    Use a fixed mag step of 0.01 for getting the moment balance
                mL1 = mag - 0.01/2.    
                mU1 = mag + 0.01/2.    
                call NDTR((mL1-mean)/sigma,pL1,dd)                                      
-               call NDTR((mU1-mean)/sigma,pU1,dd)                                      
-c               sum = sum + (pL1-pU1)/(pmagL-pmagU)*(10.**(1.5*mag+16.05))    
-               sum = sum + (pL1-pU1)/(1.-pmagU)*(10.**(1.5*mag+16.05))    
-               mag = mag + magStep(iFlt)       
+               call NDTR((mU1-mean)/sigma,pU1,dd)  
+               t1 = (pL1-pU1)
+               t2 =  (1.-pmagU)                                   
+               sum = sum + (t1/t2) * (10.**(1.5*mag+16.05))
+c               mag = mag + magStep(iFlt)       
+c             correct the mag step to use the fixed value of 0.01 (naa 6/15/16  )
+               mag = mag + 0.01       
              enddo                       
              endif
 
              rate(iParam,i) = momentRate2/sum  
+             write (*,'( 2e12.3)') momentRate2, sum
+             pause 'test 2'
+
 
 c     WAACY Model             
           elseif (magRecur(iFlt,iParam,i) .eq. 10 ) then  

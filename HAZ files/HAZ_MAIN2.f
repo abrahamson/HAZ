@@ -94,6 +94,8 @@ c     read fault File
      4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag, 
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
            
+      pause 'out of read flt'     
+      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
       do 1000 iSite = 1, nSite      
@@ -126,11 +128,11 @@ c      Open Output6 file which will contain the individual GMPE hazard curves ov
 
 c     Open output3 file
       read (13,'( a80)',err=2106) file1
-      open (12,file=file1,status='new')
+      open (12,file=file1,status='unknown')
 
 c     Open output4 file
       read (13,'( a80)') file1
-      open (14,file=file1,status='new')
+      open (14,file=file1,status='unknown')
 
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
