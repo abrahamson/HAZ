@@ -7,18 +7,20 @@ c ------------------------------------------------------------------
      1                     vs30, hwflag, lnSa, sigma1, 
      2                     specT, period1, depthtop, iflag, vs30_class,
      3                     depthvs10, Rx, phi, tau )
+
+      implicit none
      
-      real mag, dip, fType, rRup, rjb, vs30, pgaRock,
+      real mag, dip, fType, rRup, rjb, vs30, pgaRock, specT,
      1       Rx, lnSa, sigma, tau, period1, sigma1, depthtop, width,
-     2       depthvs10, lnSaTD, lnSa1, lnSa2, lnSaRock, phi
+     2       depthvs10, lnSaTD, lnSa1, lnSa2, lnSaRock, phi, Frv, Fn,
+     3       period0, vs30_rock, depthvs10rock, TD, sigmaX, tauX
       integer hwflag, iflag, vs30_class
 
 c     VS30 class is to distinguish between the sigma if the VS30 is measured
 c     vs the VS30 being estimated from surface geology.
 c         Vs30_class = 1 for measured 
 c         Vs30_class = 0 for estimated
-
-c     For now, convert ftype to an equivalent rake      
+     
 C     fType     Mechanism                      Rake
 C     ------------------------------------------------------
 C      -1       Normal                   -120 < Rake < -60.0
@@ -38,21 +40,13 @@ C
         Frv = 0.0
         Fn = 0.0
       endif
-
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
      
 c     compute pga on rock
       period0 = 0.0
       pgaRock = 0.0
       vs30_rock = 1100.
       depthvs10rock = 0.006
-      call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+      call AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30_rock, pgaRock, Rx, lnSa, sigma, tau,
      2                     period0, depthTop, Frv, Fn, iflag, vs30_class,
      3                     depthvs10rock, hwflag )
@@ -64,7 +58,7 @@ c     (Eq. 21)
       TD = 10**(-1.25+0.3*mag)
       if (specT .ge. TD) then
 c         Compute Sa at TD spectral period for Vs30=1,100m/sec
-          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+          call AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30_rock, pgaRock, Rx, lnSaTD, sigmaX, tauX, 
      2                     TD, depthtop, Frv, Fn, iflag, vs30_class, 
      3                     depthvs10rock, hwflag )
@@ -72,12 +66,12 @@ c         Compute Sa at TD spectral period for Vs30=1,100m/sec
           lnSaRock = lnSaTD + alog((TD*TD)/(specT*specT))
 
 c         Compute Sa at spectral period for Vs30
-          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+          call AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30, pgaRock, Rx, lnSa1, sigma, tau, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
      3                     depthvs10, hwflag )
 c         Compute Sa at spectral period for Vs30=1,100m/sec
-          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+          call AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30_rock, pgaRock, Rx, lnSa2, sigmaX, tauX, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
      3                     depthvs10rock, hwflag )
@@ -86,7 +80,7 @@ C         Compute soil amplification (i.e., 'lnSa1-lnSa2') and add to Constant d
  
       else
 C         For cases where specT < TD compute regular ground motions. 
-          call AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+          call AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30, pgaRock, Rx, lnSa, sigma, tau, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class, 
      3                     depthvs10, hwflag )
@@ -104,32 +98,33 @@ c     Convert units spectral acceleration in gal
       end
 c ----------------------------------------------------------------------
 
-      subroutine AS_072007_model ( mag, dip, rake, width, rRup, rjb,
+      subroutine AS_072007_model ( mag, dip, width, rRup, rjb,
      1                     vs30, pgaRock, Rx, lnSa, sigma, tau, 
      2                     specT, depthtop, Frv, Fn, iflag, vs30_class,
      3                     z10, hwflag )
+
+      implicit none
       
+      integer MAXPER
       parameter (MAXPER=107)
       real a1(MAXPER), a2(MAXPER), a3(MAXPER), a4(MAXPER), a5(MAXPER),
      1     a8(MAXPER), a9(MAXPER), a10(MAXPER), a11(MAXPER),
      1     a12(MAXPER), a13(MAXPER), a14(MAXPER), a15(MAXPER),
      1     c4(MAXPER), a16(MAXPER), a18(MAXPER),
      2     s1e(MAXPER), s2e(MAXPER), s1m(MAXPER), s2m(MAXPER), s3(MAXPER), s4(MAXPER)
-      real period(MAXPER), b_soil(MAXPER), vLin(MAXPER)
-      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup, rake,
+      real period(MAXPER), b_soil(MAXPER), vLin(MAXPER), vs
+      real sigma, tau,lnSa, pgaRock, vs30, rjb, rRup, Rx, depthtop,
      1     dip, mag, sigcorr(MAXPER), taucorr(MAXPER) 
-c      real sig1(MAXPER), sig2(MAXPER), tau1(MAXPER), tau2(MAXPER)
-c      real tauCorr, sigCorr
-      real taper1, taper2, taper3, taper4, taper5
+      real taper1, taper2, taper3, taper4, taper5, specT
       real a1T, a2T, a3T, a5T, a8T, a9T
-      real a10T, a11T, a12T, a13T, a14T, a15T, a18T
+      real a10T, a11T, a12T, a13T, a14T, a15T, a16T, a18T
       real c4T, a4T
       real s3T, s4T, s1T, s2T
-      real sigcorrT, taucorrT, vLinT, b_soilT, sum, Frv, Fn
-      real damp_dpga, sigamp, width, testv1
+      real sigcorrT, taucorrT, vLinT, b_soilT, sum, Frv, Fn, R
+      real damp_dpga, sigamp, width, testv1, c1, soilamp, T6
       real sigmanot, sigmanotPGA, taunot, taunotPGA, sigmaB, sigmaBPGA
-      integer count1, count2, iflag, vs30_class, hwflag
-      real n, c, z10, c2, e2, a21, a22, test, zhat
+      integer count1, count2, iflag, vs30_class, hwflag, nPer, i1, i
+      real n, c, z10, c2, e2, a21, a22, test, zhat, period1, v1
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029,
      1              0.03, 0.032, 0.035, 0.036, 0.04, 0.042, 0.044, 
@@ -862,6 +857,9 @@ c ---------------------------------------------------------------------
      2                     vs, Delta, DTor, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx, phi, tau )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=107)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -876,10 +874,10 @@ c ---------------------------------------------------------------------
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c3, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
-      integer iflag, count1, count2, hwflag, vs30_class
-      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
+      integer iflag, count1, count2, hwflag, vs30_class, nPer, i
+      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx, vs
       REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
-      real phi
+      real phi, period1
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 0.035, 0.036, 0.04, 
      1              0.042, 0.044, 0.045, 0.046, 0.048, 0.05, 0.055, 0.06, 0.065, 0.067, 
@@ -1452,23 +1450,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_NM = 0.0
          endif
 
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
-
         c2 = 1.06
         c3 = 3.45
         c4 = -2.1
@@ -1562,6 +1543,9 @@ c ---------------------------------------------------------------------
      2                     vs, Delta, DTor, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=107)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -1576,9 +1560,9 @@ c ---------------------------------------------------------------------
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c3, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
-      integer iflag, count1, count2, hwflag, vs30_class
-      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
-      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth
+      integer iflag, count1, count2, hwflag, vs30_class, nPer, i
+      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx, vs
+      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth, period1
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 0.035, 0.036, 0.04, 
      1              0.042, 0.044, 0.045, 0.046, 0.048, 0.05, 0.055, 0.06, 0.065, 0.067, 
@@ -2185,23 +2169,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_NM = 0.0
          endif
 
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
-
         c2 = 1.06
 c        c3 = 3.45
         c4 = -2.1
@@ -2262,18 +2229,6 @@ C NOTE: max(0,z1-15) is capped at 300 to avoid overflow of function cosh
 c Sa on soil condition
         psa = psa_ref + (a + b * alog((exp(psa_ref)+c)/c)) + rkdepth
 
-C Compute the sigma term
-c        NL = b*exp(psa_ref)/(exp(psa_ref)+c)
-c        sigma_M = sigma1T + (sigma2T-sigma1T)/2.0*(min(max(M,5.0),7.0)-5.0)
-c        if (vs30_class .eq. 0) then
-c           sigma = sigma_M*sqrt(sigma3T+(1.0+NL)**2.0)
-c        else
-c           sigma = sigma_M*sqrt(0.7+(1.0+NL)**2.0)
-c        endif
-C Compute the tau term
-c        tau = tau1T + (tau2T-tau1T)/2.0*(min(max(M,5.0),7.0)-5.0)
-c        tau = tau*(1.0+NL)
-
         sigma = sqrt(tau*tau + sigma*sigma)
 
 C     Convert ground motion to units of gals.
@@ -2294,6 +2249,9 @@ c ---------------------------------------------------------------------
      2                     vs, Delta, DTor, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=107)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -2308,9 +2266,9 @@ c ---------------------------------------------------------------------
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c3, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
-      integer iflag, count1, count2, hwflag, vs30_class
-      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
-      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth
+      integer iflag, count1, count2, hwflag, vs30_class, nPer, i
+      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx, vs
+      REAL period2, lnY, F_RV, F_NM, depthvs10, tau, rkdepth, period1
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 0.035, 0.036, 0.04, 
      1              0.042, 0.044, 0.045, 0.046, 0.048, 0.05, 0.055, 0.06, 0.065, 0.067, 
@@ -2916,23 +2874,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_NM = 0.0
          endif
 
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
-
         c2 = 1.06
 c        c3 = 3.45
         c4 = -2.1
@@ -2993,18 +2934,6 @@ C NOTE: max(0,z1-15) is capped at 300 to avoid overflow of function cosh
 c Sa on soil condition
         psa = psa_ref + (a + b * alog((exp(psa_ref)+c)/c)) + rkdepth
 
-C Compute the sigma term
-c        NL = b*exp(psa_ref)/(exp(psa_ref)+c)
-c        sigma_M = sigma1T + (sigma2T-sigma1T)/2.0*(min(max(M,5.0),7.0)-5.0)
-c        if (vs30_class .eq. 0) then
-c           sigma = sigma_M*sqrt(sigma3T+(1.0+NL)**2.0)
-c        else
-c           sigma = sigma_M*sqrt(0.7+(1.0+NL)**2.0)
-c        endif
-C Compute the tau term
-c        tau = tau1T + (tau2T-tau1T)/2.0*(min(max(M,5.0),7.0)-5.0)
-c        tau = tau*(1.0+NL)
-
         sigma = sqrt(tau*tau + sigma*sigma)
 
 C     Convert ground motion to units of gals.
@@ -3020,16 +2949,20 @@ c ---------------------------------------------------------------------
       Subroutine I_NGA_2008 ( m, Rrup, ftype, specT,
      1                     period2, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=32)
       REAL Period(MAXPER), a1mlt675(MAXPER), a2mlt675(MAXPER), b1mlt675(MAXPER), b2mlt675(MAXPER) 
       REAL a1(MAXPER), a2(MAXPER), b1(MAXPER), b2(MAXPER) 
-      real gam(MAXPER), phi(MAXPER)
+      real gam(MAXPER), phi(MAXPER), specT, sigma, period1
+      real a1mlt675T, a2mlt675T, b1mlt675T, b2mlt675T
 
       REAL M, RRUP
       REAL SOF, period2, lnY, PhiT, gamT, ftype
 
       real a1T, a2T, b1T, b2T
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
 
       Data period / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08,  
      1              0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45,  
@@ -3215,16 +3148,20 @@ c ---------------------------------------------------------------------
       Subroutine I_NGA_2008vsgt900 ( m, Rrup, ftype, specT,
      1                     period2, lnY, sigma, iflag )
 
+      implicit none
+      
+      integer MAXPER
       parameter (MAXPER=32)
       REAL Period(MAXPER), a1mlt675(MAXPER), a2mlt675(MAXPER), b1mlt675(MAXPER), b2mlt675(MAXPER) 
+      real a1mlt675T, a2mlt675T, b1mlt675T, b2mlt675T
       REAL a1(MAXPER), a2(MAXPER), b1(MAXPER), b2(MAXPER) 
       real gam(MAXPER), phi(MAXPER)
 
-      REAL M, RRUP
+      REAL M, RRUP, specT, sigma, period1
       REAL SOF, period2, lnY, PhiT, gamT, ftype
 
       real a1T, a2T, b1T, b2T
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
 
       Data period / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.08,  
      1              0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45,  
@@ -3411,20 +3348,24 @@ c ---------------------------------------------------------------------
      1                     period2, lnY, sigma, iflag, vs,
      2                     depthtop, D25, Dip, phi, tau ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=24)
       REAL Period(MAXPER), C0(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
       REAL C6(MAXPER), C7(MAXPER), C8(MAXPER), C9(MAXPER), C10(MAXPER), C11(MAXPER), C12(MAXPER)
       REAL K1(MAXPER), K2(MAXPER), K3(MAXPER)
       REAL SIG(MAXPER), tlny(MAXPER), slny(MAXPER)
-      REAL cort(MAXPER), cors(MAXPER)
+      REAL cort(MAXPER), cors(MAXPER), specT, period2, sigma
 
       REAL MAG, RRUP, RBJF, VS, D25, FHWR, FHWM, FHWZ, FHWD, PGAROCK, C, N
-      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil, phi, tau
-      INTEGER count1, count2
+      real sigmaT, lnY, ftype, ztor, Dip, Dmax, pgasoil, phi, tau, R
+      INTEGER count1, count2, iflag, nPer, i
 
       real c0T, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, c10T, c11T, c12T
-      real k1T, k2T, k3T, sigT
-      real tlnyT, slnyT, cortT, corsT
+      real k1T, k2T, k3T, sigT, period1, TERM1, TERM2, TERM3, TERM4, TERM5_RK
+      real TERM6, term5, dAmp_dPGA
+      real tlnyT, slnyT, cortT, corsT, depthtop
 
 C.....MODEL COEFFICIENTS.....................
       data Period /  0.00, -1.0, -2.0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 
@@ -3832,7 +3773,6 @@ c      pgasoil = exp(alog(pgarock) + term5 + term6)
       endif
 
 C.....Now compute the sigma value..........
-c      SIGMAT = SIGT
 
 C     Set the Sigma Values
 c     Compute parital derivative of alog(soil amp) w.r.t. alog(rock PGA)
@@ -3844,8 +3784,6 @@ c     Compute parital derivative of alog(soil amp) w.r.t. alog(rock PGA)
       endif
 
 C     Compute the tau term
-c      tau =   sqrt (tlnYT**2.0 + dAmp_dPGA*dAmp_dPGA*tlnY(1)*tlnY(1) +
-c     1            2.0*dAmp_dPGA*cortT*tlnYT*tlnY(1) )
       tau = tlnYt
 
 C     Compute the sigma term (SigmaAF=0.3)
@@ -3872,21 +3810,24 @@ c ---------------------------------------------------------------------
      1                     period2, lnY, sigma, iflag, vs, ftype, pga4nl,
      1                     phiMT, tauMT ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=23)
       REAL Period(MAXPER), e01(MAXPER), e02(MAXPER), e03(MAXPER), e04(MAXPER)
       real e05(MAXPER), e06(MAXPER), e07(MAXPER), e08(MAXPER)
       real c01(MAXPER), c02(MAXPER), c03(MAXPER), c04(MAXPER)
       real h(MAXPER), blin(MAXPER), b1(MAXPER), b2(MAXPER)
       real sigt(MAXPER), phiM(MAXPER), tauM(MAXPER)
-      real a1, a2, c, d, deltaX, deltaY, specT
+      real a1, a2, c, d, deltaX, deltaY, specT, period2, sigma
 
       real e01p, e02p, e03p, e04p, e05p, e06p, e07p, e08p, mhp
       real c01p, c02p, c03p, c04p, mrefp, rrefp, hp
 
       REAL MAG, RBJF, VS, mh(MAXPER), mref, rref, vref, v1, v2, pga_low
-      real ftype, Rp
+      real ftype, Rp, period1, term1, TERM2, R, bnl, TERM3
       real sigmaT, lnY, mechS, mechN, mechR, mechU, pga4nl
-      INTEGER iFlag, count1, count2
+      INTEGER iFlag, count1, count2, nPer, i
 
       real e01T, e02T, e03T, e04T, e05T, e06T, e07T, e08T
       real c01T, c02T, c03T, c04T, hT, blinT, b1T, b2T, mhT, tauMT, phiMT

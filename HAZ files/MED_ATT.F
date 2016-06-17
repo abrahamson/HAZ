@@ -18,8 +18,8 @@ c meanpga.f
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
-      real magc, rupdistc, ftypec, lnYc, depthTop
-      real disthypo, depthvs10, depthvs15, AR, dip1(1), dip
+      real magc, rupdistc, ftypec, lnYc, depthTop, dip
+      real disthypo, depthvs10, depthvs15, AR, dip1(1)
       real Theta_Site, sigmaEps, facFena, sdscale, BA08lnY, deltaC1
       real lnY01, lnY02, lnY04, lnY10, lnY02p, lnY04p
       real sigma01, sigma02, sigma04, sigma10
@@ -37,7 +37,7 @@ C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
        
 c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9501 ) then
-          call AS_NGA_2008TR ( mag, dip, fType, RupWidth, rupDist, jbdist,
+          call AS_NGA_2008TR ( mag, dip1(1), fType, RupWidth, rupDist, jbdist,
      1                     vs, hwflag, lnY, sigma, 
      2                     specT, period2, depthtop, iflag, vs30_class,
      3                     depthvs10, Rx )     
@@ -50,13 +50,13 @@ c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9503 ) then
          call CB_NGA_2008TR ( mag, rupDist, jbdist, Ftype, specT, 
      1                     period2, lnY, sigma, iflag, vs,
-     2                     depthtop, D25, Dip ) 
+     2                     depthtop, D25, dip1(1) ) 
       endif
 
       if (jcalc .eq. 9504) then
           call CY_NGA_2008TR ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip, depthTop, Ftype, depthvs10, vs30_class,
+     2                     vs, dip1(1), depthTop, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
       endif
 
@@ -72,7 +72,7 @@ c  *** Turkey adjusted NGA1 models
           endif
           call CY_NGA_2008TR ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip, depthTop1, Ftype, depthvs10, vs30_class,
+     2                     vs, dip1(1), depthTop1, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
       endif
 

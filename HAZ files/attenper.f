@@ -4,11 +4,12 @@ C     spectral periods fo the computation of
 C     deterministic spectra.
 
       subroutine attenper ( jcalc, anper, minaper, maxaper )
-      
+
+      implicit none      
       include 'pfrisk.h'
       
       integer jcalc, anper
-      real minaper, maxaper
+      real minaper, maxaper, specT
 
 c     Set number of attenuation spectral periods to -99 for 
 c     checking of valid jcalc values. 
