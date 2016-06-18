@@ -4,33 +4,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
 
       implicit none
       include 'pfrisk.h'
-      include 'declare1.h'
-      
-      integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE),
-     2        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
-     3        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip, 
-     4        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
-      integer dirFlag1, iMixture(4, MAX_PROB, MAX_ATTEN), ibnum, nProb,
-     1        nRefPer, nRefGM, nRefMag, j, nLocXAS, nLocYST1, nLocX,
-     2        iDepthFlag, iLocX, nLocY, iLocY, n1, n2, iFtype, iProb,
-     3        jType, isyn, nHypoX, iHypoX, iHypoZ, nBr, iSeg, nHypoXStep,
-     4        nHypoZ, nHypoZStep, dpp_flag
-      real segWt1(MAX_FLT), fltGrid_X(MAXFLT_DD,MAXFLT_AS), 
-     1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS), 
-     2     fltGrid_fLen(MAXFLT_DD,MAXFLT_AS), fltGrid_w(MAXFLT_DD,MAXFLT_AS), 
-     3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), 
-     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), sum1(1000,10), dipavgd
-      real Rx, Ry, Ry0, BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), 
-     1     br_wt1(MAX_BRANCH,MAX_NODE), lgInten0, pLocY(MAXFLT_AS),  
-     2     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
-     3     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
-     4     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
-      real dirMed, dirSigma, fs, pHypoX, pHypoZ, temp, sigma0, AR
-      real*8 p1_sum, wt, p1, BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE),
-     1       tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE), 
-     2       tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
-      character*80 filebmode   
+      include 'declare1.h' 
 
    
 c     Write Program information to the screen.

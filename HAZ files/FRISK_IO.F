@@ -446,9 +446,11 @@ c  -------------------------------------------------------------------
 
       implicit none 
       include 'pfrisk.h'
-      include 'declare1.h'
 
-      integer nProb, jType, iProb, i, iFtype, j
+      integer nProb, jType, iProb, i, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
+     1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iflt, nfType(MAX_FLT),
+     2        iFltWidth, nWidth(MAX_FLT), iAtten, iParam
+      real*8 tempHaz(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_ATTEN,MAX_FTYPE)
 
       do iProb=1,nProb
 
@@ -473,9 +475,10 @@ c  -------------------------------------------------------------------
 
       implicit none 
       include 'pfrisk.h'
-      include 'declare1.h'
 
-      integer nProb, jType, nwr, iProb, i, iFtype, j
+      integer nProb, jType, nwr, iProb, i, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
+     1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iFlt, nftype,
+     2        iFltWidth, nWidth(MAX_FLT), iParam
       real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
 
       nwr = 27
@@ -502,9 +505,9 @@ c  -------------------------------------------------------------------
 
       implicit none
       include 'pfrisk.h'
-      include 'declare1.h'
 
-      integer nProb, nwr, iProb, jType, j
+      integer nProb, nwr, iProb, jType, j, nInten(MAX_PROB),
+     1        nAtten(MAX_PROB,4), nAttenType, iAtten
       real*8 tempHaz2(4, MAX_INTEN, MAX_PROB,MAX_ATTEN)
 
       nwr = 28
