@@ -2,11 +2,11 @@ c closestDist.f
 
       subroutine CalcDist (sourceType, pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS, 
      1             iFltWidth, iFlt, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 
-     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
-     3             fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
-     4             fltgrid_Rrup, fltgrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
-     5             hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo, 
-     6             dipavg, Rx, Ry, Ry0)
+     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+     3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3, 
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb, dip, 
+     5             HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, distRup, 
+     6             ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -21,16 +21,17 @@ c     declarations passed in
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
      3     fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_z1(MAXFLT_DD,MAXFLT_AS), 
-     4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_z2(MAXFLT_DD,MAXFLT_AS),
-     5     fltgrid_x3(MAXFLT_DD,MAXFLT_AS), fltgrid_y3(MAXFLT_DD,MAXFLT_AS), 
+     4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), 
+     5     fltgrid_z2(MAXFLT_DD,MAXFLT_AS), fltgrid_x3(MAXFLT_DD,MAXFLT_AS), 
+     6     fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_z3(MAXFLT_DD,MAXFLT_AS),
      6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS), 
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG)
 
 c     declarations passed out
       integer HWFlag, n1, n2, icellRupstrike, icellRupdip  
       real hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
-     1     dipavg, Rx, Ry, Ry0
+     1     dipavgd, Rx, Ry, Ry0
 
 c     declarations only used within subroutine
       integer i, j, celly, cellx
@@ -87,7 +88,7 @@ c         Set other distance values equal to corresponding distance measures.
           disthypo = distRup
 C         Set HWflag = 0 for areal or grid sources.
           HWFlag = 0    
-          dipavg = dip(iFlt,ifltWidth,1) * 3.1415926/180.
+          dipavgd = dip(iFlt,ifltWidth,1)
           return
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
@@ -123,12 +124,12 @@ c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
            endif
          endif
 
-c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag        
+c         Calculate Rx, Ry, Ry0, dipavgd, and HWFlag        
 c         Global Coordinate System 2 method
           call GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
-     1              fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     2              fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
-     3              HWFlag, dipavg)          
+     1              fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3,
+     2              fltgrid_z3, fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
+     3              HWFlag, dipavgd)        
 
 c         Calculate ZTOR
           ZTOR = fltgrid_z1(iLocY,iLocX)             
@@ -207,7 +208,7 @@ c     Compute the step sizes down dip
 
 c -------------------------------------------------------------------
       subroutine DetermDist (hAScell, hDDcell, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavg,
+     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavgd,
      2                      iLocY, iLocX, rupLen, rupWidth, x0, y0, z0,
      3                      edist, hdist, slit, azp1p2, step, dlit, phiang, FltGrid_rRup,
      4                      s2site, Rx, astrike)
@@ -220,7 +221,7 @@ c -------------------------------------------------------------------
       real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS),
      1      fltGrid_y(MAXFLT_DD,MAXFLT_AS), dx, dy, dz, edist, hdist
       real dist, step, phiang, dlit, strikeX, strikeY, astrike
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), Rx, dipavg, x0, y0, z0, rupLen,
+      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), Rx, dipavgd, x0, y0, z0, rupLen,
      1     rupWidth, azp1p2, slit, s2site, c1temp
 
 C     Variable: hDDcell, hAScell --> Location of hypocenter locations down-dip and along strike.
@@ -246,7 +247,7 @@ C     Compute the downdip distance dlit.
       dlit = real(step*(abs(icellRupDip-hDDcell)))
 
 C     Compute the angle Phi between Hypocenter and Station location. 
-      phiang = (180.0/3.14159)*atan2(Rx,dlit) - (90.0 - dipavg)
+      phiang = (180.0/3.14159)*atan2(Rx,dlit) - (90.0 - dipavgd)
 
 C     Compute Hypocentral and Epicentral Distances.
       dx = fltGrid_x(hDDcell,hAScell) - x0
@@ -292,7 +293,7 @@ C     Case where closest point cell is further down strike than hypocenter.
 
 c -------------------------------------------------------------------
       subroutine ngaRDirmodel (iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavg,
+     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavgd,
      2                      iLocY, iLocX, fltgrid_rrup, Rx, HWFlag, flttype,
      3                      dflag, lnDir, period, mag, sigDirY, rupLen, rupWidth )
 
@@ -302,24 +303,26 @@ c -------------------------------------------------------------------
       integer iHypoX, iHypoZ, icellRupStrike, icellRupDip, dflag, n2, n1, 
      1        iLocx, iLocY, i, HWFlag
       real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS),
-     1      fltGrid_y(MAXFLT_DD,MAXFLT_AS), dipavg, fltgrid_rrup(MAXFLT_DD,MAXFLT_AS),
+     1      fltGrid_y(MAXFLT_DD,MAXFLT_AS), dipavgd, fltgrid_rrup(MAXFLT_DD,MAXFLT_AS),
      2      Rx, dprod1, distcorn, ctildap, BigD, BigS, h, litd, velrat, BigC,
      3      Ts, Us, Th, Uh, Radri, IDP, flttype, BigRu, BigRt, radterm1, 
      4      radterm2, radterm3, radterm4, radterm5, radterm6, zhyp, lnDir,
      5      period, sigDirY, Y, X, rupLen, rupWidth, mag, s, rhypo, rrup,
-     6      BigR, rake, rh, uprime, tprime
+     6      BigR, rake, rh, uprime, tprime, dipr
+     
+      dipr = dipavgd*3.1415926/180.
 
 C     Hypocenter is in (iHypoX, iHypoZ) location for given (iLocX,iLocY) rupture area.
 C     Compute the distance down the fault plane for hypocenter
 
-      h = abs((fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX)) / sin(dipavg) )
+      h = abs((fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX)) / sin(dipr) )
 
 C     Compute distances from hypocenter cell to closest distance cell.
       BigD = sqrt( (fltgrid_x(iHypoZ,iHypoX) - fltgrid_x(icellRupdip,icellRupStrike))**2.0 +
      1             (fltgrid_y(iHypoZ,iHypoX) - fltgrid_y(icellRupdip,icellRupStrike))**2.0 + 
      2             (fltgrid_z(iHypoZ,iHypoX) - fltgrid_z(icellRupdip,icellRupStrike))**2.0 )        
 
-      litd = abs((fltgrid_z(iHypoZ,icellRupStrike) - fltgrid_z(icellRupDip,icellRupStrike)) /sin(dipavg) )
+      litd = abs((fltgrid_z(iHypoZ,icellRupStrike) - fltgrid_z(icellRupDip,icellRupStrike)) /sin(dipr) )
 
       if (litd .gt. BigD) then
          s = sqrt (litd*litd - BigD*BigD)
@@ -398,10 +401,10 @@ C     Now compute the Th and Uh distances for the given rupture area and hypocen
 C     Compute Th distance checking for near vertical dipping faults.       
 C         If Dip > 80 then assume vertical dip for depth calculation.
       Th = 0.0
-      if (abs(dipavg) .gt. 1.396) then
+      if (abs(dipr) .gt. 1.396) then
          Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX) )
       else
-         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX) ) / tan(dipavg)
+         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX) ) / tan(dipr)
       endif
 
 C     Now compute the additional distance terms for the radiation pattern. 
@@ -431,14 +434,14 @@ C          Normal/Obl     -0.5          -50.0
           rake = -50.0*3.14159/180.0
       endif
 
-      radterm1 = tprime*sin(dipavg)/rh + zhyp*cos(dipavg)/rh
-      radterm2 = (zhyp*tprime*sin(dipavg))/(rh*BigR) - (BigR*cos(dipavg)/rh)
-      radterm3 = uprime*sin(dipavg)/BigR
-      radterm4 = -cos(rake)*uprime/rh + sin(rake)*cos(dipavg)*tprime/rh -
-     1           sin(rake)*sin(dipavg)*zhyp/rh
-      radterm5 = (-cos(rake)*zhyp*uprime)/(rh*BigR) + (sin(rake)*cos(dipavg)*zhyp*tprime)/(rh*BigR) +
-     1           sin(rake)*sin(dipavg)*BigR/rh
-      radterm6 = cos(rake)*tprime/BigR + sin(rake)*cos(dipavg)*uprime/BigR
+      radterm1 = tprime*sin(dipr)/rh + zhyp*cos(dipr)/rh
+      radterm2 = (zhyp*tprime*sin(dipr))/(rh*BigR) - (BigR*cos(dipr)/rh)
+      radterm3 = uprime*sin(dipr)/BigR
+      radterm4 = -cos(rake)*uprime/rh + sin(rake)*cos(dipr)*tprime/rh -
+     1           sin(rake)*sin(dipr)*zhyp/rh
+      radterm5 = (-cos(rake)*zhyp*uprime)/(rh*BigR) + (sin(rake)*cos(dipr)*zhyp*tprime)/(rh*BigR) +
+     1           sin(rake)*sin(dipr)*BigR/rh
+      radterm6 = cos(rake)*tprime/BigR + sin(rake)*cos(dipr)*uprime/BigR
       BigRu = (-uprime/BigR)*(radterm1*radterm5+radterm2*radterm4) +    
      1            (tprime/BigR)*(radterm1*radterm6+radterm3*radterm4)
 

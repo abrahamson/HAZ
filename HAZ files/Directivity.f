@@ -1,7 +1,7 @@
       subroutine Directivity ( dirFlag, specT, Rrup, ZTOR, 
      1                 x0, y0, z0,
      1                 Rx, Ry, Ry0, mag, ftype, 
-     2                 RupWidth, RupLength, Dipaverage, HWflag, dirMed, dirSigma, 
+     2                 RupWidth, RupLength, dipavgd, HWflag, dirMed, dirSigma,
      3                 fltgrid_x, fltgrid_y, fltgrid_z,
      6                 n1, n2, iRupAS, iRupDD, dip, fs, fd, dpp_flag,
      7                 iLocAS, iLocDD)
@@ -28,7 +28,7 @@ c      implicit none
      5     fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS)
       real x0, y0, z0 
       real specT, Rrup, zTOR, Rx, Ry, Ry0, Mag, ftype
-      real RupWidth, RupLength, Dipaverage, dirMed, dirSigma
+      real RupWidth, RupLength, dipavgd, dirMed, dirSigma
       integer HWflag, dpp_flag
       real dip, len1, wid1, sum, sum1, sum2
       real fs, fd, aveDPP_est
@@ -134,14 +134,14 @@ c     JWL 2015 model, uniform Hypocenter model for SS and RV faults
 c     Dirflag = 105
       if (dirflag .eq. 105) then
         call DirJWL_V3Uni (specT, rRup, Rx, Ry, RupLength, Mag, ftype, 
-     1                    RupWidth, Dipaverage, HWflag, medadj, sigadj )
+     1                    RupWidth, dipavgd, HWflag, medadj, sigadj )
       endif
 
 c     JWL 2015 model, preferred model for SS (SWUS, Appendix D) and RV (Chapter 3) faults
 c     Dirflag = 106
       if (dirflag .eq. 106) then
         call DirJWL_V3Pre (specT, rRup, Rx, Ry, RupLength, Mag, ftype, 
-     1                    RupWidth, Dipaverage, HWflag, medadj, sigadj )
+     1                    RupWidth, dipavgd, HWflag, medadj, sigadj )
 c        write (*,'( 2f10.3)') medadj, sigadj
 c        pause
       endif

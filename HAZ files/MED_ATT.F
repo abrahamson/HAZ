@@ -2,7 +2,7 @@ c meanpga.f
 
       subroutine meanInten (rupdist, jbdist, seismodist, hwflag,
      1  mag, jcalc, specT, lnY, siga, ftype, attenName, period1, iAtten, iProb,
-     2  jType, vs, depth,intflag, AR, dip1, disthypo, depthvs10, 
+     2  jType, vs, depth,intflag, AR, dipavgd, disthypo, depthvs10, 
      3  depthvs15, D25, tau, depthTop, Theta_Site, RupWidth, vs30_class,
      4  foreArc, Rx, phi, cfcoefrrup, cfcoefrjb, Ry0 )        
 
@@ -18,8 +18,8 @@ c meanpga.f
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
-      real magc, rupdistc, ftypec, lnYc, depthTop, dip
-      real disthypo, depthvs10, depthvs15, AR, dip1(1)
+      real magc, rupdistc, ftypec, lnYc, depthTop
+      real disthypo, depthvs10, depthvs15, AR, dipavgd
       real Theta_Site, sigmaEps, facFena, sdscale, BA08lnY, deltaC1
       real lnY01, lnY02, lnY04, lnY10, lnY02p, lnY04p
       real sigma01, sigma02, sigma04, sigma10
@@ -37,7 +37,7 @@ C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
        
 c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9501 ) then
-          call AS_NGA_2008TR ( mag, dip1(1), fType, RupWidth, rupDist, jbdist,
+          call AS_NGA_2008TR ( mag, dipavgd, fType, RupWidth, rupDist, jbdist,
      1                     vs, hwflag, lnY, sigma, 
      2                     specT, period2, depthtop, iflag, vs30_class,
      3                     depthvs10, Rx )     
@@ -50,13 +50,13 @@ c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9503 ) then
          call CB_NGA_2008TR ( mag, rupDist, jbdist, Ftype, specT, 
      1                     period2, lnY, sigma, iflag, vs,
-     2                     depthtop, D25, dip1(1) ) 
+     2                     depthtop, D25, dipavgd ) 
       endif
 
       if (jcalc .eq. 9504) then
           call CY_NGA_2008TR ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), depthTop, Ftype, depthvs10, vs30_class,
+     2                     vs, dipavgd, depthTop, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
       endif
 
@@ -72,7 +72,7 @@ c  *** Turkey adjusted NGA1 models
           endif
           call CY_NGA_2008TR ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), depthTop1, Ftype, depthvs10, vs30_class,
+     2                     vs, dipavgd, depthTop1, Ftype, depthvs10, vs30_class,
      3                     hwflag, Rx )
       endif
 
@@ -145,13 +145,10 @@ c ******* Abrahamson and Silva Model *********
 C     Abrahamson&Silva 2008 - horizontal, Estimated Vs30m
 C     Model Number = 787
       if ( jcalc .eq. 787 ) then
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call AS_NGA_2008 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call AS_NGA_2008 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, phi, tau ) 
          attenname1 = 'A&S_NGA_2008-Hor,Estimated Vs30m'
@@ -160,13 +157,10 @@ C     defined for the fault in the data file (i.e., Depthtop).
 C     Abrahamson&Silva 2008 - horizontal, Measured Vs30m
 C     Model Number = 788
       if ( jcalc .eq. 788 ) then
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call AS_NGA_2008 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call AS_NGA_2008 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, phi, tau ) 
          attenname1 = 'A&S_NGA_2008-Hor,Measured Vs30m'
@@ -180,7 +174,7 @@ c
          vs30_class = 0
          call CY_NGA_2008 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, phi, tau )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Estimated Vs30m'
        endif
@@ -192,7 +186,7 @@ c
          vs30_class = 1
          call CY_NGA_2008 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, phi, tau )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Measured Vs30m'
        endif
@@ -206,7 +200,7 @@ c
          vs30_class = 0
          call CY_NGA_2008SC ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Estimated Vs30m,SCal SMM'
        endif
@@ -219,7 +213,7 @@ c
          vs30_class = 1
          call CY_NGA_2008SC ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Measured Vs30m,SCal SMM'
        endif
@@ -232,7 +226,7 @@ c
          vs30_class = 0
          call CY_NGA_2008CC ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Estimated Vs30m,CCal SMM'
        endif
@@ -245,7 +239,7 @@ c
          vs30_class = 1
          call CY_NGA_2008CC ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx )
          attenname1 = 'Chiou&Youngs_NGA_2008-Hor,Measured Vs30m,CCal SMM'
        endif
@@ -256,7 +250,7 @@ C     Model Number = 836
       if ( jcalc .eq. 836 ) then
          call CB_NGA_2008 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), phi, tau )
+     2                    depthTop, D25, dipavgd, phi, tau )
          attenname1 = 'Campbell&Bozorgnia_NGA_2008-Hor'
        endif
 
@@ -312,13 +306,10 @@ C     Model Number = 2787
       if ( jcalc .eq. 2787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-EstVs'
@@ -330,13 +321,10 @@ C     Model Number = 2788
       if ( jcalc .eq. 2788 ) then
          regionflag = 1
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-EstVs'
@@ -348,13 +336,10 @@ C     Model Number = 2789
       if ( jcalc .eq. 2789 ) then
          regionflag = 2
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-EstVs'
@@ -366,13 +351,10 @@ C     Model Number = 2790
       if ( jcalc .eq. 2790 ) then
          regionflag = 3
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-EstVs'
@@ -385,13 +367,10 @@ C     Model Number = 2791
       if ( jcalc .eq. 2791 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-MesVs'
@@ -403,13 +382,10 @@ C     Model Number = 2792
       if ( jcalc .eq. 2792 ) then
          regionflag = 1
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-MesVs'
@@ -421,13 +397,10 @@ C     Model Number = 2793
       if ( jcalc .eq. 2793 ) then
          regionflag = 2
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-MesVs'
@@ -439,13 +412,10 @@ C     Model Number = 2794
       if ( jcalc .eq. 2794 ) then
          regionflag = 3
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-MesVs'
@@ -459,13 +429,10 @@ C     Model Number = 3787
       if ( jcalc .eq. 3787 ) then
          regionflag = 0
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-AS-EstVs'
@@ -477,13 +444,10 @@ C     Model Number = 3788
       if ( jcalc .eq. 3788 ) then
          regionflag = 1
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-AS-EstVs'
@@ -495,13 +459,10 @@ C     Model Number = 3789
       if ( jcalc .eq. 3789 ) then
          regionflag = 2
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-China-AS-EstVs'
@@ -513,13 +474,10 @@ C     Model Number = 3790
       if ( jcalc .eq. 3790 ) then
          regionflag = 3
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-AS-EstVs'
@@ -532,13 +490,10 @@ C     Model Number = 3791
       if ( jcalc .eq. 3791 ) then
          regionflag = 0
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-AS-MesVs'
@@ -550,13 +505,10 @@ C     Model Number = 3792
       if ( jcalc .eq. 3792 ) then
          regionflag = 1
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-AS-MesVs'
@@ -568,13 +520,10 @@ C     Model Number = 3793
       if ( jcalc .eq. 3793 ) then
          regionflag = 2
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-China-AS-MesVs'
@@ -586,13 +535,10 @@ C     Model Number = 3794
       if ( jcalc .eq. 3794 ) then
          regionflag = 3
          msasflag = 1
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
          attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-AS-MesVs'
@@ -607,7 +553,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor,Estimated Vs30m'
@@ -622,7 +568,7 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor,Measured Vs30m'       
@@ -638,7 +584,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Estimated Vs30m'
@@ -654,7 +600,7 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Measured Vs30m'
@@ -670,7 +616,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor-Wenchuan,Estimated Vs30m'
@@ -686,7 +632,7 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Hor-Wenchaun,Measured Vs30m'
@@ -699,7 +645,7 @@ C     Model Number = 2836
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2013-Hor,Calif'
        endif
@@ -711,7 +657,7 @@ C     Model Number = 2837
          regionflag = 1
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2013-Hor,Japan'
        endif
@@ -723,7 +669,7 @@ C     Model Number = 2838
          regionflag = 2
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2013-Hor,China'
        endif
@@ -735,7 +681,7 @@ C     Model Number = 2839
          regionflag = 3
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2013-Hor,Italy'
        endif
@@ -873,13 +819,10 @@ C     Model Number = 4787
       if ( jcalc .eq. 4787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call GKAS_NGAWest2_2013_Vert ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call GKAS_NGAWest2_2013_Vert ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'GKAS_NGAWest2_2013-Ver-Glob-MS-EstVs'
@@ -891,13 +834,10 @@ C     Model Number = 4788
       if ( jcalc .eq. 4788 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call GKAS_NGAWest2_2013_Vert ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call GKAS_NGAWest2_2013_Vert ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'GKAS_NGAWest2_2013-Ver-Glob-MS-MsrVs'
@@ -910,16 +850,13 @@ C     Model Number = 6787
       if ( jcalc .eq. 6787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call GKAS_NGAWest2_2013_Vert ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call GKAS_NGAWest2_2013_Vert ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau)      
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnYH, sigmaH, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phiH, tauH) 
 
@@ -935,17 +872,14 @@ C     Model Number = 6787
       if ( jcalc .eq. 6787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 1
-         call GKAS_NGAWest2_2013_Vert ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call GKAS_NGAWest2_2013_Vert ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
      
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnYH, sigmaH, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phiH, tauH) 
 
@@ -963,7 +897,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Ver,Estimated Vs30m'
        endif
@@ -976,7 +910,7 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phi, tau )
          attenname1 = 'CY_NGAWest2_2013-Ver,Measured Vs30m'
        endif
@@ -989,12 +923,12 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phi, tau )
 C     Call the horizontal model
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnYH, sigmaH, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phiH, tauH )
 
          attenname1 = 'CY_NGAWest2_2013-V/H,Estimated Vs30m'
@@ -1011,12 +945,12 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phi, tau )
 C     Call the horizontal model
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnYH, sigmaH, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag, phiH, tauH )
 
          attenname1 = 'CY_NGAWest2_2013-V/H,Measured Vs30m'
@@ -1032,7 +966,7 @@ C     Model Number = 4836
          regionflag = 0
          call BC_NGAWest2_2013_Vert ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
          attenname1 = 'BC_NGAWest2_2013-Ver,Calif'
        endif
 
@@ -1042,7 +976,7 @@ C     Model Number = 4837
          regionflag = 1
          call BC_NGAWest2_2013_Vert ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
          attenname1 = 'BC_NGAWest2_2013-Ver,Japan'
        endif
 
@@ -1052,11 +986,11 @@ C     Model Number = 6836
          regionflag = 0
          call BC_NGAWest2_2013_Vert ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
      
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnYH, sigmaH, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phiH, tauH )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phiH, tauH )
 
 C     Divide vertical by horizontal to get V/H Ratio. 
          lnY = lnY - lnYH + 6.89    
@@ -1068,11 +1002,11 @@ C     Model Number = 6837
          regionflag = 1
          call BC_NGAWest2_2013_Vert ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phi, tau )
      
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnYH, sigmaH, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag, phiH, tauH )
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag, phiH, tauH )
 
 C     Divide vertical by horizontal to get V/H Ratio. 
          lnY = lnY - lnYH + 6.89    
@@ -3636,7 +3570,7 @@ C     Model Number = 160
       if ( jcalc .eq. 160 ) then
          call Bradley_2010 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, hwflag, Rx )
          attenname1 = 'Bradley-2010, Hor'
        endif
@@ -3962,7 +3896,7 @@ C         10,000 < jcalc < 11,000
             write (*,*) 'Check input file.'
             Stop 99
          endif
-         call SWUS_CFRrup ( mag, RupDist, jbDist, depthtop, ftype, dip1(1), RupWidth, Rx, HWFlag, 
+         call SWUS_CFRrup ( mag, RupDist, jbDist, depthtop, ftype, dipavgd, RupWidth, Rx, HWFlag, 
      1           specT, lnY, sigma, iflag, cfcoefrrup, coefcountrrup, phi, tau )
          attenname1 = 'SWUS Common Function Model-Rrup'
       endif
@@ -3977,7 +3911,7 @@ C         11,000 < jcalc < 12,000
             write (*,*) 'Check input file.'
             Stop 99
          endif
-         call SWUS_CFRjb ( mag, RupDist, jbDist, depthtop, ftype, dip1(1), RupWidth, Rx, HWFlag, 
+         call SWUS_CFRjb ( mag, RupDist, jbDist, depthtop, ftype, dipavgd, RupWidth, Rx, HWFlag, 
      1           specT, lnY, sigma, iflag, cfcoefrjb, coefcountrjb, phi, tau )
          attenname1 = 'SWUS Common Function Model-Rjb'
       endif
@@ -3994,13 +3928,10 @@ C     Model Number = 8787
       if ( jcalc .eq. 8787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-Cent-EstVs'
@@ -4026,13 +3957,10 @@ C     Model Number = 8788
       if ( jcalc .eq. 8788 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-Low-EstVs'
@@ -4057,13 +3985,10 @@ C     Model Number = 8789
       if ( jcalc .eq. 8789 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-High-EstVs'
@@ -4168,7 +4093,7 @@ C     Model Number = 8836
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-Cent'
          
@@ -4193,7 +4118,7 @@ C     Model Number = 8837
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-Low'
          
@@ -4218,7 +4143,7 @@ C     Model Number = 8838
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-High'
          
@@ -4247,7 +4172,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-Cent,Est Vs30m'
@@ -4275,7 +4200,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-Low,Est Vs30m'
@@ -4303,7 +4228,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-High,Est Vs30m'
@@ -4429,13 +4354,10 @@ C     Model Number = 9787
       if ( jcalc .eq. 9787 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-Cent-EstVs'
@@ -4455,13 +4377,10 @@ C     Model Number = 9788
       if ( jcalc .eq. 9788 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-Low-EstVs'
@@ -4480,13 +4399,10 @@ C     Model Number = 9789
       if ( jcalc .eq. 9789 ) then
          regionflag = 0
          msasflag = 0
-C     Dip angle of the fault is assumed to be equal to the dip angle
-C     assigned for the first two points of the fault.
-         dip = dip1(1)
 C     Depth to the top of the fault is set equal to the first depth
 C     defined for the fault in the data file (i.e., Depthtop). 
          vs30_Class = 0
-         call ASK_NGAWest2_2013 ( mag, dip, ftype, Rupwidth, rupDist, jbdist,
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
      1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
      2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
          attenname1 = 'ASK_NGAWest2_2014-Hor-Zone123-High-EstVs'
@@ -4567,7 +4483,7 @@ C     Model Number = 9836
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-Cent'
          
@@ -4586,7 +4502,7 @@ C     Model Number = 9837
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-Low'
          
@@ -4605,7 +4521,7 @@ C     Model Number = 9838
          regionflag = 0
          call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
      1                    period2, lnY, sigma, iflag, vs, 
-     2                    depthTop, D25, dip1(1), depth, HWFlag, Rx, rupwidth, regionflag,
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
      1                    phi, tau )
          attenname1 = 'CB_NGAWest2_2014-Hor,Zone123-High'
          
@@ -4628,7 +4544,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-Cent,Est Vs30m'
@@ -4650,7 +4566,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-Low,Est Vs30m'
@@ -4672,7 +4588,7 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
-     2                     vs, dip1(1), Depthtop, Ftype, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
      3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
      1                     phi, tau )
          attenname1 = 'CY_NGAWest2_2014-Hor,Zone123-High,Est Vs30m'

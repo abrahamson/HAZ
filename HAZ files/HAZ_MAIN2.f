@@ -20,12 +20,12 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
      1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS), 
      2     fltGrid_fLen(MAXFLT_DD,MAXFLT_AS), fltGrid_w(MAXFLT_DD,MAXFLT_AS), 
      3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), 
-     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), sum1(1000,10), dipaverage(1)
+     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), sum1(1000,10), dipavgd
       real Rx, Ry, Ry0, BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), 
      1     br_wt1(MAX_BRANCH,MAX_NODE), lgInten0, pLocY(MAXFLT_AS),  
      2     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
      3     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
-     4     faultLen, pLocX, hypoDepth, ZTOR, dipavg, t1, aveWidth, probSyn
+     4     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
       real dirMed, dirSigma, fs, pHypoX, pHypoZ, temp, sigma0, AR
       real*8 p1_sum, wt, p1, BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE),
      1       tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE), 
@@ -302,12 +302,12 @@ c            Find the Closest Distances for this rupture
 c            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
              call CalcDist (sourceType(iFlt), pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS,
      1             iFltWidth, iFlt, ystep(iFlt), grid_top, RupWidth, RupLen, r_horiz, mindepth(iFlt), 
-     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
-     3             fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
-     4             fltGrid_Rrup, fltGrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
-     5             hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo, 
-     6             dipavg, Rx, Ry, Ry0)
-
+     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+     3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3,
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb, dip, 
+     5             HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, distRup, 
+     6             ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
+        
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
                 FaultDist(iFlt,iFltWidth,1)=distRup
@@ -347,7 +347,6 @@ C               either a fixed value or sigma from another model.
                    jcalc1 = abs(jcalc(iProb,jType,iAtten) )
                    scalc1 = scalc(iProb,jtype,iAtten) 
                    sigfix1 = sigfix(iProb,jType,iAtten)
-c                   ssscalc1 = ssscalc(iProb,jType,iAtten)
 C                Check for either fixed sigma value (scalc1<0) or other sigma model
                    if (scalc1 .lt. 0) then
                       sigflag = 2
@@ -356,15 +355,13 @@ C                Check for either fixed sigma value (scalc1<0) or other sigma mo
                    endif
                 else
                    jcalc1 = jcalc(iProb,jType,iAtten) 
-                endif
-
-               dipaverage(1) = dipavg*180.0/3.14159  
+                endif 
 
 c              Compute the median and sigma of the ground motions
                call meanInten ( distRup, distJB, distSeismo,
      1               HWFlag, mag, jcalc1, specT(iProb),  
      2               lgInten,sigmaY, ftype(iFlt,iFtype), attenName, period1, 
-     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipavgd,
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefrrup, cfcoefrjb, Ry0 )
@@ -405,7 +402,7 @@ C               Second call got GPE for different sigma model
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(iProb),  
      2               temp, sigmaY, ftype(iFlt,iFtype), sigmaName, period1, 
-     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipavgd,
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi, 
      6               cfcoefrrup, cfcoefrjb, Ry0 )
@@ -464,7 +461,7 @@ c       JWL 4/10/16 changes
                     call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
      1                 x0, y0, z0,
      1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
-     2                 RupWidth, RupLen, Dipaverage(1), HWflag, dirMed, dirSigma, 
+     2                 RupWidth, RupLen, dipavgd, HWflag, dirMed, dirSigma, 
      3                 fltgrid_x, fltgrid_y, fltgrid_z, 
      6                 n1, n2, icellRupstrike, icellRupdip, 
      7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
