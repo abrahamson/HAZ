@@ -442,7 +442,7 @@ c  --------------------------
 
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz ( tempHaz, nParamVar, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
+     1                nProb, nAtten, iFlt, jtype, nfType, iFltWidth, nWidth )
 
       implicit none 
       include 'pfrisk.h'
@@ -456,7 +456,7 @@ c  -------------------------------------------------------------------
 
       if ( iFltWidth .eq. 1 ) write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType),
      1         nWidth(iFlt), nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
-     1         nInten(iProb)
+     2         nInten(iProb)
 
        do iAtten = 1,nAtten(iProb,jType)
           do iFtype=1,nFtype(iFlt)
@@ -471,13 +471,13 @@ c  -------------------------------------------------------------------
       end
 c  -------------------------------------------------------------------
       subroutine WriteTempHaz1 ( tempHaz1,nParamVar, nInten, 
-     1                nProb, nAtten, iFlt, jtype, nftype, iFltWidth, nWidth )
+     1                nProb, nAtten, iFlt, jtype, nfType, iFltWidth, nWidth )
 
       implicit none 
       include 'pfrisk.h'
 
       integer nProb, jType, nwr, iProb, i, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
-     1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iFlt, nftype,
+     1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iFlt, nfType(MAX_FLT),
      2        iFltWidth, nWidth(MAX_FLT), iParam
       real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
 
@@ -487,14 +487,13 @@ c  -------------------------------------------------------------------
 
       write (27,'( 20i5)') iFlt, iProb, nAtten(iProb,jType), nWidth(iFlt), 
      1         nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
-     1         nInten(iProb)
+     2         nInten(iProb)
 
-          do iFtype=1,nFtype(iFlt)
+          do iFtype=1,nFtype(iFlt)            
            do iParam=1,nParamVar(iFlt,iFltWidth)
              write (27, '( 15e12.4)')  (tempHaz1(iParam,j,iProb,iFtype),j=1,nInten(iProb))
            enddo
           enddo
-c       enddo
       enddo
     
       return

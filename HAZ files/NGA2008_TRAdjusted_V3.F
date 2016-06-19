@@ -22,7 +22,7 @@ c     vs the VS30 being estimated from surface geology.
 c         Vs30_class = 1 for measured 
 c         Vs30_class = 0 for estimated
 
-c     For now, convert ftype to an equivalent rake      
+C     Set mechanism term and corresponding Frv and Fnm values.     
 C     fType     Mechanism                      Rake
 C     ------------------------------------------------------
 C      -1       Normal                   -120 < Rake < -60.0

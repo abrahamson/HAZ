@@ -2387,7 +2387,7 @@ C       will need to be computed and passed along to this subroutine.
 
       CRjb = 999.9 
 
-c     For now, convert ftype to an equivalent rake      
+C     Set mechanism term and corresponding Frv and Fnm values.     
 C     fType     Mechanism                      Rake
 C     ------------------------------------------------------
 C      -1       Normal                   -120 < Rake < -60.0

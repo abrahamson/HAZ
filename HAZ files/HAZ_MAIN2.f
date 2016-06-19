@@ -583,11 +583,11 @@ c           Set the weight for this set of parameters (epistemic)
 c        Write temp Haz array to file
          call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
+     
          call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
  860    continue
-
 
 c       Write p1_sum as a check
         write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt
