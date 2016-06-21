@@ -10,9 +10,13 @@ init:
     - git config --global core.autocrlf input
 
 install:
-    - C:\msys64\msys2_shell.bat
-    - pacman -Syu --noconfirm
-    - pacman -S mingw-w64-{i686,x86_64}-cmake mingw-w64-{i686,x86_64}-gcc-fortran
+    # Change mirrors for better performance
+    - C:\msys64\usr\bin\pacman -S pacman-mirrors
+    # Update core packages
+    - C:\msys64\usr\bin\pacman -Syu
+    # Restart MSYS2
+    - update-core
+    - C:\msys64\usr\bin\pacman -S mingw-w64-{i686,x86_64}-cmake mingw-w64-{i686,x86_64}-gcc-fortran
 
 build_script:
     - mkdir build tests
