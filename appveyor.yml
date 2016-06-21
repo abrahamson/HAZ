@@ -22,5 +22,6 @@ build_script:
     - which cmake
     - mkdir build tests
     - cd build
-    - CMAKE_Fortran_COMPILER=gfortran cmake ..
+    - set CMAKE_Fortran_COMPILER=gfortran
+    - cmake ..
     - make 
