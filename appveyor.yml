@@ -10,6 +10,7 @@ init:
     - git config --global core.autocrlf input
 
 install:
+    - C:\msys64\msys2_shell.bat
     - pacman -Syu --noconfirm
     - pacman -S mingw-w64-{i686,x86_64}-cmake mingw-w64-{i686,x86_64}-gcc-fortran
 
