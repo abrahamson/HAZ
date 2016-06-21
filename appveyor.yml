@@ -1,0 +1,20 @@
+
+branches:
+    # whitelist
+    only:
+        - master
+        - develop
+
+# Configure git linebreaks
+init:
+    - git config --global core.autocrlf input
+
+install:
+    - pacman -Syu --noconfirm
+    - pacman -S mingw-w64-{i686,x86_64}-cmake mingw-w64-{i686,x86_64}-gcc-fortran
+
+build_script:
+    - mkdir build tests
+    - cd build
+    - cmake ..
+    - make 
