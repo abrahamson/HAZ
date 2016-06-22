@@ -9,17 +9,17 @@ branches:
 init:
     - git config --global core.autocrlf input
 
-install:
-     # Add msys to path
-     - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
-     # Change mirrors for better performance
-     - pacman -S --noconfirm pacman-mirrors
-     # Install dependencies
-     - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
+# install:
+#      # Add msys to path
+#      - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+#      # Change mirrors for better performance
+#      - pacman -S --noconfirm pacman-mirrors
+#      # Install dependencies
+#      - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
 
 build_script:
     - mkdir build tests
     - cd build
     # Specify absolute paths for MSYS2 executables.
-    - C:\\msys64\\mingw64\\bin\\cmake.exe .. -G "MSYS Makefiles" -DCMAKE_Fortran_COMPILER=C:/msys64/mingw64/bin/gfortran.exe
+    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_Fortran_COMPILER=C:/msys64/mingw64/bin/gfortran.exe
     - C:\\msys64\\usr\bin\\make.exe
