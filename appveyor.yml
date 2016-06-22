@@ -13,20 +13,18 @@ environment:
     matrix:
     - BUILD: mingw32
       PATH: C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
-      MAKE: C:/msys64/usr/bin/make.exe
       FC: C:/msys64/mingw32/bin/gfortran.exe
       
     - BUILD: mingw64
       PATH: C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
-      MAKE: C:/msys64/usr/bin/make.exe
       FC: C:/msys64/mingw64/bin/gfortran.exe
 
 build_script:
     - echo %PATH%
     - mkdir build tests
     - cd build
-    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=%MAKE% -DCMAKE_Fortran_COMPILER=%FC%
-    - %MAKE%
+    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC%
+    - C:\\msys64\\usr\\bin\\make.exe
 
 after_test:
     - 7z a haz-%BUILD%.zip %APPVEYOR_BUILD_FOLDER%\build\haz.exe
