@@ -18,8 +18,9 @@ init:
 #      - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
 
 build_script:
+    - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
     - mkdir build tests
     - cd build
     # Specify absolute paths for MSYS2 executables.
-    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_Fortran_COMPILER=C:/msys64/mingw64/bin/gfortran.exe
+    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=C:/msys64/mingw64/bin/gfortran.exe
     - C:\\msys64\\usr\bin\\make.exe
