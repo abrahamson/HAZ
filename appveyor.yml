@@ -23,5 +23,5 @@ build_script:
     - which gfortran
     - mkdir build tests
     - cd build
-    - cmake .. -DCMAKE_Fortran_COMPILER=C:\msys64\usr\bin\gfortran.exe
+    - cmake .. -DCMAKE_Fortran_COMPILER=C:\\msys64\\usr\\bin\\gfortran.exe
     - make 
