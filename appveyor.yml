@@ -25,9 +25,7 @@ build_script:
     - cd build
     - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC%
     - C:\\msys64\\usr\\bin\\make.exe
-
-after_test:
-    - 7z a haz-%BUILD%.zip %APPVEYOR_BUILD_FOLDER%\build\haz.exe
+    - 7z a %APPVEYOR_BUILD_FOLDER%\haz-%BUILD%.zip haz.exe
 
 artifacts:
     - path: haz-mingw32.zip
