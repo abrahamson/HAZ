@@ -9,13 +9,13 @@ branches:
 init:
     - git config --global core.autocrlf input
 
-install:
-    # Add msys to path
-    - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
-    # Change mirrors for better performance
-    - pacman -S --noconfirm pacman-mirrors
-    # Install dependencies
-    - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
+# install:
+#     # Add msys to path
+#     - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+#     # Change mirrors for better performance
+#     - pacman -S --noconfirm pacman-mirrors
+#     # Install dependencies
+#     - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
 
 build_script:
     - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
@@ -23,5 +23,5 @@ build_script:
     - which gfortran
     - mkdir build tests
     - cd build
-    - C:\msys64\mingw64\bin\cmake ..
+    - cmake .. -DCMAKE_Fortran_COMPILER=C:\msys64\usr\bin\gfortran.exe
     - make 
