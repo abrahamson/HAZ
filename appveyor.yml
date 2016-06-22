@@ -9,7 +9,7 @@ branches:
 init:
     - git config --global core.autocrlf input
 
- install:
+install:
      # Add msys to path
      - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
      # Change mirrors for better performance
@@ -18,7 +18,6 @@ init:
      - pacman -S --noconfirm mingw-w64-{i686,x86_64}-cmake
 
 build_script:
-    - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
     - mkdir build tests
     - cd build
     # Specify absolute paths for MSYS2 executables.
