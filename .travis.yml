@@ -1,0 +1,11 @@
+addons:
+    apt:
+        packages:
+            - cmake
+            - gfortran
+
+script:
+        - mkdir build tests
+        - cd build
+        - cmake ..
+        - make
