@@ -5,8 +5,6 @@ cmake_minimum_required (VERSION 2.6)
 project (HAZ)
 enable_language (Fortran)
 
-set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic")
-
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE RELEASE CACHE STRING
@@ -25,6 +23,7 @@ get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
+  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic -static")
   set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
@@ -33,6 +32,7 @@ elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
 elseif (Fortran_COMPILER_NAME MATCHES "g77")
   # g77
+  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic -static")
   set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3 -m32")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -m32")
 else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
@@ -42,7 +42,6 @@ else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   set (CMAKE_Fortran_FLAGS_RELEASE "-O2")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
-
 
 # build executables
 file (GLOB SOURCES HAZ\ files/*.f HAZ\ files/*.F)
