@@ -8,8 +8,9 @@ branches:
 init:
     - git config --global core.autocrlf input
 
-matrix:
+environment:
     fast_finish: true
+    matrix:
     - BUILD: mingw32
       PATH: C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
       MAKE: C:/msys64/usr/bin/make.exe
