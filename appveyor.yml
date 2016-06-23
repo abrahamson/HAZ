@@ -1,5 +1,9 @@
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: true
+
+# Consider both master and devlopment branches
 branches:
-    # whitelist
+    # White list
     only:
         - master
         - develop
