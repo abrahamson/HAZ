@@ -5,7 +5,12 @@ addons:
             - gfortran
 
 script:
-        - mkdir build tests
-        - cd build
-        - cmake ..
-        - make
+    - mkdir build tests
+    - cd build
+    - cmake ..
+    - make
+    - cd ..
+
+after_script:
+    - python run_tests.py --cores 2 --exec ../build/HAZ --rtol 0.001
+
