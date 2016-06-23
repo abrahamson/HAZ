@@ -15,5 +15,6 @@ script:
 
 after_script:
     - cd ../scripts
+    - python --version
     - python run_tests.py --cores 2 --exec ../build/HAZ --rtol 0.001
 

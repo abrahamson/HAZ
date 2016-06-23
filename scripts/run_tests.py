@@ -87,7 +87,7 @@ def check_value(actual, expected, rtol):
         else:
             results = []
             for ae in zip(actual, expected):
-                r = check_value(*ae, rtol)
+                r = check_value(ae[0], ae[1], rtol)
                 if r is not None:
                     results.append(r)
             return results or None
