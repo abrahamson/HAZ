@@ -139,12 +139,12 @@ def iter_cases(path):
         yield name
 
 
-def run_haz(path, haz_exec):
+def run_haz(path, haz_bin):
     fname = glob.glob(os.path.join(path, 'Run_*'))[0]
     print('Running HAZ on:', fname)
     dirname, basename = os.path.split(fname)
     with open(os.devnull, 'w') as fp:
-        p = subprocess.Popen([haz_exec],
+        p = subprocess.Popen([haz_bin],
                              stdout=fp,
                              stdin=subprocess.PIPE,
                              cwd=dirname)
@@ -153,7 +153,7 @@ def run_haz(path, haz_exec):
         p.wait()
 
 
-def test_set(name, all_cases, force=True, haz_exec='HAZ',
+def test_set(name, all_cases, force=True, haz_bin='HAZ',
              root_src='', root_test='', rtol=1E-3):
     # These cases take a couple hours to run
     long_cases = [
@@ -184,7 +184,7 @@ def test_set(name, all_cases, force=True, haz_exec='HAZ',
             pass
 
         shutil.copytree(os.path.join(root_src, 'Input'), path_test)
-        run_haz(path_test, haz_exec)
+        run_haz(path_test, haz_bin)
 
     for fname in glob.glob(os.path.join(path_test, '*')):
         ext = os.path.splitext(fname)[1]
@@ -215,15 +215,15 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--all_cases', action='store_true',
                         help='Perform all test cases, ' +
                              'which might take many hours.')
+    parser.add_argument('-b', '--haz_bin', type=str,
+                        default='../build/HAZ.exe',
+                        help='Name of HAZ binary. ' +
+                             'Path is required if not in PATH variable.')
     parser.add_argument('-c', '--cores', type=int, default=1,
                         help='Number of cores to use.')
     parser.add_argument('-f', '--force', action='store_true',
                         help='Force HAZ to rerun; otherwise it only runs if '
                              'test case directory is empty.')
-    parser.add_argument('-e', '--exec', type=str,
-                        default='../build/HAZ.exe',
-                        help='Name of HAZ executable. ' +
-                             'Path is required if not in PATH variable.')
     parser.add_argument('-r', '--rtol', type=float, default=1E-2,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_src', type=str,
@@ -240,7 +240,7 @@ if __name__ == '__main__':
             functools.partial(test_set,
                               force=args.force, all_cases=args.all_cases,
                               root_src=args.root_src, root_test=args.root_test,
-                              haz_exec=args.exec, rtol=args.rtol),
+                              haz_bin=args.haz_bin, rtol=args.rtol),
             iter_cases(args.root_src)
         )
         ok = all(results.get())
