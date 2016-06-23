@@ -74,8 +74,8 @@ def parse_site_line(line):
     parts = line.split()
     s = {
         'id': int(parts[1]),
-        'lon': int(parts[3]),
-        'lat': int(parts[4]),
+        'lon': np.float(parts[3]),
+        'lat': np.float(parts[4]),
     }
     return s
 
