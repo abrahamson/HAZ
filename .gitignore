@@ -13,6 +13,8 @@ absoft_run_env.sh
 
 # Python, Byte-compiled / optimized / DLL files
 __pycache__/
+.cache/
+.idea/
 *.py[cod]
 *$py.class
 
@@ -25,3 +27,7 @@ cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 Status API Training Shop Blog About
+
+# Build and testing directories
+build/
+tests/
