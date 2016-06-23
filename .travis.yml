@@ -4,6 +4,9 @@ addons:
             - cmake
             - gfortran
 
+python:
+    - "3.5"
+
 script:
     - mkdir build tests
     - cd build
