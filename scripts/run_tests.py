@@ -182,7 +182,7 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
             shutil.rmtree(path_test)
             # Wait for my slow computer :-/
             time.sleep(1)
-        except (FileNotFoundError, OSError):
+        except OSError:
             pass
 
         shutil.copytree(os.path.join(root_src, 'Input'), path_test)
