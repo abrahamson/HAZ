@@ -145,6 +145,9 @@ def run_haz(path, haz_bin):
     fname = glob.glob(os.path.join(path, 'Run_*'))[0]
     print('Running HAZ on:', fname)
     dirname, basename = os.path.split(fname)
+    print(dirname, basename, fname)
+
+    haz_bin = os.path.abspath(haz_bin)
     with open(os.devnull, 'w') as fp:
         p = subprocess.Popen([haz_bin],
                              stdout=fp,
@@ -182,10 +185,11 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
             shutil.rmtree(path_test)
             # Wait for my slow computer :-/
             time.sleep(1)
-        except OSError:
+        except FileNotFoundError:
             pass
 
-        shutil.copytree(os.path.join(root_src, 'Input'), path_test)
+        shutil.copytree(os.path.join(root_src, name, 'Input'),
+                        path_test)
         run_haz(path_test, haz_bin)
 
     for fname in glob.glob(os.path.join(path_test, '*')):
