@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 2.6)
 project (HAZ)
 enable_language (Fortran)
 
-option(STATIC_BUILD "STATIC_BUILD" OFF)
+option(STATIC "Enable static linking for binary distribution")
 
 # make sure that the default is a RELEASE
 if (NOT CMAKE_BUILD_TYPE)
@@ -25,21 +25,26 @@ get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
+
+  # Flags required for source formatting
   set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic")
+  # Static compliation
+  if (STATIC)
+      message("--> Static build.")
+      set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -static")
+  endif (STATIC)
+  # Optimization flags
   set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
-  if (${STATIC_BUILD}  MATCHES "ON")
-      message("--> Static build.")
-      set (CMAKE_Fortran_FLAGS "-static")
-  endif (${STATIC_BUILD} MATCHES "ON")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
   # ifort (untested)
   set (CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
-message ("--> CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
 message ("--> Fortran compiler: " ${Fortran_COMPILER_NAME})
+message ("--> CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
+message ("--> CMAKE_Fortran_FLAGS: " ${CMAKE_Fortran_FLAGS})
 
 # build executables
 file (GLOB SOURCES HAZ\ files/*.f HAZ\ files/*.F)
@@ -47,6 +52,3 @@ set (TARGET "HAZ")
 
 add_executable (${TARGET} ${SOURCES})
 set_target_properties(${TARGET} PROPERTIES LINKER_LANGUAGE Fortran)
-
-# install executables and scripts
-install (TARGETS ${TARGET} RUNTIME DESTINATION "bin")
