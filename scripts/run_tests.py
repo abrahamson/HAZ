@@ -104,6 +104,7 @@ def print_errors(name, errors):
             print_errors(name + '[%d]' % i, e)
     elif isinstance(errors, tuple) and len(errors) == 2:
         indent = '    '
+        print(indent + name)
         if isinstance(errors[0], list):
             if isinstance(errors[0][0], float):
                 # List of floats
