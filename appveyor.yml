@@ -26,12 +26,7 @@ environment:
 build_script:
     - mkdir build tests
     - cd build
-    - cmd: |
-    cmake.exe -G "MSYS Makefiles" ^
-        -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe ^
-        -DCMAKE_Fortran_COMPILER=%FC% ^
-        -DSTATIC_BUILD=ON ^
-        ..
+    - cmake.exe -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC% -DSTATIC_BUILD=ON ..
     - C:\\msys64\\usr\\bin\\make.exe
     - 7z a %APPVEYOR_BUILD_FOLDER%\haz-%BUILD%.zip haz.exe
 
