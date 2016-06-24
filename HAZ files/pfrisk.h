@@ -9,7 +9,7 @@ c     Set array dimensions
 
 
       PARAMETER ( MAX_SITE=1, MAX_FLT=165, MAX_SEG=300,
-     1            MAX_INTEN=18, MAX_PROB=1, MAX_EPS=10, MAX_GM=20,
+     1            MAX_INTEN=18, MAX_PROB=20, MAX_EPS=10, MAX_GM=20,
      2            MAX_Xcost=10, MAXPARAM=300, MAX_MAG=30, 
      3            MAX_DIST=25,MAX_N1=220, MAX_WIDTH=15, 
      4            MAX_DIST1=10000, MAX_GRID=32000, MAX_SYN=5)

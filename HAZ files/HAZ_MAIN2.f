@@ -94,7 +94,6 @@ c     read fault File
      4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag, 
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
            
-      pause 'out of read flt'     
       
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -231,6 +230,7 @@ c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          do 800 iMag = 1, nMag(iFlt)
           mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
           magTotal = mag
+          dirCheck = 0.
 
 c         Set the magnitude bin for deagregating
           call SetBin ( nMagBins, magBins, mag, iMagBin )
@@ -463,16 +463,17 @@ C               Application of Directivity model.
                     
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
+                 fs = float(iHypoX) / 10.
 
 c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
+                  fd = float(iHypoZ) / 10.
 
 C                 Call to the rupture directivity Subroutine if applicable
                   if ( dirflag1 .eq. 1) then
 c       JWL 4/10/16 changes
-                    call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
-     1                 x0, y0, z0,
-     1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
+                    call Directivity ( dirFlag(iProb), specT(iProb), DistRup, zTOR, 
+     1                 x0, y0, z0, Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
      2                 RupWidth, RupLen, Dipaverage(1), HWflag, dirMed, dirSigma, 
      3                 fltgrid_x, fltgrid_y, fltgrid_z, 
      6                 n1, n2, icellRupstrike, icellRupdip, 

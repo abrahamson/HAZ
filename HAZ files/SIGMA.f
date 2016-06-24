@@ -1,3 +1,163 @@
+      subroutine interp_phiSS ( a_coeff, b_coeff, period, specT, a, b, iflag )
+      real period (17), a_coeff(17), b_coeff(17), specT, a, b
+      integer count1, count2
+
+C     First check for the PGA
+      if (specT .le. 0.0) then 
+        a = a_coeff(1)
+        b = b_coeff(1)
+        iflag = 0
+        return
+      endif
+      
+      nPer = 17
+C     For other periods, loop over the spectral period range of the PhiSS Model.
+      do i = 1, nper-1
+         if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+            count1 = i
+            count2 = i+1
+            goto 100 
+         endif
+      enddo
+      
+C     Selected spectral period is outside range defined by the model.
+      write (*,*) 
+      write (*,*) 'PhiSS Model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99 
+      
+C     Interpolate the coefficients for the requested spectral period.
+100   call interp ( period(count1), period(count2), a_coeff(count1), a_coeff(count2),
+     &    specT, a, iflag )
+      call interp ( period(count1), period(count2), b_coeff(count1), b_coeff(count2),
+     &    specT, b, iflag )
+
+      return
+      end
+
+c  --------------------------------------
+
+      subroutine SWUS_PHISS_CA1 ( mag, specT, phiSS, iflag, iBranch ) 
+      real period (17), a_high(17), b_high(17)
+      real a_low(17), b_low(17), a_central(17), b_central(17)
+
+c     Coeff from SWUS report, Table 7.3.3-1
+      data period / 0.01, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 
+     1              0.5, 0.75, 1, 1.5, 2, 3, 5, 10 /
+      data a_Central /  0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 0.485,
+     1                0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 
+     2                0.485, 0.485, 0.485 /
+      data b_central / 0.3087, 0.3183, 0.3278, 0.3363, 0.3425, 0.3512, 
+     1                0.3571, 0.3648, 0.3699, 0.3736, 0.3796, 0.3835, 
+     2                0.3883, 0.3913, 0.3951, 0.396, 0.396 /
+      data a_High / 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 
+     1              0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 
+     2              0.5789, 0.5789, 0.5789, 0.5789, 0.5789 /
+      data b_High / 0.3685, 0.3799, 0.3913, 0.4014, 0.4088, 0.4192, 
+     1              0.4262, 0.4354, 0.4415, 0.4459, 0.4531, 0.4577, 
+     2              0.4635, 0.4671, 0.4716, 0.4727, 0.4727 /
+      data a_Low / 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 
+     1              0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 
+     2              0.3882, 0.3882, 0.3882, 0.3882, 0.3882 /
+      data b_Low / 0.2471, 0.2548, 0.2624, 0.2692, 0.2741, 0.2811, 
+     1             0.2858, 0.292, 0.2961, 0.299, 0.3038, 0.3069, 
+     2             0.3108, 0.3132, 0.3162, 0.3169, 0.3169 /
+
+c     Set the branch to use for the PhiSS_CA1  model
+      if ( iBranch .eq. 1 ) then
+        call interp_phiSS ( a_low, b_low, period, specT, a, b, iflag ) 
+      elseif ( iBranch .eq. 1 ) then
+        call interp_phiSS ( a_central, b_central, period, specT, a, b, iflag ) 
+      elseif ( iBranch .eq. 3 ) then
+        call interp_phiSS ( a_high, b_high, period, specT, a, b,iflag )      
+      endif
+
+c     From SWUS eq 7.3.3-1a
+      if ( mag .le. 7. ) then
+        phiSS = a + (mag-5)/2. * (b-a)
+      else
+        phiSS = b
+      endif
+      return
+      end
+
+
+
+c --------------------
+
+      subroutine SWUS_PHISS_CA2 ( mag, specT, phiSS, iflag, iBranch ) 
+      real period (17), a_high(17), c_high(17)
+      real a_low(17), c_low(17), a_central(17), c_central(17)
+
+c     Coeff from SWUS report, Table 7.3.3-2
+      data period / 0.01, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 
+     1              0.5, 0.75, 1, 1.5, 2, 3, 5, 10 /
+      data a_Central / 0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 
+     1                 0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 0.485, 
+     2                 0.485, 0.485, 0.485 /
+      data c_Central / 0.3581, 0.3654, 0.3725, 0.379, 0.3837, 0.3902, 
+     1                 0.3947, 0.4006, 0.4044, 0.4072, 0.4118, 0.4147, 
+     2                 0.4183, 0.4206, 0.4234, 0.4265, 0.4297 /
+      data a_High/ 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789,
+     1             0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 0.5789, 
+     2             0.5789, 0.5789, 0.5789 /
+      data c_High / 0.4273, 0.4357, 0.4452, 0.4524, 0.4583, 0.4655, 
+     1              0.4715, 0.4786, 0.4822, 0.4858, 0.4918, 0.4953, 
+     2              0.4989, 0.5025, 0.5049, 0.5085, 0.5133 /
+      data a_Low / 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 
+     1             0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 0.3882, 
+     2             0.3882, 0.3882, 0.3882, 0.3882, 0.3882 /
+      data c_Low / 0.2865, 0.2921, 0.2985, 0.3033, 0.3073, 0.3121, 
+     1             0.3161, 0.3209, 0.3233, 0.3257, 0.3297, 0.3321, 
+     2             0.3346, 0.337, 0.3386, 0.341, 0.3442 /
+
+c     Set the branch to use for the PhiSS_CA2  model
+      if ( iBranch .eq. 1 ) then
+        call interp_phiSS ( a_low, b_low, period, specT, a, b, iflag ) 
+      elseif ( iBranch .eq. 2 ) then
+        call interp_phiSS ( a_central, b_central, period, specT, a, b, iflag ) 
+      elseif ( iBranch .eq. 3 ) then
+        call interp_phiSS ( a_high, b_high, period, specT, a, b,iflag )      
+      endif
+
+c     From SWUS eq 7.3.3-1ab
+      if ( mag .le. 5.5 ) then
+        phiSS = a + (mag-5)/0.5 * (c-a)
+      else
+        phiSS = c
+      endif
+      return
+      end
+
+c --------------------
+
+      subroutine SWUS_PHISS_Global_R50 ( phiSS, iflag, iBranch ) 
+
+c     from SWUS table 7.3.2-1 
+c     Set the branch to use for the PhiSS_CA2  model
+      if ( iBranch .eq. 1 ) then
+        phiSS = 0.350
+      elseif ( iBranch .eq. 2 ) then
+        phiSS = 0.437
+      elseif ( iBranch .eq. 3 ) then
+        phiSS = 0.522
+      endif
+      iflag = 0
+
+      return
+      end
+     
+c --------------------------------
+
+c     This is from an earlier verision of the code used for testing 
+c     during SWUS.  It is not a final model.
+
 C     Main subroutine for Single Station Sigma (Phi) models
       subroutine SSSPhiModel (ssscalc1, specT, mag, Rrup, phiSSS) 
       

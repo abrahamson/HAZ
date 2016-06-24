@@ -32,7 +32,7 @@ C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       phi = 0.0
       iflag = 0
       efac = 0.0
-      
+            
        
 c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9501 ) then
@@ -5136,6 +5136,123 @@ C     Model Number = 13003
          call SWUS_Sigma_DCPP_High ( mag, specT, sigma, iflag ) 
 C     Kepp median ground motions large since this is only for sigma model
          lnY = 1.0e10
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_CA1 - Low
+C     Model Number = 13004
+      if ( jcalc .eq. 13004 ) then
+         attenname1 = 'SWUS phiSS_CA1 Low'
+         iBranch = 1
+         call SWUS_PHISS_CA1 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_CA1 - central
+C     Model Number = 13005
+      if ( jcalc .eq. 13005 ) then
+         attenname1 = 'SWUS phiSS_CA1 Central'
+         iBranch = 2
+         call SWUS_PHISS_CA1 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+       
+C     SWUS PHISS Sigma: PhiSS_CA1 - high
+C     Model Number = 13006
+      if ( jcalc .eq. 13006 ) then
+         attenname1 = 'SWUS phiSS_CA1 HIgh'
+         iBranch = 3
+         call SWUS_PHISS_CA1 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_CA2 - Low
+C     Model Number = 13007
+      if ( jcalc .eq. 13007 ) then
+         attenname1 = 'SWUS phiSS_CA2 Low'
+         iBranch = 1
+         call SWUS_PHISS_CA2 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_CA2 - central
+C     Model Number = 13008
+      if ( jcalc .eq. 13008 ) then
+         attenname1 = 'SWUS phiSS_CA2 Central'
+         iBranch = 2
+         call SWUS_PHISS_CA2 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+       
+C     SWUS PHISS Sigma: PhiSS_CA2 - high
+C     Model Number = 13009
+      if ( jcalc .eq. 13009 ) then
+         attenname1 = 'SWUS phiSS_CA2 HIgh'
+         iBranch = 3
+         call SWUS_PHISS_CA2 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_Global_R50 - Low
+C     Model Number = 13010
+      if ( jcalc .eq. 13010 ) then
+         attenname1 = 'SWUS phiSS_Global_R50 Low'
+         iBranch = 1
+         call SWUS_PHISS_Global_R50 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+
+C     SWUS PHISS Sigma: PhiSS_Global_R50 - central
+C     Model Number = 13011
+      if ( jcalc .eq. 13011 ) then
+         attenname1 = 'SWUS phiSS_Global_R50 Central'
+         iBranch = 2
+         call SWUS_PHISS_Global_R50 ( mag, specT, phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
+       endif
+       
+C     SWUS PHISS Sigma: PhiSS_Global_R50 - high
+C     Model Number = 13012
+      if ( jcalc .eq. 13012 ) then
+         attenname1 = 'SWUS phiSS_Global_R50 HIgh'
+         iBranch = 3
+         call SWUS_PHISS_Global_R50 ( phiSS, iflag, iBranch ) 
+
+C        set dummy value for median (this is used only for sigma)
+         lnY = 1.0e10
+         write (*,'( 2x,''phiSS only, need to add tau'')')
+         stop 99
        endif
 
 

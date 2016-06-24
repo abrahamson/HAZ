@@ -63,7 +63,7 @@ c       az=90.*pi/180.
        
        pi = acos(-1.0)
        theta=theta*pi/180.
-C       az=az*pi/180.     
+       az=az*pi/180.     
          
        if (ftype. eq. 0.) then
            StrikeWt=1.

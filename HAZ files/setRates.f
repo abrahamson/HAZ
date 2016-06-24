@@ -183,7 +183,6 @@ c        calculate the rate
              endif		 
            elseif (magRecur(iFlt,iParam,i) .eq. 3.) then                              
 
-             pause 'test 1'
 c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)                       
              mean =  mU - mpdf_param(iFlt,iParam,i,1) 
 cnjg             mean =  mU 
@@ -218,9 +217,6 @@ c             correct the mag step to use the fixed value of 0.01 (naa 6/15/16  
              endif
 
              rate(iParam,i) = momentRate2/sum  
-             write (*,'( 2e12.3)') momentRate2, sum
-             pause 'test 2'
-
 
 c     WAACY Model             
           elseif (magRecur(iFlt,iParam,i) .eq. 10 ) then  
