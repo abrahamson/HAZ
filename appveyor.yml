@@ -1,5 +1,5 @@
 # Start builds on tags only (GitHub and BitBucket)
-skip_non_tags: true
+skip_non_tags: false
 
 # Consider both master and devlopment branches
 branches:
@@ -26,7 +26,12 @@ environment:
 build_script:
     - mkdir build tests
     - cd build
-    - cmake.exe .. -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC%
+    - cmd: |
+    cmake.exe -G "MSYS Makefiles" 
+    -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe
+    -DCMAKE_Fortran_COMPILER=%FC%
+    -DSTATIC_BUILD=ON
+    ..
     - C:\\msys64\\usr\\bin\\make.exe
     - 7z a %APPVEYOR_BUILD_FOLDER%\haz-%BUILD%.zip haz.exe
 
