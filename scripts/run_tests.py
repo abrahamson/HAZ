@@ -158,13 +158,13 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
              root_src='', root_test='', rtol=1E-3):
     # These cases take a couple hours to run
     long_cases = [
-        'Set1/Test05',
-        'Set1/Test06',
-        'Set1/Test07',
-        'Set2/Test2a',
-        'Set2/Test2b',
-        'Set2/Test2c',
-        'Set2/Test2d',
+        'Set1/S1Test05',
+        'Set1/S1Test06',
+        'Set1/S1Test07',
+        'Set2/S2Test2a',
+        'Set2/S2Test2b',
+        'Set2/S2Test2c',
+        'Set2/S2Test2d',
     ]
 
     # fixme check this
