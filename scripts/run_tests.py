@@ -236,19 +236,20 @@ if __name__ == '__main__':
                         help='Root path used in testing; created if needed.')
     args = parser.parse_args()
 
-    #processes = min(max(1, args.cores), multiprocessing.cpu_count())
-    #with multiprocessing.Pool(processes) as pool:
-    #    results = pool.map_async(
-    #        functools.partial(test_set,
-    #                          force=args.force, all_cases=args.all_cases,
-    #                          root_src=args.root_src, root_test=args.root_test,
-    #                          haz_bin=args.haz_bin, rtol=args.rtol),
-    #        iter_cases(args.root_src)
-    #    )
-    #    ok = all(results.get())
-    ok = True
-    for name in iter_cases(args.root_src):
-        ok &= test_set(name, force=args.force, all_cases=args.all_cases,
-                 root_src=args.root_src, root_test=args.root_test,
-                 haz_bin=args.haz_bin, rtol=args.rtol)
+    processes = min(max(1, args.cores), multiprocessing.cpu_count())
+    with multiprocessing.Pool(processes) as pool:
+        results = pool.map_async(
+            functools.partial(test_set,
+                              force=args.force, all_cases=args.all_cases,
+                              root_src=args.root_src, root_test=args.root_test,
+                              haz_bin=args.haz_bin, rtol=args.rtol),
+            iter_cases(args.root_src)
+        )
+        ok = all(results.get())
+    # Single thread
+    # ok = True
+    # for name in iter_cases(args.root_src):
+    #     ok &= test_set(name, force=args.force, all_cases=args.all_cases,
+    #              root_src=args.root_src, root_test=args.root_test,
+    #              haz_bin=args.haz_bin, rtol=args.rtol)
     sys.exit(0 if ok else 1)
