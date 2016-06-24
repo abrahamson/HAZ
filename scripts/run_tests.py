@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import division, print_function
-
 import argparse
 import functools
 import glob
@@ -145,8 +143,6 @@ def run_haz(path, haz_bin):
     fname = glob.glob(os.path.join(path, 'Run_*'))[0]
     print('Running HAZ on:', fname)
     dirname, basename = os.path.split(fname)
-    print(dirname, basename, fname)
-
     haz_bin = os.path.abspath(haz_bin)
     with open(os.devnull, 'w') as fp:
         p = subprocess.Popen([haz_bin],
