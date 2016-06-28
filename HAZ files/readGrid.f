@@ -130,5 +130,53 @@ c     it is at too large a distance (but is still in the activity rate of the in
       return
       end
 
+c  --------------------------------------------------------------------
+
+      subroutine RdSource7 ( iFlt, mag, rate, dist, dip, mech, ncount )
+ 
+      implicit none
+      include 'pfrisk.h'
+      
+      integer ncount(MAX_FLT), srflag, rupid, nearID, i, iFlt         
+      real rate(MAX_FLT,MAX_S7), mag(MAX_FLT,MAX_S7), dist(MAX_FLT,MAX_S7), 
+     1     lat, long, strike, Dip(MAX_FLT,MAX_S7), rake, mech(MAX_FLT,MAX_S7)
+      character*80 filein
+                
+      read (10,'( a80)') filein
+      open (11,file=filein,status='old')
+          
+      ncount(iflt) = 0
+      do i=1,MAX_S7
+         read (11,*,END=777) srflag,rupID,mag(iFlt,i),rate(iFlt,i),nearID,dist(iFlt,i),
+     1             lat,long,strike,Dip(iFlt,i),rake
+     
+         if (rake .ge. 30.0 .and. rake .le. 150.0) then    
+           mech(iFlt,i) = 1.0
+         elseif (rake .ge. -120.0 .and. rake .le. -60.0) then
+           mech(iFlt,i) = -1.0
+         else
+           mech(iFLt,i) = 0.0
+         endif
+      
+         ncount(iFlt) = ncount(iFlt) + 1
+      enddo
+
+      write (*,*) 'More than 70,000 source in data file.'
+      write (*,*) 'Need to separate into two files.'
+      stop 99
+      
+ 777  continue
+
+C     Classify the Rake angle with Mechanims choices of SS(0), RV(1), or NM(-1)
+C     The following Rake Angles are used to classify Fault Mechanims:
+C     Reverse: 30<=Rake<=150  (includes RV/OB as RV)
+C     Normal:  -120<=Rake<=-60
+C     Strike-Slip: -180<=Rake<-120
+C                  -60<Rake<=30
+C                  150<Rake<=180
+C        (includes NM/OB as SS)
+
+      return
+      end
 
      

@@ -1,12 +1,12 @@
 c closestDist.f
 
       subroutine CalcDist (sourceType, pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS, 
-     1             iFltWidth, iFlt, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 
+     1             iFltWidth, iFlt, iMag, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 
      2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
      3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3, 
-     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb, dip, 
-     5             HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, distRup, 
-     6             ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb, dip, dipS7,
+     5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
+     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -16,7 +16,7 @@ c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
 
 c     declarations passed in 
       integer sourceType, pscorflag, nfltGrid(2), n1AS(MAXFLT_AS), iLocX, 
-     1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt
+     1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt, iMag
       real ystep, grid_top(MAX_FLT,MAX_GRID), RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
@@ -26,7 +26,8 @@ c     declarations passed in
      6     fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_z3(MAXFLT_DD,MAXFLT_AS),
      6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS), 
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG)
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG),
+     9     distS7(MAX_FLT,MAX_S7), dipS7(MAX_FLT,MAX_S7)
 
 c     declarations passed out
       integer HWFlag, n1, n2, icellRupstrike, icellRupdip  
@@ -90,6 +91,19 @@ C         Set HWflag = 0 for areal or grid sources.
           HWFlag = 0    
           dipavgd = dip(iFlt,ifltWidth,1)
           return
+          
+c     Compute distances for SourceType 7
+        elseif (sourceType .eq. 7) then
+          distrup = distS7(iFlt,iMag)
+          distJB  = distS7(iFlt,iMag)
+          distseismo = distS7(iFlt,iMag)
+          dipavgd = dipS7(iFlt,iMag)
+          disthypo = distS7(iFlt,iMag)
+c         Fixed Parameters
+          ZTOR = 0.0
+          HWFlag = 0
+          hypoDepth = 8.0
+          Rx = distrup
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
         else 

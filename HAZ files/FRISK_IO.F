@@ -26,7 +26,7 @@
      3        iDepthModel(MAX_FLT), nMaxMag2(MAX_FLT),
      4        faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT) 
       integer br_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
-     1        segModelFlag(MAX_FLT,100)  
+     1        segModelFlag(MAX_FLT,100), ncountS7(MAX_FLT)  
       real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
      1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
      2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
@@ -60,7 +60,10 @@
      1     syndistSeismo(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN),
      2     synftype(MAX_FLT,MAX_SYN), synwt(MAX_FLT,MAX_SYN),
      3     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), depthParam(MAX_FLT,5),
-     4     segWt1(MAX_FLT)
+     4     segWt1(MAX_FLT), magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7)
+      real distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
+     1     mechS7(MAX_FLT,MAX_S7)
+     
       character*80 filein, title, file1, filelog, filehyp, 
      1             fName(MAX_FLT)
 
@@ -132,20 +135,21 @@ c     Create log filename for PHSA run.
 c     read fault File
       call Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
      1     yStep, segModelWt, rateParam, rateParamWt, beta,
-     2     magRecur, magRecurWt, faultWidth, faultWidthWt, 
-     3     maxMag,  maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
-     4     ftype, sourceType, nRupArea, coeff_area, sigArea, nRupWidth, 
+     2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag,  
+     3     maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, ftype, 
+     4     sourceType, nRupArea, coeff_area, sigArea, nRupWidth, 
      5     coeff_width, sigWidth, nParamVar, iCoor, minDepth,
-     6     fIndex, probAct, nWidth, mpdf_param, 
-     7     al_segWt, attenType, sampleStep,
-     8     grid_a, grid_dlong, grid_dlat, grid_n, grid_long, grid_lat,
-     9     grid_top, minlat, maxlat, minlong, maxlong, scaleRate, fsys,
-     1     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synatten,
-     1     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
-     2     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam, 
-     3     nMaxmag2, segWt1, faultFlag, nDD, nFtype, ftype_wt, 
-     4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag,
-     7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
+     6     fIndex, probAct, nWidth, mpdf_param, al_segWt, attenType, 
+     7     sampleStep, grid_a, grid_dlong, grid_dlat, grid_n, 
+     8     grid_long, grid_lat, grid_top, minlat, maxlat, minlong, 
+     9     maxlong, scaleRate, fsys, mMagout, mMagoutWt, fltDirect, 
+     1     synchron, nsyn_Case, synatten,synmag, syndistRup, 
+     2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
+     3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
+     4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
+     5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
+     6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
+     7     DistS7, DipS7, mechS7, ncountS7 )  
 
            write (*,*)
            write (*,*) 'Normal termination of fault file for testing.'

@@ -34,7 +34,7 @@ c    Declarations for Main file
      1        fltDirect(MAX_FLT), synchron(MAX_FLT), synjcalc(MAX_FLT),
      2        nSyn_Case(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
      3        soilAmpFlag, iDepthModel(MAX_FLT), nfType(MAX_FLT), 
-     4        nMaxMag2(MAX_FLT)
+     4        nMaxMag2(MAX_FLT), ncountS7(MAX_FLT)
      
       real segWt1(MAX_FLT), fltGrid_X(MAXFLT_DD,MAXFLT_AS), 
      1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS), 
@@ -102,8 +102,10 @@ c    Declarations for Main file
      3     fltGrid_x3(MAXFLT_DD,MAXFLT_AS), fltGrid_y3(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS),
-     1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11)
+     1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11),
+     2     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
+     3     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
+     4     mechS7(MAX_FLT,MAX_S7)
 
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2, 
-     1             sigmaName(4,MAX_PROB), filebmode
-
+     1             sigmaName(4,MAX_PROB), filebmode   

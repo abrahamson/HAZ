@@ -109,27 +109,31 @@ c     truncates and renormalizes on both low and high end
 
 c ------------------------------------------------------------------
                                                                                 
-      subroutine rupDimProb ( mag, coef, sigma, step, sigmaMax,                 
-     1           rupDim, prob, iFlt, idim )                                     
+      subroutine rupDimProb ( sourceType, mag, coef, sigma, 
+     1           step, sigmaMax, rupDim, prob, iFlt, idim )                                     
                          
       implicit none                                                 
       include 'pfrisk.h'                                                       
 
-      integer iFlt, idim                                                                                
+      integer sourceType, iFlt, idim                                                                                 
       real mag, coef(2,MAX_FLT), sigma(1), rupDim, prob, nSigma, 
      1     nSigma_plus, nSigma_minus, F0, F1, F2, D, step, sigmaMax                                    
+         
+      if (sourceType .eq. 7) then
+        prob = 1.0
+      else                                                               
+        nSigma = -sigmaMax + (idim-0.5)*step                                      
+        nSigma_plus = (nSigma + step/2.)                                          
+        nSigma_minus = (nSigma - step/2.)                                         
+        rupDim = 10.**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))              
                                                                                 
-      nSigma = -sigmaMax + (idim-0.5)*step                                      
-      nSigma_plus = (nSigma + step/2.)                                          
-      nSigma_minus = (nSigma - step/2.)                                         
-      rupDim = 10.**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))              
-                                                                                
-c     Compute probability that (log) rupture dimension is between               
-c     dim_log_minus and dim_log_plus                                            
-      CALL NDTR ( sigmaMax, F0, D )                                             
-      CALL NDTR ( nSigma_minus, F1, D )                                         
-      CALL NDTR ( nSigma_plus, F2, D )                                          
-      prob = (F1-F2)/(1-2*f0)                                                   
-                                                                                
+c       Compute probability that (log) rupture dimension is between               
+c       dim_log_minus and dim_log_plus                                            
+        CALL NDTR ( sigmaMax, F0, D )                                             
+        CALL NDTR ( nSigma_minus, F1, D )                                         
+        CALL NDTR ( nSigma_plus, F2, D )                                          
+        prob = (F1-F2)/(1-2*f0)                                                   
+      endif          
+                                                                      
       return                                                                    
       end                                                                       
