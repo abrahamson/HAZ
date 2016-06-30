@@ -1,9 +1,10 @@
 C     Main subroutine for Single Station Sigma (Phi) models
       subroutine SSSPhiModel (ssscalc1, specT, mag, Rrup, phiSSS) 
+
+      implicit none
       
       real specT, mag, Rrup, phiSSS
       integer ssscalc1, modelflag, zoneflag
-
 
 C     Select the Single Station Sigma model based on the SSSCalc1 value. 
       if (ssscalc1 .eq. 1 ) then
@@ -734,7 +735,7 @@ C     Models from Linda Al-Atik (3/2014)
       integer MAXPER
       parameter (MAXPER=5) 
       integer nPer, count1, count2, i, iflag, i1
-      real specT, period(MAXPER), PhiSS1(MAXPER), PhiSS, a(MAXPER), b(MAXPER), c(MAXPER),
+      real specT, period(MAXPER), PhiSS, a(MAXPER), b(MAXPER), c(MAXPER),
      &  period1, Rrup, Mag, aT, bT, cT
       
       data period  / 0.01, 0.1, 0.5, 1.0, 3.0 / 
@@ -1310,7 +1311,7 @@ C     Modelflag: 0 = Central, 1 = Lower, 2 = Upper
       implicit none 
       integer MAXPER
       parameter (MAXPER=22) 
-      integer nPer, count1, count2, i, iflag, i1, modelflag, zoneflag
+      integer nPer, count1, count2, i, iflag, i1, modelflag
       real specT, period(MAXPER), PhiSSC(MAXPER), PhiSSH(MAXPER), PhiSSL(MAXPER),
      1     PhiSS, PhiSSCT, PhiSSHT, PhiSSLT, period1
       
@@ -1387,7 +1388,7 @@ C     Modelflag: 0 = Central, 1 = Lower, 2 = Upper
       implicit none 
       integer MAXPER
       parameter (MAXPER=22) 
-      integer nPer, count1, count2, i, iflag, i1, modelflag, zoneflag
+      integer nPer, count1, count2, i, iflag, i1, modelflag
       real specT, period(MAXPER), PhiSSC(MAXPER), PhiSSH(MAXPER), PhiSSL(MAXPER), PhiSS, 
      1     PhiSSCT, PhiSSHT, PhiSSLT, period1
       
@@ -1549,7 +1550,7 @@ C     Modelflag: 0 = Central, 1 = Lower, 2 = Upper
       implicit none 
       integer MAXPER
       parameter (MAXPER=22) 
-      integer nPer, count1, count2, i, iflag, i1, modelflag, zoneflag
+      integer nPer, count1, count2, i, iflag, i1, modelflag
       real specT, period(MAXPER), PhiSSC(MAXPER), PhiSSH(MAXPER), PhiSSL(MAXPER),
      1     PhiSS, PhiSSCT, PhiSSHT, PhiSSLT, period1
 

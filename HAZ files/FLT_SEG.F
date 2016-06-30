@@ -5,10 +5,8 @@
      3                                yFlt, zFlt, grid_x, grid_y, grid_dx, grid_dy, 
      4                                x0, y0, z0)
      
-c     This subroutine uses the haversine formula to calculate distance, bearing, and
-c     convert latitude/longitude to x/y coordinates on the basis of a spherical
-c     earth (ignoring ellipsoidal effects).
-
+c     This subroutine uses the haversine formula to convert latitude/longitude to 
+c     x/y coordinates on the basis of a spherical earth.
 c     Reference: http://www.movable-type.co.uk/scripts/latlong.html
      
       implicit none
@@ -131,18 +129,30 @@ c ---------------------------------------------------------------------
      3               distMin1, step, fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
-     
+
+      implicit none     
       include 'pfrisk.h'
-      include 'declare1.h'
-      integer nDD, n2(MAXFLT_DD), nfltGrid(2), n1(MAXFLT_AS)
+      
+      integer nDD, n2(MAXFLT_DD), nfltGrid(2), n1(MAXFLT_AS), nPts, j, j1, 
+     1        j2, k, k1, i, i1, i2, ii, i0, j0, insideFlag, nx1, ny1, nn
       real fltGrid_x(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1     fltGrid_z(MAXFLT_DD,MAXFLT_AS),fltGrid_fLen(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_w(MAXFLT_DD,MAXFLT_AS), fltGrid_a(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_Rjb(MAXFLT_DD,MAXFLT_AS),
-     1     faultArea
-      real*8 dfaultArea      
-      real x1n1, x2n1, y1n1, y2n1, z1n1, z2n1, x1n2, x2n2, y1n2, y2n2, z1n2, 
-     1     z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, dzn2, x(5), y(5), z(5)
+     1     fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_fLen(MAXFLT_DD,MAXFLT_AS),
+     2     fltGrid_w(MAXFLT_DD,MAXFLT_AS), fltGrid_a(MAXFLT_DD,MAXFLT_AS),
+     3     fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_Rjb(MAXFLT_DD,MAXFLT_AS),
+     4     faultArea, xFlt(MAX_DD,MAX_SEG), yFlt(MAX_DD,MAX_SEG)
+      real zFlt(MAX_DD,MAX_SEG), x1n1, x2n1, y1n1, y2n1, z1n1, z2n1, x1n2, 
+     1     x2n2, y1n2, y2n2, z1n2, z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, 
+     2     dzn2, x(5), y(5), z(5), x0, y0, z0, faultLen, dx, dy, dz, width1,
+     3     dist, dist1, dist2, x1, y1, z1, x2, y2, z2, xLtop, yLtop, zLtop,
+     4     xLbot, yLbot, zLbot, w, step, distMin1, faultW, sum1     
+      real fltGrid_x1(MAXFLT_DD,MAXFLT_AS), fltGrid_y1(MAXFLT_DD,MAXFLT_AS),
+     1     fltGrid_z1(MAXFLT_DD,MAXFLT_AS), fltGrid_x2(MAXFLT_DD,MAXFLT_AS),
+     2     fltGrid_y2(MAXFLT_DD,MAXFLT_AS), fltGrid_z2(MAXFLT_DD,MAXFLT_AS),
+     3     fltGrid_x3(MAXFLT_DD,MAXFLT_AS), fltGrid_y3(MAXFLT_DD,MAXFLT_AS),
+     4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS),
+     5     fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS)
+     
+      real*8 dfaultArea   
 
       distMin1 = 1.E10
 

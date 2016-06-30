@@ -3,19 +3,17 @@ c ---------------------------------------------------------------------
       Subroutine Ambraseys_2005 ( m, dist, ftype, specT,
      1                     period2, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER, iflag, count1, count2, nPer, i
       parameter (MAXPER=62)
-      REAL Period(MAXPER)
-      REAL a1(MAXPER), a2(MAXPER), a3(MAXPER), a4(MAXPER),  a5(MAXPER),
-     1      a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER), a10(MAXPER)
-      real sig1_a(MAXPER), sig1_b(MAXPER), sig2_a(MAXPER), sig2_b(MAXPER)
-
-      REAL M, Dist
-      REAL period2, ftype, SS, SA
-      real Fn, Ft, Fo, logY, sig1, sig2, lnY, sigma
-
-      real a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T, a10T
-      real sig1_aT,  sig1_bT, sig2_aT, sig2_bT
-      integer iflag, count1, count2
+      real Period(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER), a4(MAXPER),  
+     1     a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER), 
+     2     a10(MAXPER), sig1_a(MAXPER), sig1_b(MAXPER), sig2_a(MAXPER), 
+     3     sig2_b(MAXPER), M, Dist, period2, ftype, SS, SA, Fn, Ft, Fo, 
+     4     logY, sig1, sig2, lnY, sigma, a1T, a2T, a3T, a4T, a5T, a6T 
+      real a7T, a8T, a9T, a10T, sig1_aT, sig1_bT, sig2_aT, sig2_bT,
+     1     period1, specT
 
       data period / 0.000, 0.050, 0.055, 0.060, 0.065, 0.070, 0.075, 0.080, 
      1           0.085, 0.090, 0.095, 0.100, 0.110, 0.120, 0.130, 0.140, 
@@ -172,7 +170,7 @@ C First check for the PGA case (i.e., specT=0.0)
          
       elseif (specT .gt. 0.0) then
 C Now loop over the spectral period range of the attenuation relationship.
-         do i=2,nper-1
+         do i=2,nPer-1
             if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
                count1 = i
                count2 = i+1

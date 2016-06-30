@@ -2,46 +2,15 @@
 
 c     Probabilisitic Seismic Hazard Program (PSHA) 
 
-
+      implicit none
       include 'pfrisk.h'
-      include 'declare1.h'
-      integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT)
-      real segWt1(MAX_FLT)
-      real fltGrid_X(MAXFLT_DD,MAXFLT_AS), fltGrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1     fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_fLen(MAXFLT_DD,MAXFLT_AS)
-      real rupGrid_X(MAXFLT_DD,MAXFLT_AS), rupGrid_y(MAXFLT_DD,MAXFLT_AS), 
-     1     rupGrid_z(MAXFLT_DD,MAXFLT_AS), hDD(MAX_FLT), hAS(MAX_FLT)
-      integer nfltGrid(2), nRupGrid(2), hDDcell, hAScell
-      real fltGrid_w(MAXFLT_DD,MAXFLT_AS),  fltGrid_a(MAXFLT_DD,MAXFLT_AS)
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), fltGrid_RJB(MAXFLT_DD,MAXFLT_AS)
-      real testsum(1000), sum1(1000,10), dipaverage(1), Rx, Ry, Ry0
-      real*8 p1_sum, wt, p1
-      real*8 BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-      integer BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE)
-      integer segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT)
-      integer icellRupStrike, icellRupDip, runflag
-      real BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
-      real segModelWt1(MAX_FLT,100), distDensity2(MAX_GRID), lnDir, lgIo, lgIntenscl
-      real sigDirY, sigtemp, lg1, sig1, lat1, wt1
-      integer n1AS(MAXFLT_AS), n2AS(MAXFLT_AS)
-      real phi, tau, medadj, sigadj, phiSSS
-      character*80 filebmode
-      integer bnum, bnumflag, coefcountRrup, coefcountRjb
-      integer iMixture(4, MAX_PROB, MAX_ATTEN)
-      real pLocY(MAXFLT_AS), sigmaTotal, sigma1, sigma2
-      real*8 prock1, prock2
-      real*8 sum0_Mo(MAXPARAM), sum1_Mo(MAXPARAM)
-      real Pmag_all(MAXPARAM), lgInten0
-      integer rup1_flag, dirFlag1
-      
-      real*8 tempHaz1(MAXPARAM,MAX_INTEN, MAX_PROB,MAX_FTYPE)
-      real*8 tempHaz2(4, MAX_INTEN, MAX_PROB, MAX_ATTEN)
+      include 'declare1.h' 
 
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2a  *'
-      write (*,*) '*           May, 2016           *'
+      write (*,*) '*          June, 2016           *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -307,12 +276,12 @@ c            Find the Closest Distances for this rupture
 c            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
              call CalcDist (sourceType(iFlt), pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS,
      1             iFltWidth, iFlt, ystep(iFlt), grid_top, RupWidth, RupLen, r_horiz, mindepth(iFlt), 
-     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, fltgrid_x2, 
-     3             fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_x4, fltgrid_y4, fltgrid_z4, 
-     4             fltGrid_Rrup, fltGrid_Rjb, dip, HWFlag, n1, n2, icellRupstrike, icellRupdip,
-     5             hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo, 
-     6             dipavg, Rx, Ry, Ry0)
-
+     2             fltGrid_x, fltGrid_y, fltGrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+     3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3,
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb, dip, 
+     5             HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, distRup, 
+     6             ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
+        
 c             Set minimum distances for output files.
               if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
                 FaultDist(iFlt,iFltWidth,1)=distRup
@@ -352,7 +321,6 @@ C               either a fixed value or sigma from another model.
                    jcalc1 = abs(jcalc(iProb,jType,iAtten) )
                    scalc1 = scalc(iProb,jtype,iAtten) 
                    sigfix1 = sigfix(iProb,jType,iAtten)
-c                   ssscalc1 = ssscalc(iProb,jType,iAtten)
 C                Check for either fixed sigma value (scalc1<0) or other sigma model
                    if (scalc1 .lt. 0) then
                       sigflag = 2
@@ -361,15 +329,13 @@ C                Check for either fixed sigma value (scalc1<0) or other sigma mo
                    endif
                 else
                    jcalc1 = jcalc(iProb,jType,iAtten) 
-                endif
-
-               dipaverage(1) = dipavg*180.0/3.14159  
+                endif 
 
 c              Compute the median and sigma of the ground motions
                call meanInten ( distRup, distJB, distSeismo,
      1               HWFlag, mag, jcalc1, specT(iProb),  
      2               lgInten,sigmaY, ftype(iFlt,iFtype), attenName, period1, 
-     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipavgd,
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefrrup, cfcoefrjb, Ry0 )
@@ -400,8 +366,6 @@ c               Loop over synchronous ruptures (aleatory)
      6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
      7                vs30_class, forearc, syn_Rx, phi,
      8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
-c                  write (*,'( 2f10.4)') lgInten, lgIntenS
-c           pause 'syn flag'
 
 c                 Compute SRSS of median                
                   lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
@@ -412,7 +376,7 @@ C               Second call got GPE for different sigma model
                   call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(iProb),  
      2               temp, sigmaY, ftype(iFlt,iFtype), sigmaName, period1, 
-     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipaverage(1),
+     3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipavgd,
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi, 
      6               cfcoefrrup, cfcoefrjb, Ry0 )
@@ -471,7 +435,7 @@ c       JWL 4/10/16 changes
                     call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
      1                 x0, y0, z0,
      1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
-     2                 RupWidth, RupLen, Dipaverage(1), HWflag, dirMed, dirSigma, 
+     2                 RupWidth, RupLen, dipavgd, HWflag, dirMed, dirSigma, 
      3                 fltgrid_x, fltgrid_y, fltgrid_z, 
      6                 n1, n2, icellRupstrike, icellRupdip, 
      7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
@@ -619,11 +583,11 @@ c           Set the weight for this set of parameters (epistemic)
 c        Write temp Haz array to file
          call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
+     
          call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
  860    continue
-
 
 c       Write p1_sum as a check
         write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt

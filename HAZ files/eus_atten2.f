@@ -6,16 +6,18 @@ c -------------------------------------------------------------------
                                                                                
       subroutine PEA2C ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigT, sig, period1                              
-      real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
-      character*80 attenName                                                    
-                                                                                
-      parameter (MAXPER=26)                                                      
-      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
 
+      implicit none
+                                                                               
+      real lnY, m, dist, sigT, sig, period1
+      real specT, c1T, c2T, c4T, c6T, c7T, c10T
+      integer nper, count1, count2, iflag, MAXPER, i
+      character*80 attenName 
+      
+      parameter (MAXPER=26)
+      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                                                                                                                                                                
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1              0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1              0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -116,15 +118,17 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA2CS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none      
                                                                                 
-      real lnY, m, dist, sigT, sig, period1                              
+      real lnY, m, dist, sigT, sig, period1
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
-      character*80 attenName                                                    
-                                                                                
-      parameter (MAXPER=26)                                                      
-      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      integer nper, count1, count2, iflag, MAXPER, i
+      character*80 attenName
+      
+      parameter (MAXPER=26) 
+      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                                                                                   
 
       data period /0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
@@ -226,15 +230,17 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CVH ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigT, sig, period1                              
-      real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
-      character*80 attenName                                                    
-                                                                                
-      parameter (MAXPER=26)                                                      
-      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+
+      implicit none
+
+      real lnY, m, dist, sigT, sig, period1
+      real specT, c1T, c2T, c4T, c6T, c7T, c10T     
+      integer nper, count1, count2, iflag, MAXPER, i
+      character*80 attenName 
+      
+      parameter (MAXPER=26)                                                                                     
+      real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                                                                     
 
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
@@ -333,10 +339,12 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CVM ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=27)                                                      
@@ -440,10 +448,12 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CVL ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
@@ -547,10 +557,12 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCH ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
@@ -654,15 +666,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCM ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)    
+                           
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1        0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1        0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -760,15 +775,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCL ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
+    
+      implicit none 
+                                                                               
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER) 
+                              
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -866,15 +884,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCHS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)   
+                            
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -972,15 +993,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCMS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER) 
+                              
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1078,15 +1102,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEA1CCLS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
+
+      implicit none 
+                                                                               
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)   
+                            
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1        0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1        0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1184,15 +1211,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG2C ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
+ 
+      implicit none
+                                                                               
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER) 
+                              
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1        0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1        0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1290,15 +1320,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG2CS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)   
+                            
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1396,15 +1429,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CVH ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                             
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1502,15 +1538,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CVM ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)    
+                           
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1608,15 +1647,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CVL ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                             
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1714,15 +1756,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCH ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                             
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1820,15 +1865,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCM ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
+ 
+      implicit none
+                                                                               
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                             
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -1926,15 +1974,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCL ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)  
+                             
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -2032,15 +2083,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCHS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)   
+                            
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -2138,10 +2192,12 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCMS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=26)                                                      
@@ -2245,16 +2301,18 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine PEAG1CCLS ( m, dist, lnY, sig, specT,                      
      1                  attenName, period1,iflag )                                    
+
+      implicit none
                                                                                 
       real lnY, m, dist, sigT, sig, period1                              
       real specT, c1T, c2T, c4T, c6T, c7T, c10T
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, MAXPER, i
       character*80 attenName                                                    
-
                                                                               
       parameter (MAXPER=26)                                                      
       real c1(MAXPER), c2(MAXPER), c4(MAXPER), sigma(MAXPER)         
-      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)                               
+      real c6(MAXPER), c7(MAXPER), c10(MAXPER), period(MAXPER)
+                               
       data period / 0.00, 0.02, 0.025, 0.0323, 0.04, 0.05, 0.055, 0.06, 0.07,
      1       0.08, 0.1, 0.12, 0.15, 0.16, 0.2, 0.24, 0.3, 0.4,
      1       0.5, 0.75, 1, 1.6, 2, 3.000, 5, 10 /
@@ -2356,6 +2414,8 @@ c ------------------------------------------------------------------
 c    Campbell (2003) Horizontal Hybrid CEUS
 C    Hard Rock Site Conditions
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
       real R, term1, term2, term3                                                           
       real c1(18), c2(18), c3(18), c4(18), c5(18), c6(18)
@@ -2363,8 +2423,8 @@ C    Hard Rock Site Conditions
       real c12(18), c13(18)
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
       real c8T, c9T, c10T, c11T, c12T, c13T
-      integer nper, count1, count2,iflag
-      real period1(18)
+      integer nper, count1, count2, iflag, i
+      real period1(18), r1, r2
 
       data period1 / 0.00, 0.01, 0.02, 0.03, 0.05, 0.075, 0.10, 0.15, 0.20,   
      &               0.30, 0.50, 0.75, 1.00, 1.50,  2.00, 3.00, 4.00, 5.00 /
@@ -2513,12 +2573,14 @@ c    Campbell (2003) Horizontal Hybrid CEUS
 C    Hard Rock Site Conditions
 C    Functional fit to Epistemic Values
 
-      real mag, rupDist, lnY, sigmaeps, period                                    
+      implicit none
+
+      real mag, rupDist, sigmaeps, period                                    
       real EU1(19), EU2(19), EU3(19), EU4(19) 
       real EU5(19), EU6(19), EU7(19), EU8(19) 
       real EU1T, EU2T, EU3T, EU4T, EU5T, EU6T, EU7T, EU8T
-      real period1(19)
-      integer nper, count1, count2,iflag
+      real period1(19), specT
+      integer nper, count1, count2, iflag, i
 
       data Period1 / 0.00, 0.02, 0.025, 0.03, 0.04, 0.05, 0.075, 0.1,
      1               0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 
@@ -2630,14 +2692,16 @@ c ------------------------------------------------------------------
 c    Atkinson and Boore (2006) Horizontal CEUS Hard Rock
 C    Hard Rock Site Conditions
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
       real term1, term2                                                           
       real c1(25), c2(25), c3(25), c4(25), c5(25), c6(25)
       real c7(25), c8(25), c9(25), c10(25)
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
-      real c8T, c9T, c10T
-      integer nper, count1, count2,iflag
-      real period1(25)
+      real c8T, c9T, c10T, r0, r1, r2
+      integer nper, count1, count2, iflag, i
+      real period1(25), term0
 
       data Period1 / 0.00, 0.025, 0.031, 0.04, 0.05, 0.063, 0.079,      
      &               0.1, 0.125, 0.158, 0.199, 0.251, 0.315, 0.397,     
@@ -2771,10 +2835,12 @@ c     Atkinson and Boore (2006) Horizontal CEUS Hard Rock
 C     Hard Rock Site Conditions
 C     Alternative Stress Drop values (see Eq. 6 and Table 7)
 
+      implicit none
+
       real mag, period, SF2, specT, term1, term2
       real period1(26)
       real Mh(26), Ml(26), Delta, MhT, MlT
-      integer nper, count1, count2, iFlag
+      integer nper, count1, count2, iFlag, i
 
       data Period1 / 0.00, 0.01, 0.025, 0.031, 0.04, 0.05, 0.063, 0.079,      
      &               0.1, 0.125, 0.158, 0.199, 0.251, 0.315, 0.397,     
@@ -2845,14 +2911,16 @@ c ------------------------------------------------------------------
 
 c    Atkinson and Boore (2006) Horizontal CEUS Vs=760m/sec
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
       real term1, term2                                                         
       real c1(26), c2(26), c3(26), c4(26), c5(26), c6(26)
       real c7(26), c8(26), c9(26), c10(26)
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
       real c8T, c9T, c10T
-      integer nper, count1, count2,iflag
-      real period1(26)
+      integer nper, count1, count2, iflag, i
+      real period1(26), r0, r1, r2, term0
 
       data Period1 / 0.00, 0.0100, 0.025, 0.031, 0.04, 0.05, 0.063, 0.079,      
      &               0.1, 0.125, 0.158, 0.199, 0.251, 0.315, 0.397,     
@@ -2983,11 +3051,13 @@ c ------------------------------------------------------------------
 
 c    Atkinson (2008) Horizontal CEUS-NGA BA08 Vs=760m/sec
 
+      implicit none
+
       real mag, jbDist, lnY, sigma, period, BA08LnY                                    
       real c1(7), c2(7), c0(7)
       real specT, c1T, c2T, c0T
-      integer nper, count1, count2,iflag
-      real per1(7)
+      integer nper, count1, count2, iflag, i
+      real per1(7), factor
 
       data Per1 / 0.00, 0.10, 0.20, 0.50, 1.00, 2.00, 5.00 / 
       data c1 / 0.00120, 0.00124, 0.00144, 0.00113, 0.000556, 0.000520, -0.00107 /
@@ -3057,11 +3127,13 @@ c ------------------------------------------------------------------
 c    Atkinson (2008) Horizontal CEUS-NGA BA08 Vs=760m/sec
 C     Alternative C0 values
 
+      implicit none
+
       real mag, jbDist, lnY, sigma, period, BA08LnY                                    
       real c1(7), c2(7), c0(7)
       real specT, c1T, c2T, c0T
-      integer nper, count1, count2,iflag
-      real period1(7)
+      integer nper, count1, count2, iflag, i
+      real period1(7), factor
 
       data Period1 / 0.00, 0.10, 0.20, 0.50, 1.00, 2.00, 5.00 / 
       data c1 / 0.00120, 0.00124, 0.00144, 0.00113, 0.000556, 0.000520, -0.00107 /
@@ -3128,10 +3200,12 @@ c ------------------------------------------------------------------
 
 C     Average sigma from NGA models for M5.5.
 
+      implicit none
+
       real period, sigma, specT
       real period1(21)
       real sig(21), sigT
-      integer nper, count1, count2, iFlag
+      integer nper, count1, count2, iFlag, i
 
       data Period1 / 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 
      1               0.2, 0.25, 0.3, 0.4, 0.5, 1.0, 1.5, 2.0, 3.0, 
@@ -3192,10 +3266,12 @@ c ------------------------------------------------------------------
 
 c    Atkinson (2008) Horizontal CEUS-NGA BA08 Vs=760m/sec
 
+      implicit none
+
       real jbDist, period, Factor                              
       real c(12), d(12)
       real specT, cT, dT
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       real per1(12)
 
       data Per1 / 0.00, 0.01, 0.05, 0.10, 0.20, 0.30, 0.50, 1.00, 
