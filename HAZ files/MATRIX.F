@@ -1,29 +1,13 @@
 c matrix.f
 
-      subroutine ztilde (zrow,m,n,z)
-c     This subroutine converts a matrix from partitioned format
-c     to tilde format.
-
-      integer zrow
-      real*8 z(zrow,1)
-
-      do 100 i=1,m/2
-        do 90 j=1,n
-          z(i,j+n) = -z(i+m/2,j)
-          z(i+m/2,j+n) = z(i,j)
-  90    continue
- 100  continue
-      n = 2*n
-      return
-      end
-
-c-------------------------------------------------------------
       subroutine mult (a,arow,m1,n1,b,brow,m2,n2,c,crow)
 c     This subroutine multiplies two matrices.
 c       C = A B
 c     where A is m1 x n1  and  B is m2 x n2
 
-      INTEGER arow, brow, crow
+      implicit none
+
+      INTEGER arow, brow, crow, m1, m2, n1, n2, i, j, ii
       double precision a(arow,1), b(brow,1), c(crow,1)
 
       if (n1 .ne. m2) stop 99 
@@ -178,13 +162,3 @@ C     ..... FORMAT FOR OUTPUT STATEMENT .....
  200  FORMAT( 10H0N TOO BIG )
 C
       END
-	  
-C-------------------------------------------------------------------
-      subroutine SetHypocenter (iH, nH, h, probH )
-
-c     Use a uniform distribution for the location of the hypocenter
-      h = (iH-0.5)/nH
-      probH = 1./nH
-
-      return
-      end

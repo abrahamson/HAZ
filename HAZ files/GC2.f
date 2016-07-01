@@ -1,8 +1,8 @@
      
        subroutine GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1,
-     1                 fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     2                 fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
-     3                 HWFlag, dipavg)
+     1                 fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3,
+     2                 fltgrid_z3, fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
+     3                 HWFlag, dipavgd)
       
        implicit none
        include 'pfrisk.h'
@@ -11,23 +11,26 @@ c      declarations passed in
        integer iLocX, iLocY, n2, n1 
        real fltgrid_x1(MAXFLT_DD,MAXFLT_AS), fltgrid_y1(MAXFLT_DD,MAXFLT_AS),
      1      fltgrid_z1(MAXFLT_DD,MAXFLT_AS), fltgrid_x2(MAXFLT_DD,MAXFLT_AS), 
-     2      fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_x3(MAXFLT_DD,MAXFLT_AS), 
-     3      fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_x4(MAXFLT_DD,MAXFLT_AS), 
-     4      fltgrid_y4(MAXFLT_DD,MAXFLT_AS), fltgrid_z4(MAXFLT_DD,MAXFLT_AS)  
+     2      fltgrid_y2(MAXFLT_DD,MAXFLT_AS), fltgrid_z2(MAXFLT_DD,MAXFLT_AS),
+     3      fltgrid_x3(MAXFLT_DD,MAXFLT_AS), fltgrid_y3(MAXFLT_DD,MAXFLT_AS),
+     4      fltgrid_z3(MAXFLT_DD,MAXFLT_AS), fltgrid_x4(MAXFLT_DD,MAXFLT_AS), 
+     5      fltgrid_y4(MAXFLT_DD,MAXFLT_AS), fltgrid_z4(MAXFLT_DD,MAXFLT_AS)  
 
 c      declarations passed out
        integer HWFlag
-       real Rx, Ry, Ry0, dipavg
+       real Rx, Ry, Ry0, dipavgd
 
 c      declarations only used within subroutine
-       integer inorm, irup, n3, iGC2, tflag, uflag       
-       real rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_xb(MAXFLT_AS), 
-     1      rup_yb(MAXFLT_AS), Seg_length(MAXFLT_AS), Strike_slope(MAXFLT_AS), 
-     2      Normal_slope(MAXFLT_AS), GC2_ruplength, a, b, P90_x(MAXFLT_AS), 
-     3      P90_y(MAXFLT_AS), Site_x, Site_y, t_local(MAXFLT_AS), 
-     4      u_local(MAXFLT_AS), Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), 
-     5      sum_Weight, rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, 
-     6      sum_Swxu, Global_T, Global_U, dipX, dipY 
+       integer inorm, irup, n3, iGC2, tflag, uflag, i       
+       real rup_x(MAXFLT_AS), rup_y(MAXFLT_AS), rup_z(MAXFLT_AS),
+     1      rup_xb(MAXFLT_AS), rup_yb(MAXFLT_AS), rup_zb(MAXFLT_AS),
+     2      Seg_length(MAXFLT_AS), Strike_slope(MAXFLT_AS), 
+     3      Normal_slope(MAXFLT_AS), GC2_ruplength, a, b, P90_x(MAXFLT_AS), 
+     4      P90_y(MAXFLT_AS), Site_x, Site_y, t_local(MAXFLT_AS), 
+     5      u_local(MAXFLT_AS), Seg_weight(MAXFLT_AS), Seg_weight_t(MAXFLT_AS), 
+     6      sum_Weight, rec_Weight, Seg_x(MAXFLT_AS), Seg_wxu(MAXFLT_AS), sum_Swt, 
+     7      sum_Swxu, Global_T, Global_U, dipX, dipY, mdipX(MAXFLT_AS),
+     8      mdipY(MAXFLT_AS), mdip(MAXFLT_AS), dipavgr
 
 c      save rupture grid cell locations in new arrays
        inorm = 0
@@ -35,14 +38,18 @@ c      save rupture grid cell locations in new arrays
          inorm = inorm + 1
          rup_x(inorm) = fltgrid_x1(iLocY,irup)
          rup_y(inorm) = fltgrid_y1(iLocY,irup)
+         rup_z(inorm) = fltgrid_z1(iLocY,irup)
          rup_xb(inorm) = fltgrid_x4(n1,irup)
          rup_yb(inorm) = fltgrid_y4(n1,irup)
+         rup_zb(inorm) = fltgrid_z4(n1,irup)
          if (irup .eq. n2) then
            inorm = inorm + 1
            rup_x(inorm) = fltgrid_x2(iLocY,irup)
            rup_y(inorm) = fltgrid_y2(iLocY,irup)
+           rup_z(inorm) = fltgrid_z2(iLocY,irup)
            rup_xb(inorm) = fltgrid_x3(n1,irup)
            rup_yb(inorm) = fltgrid_y3(n1,irup)
+           rup_zb(inorm) = fltgrid_z3(n1,irup)
          endif         
        enddo
        n3 = inorm       
@@ -185,23 +192,30 @@ c       check for special case t=0 on segment
             endif              
           enddo   
           
-c       calculate Rx, dipavg, and assign HWFlag from Global Coordinate T  
+c       calculate Rx, dipavgd, and assign HWFlag from Global Coordinate T  
          HWFlag = 0        
          dipX = fltgrid_x4(n1,iLocX) - fltgrid_x1(iLocY,iLocX)
          dipY = fltgrid_y4(n1,iLocX) - fltgrid_y1(iLocY,iLocX)
          if (dipX .eq. 0.0 .and. dipY .eq. 0.0) then
            Rx = (-1)*(abs(Global_T))
            HWFlag = 0
-           dipavg = 3.141592653590/2.0
+           dipavgd = 90.0
          else
-           Rx = Global_T 
-           dipavg = atan2((fltgrid_z4(n1,iLocX)-fltgrid_z1(iLocY,iLocX)),
-     1              sqrt(dipX*dipX+dipY*dipY)) 
+           Rx = Global_T
            if (Global_T .LE. 0.0) then
              HWFlag = 0
            elseif (Global_T .GT. 0.0) then
              HWFlag = 1
-           endif    
+           endif  
+           dipavgr = 0.0 
+           do i=1, n3 
+             mdipX(i) = rup_xb(i) - rup_x(i)
+             mdipY(i) = rup_yb(i) - rup_y(i)
+             mdip(i) = (atan2((rup_zb(i)-rup_z(i)),
+     1                  sqrt(mdipX(i)*mdipX(i)+mdipY(i)*mdipY(i))))/n3
+             dipavgr = dipavgr + mdip(i)
+           enddo  
+           dipavgd = dipavgr*180./3.1415926            
          endif    
          
 c       calculate Ry from Global Coordinate U

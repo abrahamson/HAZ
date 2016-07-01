@@ -4,23 +4,25 @@ C       attenflag = 2 Spectra
 
       subroutine determ (attenflag)
 
+      implicit none
       include 'pfrisk.h'
 
-      character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), sigmaName(4,MAX_PROB)
-      real Theta_site, cfcoefRRup(MAX_Atten,11), cfcoefRjb(MAX_Atten,11)
-      real coefrr(MAX_PER,11), coefrj(MAX_PER,11)
-      integer cfmodel, ssscalctemp
-      integer ncalc, jcalc1, ndist, hwflag, iAtten, jtype, scalc1, sigflag, ssscalc1
-      integer anper, vs30_class, attenflag, intflag(4,MAX_PROB)
-      integer forearc, coefcountRrup, coefcountRjb
-      real mag, distrup, distjb, distseismo, vs, sigfix1
-      real lgInten, sigmaY, depthvs10, depthvs15, D25
-      real minaper, maxaper, aper(MAX_PER), ftype(MAX_FLT,MAX_FTYPE)
-      real fTop(MAX_FLT, MAX_SEG), dip1(MAX_SEG), AR, tau, phi
-      real attenrupdist(MAXDETM_DIST), attenjbdist(MAXDETM_DIST), attenseisdist(MAXDETM_DIST)
-      real attenhypodist(MAXDETM_DIST), attenRx(MAXDETM_DIST)
-      real hypodepth, hypodepth1, rupWidth, specT(4,MAX_PROB)
-      real gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), period1(4,1)
+      integer cfmodel, ssscalctemp, icalc, ncalc, jcalc1, ndist, hwflag, 
+     1        iAtten, jtype, scalc1, sigflag, ssscalc1, anper, vs30_class, 
+     2        attenflag, intflag(4,MAX_PROB), jj, forearc, coefcountRrup, 
+     3        coefcountRjb, idist, iProb, nper, iper, icf
+      real Theta_site, cfcoefRRup(MAX_Atten,11), cfcoefRjb(MAX_Atten,11),
+     1     coefrr(MAX_PER,11), coefrj(MAX_PER,11), mag, distrup, distjb, 
+     2     distseismo, vs, sigfix1, lgInten, sigmaY, depthvs10, depthvs15, 
+     3     D25, minaper, maxaper, aper(MAX_PER), ftype(MAX_FLT,MAX_FTYPE),
+     4     fTop(MAX_FLT, MAX_SEG), dip1(MAX_SEG), AR, tau, phi
+      real attenrupdist(MAXDETM_DIST), attenjbdist(MAXDETM_DIST), 
+     1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST), 
+     2     attenRx(MAXDETM_DIST), hypodepth, hypodepth1, rupWidth, 
+     3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), 
+     4     period1(4,1), disthypo, Rx, Ry0, temp, Rrup, phiSSS, tauSSS
+      character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), 
+     1             sigmaName(4,MAX_PROB)
 
 C     If requested compute ground motion attenuation from input data file.
 c        (i.e., attenflag = 1)

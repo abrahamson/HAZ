@@ -3,7 +3,7 @@ c  --------------------------------------------------------------------
       subroutine Rd_Fault_Data ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, 
-     3     maxMag,  maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
+     3     maxMag, maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
      4     ftype, sourceType, nRupArea, coef_area, sigArea, nRupWidth, 
      5     coef_width, sigWidth, nParamVar, iCoor, minDepth, 
      6     fIndex, probAct, nWidth, mpdf_param, 
@@ -18,6 +18,7 @@ c  --------------------------------------------------------------------
      6     br_index, br_wt, segModelFlag, nSegModel0, segModelWt1, runflag,
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
 
+      implicit none
       include 'pfrisk.h'
       
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN)
@@ -39,7 +40,7 @@ c  --------------------------------------------------------------------
       real magRecurWt1(MAX_N1), magRecur1(MAX_N1), probAct(MAX_FLT)
       integer fIndex(3,MAX_FLT), nWidth(MAX_FLT), sourceType(MAX_FLT), attenType(MAX_FLT)
       integer grid_n(MAX_FLT) 
-      integer nMaxMag2(MAX_FLT), nMagRecur2(MAX_FLT), n_bValue2(MAX_FLT), nRate2(MAX_FLT)
+      integer nMaxMag2(MAX_FLT)
       real minlat, maxlat, minlong, maxlong
       real grid_a(MAX_FLT,MAX_GRID)
       real grid_lat(MAX_FLT,MAX_GRID), grid_long(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID)
@@ -47,7 +48,7 @@ c  --------------------------------------------------------------------
       real minMag(MAX_FLT), magStep(MAX_FLT), hxStep(MAX_FLT), hyStep(MAX_FLT), minDepth(MAX_FLT)
       real segModelWt(MAX_FLT), sampleStep(MAX_FLT)
       real rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real beta(MAX_FLT,MAXPARAM,MAX_WIDTH),  betaWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
+      real beta(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real faultWidth(MAX_FLT,MAX_WIDTH), faultWidthWt(MAX_FLT,MAX_WIDTH)
       real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
@@ -81,13 +82,19 @@ c  --------------------------------------------------------------------
       integer iDepthModel(MAX_FLT)
       real scaleRate(MAX_FLT)
       integer nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), nFtype1(MAX_FLT)
-      real segWt(MAX_FLT,MAX_FLT), segWt1(MAX_FLT), lat1
+      real segWt(MAX_FLT,MAX_FLT), segWt1(MAX_FLT)
       real dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
       integer temp_BR(MAXPARAM), BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       real temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
       integer segModelFlag(MAX_FLT,100), nSegModel0(1), runflag
-      real segModelWt1(MAX_FLT,100)
-      character*130 dummy
+      real segModelWt1(MAX_FLT,100), dip1, top, wt_MoRateBranch
+      real dip2, testMaxMag, sum, ProbAct0
+      integer kk, nMagArea, nMagDisp, nDisp, iDip, iWidth, nThick1
+      integer nSR, nMoRate, nRecInt, ii, ipt, nFlt, iCoor, iFlt0, k
+      integer nFlt2, i, iflt2, isyn, igrid, n_Dip, nActRate, iRecur
+      integer iThickDip, iThick1, nRefMag0, iFM, iflt, nSegModel
+      integer nMagRecur, iOverRideMag, nFtypeModels, nFM, iRefMag
+      integer i_bValue, iRate, nb1
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -688,18 +695,10 @@ c        Load up parameter variations into large single dimension arrays
            iWidth = iWidth + 1
            call CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )   
            
-c           if ( sourceType(iFlt) .eq. 1 ) then
              dip2 = dip1 + deltaDip1(iDip)
              dip(iFlt,iWidth,1) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
-c          else
-
-c            For areal source only set the first point and use thickness not width
-c            faultWidth(iFlt,iWidth) = faultThick1(iThick1)
-c           faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
-                
-c           endif
 
            i = 0
            mtest = 0.0
