@@ -19,7 +19,7 @@ import io_tools
 REF_CHECKSUMS = checksum.load_ref_checksums()
 
 
-def check_dictionary(actual, expected, rtol):
+def check_dictionary(actual, expected, rtol, atol):
     """Check each value in a dictionary.
 
     Parameters
@@ -30,16 +30,23 @@ def check_dictionary(actual, expected, rtol):
         Dictionary of expected (reference) values to be tested against.
     rtol: float
         Relative tolerance of the float comparisons, see :func:`numpy.allclose`.
+    atol: float
+        Absolute tolerance of the float comparisons, see :func:`numpy.allclose`.
     Returns
     -------
     dict
         Only contains keys of the actual dictionary that include mismatches
         with the expected values.
     """
+    dist_keys = ['dist_avg']
+    dist_atol = 1e-03
+
     result = dict()
     for key, value in actual.items():
         try:
-            r = check_value(value, expected[key], rtol)
+            # Check distance metrics with a large *atol* value.
+            r = check_value(value, expected[key], rtol,
+                            (dist_atol if key in dist_keys else atol))
             if r is not None:
                 result[key] = r
         except KeyError:
@@ -48,7 +55,7 @@ def check_dictionary(actual, expected, rtol):
     return result or None
 
 
-def check_value(actual, expected, rtol):
+def check_value(actual, expected, rtol, atol):
     """Test a value with with an expected value using approximate float tests.
 
     Parameters
@@ -59,6 +66,8 @@ def check_value(actual, expected, rtol):
         Value to test against (reference). Type should match the acutal type.
     rtol: float
         Relative tolerance of the float comparisons, see :func:`numpy.allclose`.
+    atol: float
+        Absolute tolerance of the float comparisons, see :func:`numpy.allclose`.
     Returns
     -------
     None or tuple(actual, expected):
@@ -71,23 +80,22 @@ def check_value(actual, expected, rtol):
         if actual != expected:
             return actual, expected
     elif isinstance(actual, float):
-        if not np.isclose(actual, expected, rtol=rtol):
+        if not np.isclose(actual, expected, rtol=rtol, atol=atol):
             return actual, expected
     elif isinstance(actual, dict):
-        return check_dictionary(actual, expected, rtol)
+        return check_dictionary(actual, expected, rtol, atol)
     elif isinstance(actual, (list, tuple)):
         if isinstance(actual[0], float):
             # Mask NaN values
             actual = np.asarray(actual)
             expected = np.asarray(expected)
-            mask = np.isfinite(actual)
-            if (np.any(mask) and
-                    not np.allclose(actual[mask], expected[mask], rtol=rtol)):
+            if not np.allclose(actual, expected, rtol=rtol, atol=atol,
+                               equal_nan=True):
                 return actual.tolist(), expected.tolist()
         else:
             results = []
             for ae in zip(actual, expected):
-                r = check_value(ae[0], ae[1], rtol)
+                r = check_value(ae[0], ae[1], rtol, atol)
                 if r is not None:
                     results.append(r)
             return results or None
@@ -203,7 +211,7 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
             continue
 
         # Check for errors
-        errors = check_value(actual, expected, rtol)
+        errors = check_value(actual, expected, rtol, atol=1e-08)
         ok &= (not errors)
         if errors:
             print('Errors in:', name)
@@ -227,7 +235,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--force', action='store_true',
                         help='Force HAZ to rerun; otherwise it only runs if '
                              'test case directory is empty.')
-    parser.add_argument('-r', '--rtol', type=float, default=1E-2,
+    parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_src', type=str,
                         default='../PEER Verification Tests/',
