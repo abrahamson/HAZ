@@ -88,6 +88,8 @@ c     Bayless and Somerville model, DIRFLAG = 30
         len1 = RupLength * fs
       
 c       Set X, Y, theta
+        Y = fd
+
 c       is the site along the rupture?
         if ( ry0 .eq. 0 ) then
           s = abs( Ry - (fs-0.5)*RupLength)
@@ -101,8 +103,6 @@ c       is the site along the rupture?
 
 c       Change to degrees
         theta = 180./3.14 * theta
-
-
         
 c       set rake
         if ( ftype .eq. 0. ) then
@@ -133,14 +133,7 @@ c       compute Bayless model
      1                           theta, rake, Rx, X, Y, az, lnfd, lnfn, lnfp ) 
         medadj = lnfd
         
-c        if ( fd .eq. 0.1 ) then
-c          write (*,'( 11f8.2)') mag, rupLength, fs, fd, len1, rx, ry, ry0, s, x, theta
-c          write (*,'( f10.4)') medadj
-c          pause 
-c        endif
-
-
-c       set sigma reduction
+c       set sigma reduction based on JWL model (not used, but keep in case we want to add it)
         if (specT .eq. 0.0) then
           count1=1
           count2=1
@@ -154,16 +147,12 @@ c       set sigma reduction
         endif
         call interp (period(count1),period(count2),phi2_red(count1),phi2_red(count2),
      +                   specT,sigadj,iflag)
-     
-        dirMed = medadj
-        dirSigma = sigadj
 
-        if ( fd .eq. 0.1 ) then
-          write (*,'( 11f8.2)') mag, rupLength, fs, fd, len1, rx, ry, ry0, s, x, theta
-          write (*,'( 2f10.4)') medadj, dirMed
-          pause 
-        endif
-        
+c      zero sigma adj for now    
+       sigadj = 0.
+
+c        write (*,'( 20f8.3)') mag, rupLength, rupWidth, ftype, theta, rake, Rx, X, Y, az, 
+c     1        specT, fs, fd, lnfd, dirSigma, sigadj
       endif
        
 c     JWL 2015 model, uniform Hypocenter model for SS and RV faults

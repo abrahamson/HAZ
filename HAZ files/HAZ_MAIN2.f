@@ -207,10 +207,12 @@ c        Compute horizontal distance density function for areal sources (polygon
          if ( sourceType(iFlt) .eq. 2 ) then        
            call CalcDistDensity (nPts, xFlt, yFlt, distDensity,
      1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt), minDist )
+           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
          elseif ( sourceType(iFlt) .eq. 3 ) then
            call CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,
      2             x0, y0, sampleStep(iFlt), minDist )
+           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
            
          elseif ( sourceType(iFlt) .eq. 4 ) then
            call CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
@@ -463,11 +465,11 @@ C               Application of Directivity model.
                     
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
-                 fs = float(iHypoX) / 10.
+                 fs = float(iHypoX) / (nHypoX + 1.)
 
 c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
-                  fd = float(iHypoZ) / 10.
+                  fd = float(iHypoZ) / (nHypoZ + 1.)
 
 C                 Call to the rupture directivity Subroutine if applicable
                   if ( dirflag1 .eq. 1) then
@@ -478,6 +480,8 @@ c       JWL 4/10/16 changes
      3                 fltgrid_x, fltgrid_y, fltgrid_z, 
      6                 n1, n2, icellRupstrike, icellRupdip, 
      7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+     
+                       write (44,'( 6f8.2 )') mag, rupLength, fs, fd, dirMed, dirSigma
 
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed
