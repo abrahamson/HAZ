@@ -13,12 +13,12 @@ c meanpga.f
       integer jcalc, soilflag, softrock, hardRock, hwflag
       real jbdist, rupdist, seismodist, baseDepth, depth, specT, factor, a, b, faddmag
       character*80 attenName(4,MAX_ATTEN), attenname1, attenname0
-      integer intflag(4,MAX_PROB), iflag, vs30_class
+      integer intflag(4,MAX_PROB), iflag, vs30_class, iBranch
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
-      real magc, rupdistc, ftypec, lnYc, depthTop
+      real magc, rupdistc, ftypec, lnYc, depthTop, phiSS
       real disthypo, depthvs10, depthvs15, AR, dipavgd
       real Theta_Site, sigmaEps, facFena, sdscale, BA08lnY, deltaC1
       real lnY01, lnY02, lnY04, lnY10, lnY02p, lnY04p

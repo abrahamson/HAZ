@@ -102,7 +102,7 @@ c    Declarations for Main file
      3     fltGrid_x3(MAXFLT_DD,MAXFLT_AS), fltGrid_y3(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS),
-     1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11)
+     1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11), dirCheck
 
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2, 
      1             sigmaName(4,MAX_PROB), filebmode

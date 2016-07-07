@@ -7,7 +7,7 @@ C       attenflag = 2 Spectra
       implicit none
       include 'pfrisk.h'
 
-      integer cfmodel, ssscalctemp, icalc, ncalc, jcalc1, ndist, hwflag, 
+      integer cfmodel, icalc, ncalc, jcalc1, ndist, hwflag, 
      1        iAtten, jtype, scalc1, sigflag, ssscalc1, anper, vs30_class, 
      2        attenflag, intflag(4,MAX_PROB), jj, forearc, coefcountRrup, 
      3        coefcountRjb, idist, iProb, nper, iper, icf, dcpp_GMPE_Flag
@@ -20,7 +20,7 @@ C       attenflag = 2 Spectra
      1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST), 
      2     attenRx(MAXDETM_DIST), hypodepth, hypodepth1, rupWidth, 
      3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), 
-     4     period1(4,1), disthypo, Rx, Ry0, temp, Rrup, phiSSS, tauSSS
+     4     period1(4,1), disthypo, Rx, Ry0, temp 
       character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), 
      1             sigmaName(4,MAX_PROB)
 

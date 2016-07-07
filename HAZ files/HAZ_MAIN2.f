@@ -444,7 +444,7 @@ c       JWL 4/10/16 changes
      3                 fltgrid_y, fltgrid_z, n1, n2, icellRupstrike, icellRupdip, 
      4                 dip, fs, fd, dpp_flag, iLocX, iLocY)
      
-                       write (44,'( 6f8.2 )') mag, rupLength, fs, fd, dirMed, dirSigma
+                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed
