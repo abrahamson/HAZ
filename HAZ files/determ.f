@@ -187,9 +187,7 @@ c       read input parameters for attenuation models.
         open (67, file=attenoutfile)
         write (67, '(a80)') attentitle
         read (13,*) ncalc
-        pause 'test 1'
         do icalc=1, ncalc
-          pause 'test 0'
           read (13,*) jcalc1
           write (*,'( i5)') jcalc1
 
@@ -214,7 +212,6 @@ C         Check for different sigma models either fixed or GMPE.
      2                     attenRx(idist)
           enddo
           read (13,*) ftype(1,1), dip1(1), hwflag
-        pause 'test 2'
 
 c         Check for dipping fault type with Dip angle = 90.
           if (ftype(1,1) .ne. 0.0 .and .dip1(1) .eq. 90.0) then
@@ -225,7 +222,6 @@ c         Check for dipping fault type with Dip angle = 90.
           read (13,*) vs, vs30_class, forearc
           read (13,*) hypodepth, RupWidth
           read (13,*) depthvs10, depthvs15, D25, ftop(1,1)
-        pause 'test 3'
 
 C         Get the number of spectral periods for each attenuation relationship model
           read (13,*) nper
@@ -242,7 +238,6 @@ C           Check for Common Functional Form with RJB Distance (11000<jcalc<1200
               read (13,*) (coefrj(iper,jj),jj=1,11)
             endif
           enddo
-        pause 'test 4'
 
           call attenper (jcalc1, anper, minaper, maxaper )
 
@@ -417,7 +412,6 @@ C              Write out spectra with notes for each spectral period.
              enddo
              write (67,*)
            enddo
-           pause 'tset 5'
          enddo
          close (67)
          write (*,*) 'End of Spectra Ground Motion Modeling.'

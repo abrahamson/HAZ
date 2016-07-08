@@ -475,7 +475,6 @@ c         Read reference mags for each fault thickness
             read (10,*,err=3047) nRefMag0
             read (10,*,err=3048) (refMag0(i),i=1,nRefMag0)
             read (10,*,err=3049) (refMagWt0(i),i=1,nRefMag0)
-            write (82,'( i5,f10.3)') iflt,refMag0(1)
 
             if (runflag .eq. 3) then
               do i=1,nRefMag0
