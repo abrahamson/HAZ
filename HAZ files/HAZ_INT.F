@@ -277,6 +277,28 @@ c -------------------------------------------------------------
 
 c -------------------------------------------------------------
 
+      subroutine InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar )
+      include 'pfrisk.h'                                                        
+      real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+      real*8 rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
+      real*8 e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+
+      do iFlt=1,MAX_FLT
+        do i=1,MAX_PROB
+          do ii=1,MAX_INTEN
+            m_bar_s(iFlt,i,ii) = 0.
+            rrup_bar_s(iFlt,i,ii) = 0.
+            rjb_bar_s(iFlt,i,ii) = 0.
+            rx_bar_s(iFlt,i,ii) = 0.
+            e_bar_s(iFlt,i,ii) = 0.
+          enddo
+        enddo
+      enddo
+      return
+      end
+
+c -------------------------------------------------------------
+
       subroutine InitBrhaz ( nProb, nInten, nNode, br_haz )
 
       implicit none

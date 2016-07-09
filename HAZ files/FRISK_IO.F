@@ -199,6 +199,7 @@ c     Input options
       
       call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )        
       call CheckDim ( nProb, MAX_Prob, 'MAX_ATTEN ' )
+      write (18,*) '45.2 Haz45.2 log file'
       write (18,'( a80)') title
       write (18,*) 
       write (18,*) 'Summary of Attenuation relationship used in the analysis:'
@@ -1057,4 +1058,61 @@ c  -------------------------------------------------------------------
 
       return
       end
+c  -------------------------------------------------------------------
+
+
+C DGM addition 
+      subroutine output_Sourcedeagg ( isite, sitex, sitey, ati, nInten, 
+     1           nFlt, risk, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
+     2           rx_bar_s, e_bar_s, specT, nProb)
+
+      implicit none
+      include 'pfrisk.h'
+
+      real siteX, siteY, ati(MAX_PROB, MAX_INTEN) 
+      real*8     risk(MAX_INTEN,MAX_PROB,MAX_FLT)
+      real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
+     1     rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),e_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
+      integer isite, nInten(MAX_PROB), iFlt, nFlt, iProb, J2, nProb, iInten, nwr
+      real specT(MAX_PROB)
+      character*80 fName(MAX_FLT)
+
+      nwr = 29
+
+c     Write Site Coordinates
+      write(nwr,910) iSite, siteX, siteY
+
+
+        do iProb=1,nProb
+c       Write Test Intensities
+         write (nwr,'( i5,2x,''nAmp'')') nInten(iProb)
+         write(nwr,920) (ati(iProb,J2),J2=1,nInten(iProb))
+
+c        Write MBar, RrupBar, Rjbbar, Rxbar and EpsBar Results       
+        
+        
+         do iFlt=1,nFlt
+          write (nwr,'( 2x,a30,''MBar      '',30f10.2)') fName(iFlt), 
+     1          (m_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''RrupBar   '',30f10.2)') fName(iFlt), 
+     1          (rrup_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''RjbBar    '',30f10.2)') fName(iFlt), 
+     1          (rjb_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''RxBar     '',30f10.2)') fName(iFlt), 
+     1          (rx_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''EBar      '',30f10.2)') fName(iFlt), 
+     1          (e_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+         enddo
+
+        enddo
+       
+                 
+ 900  continue
+      close (nwr)
+      return
+      
+ 910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
+ 920  FORMAT(1X,'AMP:',36x,30F12.6)
+      end
+      
 c  -------------------------------------------------------------------
