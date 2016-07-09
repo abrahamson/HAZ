@@ -93,7 +93,7 @@ c  --------------------------------------------------------------------
       integer nSR, nMoRate, nRecInt, ii, ipt, nFlt, iCoor, iFlt0, k
       integer nFlt2, i, iflt2, isyn, igrid, n_Dip, nActRate, iRecur
       integer iThickDip, iThick1, nRefMag0, iFM, iflt, nSegModel
-      integer nMagRecur, iOverRideMag, nFtypeModels, nFM, iRefMag
+      integer nMagRecur, nFtypeModels, nFM, iRefMag
       integer i_bValue, iRate, nb1
 
 c     Input Fault Parameters
@@ -460,15 +460,6 @@ c        Read depth pdf
               write (17,*) 'Depth Model = ', iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)    
         endif
 
-c        Read Mag method (scaling relations or set values)
-         read (10,*,err=3046) iOverRideMag
-
-        if (runflag .eq. 3) then
-              write (*,*) 'OverRideMag = ', iOverRideMag   
-              write (17,*) 'OverRideMag = ', iOverRideMag   
-        endif
-
-         if ( iOverRideMag .eq. 1 ) then
 c         Read reference mags for each fault thickness
           iThickDip = 1
           do iThick1=1,nThick1
@@ -497,113 +488,8 @@ c           Copy these ref magnitudes for each addtional dip (no correlation all
               iThickDip = iThickDip + 1
             enddo
           enddo
-         else
 
-c   *** New read for Mean Char Eqk computed in Code 	
-c       (i.e. OverridgeMag .ne. 1) 
-              read (10,*) nRupLength
-              read (10,*) (rupLength(k),k=1,nRupLength)
-              read (10,*) (rupLength_wt(k),k=1,nRupLength)
-              read (10,*) (magApproach_wt(k),k=1,3)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'Rupture Lenght = ', nRupLength, (rupLength(k),k=1,nRupLength),
-     1             (rupLength_wt(k),k=1,nRupLength),(magApproach_wt(k),k=1,3)
-              write (17,*) 'Rupture Lenght = ', nRupLength, (rupLength(k),k=1,nRupLength),
-     1             (rupLength_wt(k),k=1,nRupLength),(magApproach_wt(k),k=1,3) 
-        endif
-
-c             read mag-length models
-              read (10,*) nMaglength
-
-        if (runflag .eq. 3) then
-              write (*,*) 'nMagLength = ', nMaglength
-              write (17,*) 'nMagLength = ', nMaglength
-        endif
-
-              if ( nMagLength .ne. 0 ) then
-                do k=1,nMagLength
-                  read (10,*) (c_magLength(kk,k), kk=1,4)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'c_magLength = ', (c_magLength(kk,k), kk=1,4)
-              write (17,*) 'c_magLength = ', (c_magLength(kk,k), kk=1,4)
-        endif
-
-                enddo
-                read (10,*) (magLength_wt(k),k=1,nMagLength)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'magLength_wt = ', (magLength_wt(k),k=1,nMagLength)
-              write (17,*) 'magLength_wt = ', (magLength_wt(k),k=1,nMagLength)
-        endif
-
-              endif
-
-c             read mag-area models
-              read (10,*) nMagArea
-
-        if (runflag .eq. 3) then
-              write (*,*) 'nMagArea = ', nMagArea
-              write (17,*) 'nMagArea = ', nMagArea
-        endif
-
-              if ( nMagArea .ne. 0 ) then
-                do k=1,nMagArea
-                  read (10,*) (c_magArea(kk,k), kk=1,4), aspectMin(k)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'c_magArea, Aspect = ', (c_magArea(kk,k), kk=1,4), aspectMin(k)
-              write (17,*) 'c_magArea, Aspect = ', (c_magArea(kk,k), kk=1,4), aspectMin(k)
-        endif
-
-                enddo
-                read (10,*) (magArea_wt(k),k=1,nMagArea)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'c_magAreaWt = ', (magArea_wt(k),k=1,nMagArea)
-              write (17,*) 'c_magAreaWt = ', (magArea_wt(k),k=1,nMagArea)
-        endif
-
-              endif
-               
-c             read mag-displacement models
-              read (10,*) nMagDisp
-              
-        if (runflag .eq. 3) then
-              write (*,*) 'nMagDisp = ', nMagDisp
-              write (17,*) 'nMagDisp = ', nMagDisp
-        endif
-
-              if ( nMagDisp .ne. 0 ) then
-                do k=1,nMagDisp
-                  read (10,*) (c_magDisp(kk,k), kk=1,4)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'c_magDisp = ', (c_magDisp(kk,k), kk=1,4)
-              write (17,*) 'c_magDisp = ',  (c_magDisp(kk,k), kk=1,4)
-        endif
-
-                enddo
-                read (10,*) (magDisp_wt(k),k=1,nMagDisp)
-                read (10,*) nDisp
-                read (10,*) (disp(k), k=1,nDisp)
-                read (10,*) (Disp_wt(k),k=1,nDisp)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'magDispWt = ', (magDisp_wt(k),k=1,nMagDisp)
-              write (*,*) 'nDips = ', nDisp
-              write (*,*) 'Disp = ', (disp(k), k=1,nDisp)
-              write (*,*) 'DispWt = ', (disp_wt(k), k=1,nDisp)
-              write (17,*) 'magDispWt = ', (magDisp_wt(k),k=1,nMagDisp)
-              write (17,*) 'nDips = ', nDisp
-              write (17,*) 'Disp = ', (disp(k), k=1,nDisp)
-              write (17,*) 'DispWt = ', (disp_wt(k), k=1,nDisp)
-        endif
-
-               endif
-         endif
-
+c        Read min mag, step sizes, and rupture variability info
          read (10,*,err=3050) minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
      1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
 
@@ -678,13 +564,6 @@ c        Load up Ftype Models and weights.
          enddo
          nFm = nFm - 1
          nFtype(iFlt) = nFm
-
-c        Build up distribution of mean Char Mag for each dip,thickness
-         if ( iOverRideMag .ne. 1 ) then
-           write (*,'( 2x,''this option not working'')')
-           stop 99
-c          call rdMagModel ()
-         endif
 
 c        Load up parameter variations into large single dimension arrays
          testMaxMag = 0.
@@ -940,9 +819,6 @@ c     End loop over iFlt
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
  3045 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
-      write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3046 write (*,'( 2x,''Flt file error: iOverRIdeMag'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
  3047 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
