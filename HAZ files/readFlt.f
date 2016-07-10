@@ -28,11 +28,11 @@ c  --------------------------------------------------------------------
      4        nfp(MAX_FLT), nDownDip(MAX_FLT), HWsource7, iRate, nb1 
       integer nMag(MAX_FLT), nRupArea(MAX_FLT), nRupWidth(MAX_FLT),
      1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn, 
-     2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem, nRuplength, 
-     3        fsys(MAX_FLT), nMaglength, iDepthModel(MAX_FLT),
+     2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,  
+     3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT) 
-      integer nFtype1(MAX_FLT), temp_BR(MAXPARAM), kk, nMagArea, 
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nMagDisp, nDisp, 
+      integer nFtype1(MAX_FLT), temp_BR(MAXPARAM),  
+     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt, 
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip, 
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
@@ -70,25 +70,21 @@ c  --------------------------------------------------------------------
      3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG), 
      4     ftype(MAX_FLT,MAX_N1), faultWidthWt(MAX_FLT,MAX_WIDTH)
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), 
-     1     ftmodelwt(MAX_N1), rupLength(MAX_N1), rupLength_wt(MAX_N1), 
-     2     magApproach_wt(3), c_magLength(4,MAX_N1), wt_srBranch, 
-     3     c_magArea(4,MAX_N1), magArea_wt(MAX_N1), magLength_wt(MAX_N1),
-     4     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_ActrateBranch
+     1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
+     2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top, 
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT), 
+     4     temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)     
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM), 
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
      3     MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM), segWt1(MAX_FLT),
-     4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM)
-      real rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH),
-     1     c_magDisp(4,MAX_N1), magDisp_wt(MAX_N1), aspectMin(MAX_N1),
-     2     disp(MAX_N1), disp_wt(MAX_N1), depthParam(MAX_FLT,5),
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT), dip1, top, 
-     4     temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)     
+     4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM), dip2, testMaxMag    
       real dip(MAX_FLT,MAX_WIDTH, MAX_SEG), segModelWt1(MAX_FLT,100), 
-     1     wt_MoRateBranch, dip2, testMaxMag, sum, ProbAct0,
-     2     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
-     3     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
-     4     mechS7(MAX_FLT,MAX_S7)
+     1     wt_MoRateBranch, sum, ProbAct0, depthParam(MAX_FLT,5), 
+     2     rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), 
+     3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
+     4     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7) 
+      real mechS7(MAX_FLT,MAX_S7)
       character*80 fName(MAX_FLT), fName1
 
 c     Input Fault Parameters
