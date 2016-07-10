@@ -61,8 +61,7 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
      5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7 )   
-           
+     7     DistS7, DipS7, mechS7, ncountS7 )             
       
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -76,7 +75,7 @@ c      Read site-specific site amplification
         call RdSoilAmpModel ( refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
        endif
 
-c      Output1 file which will contain the individual hazard curves. 
+c      Open Output1 file which will contain the individual hazard curves. 
        read (13,'( a80)',err=2102) file1
        open (11,file=file1,status='unknown')
        
@@ -85,14 +84,6 @@ c      Open Output2 file for Probability of Magnitude Density for each parameter
        open (17,file=file2,status='unknown')
        write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
        write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
-       
-c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
-       read (13,'( a80)',err=2105) file1
-       open (27,file=file1,status='unknown')
-       
-c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
-       read (13,'( a80)',err=2106) file1
-       open (28,file=file1,status='unknown')
 
 c      Open Output3 file
        read (13,'( a80)',err=2106) file1
@@ -101,6 +92,14 @@ c      Open Output3 file
 c      Open Output4 file
        read (13,'( a80)') file1
        open (14,file=file1,status='unknown')
+       
+c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
+       read (13,'( a80)',err=2105) file1
+       open (27,file=file1,status='unknown')
+       
+c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
+       read (13,'( a80)',err=2106) file1
+       open (28,file=file1,status='unknown')
 
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )

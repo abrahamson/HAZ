@@ -1,6 +1,9 @@
       subroutine interp_phiSS ( a_coeff, b_coeff, period, specT, a, b, iflag )
+      
+      implicit none
+      
       real period (17), a_coeff(17), b_coeff(17), specT, a, b
-      integer count1, count2
+      integer iflag, count1, count2, nPer, i
 
 C     First check for the PGA
       if (specT .le. 0.0) then 
@@ -44,8 +47,12 @@ C     Interpolate the coefficients for the requested spectral period.
 c  --------------------------------------
 
       subroutine SWUS_PHISS_CA1 ( mag, specT, phiSS, iflag, iBranch ) 
-      real period (17), a_high(17), b_high(17)
-      real a_low(17), b_low(17), a_central(17), b_central(17)
+      
+      implicit none
+      
+      integer iflag, iBranch
+      real period (17), a_high(17), b_high(17), mag, specT, phiSS
+      real a_low(17), b_low(17), a_central(17), b_central(17), a, b
 
 c     Coeff from SWUS report, Table 7.3.3-1
       data period / 0.01, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 
@@ -92,8 +99,12 @@ c     From SWUS eq 7.3.3-1a
 c --------------------
 
       subroutine SWUS_PHISS_CA2 ( mag, specT, phiSS, iflag, iBranch ) 
-      real period (17), a_high(17), c_high(17)
-      real a_low(17), c_low(17), a_central(17), c_central(17)
+      
+      implicit none
+      
+      integer iflag, iBranch
+      real period (17), a_high(17), c_high(17), mag, specT, phiSS
+      real a_low(17), c_low(17), a_central(17), c_central(17), a, c
 
 c     Coeff from SWUS report, Table 7.3.3-2
       data period / 0.01, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.3, 0.4, 
@@ -119,11 +130,11 @@ c     Coeff from SWUS report, Table 7.3.3-2
 
 c     Set the branch to use for the PhiSS_CA2  model
       if ( iBranch .eq. 1 ) then
-        call interp_phiSS ( a_low, b_low, period, specT, a, b, iflag ) 
+        call interp_phiSS ( a_low, c_low, period, specT, a, c, iflag ) 
       elseif ( iBranch .eq. 2 ) then
-        call interp_phiSS ( a_central, b_central, period, specT, a, b, iflag ) 
+        call interp_phiSS ( a_central, c_central, period, specT, a, c, iflag ) 
       elseif ( iBranch .eq. 3 ) then
-        call interp_phiSS ( a_high, b_high, period, specT, a, b,iflag )      
+        call interp_phiSS ( a_high, c_high, period, specT, a, c, iflag )      
       endif
 
 c     From SWUS eq 7.3.3-1ab
@@ -138,6 +149,11 @@ c     From SWUS eq 7.3.3-1ab
 c --------------------
 
       subroutine SWUS_PHISS_Global_R50 ( phiSS, iflag, iBranch ) 
+
+      implicit none
+      
+      integer iflag, iBranch
+      real phiSS
 
 c     from SWUS table 7.3.2-1 
 c     Set the branch to use for the PhiSS_CA2  model
