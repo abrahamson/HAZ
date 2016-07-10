@@ -8,8 +8,8 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*      Hazard Code: Develop     *'
-      write (*,*) '*          June, 2016           *'
+      write (*,*) '*   Hazard Code: Version 45.2   *'
+      write (*,*) '*          July, 2016           *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -146,12 +146,10 @@ c        Set bottom of fault for standard faults (source type 1)
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)
-         if (sourceType(iFlt) .ne. 7) then
            call ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
      1           sourceType(iFlt), nDD(iFlt), siteX, siteY, fLat, fLong, fZ, 
      2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts, xFlt, yFlt, 
      3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
-         endif
 
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
@@ -185,21 +183,15 @@ c        Compute horizontal distance density function for areal sources (polygon
          endif  
           
 c        Compute activity rate: N(Mmin)
-         if (sourcetype(iFlt) .ne. 7) then
-           call Set_Rates ( nParamVar, MagRecur, rate, beta, minMag,
+           call Set_Rates ( sourceType(iFlt), nParamVar, MagRecur, rate, beta, minMag,
      1         maxMag, iFlt, iFltWidth, faultArea, 
      2         RateParam, mpdf_param, magStep, RateType, 
      1         charMeanMo, expMeanMo )
-         endif
 
 c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
-         do iParam=1,nparamVar(iFlt,iFltWidth)
-           sum1(iParam,iFltWidth) = 0.
-         enddo
          
 c        Set nMag(iFlt) = ncount for Source Type 7 case
          if (sourceType(iFlt) .eq. 7) then
-           nMag(iFlt) = ncountS7(iFlt)
            write (*,*) 'Number of sources for SourceType7 = ', iFlt,nMag(iFlt)
          endif
          
@@ -216,38 +208,19 @@ c         Set the magnitude bin for deagregating
 
 c         Compute Probability of mag between mag-magStep/2 and mag+magStep/2 
 c         using the magnitude pdf for each parameter variation
-          if (sourceType(iFlt) .ne. 7) then
-            call magProb ( mag, maxMag, minMag, magStep, beta, iFlt, 
-     1           pMag, nParamVar, nWidth, MagRecur, 
-     2           mpdf_param, ExpMeanMo, CharMeanMo, rup1_flag )          
-            do iParam=1,nparamVar(iFlt,iFltWidth)
-              sum1(iParam,iFltWidth) = sum1(iParam,iFltWidth) + pmag(iParam,iFltWidth)
-            enddo
-          elseif (sourcetype(iFlt) .eq. 7) then
-            do iParam=1,nparamVar(iFlt,iFltWidth)
-              pmag(iParam,iFltWidth) = 1.0
-              sum1(iParam,iFltWidth) = sum1(iParam,iFltWidth) + pmag(iParam,iFltWidth)
-            enddo
-          endif
+            call magProb (sourceType(iFlt), mag, maxMag, minMag, magStep, beta, 
+     1                    iFlt, iFltWidth, pMag, nParamVar, nWidth, MagRecur, 
+     2                    mpdf_param, ExpMeanMo, CharMeanMo, rup1_flag)      
 
 c         Echo magnitude integration step over magnitude to the screen 
 c         as a check of the programs progress.
           if (sourceType(iFlt) .ne. 7) then
             write (*,'( 2x,2I5,f10.3)') iflt, ifltWidth, mag
             write (18,'( 2x,2I5,f10.3)') iflt, ifltWidth, mag
-          elseif (sourcetype(iFlt) .eq. 7) then
-            if (iMag .eq. 10000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
-            elseif (iMag .eq. 20000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
-            elseif (iMag .eq. 30000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
-            elseif (iMag .eq. 40000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
-            elseif (iMag .eq. 50000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
-            elseif (iMag .eq. 60000) then
-              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag             
+          elseif (sourceType(iFlt) .eq. 7) then
+            nn10000 = (iMag/10000)*10000
+            if (nn10000 .eq. iMag) then
+              write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag                          
             endif
           endif
           
@@ -562,7 +535,7 @@ c                    Add weight for aleatory rupture segmentation
                      
 c                    Compute Marginal Rate of Occurance
                      if (sourcetype(iFlt) .ne. 7) then
-                       mHaz = rate(iParam,iFltWidth) * prock * p1 * probAct(iFlt)
+                       mHaz = rate(iParam,iFltWidth) * prock * p1 * probAct(iFlt)                       
                        wt = wt *segwt1(iFLt)
                      elseif (sourcetype(iFlt) .eq. 7) then
                        mHaz = rateS7(iFlt,iMag) * prock * p1 * probAct(iFlt)

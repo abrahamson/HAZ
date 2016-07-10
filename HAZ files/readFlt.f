@@ -772,6 +772,9 @@ c                Set max mag
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
                    nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
+                   if (sourceType(iFlt) .eq. 7) then
+                     nMag(iFlt) = ncountS7(iFlt)
+                   endif
                      if (nMag(iFlt) .eq. 0 ) then
                        nMag(iFlt) = 1
                      endif    
@@ -816,7 +819,7 @@ c     End loop over iThick1
            fsys(iFlt) = ifsystem
 c     End loop over iFlt2 (# segments)
           enddo
-          ifsystem = ifsystem + 1
+          ifsystem = ifsystem + 1          
 c     End loop over iFlt
       enddo
       nfsystem = ifsystem - 1

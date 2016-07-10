@@ -1,6 +1,6 @@
 c ------------------------------------------------------------------  
 
-      subroutine Set_Rates ( nParamVar, magRecur, rate, beta, minMag,           
+      subroutine Set_Rates ( sourceType, nParamVar, magRecur, rate, beta, minMag,           
      1           maxMag, iFlt, iWidth, faultArea, 
      1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
 
@@ -22,12 +22,17 @@ c ------------------------------------------------------------------
       real*8 sum
       real term1, term2, term3, scale, pL1, pU1, contrmaxmag
       integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH)                  
-      integer nmstep, iWidth, i1                    
+      integer nmstep, iWidth, i1, sourceType                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
       real maxmag1, magstep1, texp, contrexp, rate_M_gt_0
       real bAC, gamma, bGR, fGR, fAC, gAC, meanMoChar, pRatio
       real c2, c3, c4, bM2, bM1, scale1, faultArea, x, deltamac
-      real meanMoRelease1, meanMoRelease2, meanMoRelease3
+      real meanMoRelease1, meanMoRelease2, meanMoRelease3, fix_step
+
+c     No rate calculation needed for SourceType 7
+      if (sourceType .eq. 7) then
+        goto 100
+      endif
       
       rigidity = 3.0e11       
 
@@ -186,10 +191,11 @@ c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)
              if (sigma .eq. 0.0) then 
                 sum = 10.**(1.5*mean+16.05)
              else
-c    Use a fixed mag step of 0.01 for getting the moment balance
-             nmstep = int((mU - mL)/0.01)  
+c            Use a fixed mag step of 0.01 for getting the moment balance
+             fix_step = 0.01
+             nmstep = int((mU - mL)/fix_step)  
              sum = 0.                           
-             mag = mL + 0.01/2.        
+             mag = mL + fix_step/2.        
              zmagU=(mU-mean)/sigma       
              zmagL=(mL-mean)/sigma       
 
@@ -197,12 +203,12 @@ c    Use a fixed mag step of 0.01 for getting the moment balance
              call NDTR(zmagU,pmagU,dd)   
        
              do i1 = 1,nmstep                   
-               mL1 = mag - 0.01/2.    
-               mU1 = mag + 0.01/2.    
+               mL1 = mag - fix_step/2.    
+               mU1 = mag + fix_step/2.    
                call NDTR((mL1-mean)/sigma,pL1,dd)                                      
                call NDTR((mU1-mean)/sigma,pU1,dd)                                       
                sum = sum + (pL1-pU1)/(1.-pmagU)*(10.**(1.5*mag+16.05))    
-               mag = mag + magStep(iFlt)       
+               mag = mag + fix_step       
              enddo                       
              endif
 
@@ -384,6 +390,8 @@ c........does not work with BC Hydro Alternative Characteristic Model
            endif
          endif           
         enddo                                  
+
+ 100  continue
 
       return                            
       end                               

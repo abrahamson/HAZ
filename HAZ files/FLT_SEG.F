@@ -22,6 +22,11 @@ c     Reference: http://www.movable-type.co.uk/scripts/latlong.html
       integer i, iz, iPt
       real Rearth, refLat, refLong, phi1, phi2, deltaphi, lambda1, lambda2, 
      1     deltalambda, a, c, dist, bearing, xscale, yscale
+
+c     No conversion needed for SourceType 7
+      if (sourceType .eq. 7) then
+        goto 100
+      endif
       
       Rearth = 6371.        
      
@@ -117,6 +122,8 @@ c     Adjust sources so that site is at 0,0
       x0 = 0.
       y0 = 0.
       z0 = 0.
+
+ 100  continue
 
       return 
       end
