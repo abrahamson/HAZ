@@ -1,7 +1,7 @@
 c     magprob.f                             
 
-      subroutine magProb ( mag, maxMag, minMag, magStep, beta, iFlt,            
-     1                     pmag, nParam, nWidth,                                
+      subroutine magProb ( sourceType, mag, maxMag, minMag, magStep, beta, iFlt,            
+     1                     iFltWidth, pmag, nParam, nWidth,                                
      2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo,
      3                     Rup1_flag )
 
@@ -9,7 +9,7 @@ c     magprob.f
       include 'pfrisk.h'  
           
       integer rup1_flag, iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(MAX_FLT),
-     1        iWidth, iParam, nsummag, imagsum
+     1        iWidth, iParam, nsummag, imagsum, sourceType, iFltWidth
       real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
      2     pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2,           
@@ -20,6 +20,16 @@ c     magprob.f
      2     beta1, ak, deltaM1, deltaM2, p1, p2, pChar, d, pExp, c1, Btail,
      3     SigM, Fract_Exp, b_value, pMag1
       real*8 pmL, pmU, pmagL, pmagU                                         
+
+c     set pmag for SourceType 7
+      if (sourceType .eq. 7) then
+        do iParam=1,nParam(iFlt,iFltWidth)
+          pmag(iParam,iFltWidth) = 1.0
+        enddo
+        goto 100
+
+c     all other SourceTypes       
+      else
     
       rup1_flag = 0
             
@@ -324,9 +334,12 @@ c             Brute force calc of Pmag.  Fix this later to be faster.
             endif                                
           endif     
 
-        enddo                                  
+        enddo                               
+      enddo  
+      
+      endif 
 
-      enddo   
+ 100  continue
 
       return                            
       end                               

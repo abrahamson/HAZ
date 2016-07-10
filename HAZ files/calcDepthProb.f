@@ -16,7 +16,7 @@ c     declarations only used within subroutine
       real meanDepth, z1, z2, z3, depth1, sigma, depth0,
      1     depth2, z_half, p1, p2, zstep, d, sum
       
-c     Check for areal sources (point sources)
+c     Compute depth probabilities for areal sources (point sources)
       if (sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
         if (iDepthModel .eq. 0 ) then
 c         Uniform distribution
@@ -64,12 +64,17 @@ c           COMPUTE PROBABILITY OF depth BETWEEN depth1 and depth2
           write (*,'( 2x,''invalid depth model'')')
           stop 99
         endif
-
+        
+c     Set depth probability for SourceType 7      
+      elseif (sourceType .eq. 7) then
+        do iLocY=1,nLocY
+          pLocY(iLocY) = 1.0 
+        enddo
+      
+c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
       else
-c       Faults
 
-c      Use uniform distribution for faults
-
+c      Uniform distribution for faults
         if (iDepthModel .eq. 0 ) then
 c         Uniform distribution 
           do iLocY=1,nLocY

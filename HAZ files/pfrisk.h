@@ -5,7 +5,7 @@ c     Set array dimensions
      2        MAX_WIDTH, MAX_DIST1, MAX_GRID, MAX_SYN, MAX_AMPMAG,
      3        MAX_AMPPER, MAX_AMPGM, MAX_PER, MAXDETM_DIST, MAXDIPSEG,
      4        MAX_DD, MAXFLT_DD, MAXFLT_AS, MAX_BRANCH, MAX_NODE,
-     5        MAX_ATTEN, MAX_FTYPE
+     5        MAX_ATTEN, MAX_FTYPE, MAX_S7
 
 
       PARAMETER (MAX_SITE=1, MAX_FLT=80, MAX_SEG=300,
@@ -20,4 +20,5 @@ c     Set array dimensions
       parameter (MAX_BRANCH=30, MAX_NODE=100)
       parameter (MAX_ATTEN=60)
       parameter (MAX_FTYPE=3)
+      parameter (MAX_S7=70000)
       

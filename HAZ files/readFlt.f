@@ -2,99 +2,94 @@ c  --------------------------------------------------------------------
 
       subroutine Rd_Fault_Data ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
-     2     magRecur, magRecurWt, faultWidth, faultWidthWt, 
-     3     maxMag, maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, 
-     4     ftype, sourceType, nRupArea, coef_area, sigArea, nRupWidth, 
+     2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag, 
+     3     maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, ftype, 
+     4     sourceType, nRupArea, coef_area, sigArea, nRupWidth, 
      5     coef_width, sigWidth, nParamVar, iCoor, minDepth, 
-     6     fIndex, probAct, nWidth, mpdf_param, 
-     7     al_segWt, attenType, sampleStep,
-     8     grid_a, grid_dlong, grid_dlat, grid_n, grid_long, grid_lat,
-     9     grid_top, minlat, maxlat, minlong, maxlong, scaleRate,
-     1     fsys, 
-     2     mMagout, mMagoutWt, fltDirect, synchron, nsyn_Case, synjcalc,
-     3     synmag, syndistRup, syndistJB, synDistSeismo, synHypo,
-     4     synftype, synhwflag, synwt, RateType, iDepthModel, depthParam,
-     5     nMaxMag2, segwt1, faultFlag, nDownDip, nFtype, ftype_wt, 
-     6     br_index, br_wt, segModelFlag, nSegModel0, segModelWt1, runflag,
-     7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
+     6     fIndex, probAct, nWidth, mpdf_param, al_segWt, attenType, 
+     7     sampleStep, grid_a, grid_dlong, grid_dlat, grid_n, 
+     8     grid_long, grid_lat, grid_top, minlat, maxlat, minlong, 
+     9     maxlong, scaleRate, fsys, mMagout, mMagoutWt, fltDirect, 
+     1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
+     2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
+     3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
+     7     DistS7, DipS7, mechS7, ncountS7 )
 
       implicit none
       include 'pfrisk.h'
-      
-      real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN)
-      real syndistJB(MAX_FLT,MAX_SYN)
-      real syndistSeismo(MAX_FLT,MAX_SYN), synftype(MAX_FLT,MAX_SYN)
-      real synhypo(MAX_FLT,MAX_SYN), synwt(MAX_FLT,MAX_SYN)
-      integer synHWFlag(MAX_FLT,MAX_SYN)
-      integer nsyn_Case(MAX_FLT), synjcalc(MAX_FLT)
-      integer fltDirect(MAX_FLT), synchron(MAX_FLT)
-      real syn_dip(MAX_FLT,MAX_SYN), syn_zTOR(MAX_FLT,MAX_SYN)
-      real syn_RupWidth(MAX_FLT,MAX_SYN), syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
 
-      real rateParam1(MAX_N1), RateWt1(MAX_N1)
-      real al_segWt(MAX_FLT), dipWt1(MAX_N1), deltaDip1(MAX_N1)
-      real bValue1(MAX_N1), bValueWt1(MAX_N1),  bValue2(MAX_N1)
-      real faultThick1(MAX_N1), faultThickWt1(MAX_N1)
-      real refMag1(MAX_N1,MAX_N1),  refMagWt1(MAX_N1,MAX_N1)
-      real refMag0(MAX_N1), refMagWt0(MAX_N1)
-      real magRecurWt1(MAX_N1), magRecur1(MAX_N1), probAct(MAX_FLT)
-      integer fIndex(3,MAX_FLT), nWidth(MAX_FLT), sourceType(MAX_FLT), attenType(MAX_FLT)
-      integer grid_n(MAX_FLT) 
-      integer nMaxMag2(MAX_FLT)
-      real minlat, maxlat, minlong, maxlong
-      real grid_a(MAX_FLT,MAX_GRID)
-      real grid_lat(MAX_FLT,MAX_GRID), grid_long(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID)
-      real grid_dlong(MAX_FLT), grid_dlat(MAX_FLT)
-      real minMag(MAX_FLT), magStep(MAX_FLT), hxStep(MAX_FLT), hyStep(MAX_FLT), minDepth(MAX_FLT)
-      real segModelWt(MAX_FLT), sampleStep(MAX_FLT)
-      real rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real beta(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real faultWidth(MAX_FLT,MAX_WIDTH), faultWidthWt(MAX_FLT,MAX_WIDTH)
-      real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
-      real rP1(MAXPARAM), rP2(MAXPARAM), rp3(MAXPARAM), rp4(MAXPARAM), rp5(MAXPARAM)
-      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real coef_area(2,MAX_FLT), sigArea(MAX_FLT), coef_width(2,MAX_FLT), sigWidth(MAX_FLT)
-      real fLong(MAX_FLT,MAX_DD,MAX_SEG), fLat(MAX_FLT,MAX_DD,MAX_SEG),
-     1     fZ(MAX_FLT,MAX_DD,MAX_SEG)
-      real ftype(MAX_FLT,MAX_N1), ftype_wt(MAX_FLT,MAX_N1)
-      real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), ftmodelwt(MAX_N1)
-      integer nfp(MAX_FLT), nDownDip(MAX_FLT) 
-      integer nMag(MAX_FLT), nRupArea(MAX_FLT), nRupWidth(MAX_FLT) 
-      integer nRate, n_bValue, nRefMag(MAX_N1), nParamVar(MAX_FLT,MAX_WIDTH)
+      integer synHWFlag(MAX_FLT,MAX_SYN), nsyn_Case(MAX_FLT), 
+     1        synjcalc(MAX_FLT), fltDirect(MAX_FLT), synchron(MAX_FLT),      
+     2        fIndex(3,MAX_FLT), nWidth(MAX_FLT), sourceType(MAX_FLT), 
+     3        attenType(MAX_FLT), grid_n(MAX_FLT), nMaxMag2(MAX_FLT),
+     4        nfp(MAX_FLT), nDownDip(MAX_FLT), HWsource7, iRate, nb1 
+      integer nMag(MAX_FLT), nRupArea(MAX_FLT), nRupWidth(MAX_FLT),
+     1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn, 
+     2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem, nRuplength, 
+     3        fsys(MAX_FLT), nMaglength, iDepthModel(MAX_FLT),
+     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT) 
+      integer nFtype1(MAX_FLT), temp_BR(MAXPARAM), kk, nMagArea, 
+     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nMagDisp, nDisp, 
+     2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt, 
+     3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip, 
+     4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
+      integer iflt, nSegModel, nMagRecur, iOverRideMag, nFtypeModels, 
+     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100), 
+     2        nSegModel0(1), runflag, ncountS7(MAX_FLT)
+      real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
+     1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
+     2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
+     3     synwt(MAX_FLT,MAX_SYN), syn_dip(MAX_FLT,MAX_SYN), 
+     4     syn_zTOR(MAX_FLT,MAX_SYN), syn_RupWidth(MAX_FLT,MAX_SYN)
+      real syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN),
+     1     rateParam1(MAX_N1), RateWt1(MAX_N1), al_segWt(MAX_FLT), 
+     2     dipWt1(MAX_N1), deltaDip1(MAX_N1), bValue1(MAX_N1), 
+     3     bValueWt1(MAX_N1), bValue2(MAX_N1), faultThick1(MAX_N1), 
+     4     faultThickWt1(MAX_N1), refMag1(MAX_N1,MAX_N1)
+      real refMagWt1(MAX_N1,MAX_N1), refMag0(MAX_N1), refMagWt0(MAX_N1),
+     1     magRecurWt1(MAX_N1), magRecur1(MAX_N1), probAct(MAX_FLT),
+     2     minlat, maxlat, minlong, maxlong, grid_a(MAX_FLT,MAX_GRID),
+     3     grid_lat(MAX_FLT,MAX_GRID), grid_long(MAX_FLT,MAX_GRID), 
+     4     grid_top(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT) 
+      real grid_dlat(MAX_FLT), minMag(MAX_FLT), magStep(MAX_FLT), 
+     1     hxStep(MAX_FLT), hyStep(MAX_FLT), minDepth(MAX_FLT), 
+     2     segModelWt(MAX_FLT), sampleStep(MAX_FLT), rP1(MAXPARAM), 
+     3     rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), rP2(MAXPARAM),
+     4     rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp3(MAXPARAM)
+      real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rp4(MAXPARAM), 
+     1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp5(MAXPARAM),
+     2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
+     3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), mtest
+      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
+     1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT), 
+     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
+     3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG), 
+     4     ftype(MAX_FLT,MAX_N1), faultWidthWt(MAX_FLT,MAX_WIDTH)
+      real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), 
+     1     ftmodelwt(MAX_N1), rupLength(MAX_N1), rupLength_wt(MAX_N1), 
+     2     magApproach_wt(3), c_magLength(4,MAX_N1), wt_srBranch, 
+     3     c_magArea(4,MAX_N1), magArea_wt(MAX_N1), magLength_wt(MAX_N1),
+     4     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_ActrateBranch
+      real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
+     1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM), 
+     2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
+     3     MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM), segWt1(MAX_FLT),
+     4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM)
+      real rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH),
+     1     c_magDisp(4,MAX_N1), magDisp_wt(MAX_N1), aspectMin(MAX_N1),
+     2     disp(MAX_N1), disp_wt(MAX_N1), depthParam(MAX_FLT,5),
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT), dip1, top, 
+     4     temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)     
+      real dip(MAX_FLT,MAX_WIDTH, MAX_SEG), segModelWt1(MAX_FLT,100), 
+     1     wt_MoRateBranch, dip2, testMaxMag, sum, ProbAct0,
+     2     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
+     3     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
+     4     mechS7(MAX_FLT,MAX_S7)
       character*80 fName(MAX_FLT), fName1
-      integer ifsystem, nfsystem, fsys(MAX_FLT), nRuplength, nMaglength
-      real rupLength(MAX_N1), rupLength_wt(MAX_N1), magApproach_wt(3)
-      real c_magLength(4,MAX_N1), magLength_wt(MAX_N1)
-      real c_magArea(4,MAX_N1), magArea_wt(MAX_N1)
-      real mtest, mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM)
-      real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
-      real wt_srBranch, wt_ActrateBranch, wt_recIntBranch
-      real sr(MAXPARAM), wt_sr(MAXPARAM)
-      real actRate(MAXPARAM), actRateWt1(MAXPARAM)
-      real MoRate(MAXPARAM), wt_MoRate(MAXPARAM)
-      real MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM)
-      real rec_Int(MAXPARAM), wt_recInt(MAXPARAM)
-      real rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real c_magDisp(4,MAX_N1), magDisp_wt(MAX_N1), aspectMin(MAX_N1)
-      real disp(MAX_N1), disp_wt(MAX_N1)
-      real depthParam(MAX_FLT,5)
-      integer iDepthModel(MAX_FLT)
-      real scaleRate(MAX_FLT)
-      integer nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), nFtype1(MAX_FLT)
-      real segWt(MAX_FLT,MAX_FLT), segWt1(MAX_FLT)
-      real dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
-      integer temp_BR(MAXPARAM), BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
-      real temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)
-      integer segModelFlag(MAX_FLT,100), nSegModel0(1), runflag
-      real segModelWt1(MAX_FLT,100), dip1, top, wt_MoRateBranch
-      real dip2, testMaxMag, sum, ProbAct0
-      integer kk, nMagArea, nMagDisp, nDisp, iDip, iWidth, nThick1
-      integer nSR, nMoRate, nRecInt, ii, ipt, nFlt, iCoor, iFlt0, k
-      integer nFlt2, i, iflt2, isyn, igrid, n_Dip, nActRate, iRecur
-      integer iThickDip, iThick1, nRefMag0, iFM, iflt, nSegModel
-      integer nMagRecur, iOverRideMag, nFtypeModels, nFM, iRefMag
-      integer i_bValue, iRate, nb1
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -252,6 +247,25 @@ c        Check for custom fault source
 
           enddo
          endif
+
+c        Check for Sourcetype 7 (UCERF)
+         if ( sourceType(iFlt) .eq. 7 ) then
+            read (10,*)  top, HWsource7
+
+            if (runflag .eq. 3) then
+               write (*,*) 'Top, HW = ', top, HWsource7
+               write (17,*) 'Dip1, top = ', top, HWsource7
+            endif
+
+            call RdSource7 (iFlt, mags7, rates7, dists7, dips7, mechs7, ncountS7 )
+            write (*,*) 'NcountS7 =', ncountS7(iFlt)
+
+            if (runflag .eq. 3) then
+               write (*,*) 'NcountS7 =', ncountS7(iFlt)
+               write (17,*) 'NcountS7 =', ncountS7(iFlt)
+            endif
+         endif
+
 
 c        Read dip Variation
          if ( sourceType(iFlt) .lt. 5 ) then
@@ -758,6 +772,9 @@ c                Set max mag
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
                    nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
+                   if (sourceType(iFlt) .eq. 7) then
+                     nMag(iFlt) = ncountS7(iFlt)
+                   endif
                      if (nMag(iFlt) .eq. 0 ) then
                        nMag(iFlt) = 1
                      endif    
@@ -802,7 +819,7 @@ c     End loop over iThick1
            fsys(iFlt) = ifsystem
 c     End loop over iFlt2 (# segments)
           enddo
-          ifsystem = ifsystem + 1
+          ifsystem = ifsystem + 1          
 c     End loop over iFlt
       enddo
       nfsystem = ifsystem - 1

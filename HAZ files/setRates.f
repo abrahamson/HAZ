@@ -1,6 +1,6 @@
 c ------------------------------------------------------------------  
 
-      subroutine Set_Rates ( nParamVar, magRecur, rate, beta, minMag,           
+      subroutine Set_Rates ( sourceType, nParamVar, magRecur, rate, beta, minMag,           
      1           maxMag, iFlt, iWidth, faultArea, 
      1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
 
@@ -22,12 +22,17 @@ c ------------------------------------------------------------------
       real*8 sum
       real term1, term2, term3, scale, pL1, pU1, contrmaxmag
       integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH)                  
-      integer nmstep, iWidth, i1                    
+      integer nmstep, iWidth, i1, sourceType                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
       real maxmag1, magstep1, texp, contrexp, rate_M_gt_0
       real bAC, gamma, bGR, fGR, fAC, gAC, meanMoChar, pRatio
       real c2, c3, c4, bM2, bM1, scale1, faultArea, x, deltamac
       real meanMoRelease1, meanMoRelease2, meanMoRelease3, fix_step
+
+c     No rate calculation needed for SourceType 7
+      if (sourceType .eq. 7) then
+        goto 100
+      endif
       
       rigidity = 3.0e11       
 
@@ -386,6 +391,8 @@ c........does not work with BC Hydro Alternative Characteristic Model
            endif
          endif           
         enddo                                  
+
+ 100  continue
 
       return                            
       end                               

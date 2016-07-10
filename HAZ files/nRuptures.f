@@ -30,6 +30,8 @@ c           exceed fault area. Set rupture length
               if (rupLen .gt. faultLen) then
                 rupLen = faultLen
               endif
+            elseif (sourceType .eq. 7) then
+              rupWidth = 12.0
             elseif (sourceType .eq. 4 ) then
               if (rupWidth .gt. faultWidth) then                                        
                  rupWidth = faultWidth                                                          
@@ -72,6 +74,8 @@ c      Set nLocX for grid and area sources
          nLocX = nLocXAS
        else if (sourceType .eq. 4) then
          nLocX = grid_n
+       else if (sourcetype .eq. 7) then
+         nLocX = 1
 
 c      Set nLocX, n1AS, and n2AS for fault sources
        else
@@ -174,6 +178,9 @@ c      declarations passed out
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
+              elseif (sourceType .eq. 7) then
+                nLocY = 1
+                pLocX = 1.0
               endif
 
        return
