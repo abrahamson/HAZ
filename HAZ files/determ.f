@@ -8,7 +8,7 @@ C       attenflag = 2 Spectra
       include 'pfrisk.h'
 
       integer cfmodel, icalc, ncalc, jcalc1, ndist, hwflag, 
-     1        iAtten, jtype, scalc1, sigflag, ssscalc1, anper, vs30_class, 
+     1        iAtten, jtype, scalc1, sigflag, anper, vs30_class, 
      2        attenflag, intflag(4,MAX_PROB), jj, forearc, coefcountRrup, 
      3        coefcountRjb, idist, iProb, nper, iper, icf, dcpp_GMPE_Flag
       real Theta_site, cfcoefRRup(MAX_Atten,11), cfcoefRjb(MAX_Atten,11),
@@ -20,7 +20,7 @@ C       attenflag = 2 Spectra
      1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST), 
      2     attenRx(MAXDETM_DIST), hypodepth, hypodepth1, rupWidth, 
      3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), 
-     4     period1(4,1), disthypo, Rx, Ry0, temp 
+     4     period1(4,1), disthypo, Rx, Ry0, temp
       character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), 
      1             sigmaName(4,MAX_PROB)
 
@@ -32,9 +32,11 @@ c     read input parameters for attenuation models.
          read (13, '(a80)' ) attenoutfile
          open (67, file=attenoutfile)
          write (67, '(a80)') attentitle
-         read (13,*) ncalc
+         read (13,*) ncalc         
+         
          do icalc=1, ncalc
             read (13,*) jcalc1, gfac1(1), gfac2(1), svad(1)
+         
 C     Check for different sigma models either fixed or GMPE.
 C     Options are as follows:
 C       jcalc > 0 (use GMPE sigma model)
@@ -44,7 +46,7 @@ C           if scalc < 0 (use fixed sigma value) sigflag = 2
             sigflag = 0
             if (jcalc1 .lt. 0) then
                backspace (13)
-               read (13,*) jcalc1, gfac1(1), gfac2(1), svad(1), scalc1, sigfix1, ssscalc1
+               read (13,*) jcalc1, gfac1(1), gfac2(1), svad(1), scalc1, sigfix1
                jcalc1 = abs(jcalc1)
                if (scalc1 .lt. 0) then
                   sigflag = 2
@@ -66,22 +68,25 @@ C     Check for Common Functional Form with RJB Distance (11000<jcalc<12000) sel
 
             read (13,*) mag
             read (13,*) ndist
+            
             do idist=1,ndist
                read (13,*) attenrupdist(idist), attenjbdist(idist), 
      1                     attenseisdist(idist), attenhypodist(idist),
-     2                     attenRx(idist)
+     2                     attenRx(idist)     
             enddo
             read (13,*) ftype(1,1), dip1(1), hwflag
+            
 c     Check for dipping fault type with Dip angle = 90.
             if (ftype(1,1) .ne. 0.0 .and .dip1(1) .eq. 90.0) then
                write (*,*) 'Fault Type Not Strike-Slip and Dip of '
                write (*,*) '      fault is 90 degrees!'
                write (*,*) '  *** Check input parameters ***'
             endif
-            read (13,*) vs, vs30_class, forearc
-            read (13,*) hypodepth, RupWidth
-            read (13,*) depthvs10, depthvs15, D25, ftop(1,1)
+            read (13,*) vs, vs30_class, forearc            
+            read (13,*) hypodepth, RupWidth            
+            read (13,*) depthvs10, depthvs15, D25, ftop(1,1)            
             read (13,*) specT(1,1)
+            
 c     Write input parameters to output file.
             write (67, *) ' ***** Input Parameters *****'
             write (67,'(2x,a15,i8)')    'Jcalc      = ', jcalc1
@@ -195,7 +200,7 @@ C         Check for different sigma models either fixed or GMPE.
           sigflag = 0
           if (jcalc1 .lt. 0) then
             backspace (13)
-            read (13,*) jcalc1, scalc1, sigfix1, ssscalc1
+            read (13,*) jcalc1, scalc1, sigfix1
             jcalc1 = abs(jcalc1)
             if (scalc1 .lt. 0) then
               sigflag = 2

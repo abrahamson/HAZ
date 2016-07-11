@@ -133,7 +133,7 @@ c ---------------------------------------------------------------------
       subroutine calcFltGrid ( xFlt, yFlt, zFlt, npts, nDD, fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, faultW, 
-     3               distMin1, step, fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     3               step, fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
 
@@ -151,7 +151,7 @@ c ---------------------------------------------------------------------
      1     x2n2, y1n2, y2n2, z1n2, z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, 
      2     dzn2, x(5), y(5), z(5), x0, y0, z0, faultLen, dx, dy, dz, width1,
      3     dist, dist1, dist2, x1, y1, z1, x2, y2, z2, xLtop, yLtop, zLtop,
-     4     xLbot, yLbot, zLbot, w, step, distMin1, faultW, sum1     
+     4     xLbot, yLbot, zLbot, w, step, faultW, sum1     
       real fltGrid_x1(MAXFLT_DD,MAXFLT_AS), fltGrid_y1(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_z1(MAXFLT_DD,MAXFLT_AS), fltGrid_x2(MAXFLT_DD,MAXFLT_AS),
      2     fltGrid_y2(MAXFLT_DD,MAXFLT_AS), fltGrid_z2(MAXFLT_DD,MAXFLT_AS),
@@ -160,8 +160,6 @@ c ---------------------------------------------------------------------
      5     fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS)
      
       real*8 dfaultArea   
-
-      distMin1 = 1.E10
 
 c     Find the widest part of the fault and set the number of grid points down dip
       sum1 = 0.
@@ -347,8 +345,7 @@ c           Compute Rjb
               enddo             
               fltGrid_Rjb(i,j) = dist2
             endif   
-          
-          if (fltGrid_Rrup(i,j) .lt. distMin1) distMin1=fltGrid_Rrup(i,j)
+
         enddo
       enddo
 

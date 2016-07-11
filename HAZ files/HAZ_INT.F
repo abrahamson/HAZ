@@ -1,18 +1,30 @@
 c fHaz_init.f                                                                  
-                                                                                               
-      subroutine InitFltMax ( amxmg, mindist, amxi )                            
+
+c -------------------------------------------------------------- 
+
+      subroutine InitMinDis (iFlt, nWidth, MinRrup_temp, MinRjb_temp, 
+     1                       MinSeismo_temp, SourceDist)
 
       implicit none
-                                                        
-      real amxmg, mindist, amxi                                                 
-                                                                                
-      AMXMG = -99999.                                                                                                                                          
-      AMXI = -99999.                                                            
-      minDist = 1.0e30                                                          
+      include 'pfrisk.h'
+
+      integer iFlt, nWidth, iWidth, j      
+      real MinRrup_temp, MinRjb_temp, MinSeismo_temp, 
+     1     SourceDist(MAX_FLT,MAX_WIDTH,3)
+
+        MinRrup_temp = 1.e10
+        MinRjb_temp = 1.e10
+        MinSeismo_temp = 1.e10
+        do iWidth=1,nWidth
+          do j=1,3
+            SourceDist(iFlt,iWidth,j) = 1.e10
+          enddo
+        enddo
+
       return                                                                    
-      end                                                                       
-                                                                                
-c --------------------------------------------------------------                
+      end 
+
+c --------------------------------------------------------------  
                                                                                 
       subroutine InitHaz ( Haz ) 
 
@@ -274,51 +286,6 @@ c -------------------------------------------------------------
       enddo
       return
       end
-
-c -------------------------------------------------------------
-
-      subroutine InitBrhaz ( nProb, nInten, nNode, br_haz )
-
-      implicit none
-      include 'pfrisk.h'   
-                                                     
-      integer nInten(MAX_PROB), nProb, iBr, iNode, jInten, iProb 
-      integer nNode(MAX_NODE)
-      real*8 BR_haz(MAX_INTEN, MAX_PROB, MAX_BRANCH, MAX_NODE)
-
-      do iProb=1,nProb
-       do jInten=1,nInten(iProb)
-        do iBr=1,MAX_BRANCH 
-         nNode(iBR) = 0
-         do iNode=1,MAX_Node
-          br_haz(jInten,iProb,iBr,iNode) = 0.
-         enddo
-        enddo
-       enddo
-      enddo       
-
-      return 
-      end        
-
-c -------------------------------------------------------------
-
-      subroutine InitMinDist ( nWidth, FaultDist )
-
-      implicit none
-      include 'pfrisk.h'   
-                                                     
-      integer iWidth, nWidth, iFlt, j
-      real faultDist(MAX_FLT,MAX_WIDTH,3), minDist
-
-      minDist = 1.e10
-      do iWidth=1,nWidth(iFlt)
-        do j=1,3
-           FaultDist(iFlt,iWidth,j) = 1.e10
-        enddo
-      enddo
-
-      return 
-      end        
 
 c -------------------------------------------------------------
 

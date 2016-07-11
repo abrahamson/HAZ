@@ -4,7 +4,7 @@
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
-     5               sCalc, sigfix, sssCalc, bnumflag, cfcoefrrup, cfcoefrjb, 
+     5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
      6               coefcountrrup, coefcountRjb, iMixture )
 
       implicit none
@@ -13,10 +13,10 @@
       integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag,
      1        nMagBins, nDistBins, nEpsBins, nXcostBins, nProb, nwr,
      2        psCorFlag, dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN),
-     3        sCalc(MAX_PROB,4,MAX_ATTEN), sssCalc(MAX_PROB,4,MAX_ATTEN),
+     3        sCalc(MAX_PROB,4,MAX_ATTEN),
      4        nAttenType, nAtten(MAX_PROB,4), soilAmpFlag, iCoor
       integer ichart, charcount, coefcountrrup, coefcountrjb,
-     1        iMixture(4,MAX_PROB,MAX_ATTEN), nFlt, i, j, j1, k, jj,
+     1        iMixture(MAX_PROB,4,MAX_ATTEN), nFlt, i, j, j1, k, jj,
      2        nSegModel(1), nFtype(MAX_FLT), nfp(MAX_FLT),
      3        nMag(MAX_FLT), sourceType(MAX_FLT), nRupArea(MAX_FLT),
      4        nRupWidth(MAX_FLT), nParamVar(MAX_FLT,MAX_WIDTH)  
@@ -230,25 +230,25 @@ c     Enter GM models for each problem
         do j=1,nAttenType
            write (18,*) 
            write (18,'(a19,2x,i4)') 'Attenuation Type = ', j
-           write (18,*) ' Jcalc    Const1   Const2   Weight   SigVaradd  Scalc    SigFix   SSSCalc    iMix'
+           write (18,*) ' Jcalc    Const1    Const2    Weight    SigVaradd    iMix    j_sigma    fix_sigma'
 
           checkattenwt = 0.0
           read (13,*,err=2006) nAtten(i,j)
           call CheckDim ( nAtten(i,j), MAX_ATTEN, 'MAX_ATTEN ' )
           do k=1,nAtten(i,j)
-            read (13,*,err=2007) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(j, i, k)  
+            read (13,*,err=2007) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(i,j,k)  
 
 C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
             if (jcalc(i,j,k) .lt. 0) then
                backspace (13)
-               read (13,*,err=2006) jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
-     1              sigvaradd(i,j,k), iMixture(j, i, k), sCalc(i,j,k), sigfix(i,j,k)
+               read (13,*,err=2006) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
                write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,2i6)')
-     1              jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
-     1             sigvaradd(i,j,k), sCalc(i,j,k), sigfix(i,j,k), ssscalc(i,j,k), iMixture(j, i, k)  
+     1              jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1             sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
             else
-            write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,31x,i6)') jCalc(i,j,k), gm1,gm2, gm_wt(i,j,k), 
-     1           sigvaradd(i,j,k), iMixture(j, i, k)
+            write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,31x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1           sigvaradd(i,j,k), iMixture(i,j,k)
             endif
 
 C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) selected and if so read in coefficients.
@@ -534,8 +534,8 @@ c  -------------------------------------------------------------------
      2           attenName, period1, probAct, nWidth, 
      4           m_bar, d_bar, e_bar, riskBins, nMagBins, nDistBins,
      5           nEpsBins, magBins, distBins, epsBins,
-     6           al_segWt, minDist, nAttenType, attenType, segWt1,
-     7           dirflag,tapflag, intflag, fsys, faultdist,mMagout,
+     6           al_segWt, MinRrup, nAttenType, attenType, segWt1,
+     7           dirflag,tapflag, intflag, fsys, SourceDist, mMagout,
      8           hwflagout, ftype, vs, nmaxmag2, mMagoutwt, specT)
 
       implicit none
@@ -551,10 +551,10 @@ c  -------------------------------------------------------------------
      5     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
      9     sumbar, xx
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM)
-      real minDist(MAX_FLT), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
+      real MinRrup(MAX_FLT), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
       real*8 risk2(MAX_INTEN), sum, risk2t(MAX_INTEN)
       real  period1(4,MAX_PROB),
-     1     sigTrunc(MAX_PROB), probAct(MAX_FLT), faultdist(MAX_FLT,MAX_WIDTH,3)
+     1     sigTrunc(MAX_PROB), probAct(MAX_FLT), SourceDist(MAX_FLT,MAX_WIDTH,3)
       integer csrflag(MAX_PROB), attenType(MAX_FLT), nAttenType, dirflag(MAX_PROB)
       integer tapflag(MAX_PROB), intflag(4,MAX_PROB), nAtten, nwr, ii, k, l
       integer nMagBins, nDistBins, nEpsBins, fsys(MAX_FLT), kk
@@ -590,7 +590,7 @@ c     a total number of fault listings in the output file.
             do l=1,nMaxMag2(ii)
 
                write (nwr,1111) fname(ii), ii, fsys(ii),
-     1         (faultdist(ii,k,kk),kk=1,3), k,l, mMagout(ii,k,l),
+     1         (SourceDist(ii,k,kk),kk=1,3), k,l, mMagout(ii,k,l),
      2         mMagoutWt(ii,k,l), ftype(ii), hwflagout(ii), vs
 
             enddo
@@ -638,9 +638,10 @@ c       Add up Risks (number of events)
 
 c       Write Results        
         do iFlt=1,nFlt
+        
           write (nwr,'( 2x,a38,2f6.3,f8.1,x,30e12.4)') fName(iFlt), 
      1          segwt1(iFlt), al_segWt(iFlt), 
-     2          minDist(iFLt),
+     2          MinRrup(iFLt),
      3          (risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
         enddo
 
@@ -711,7 +712,7 @@ c       Write MBar, DBar and EpsBar Results
       
  910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
  919  FORMAT(' LOG (AMPLITUDE):',7X,10F10.2)
- 920  FORMAT(1X,'AMP:',36x,' pSeg al_Wt  MinDis',30F12.6)
+ 920  FORMAT(1X,'AMP:',36x,' pSeg al_Wt  MinRrup',30F12.6)
  950  FORMAT('     FAULT',I2,' E(NO/YR)',5X,10E10.3)
  960  FORMAT('     TOTAL   E(NO/YR)',5X,10E10.3)
  975  FORMAT('     TOTAL risk',11X,10E10.3)
@@ -955,61 +956,6 @@ c  -------------------------------------------------------------------
           enddo
         enddo
       enddo
-
-      return
-      end
-      
-c  -------------------------------------------------------------------
- 
-      subroutine Set_Br_Haz ( nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
-     1            iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
-     2            iParam, nNode, jInten, iProb, iSeg )
-
-      implicit none
-      include 'pfrisk.h'
-      
-      integer nBR, iFtype, nSegModel(MAX_FLT), iFlt, iFltwidth, iParam
-      integer jInten, iProb, iSeg, iBR, iNode
-      integer BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE)
-      real    BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), br_wt1(MAX_BRANCH,MAX_NODE)
-      real    ftype_wt(MAX_FLT,MAX_N1), segModelWt1(MAX_FLT,100), wt5,
-     1        wt, mHaz
-      real*8  BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-
-C     Program is currently set for 13 main branches. 
-       nBr = 13
-       do iBR=1,nBR
-        if ( iBR .le. 11 ) then
-          iNode = BR_index(iFlt,iBr,iFltWidth, iParam)
-          wt5 = br_wt(iFlt,iBr,iFltWidth, iParam)
-          if (iNode .gt. nNode(iBR) ) nNode(iBR) = iNode
-          if (iNode .ne. 0 .and. wt5 .ne. 0. ) then
-              BR_haz(JInten,iProb,iBr,iNode) = BR_haz(JInten,iProb,iBr,iNode) + wt*mHaz / wt5
-              br_wt1(iBr,iNode) = wt5
-          endif
-        else
-          if ( iBR .eq. 12 ) then
-            iNode = iFtype
-            wt5 = ftype_wt(iFlt,iFtype)
-            if (iNode .gt. nNode(iBR) ) nNode(iBR) = iNode
-            if (iNode .ne. 0 .and. wt5 .ne. 0. ) then
-              BR_haz(JInten,iProb,iBr,iNode) = BR_haz(JInten,iProb,iBr,iNode) + wt*mHaz / wt5
-              br_wt1(iBr,iNode) = wt5
-            endif
-          elseif ( iBR .eq. 13 ) then
-             nNode(iBR) = nSegModel(iFlt)
-            do iSeg=1,nSegModel(iFlt)
-             iNode = iSeg
-             wt5 = segModelWt1(iFlt,iSeg)  
-             if (iNode .ne. 0 .and. wt5 .ne. 0. ) then
-               BR_haz(JInten,iProb,iBr,iNode) = BR_haz(JInten,iProb,iBr,iNode) + wt*mHaz / wt5
-              br_wt1(iBr,iNode) = wt5
-             endif
-            enddo
-          endif
-        endif    
-      enddo  
-
 
       return
       end

@@ -3,29 +3,28 @@ c    Declarations for Main file
       real*8 Haz(MAX_INTEN,MAX_PROB,MAX_FLT), p1_sum, wt, 
      1       magbar1(MAX_INTEN,MAX_PROB,MAX_FLT), prock, 
      2       tempHaz(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_ATTEN,MAX_FTYPE),
-     3       BR_haz(MAX_INTEN,MAX_PROB,MAX_BRANCH,MAX_NODE),
-     4       tempHaz1(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_FTYPE) 
-      real*8 tempHaz2(4,MAX_INTEN,MAX_PROB,MAX_ATTEN), p1,
-     1       mHaz, pxceed3, d_bar(MAX_PROB,MAX_INTEN),
-     2       m_bar(MAX_PROB,MAX_INTEN), e_bar(MAX_PROB,MAX_INTEN),
-     3       Xcost_bar(MAX_PROB,MAX_INTEN)
+     3       tempHaz1(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_FTYPE), 
+     4       tempHaz2(4,MAX_INTEN,MAX_PROB,MAX_ATTEN), p1
+      real*8 mHaz, pxceed3, d_bar(MAX_PROB,MAX_INTEN),
+     1       m_bar(MAX_PROB,MAX_INTEN), e_bar(MAX_PROB,MAX_INTEN),
+     2       Xcost_bar(MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE),
+     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
      2        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
      3        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip, 
      4        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
-      integer dirFlag1, iMixture(4, MAX_PROB, MAX_ATTEN), ibnum, nProb,
-     1        nRefPer, nRefGM, nRefMag, j, nLocXAS, nLocYST1, nLocX,
+      integer dirFlag1, iMixture(MAX_PROB,4,MAX_ATTEN), ibnum, nProb,
+     1        nRefPer, nRefGM, nRefMag, nLocXAS, nLocYST1, nLocX,
      2        iDepthFlag, iLocX, nLocY, iLocY, n1, n2, iFtype, iProb,
-     3        jType, isyn, nHypoX, iHypoX, iHypoZ, nBr, iSeg, nHypoXStep,
+     3        jType, isyn, nHypoX, iHypoX, iHypoZ, nHypoXStep,
      4        nHypoZ, nHypoZStep, dpp_flag, grid_n(MAX_FLT), iAtten
       integer csrflag(MAX_PROB),hwflag, psCorFlag, dirflag(MAX_PROB),
      1        tapflag(MAX_PROB), intflag(4,MAX_PROB), isite, nFlt, jInten,
      2        nInten(MAX_PROB), nfp(MAX_FLT), nMag(MAX_FLT), jcalc1, 
      3        jcalc(MAX_PROB,4,MAX_ATTEN), nAtten(MAX_PROB,4), nSite, 
      4        iMag, iflt, nRupArea(MAX_FLT), nRupWidth(MAX_FLT), nWidth(MAX_FLT)
-      integer scalc(MAX_PROB,4,MAX_ATTEN), scalc1, ssscalc(MAX_PROB,4,MAX_ATTEN),
+      integer scalc(MAX_PROB,4,MAX_ATTEN), scalc1,
      1        iWidth, iArea, hwflagout(MAX_FLT), sourceType(MAX_FLT), 
      2        attenType(MAX_FLT), iParam, nParamVar(MAX_FLT,MAX_WIDTH), 
      3        iMagBin, iDistBin, iEpsBin, nMagBins, nDistBins, nEpsBins, 
@@ -42,7 +41,7 @@ c    Declarations for Main file
      3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), 
      4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), dipavgd
       real Rx, Ry, Ry0, BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), 
-     1     br_wt1(MAX_BRANCH,MAX_NODE), lgInten0, pLocY(MAXFLT_AS),  
+     1     lgInten0, pLocY(MAXFLT_AS),  
      2     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
      3     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
      4     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
@@ -63,16 +62,16 @@ c    Declarations for Main file
      4     maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), minMag(MAX_FLT)
       real sigMaxWidth, areaStep, widthStep, segModelWt(MAX_FLT),
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rate(MAXPARAM,MAX_WIDTH),
-     2     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), maxmag1, mag,  
-     3     RateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), minDist, 
-     4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), maxInten, sigfix1
+     2     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), mag,  
+     3     RateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), MinRrup_temp,
+     4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), sigfix1
       real MagRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), xStep(MAX_FLT), 
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), wt2(MAXPARAM),
      2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), epsilon1, 
      3     yStep(MAX_FLT), pMag(MAXPARAM,MAX_WIDTH), xcost, fd,
      4     wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), vs, vrup 
       real rout(MAXPARAM,MAX_WIDTH), period1(4,MAX_PROB), D25,
-     1     shortDist(MAX_FLT), xCostBins(MAX_Xcost), r_horiz,
+     1     MinRrup(MAX_FLT), xCostBins(MAX_Xcost), r_horiz, MinSeismo_temp,
      2     HazBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN), rupArea, minlat, 
      3     HazBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
      4     magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS)
@@ -81,7 +80,7 @@ c    Declarations for Main file
      2     probAct(MAX_FLT), pWidth, pArea, distRup, distJB, 
      3     distSeismo, disthypo, distepi, distDensity(MAX_DIST1), 
      4     al_segWt(MAX_FLT), sampleStep(MAX_FLT), specT(MAX_PROB)
-      real faultdist(MAX_FLT,MAX_WIDTH,3), RefGM_Mag(MAX_AMPMAG),
+      real SourceDist(MAX_FLT,MAX_WIDTH,3), RefGM_Mag(MAX_AMPMAG),
      1     sigfix(MAX_PROB,4,MAX_ATTEN), lgIntenS, magTotal,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), depthvs10, 
      3     mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), depthvs15,
@@ -92,7 +91,7 @@ c    Declarations for Main file
      3     syn_zTOR(MAX_FLT,MAX_SYN), syn_RupWidth(MAX_FLT,MAX_SYN), 
      4     syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
       real refPeriod(MAX_AMPPER), RefGM(MAX_AMPMAG,MAX_AMPPER,MAX_AMPGM),
-     1     amp(MAX_AMPMAG,MAX_AMPPER,MAX_AMPGM), Theta_site,
+     1     amp(MAX_AMPMAG,MAX_AMPPER,MAX_AMPGM), Theta_site, MinRjb_temp,
      2     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), minlong, maxlong,    
      3     charMeanMo(MAXPARAM,MAX_WIDTH), expMeanMo(MAXPARAM,MAX_WIDTH),
      4     depthParam(MAX_FLT,5), ftype(MAX_FLT,MAX_N1), ftype_wt(MAX_FLT,MAX_N1)

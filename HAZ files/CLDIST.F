@@ -184,6 +184,34 @@ C         Set the Epi and Hypo distances for faults.
 
 c ----------------------------------------------------------------------
 
+      Subroutine Set_MinDist (sourceType, iFlt, iFltWidth, distRup, distJB, distSeismo, 
+     1                        SourceDist, MinRrup_temp, MinRjb_temp, MinSeismo_temp)
+
+      implicit none
+      include 'pfrisk.h'
+      
+      integer sourceType, iFlt, iFltWidth
+      real distRup, distJB, distSeismo, SourceDist(MAX_FLT,MAX_WIDTH,3),
+     1     MinRrup_temp, MinRjb_temp, MinSeismo_temp
+      
+       if ( distRup .lt. SourceDist(iFlt,iFltWidth,1) ) then
+         SourceDist(iFlt,iFltWidth,1)=distRup
+       endif
+       if ( distJB .lt. SourceDist(iFlt,iFltWidth,2) ) then
+         SourceDist(iFlt,iFltWidth,2)=distJB
+       endif
+       if ( distSeismo .lt. SourceDist(iFlt,iFltWidth,3) ) then
+         SourceDist(iFlt,iFltWidth,3)=distSeismo
+       endif
+       MinRrup_temp = SourceDist(iFlt,iFltWidth,1)
+       MinRjb_temp = SourceDist(iFlt,iFltWidth,2)
+       MinSeismo_temp = SourceDist(iFlt,iFltWidth,3)
+
+      return
+      end
+
+c ----------------------------------------------------------------------
+
       Subroutine SetnRupLoc ( n1, n2, nHypoX, pHypoX, nHypoXStep, 
      1                        nHypoZ, pHypoZ, nHypoZstep ) 
 
@@ -990,13 +1018,13 @@ c     Compute distance from point to plane
 c --------------------------------------------------------------------
 
       subroutine CalcDistDensity (nPts, xFlt2, yFlt2, distDensity,
-     1                            dr, nr, x0, y0, step, minDist )
+     1                            dr, nr, x0, y0, step)
 
       implicit none  
       include 'pfrisk.h'
 
       integer i, ix, iy, nx, ny, nPts, nr, insideFlag, iBin, iz, iBinMax
-      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), minDist, maxdist
+      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), maxdist
       real xFlt(MAX_SEG), yFlt(MAX_SEG), xMin, xMax, yMin, yMax, sum
       real distDensity(MAX_DIST1), dr, step, x, y, x0, y0, horDist
 
@@ -1024,7 +1052,6 @@ c     Initialize distDensity
       do i=1,MAX_DIST1
         distDensity(i) = 0.
       enddo
-      minDist = 1.e10
       maxdist = 0.
       
 c     Loop over bounding rectangle to estimate density function
@@ -1046,9 +1073,6 @@ C     Reset Max and Min distances if needed
              if ( horDist .gt. maxDist ) then
                maxDist = horDist
                iBinMax = iBin               
-             endif
-             if (horDist .le. mindist) then
-                minDist = horDist
              endif
 
              distDensity(iBin) = distDensity(iBin) + 1.
@@ -1073,21 +1097,20 @@ c --------------------------------------------------------------------
 
       subroutine CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y,
      1           grid_dx, grid_dy, grid_n, distDensity, dr, nr, 
-     2           x0, y0, step, minDist )
+     2           x0, y0, step)
      
       implicit none
       include 'pfrisk.h'
  
       integer grid_n(MAX_FLT), iFlt, nr, i, nx, ny, ix, iy, iBin
       real grid_a(MAX_FLT,MAX_GRID), grid_x(MAX_GRID), grid_y(MAX_GRID),
-     1     grid_dx, grid_dy, minDist, distDensity(MAX_DIST1), dr, x0, y0,
+     1     grid_dx, grid_dy, distDensity(MAX_DIST1), dr, x0, y0,
      2     step, x, y, horDist, sum, rate1
     
       nx = grid_dx/step + 1
       ny = grid_dy/step + 1
       write (*,'( 3f10.4)')grid_dx, grid_dy, step
       sum = 0.0
-      minDist = 1.e10
 
 C     Reset distdensity array.
       do i=1,max_dist1
@@ -1102,9 +1125,6 @@ C     Reset distdensity array.
           y = step/2. + grid_y(i)
           do iy=1,ny
              horDist = sqrt( (x-x0)**2 + (y-y0)**2 )
-             if (horDist .le. mindist) then
-                minDist = horDist
-             endif
              iBin = int( horDist / dr ) + 1
              call CheckDim ( iBin, MAX_DIST1, 'MAX_DIST1  ' )
              distDensity(iBin) = distDensity(iBin) + rate1

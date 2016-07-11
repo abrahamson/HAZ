@@ -41,7 +41,7 @@ c     Read Run File
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
-     5               sCalc, sigfix, ssscalc, bnumflag, cfcoefRrup, cfcoefRjb, 
+     5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
      6               coefcountRrup, coefcountRjb, iMixture )
 
 c     read fault File
@@ -124,12 +124,7 @@ c       Initialize p1_sum (check of the integration over all source pdfs)
         p1_sum = 0.
 
 c       Initialize closest distance for each distance metric
-        minDist = 1.e10
-        do iWidth=1,nWidth(iFlt)
-          do j=1,3
-            FaultDist(iFlt,iWidth,j) = 1.e10
-          enddo
-        enddo
+        call InitMinDis (iFlt, nWidth(iFlt), MinRrup_temp, MinRjb_temp, MinSeismo_temp, SourceDist)
 
 c       Loop over alternative Fault Widths (epistemic)
 c       (This changes the geometry of the source)
@@ -156,15 +151,12 @@ c        Turn fault into a grid
            call calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
      1               fltGrid_z, nfltGrid, fltGrid_a, fltGrid_w, x0, y0, z0,
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
-     3               minDist, xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
+     3               xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
          endif
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
      1      write (18,'( 2x,''fault area (km^2) = '',e12.3)') faultArea
-
-c        Initialize Deterministic Values for this Fault
-         call InitFltMax ( maxmag1, minDist, maxInten )
 
 c        Set Sampling of Rupture Area and Rupture Width Distributions
          call initRup ( sigArea, nRupArea, sigMaxArea, areaStep, iFlt)
@@ -173,13 +165,11 @@ c        Set Sampling of Rupture Area and Rupture Width Distributions
 c        Compute horizontal distance density function for areal sources (polygons or gridded seismicity)
          if ( sourceType(iFlt) .eq. 2 ) then        
            call CalcDistDensity (nPts, xFlt, yFlt, distDensity,
-     1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt), minDist )
-           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
+     1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt))         
          elseif ( sourceType(iFlt) .eq. 3 ) then
            call CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,
-     2             x0, y0, sampleStep(iFlt), minDist )
-           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
+     2             x0, y0, sampleStep(iFlt))
          elseif ( sourceType(iFlt) .eq. 4 ) then
            call CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
          endif  
@@ -291,19 +281,9 @@ c            Pass along fault grid locations for calculation of HW and Rx values
      5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
      6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
         
-c             Set minimum distances for output files.
-              if ( distRup .lt. FaultDist(iFlt,iFltWidth,1) ) then
-                FaultDist(iFlt,iFltWidth,1)=distRup
-              endif
-              if ( distJB .lt. FaultDist(iFlt,iFltWidth,2) ) then
-                FaultDist(iFlt,iFltWidth,2)=distJB
-              endif
-              if ( distSeismo .lt. FaultDist(iFlt,iFltWidth,3) ) then
-                FaultDist(iFlt,iFltWidth,3)=distSeismo
-              endif
-              if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .ge. 5 ) then
-                 MinDist = FaultDist(iFlt,iFltWidth,1)
-              endif
+c            Set minimum distances for output files.
+             call Set_MinDist (sourceType(iFlt), iFlt, iFltWidth, distRup, distJB, distSeismo, 
+     1                         SourceDist, MinRrup_temp, MinRjb_temp, MinSeismo_temp)
               
 c             Check if the distance is greater than Max dist for hazard     
               if ( distRup .gt. distmax .and. distJB .gt. distmax) goto 600
@@ -482,7 +462,7 @@ c                  Loop over test ground motion values
                    do 510 jInten = 1, nInten(iProb)
 
 c                   Compute Probability of exceeding test  
-                    if ( iMixture(jType,iProb,iAtten)  .eq. 0 ) then
+                    if ( iMixture(iProb,jType,iAtten)  .eq. 0 ) then
                       pRock = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
 
                     else
@@ -559,12 +539,7 @@ c                    Add to mean deagg
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
                      d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
-                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
-
-c                    Set up branch hazard curves for later output for fractile analysis.
-                     call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
-     1                                iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
-     2                                iParam, nNode, jInten, iProb, iSeg )                      
+                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost                    
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
@@ -616,7 +591,7 @@ c           Set the weight for this set of parameters (epistemic)
 
  800     continue
  
- 850     shortDist(iFlt) = minDist
+ 850     MinRrup(iFlt) = MinRrup_temp
 
 c        Write temp Haz array to file
          call WriteTempHaz ( tempHaz, nParamVar, nInten, nProb, 
@@ -641,8 +616,8 @@ c      Write out the mean Haz
      1       nFlt, nProb, Haz, fName, jCalc, sigTrunc, csrflag,
      2       attenName, period1, probAct, nWidth, m_bar, d_bar, e_bar,
      3       HazBins, nMagBins, nDistBins, nEpsBins, magBins, distBins,
-     4       epsBins, al_segWt, shortDist, nAttenType, attenType,
-     5       segwt1, dirflag, tapflag,intflag, fsys, faultdist,
+     4       epsBins, al_segWt, MinRrup, nAttenType, attenType,
+     5       segwt1, dirflag, tapflag,intflag, fsys, SourceDist,
      6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 
 c      Write out the deagrregated hazard
