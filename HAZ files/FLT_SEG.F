@@ -250,6 +250,15 @@ c           Set coordinates of center of grid and width and area of grid
             do i1=1,n2(i)
               i2 = i1 + i0
               
+              if ( j2 .gt. MAXFLT_AS ) then
+                write (*,'( 2x,''Error: increase dimension of MAXFLT_AS'')')
+                stop 99
+              endif 
+              if ( i2 .gt. MAXFLT_DD ) then
+                write (*,'( 2x,''Error: increase dimension of MAXFLT_DD'')')
+                stop 99
+              endif 
+              
 c             these cell coordinates are for the center point               
               fltGrid_x(i2,j2) = x1 + dx*(i1-1+0.5)
               fltGrid_y(i2,j2) = y1 + dy*(i1-1+0.5)

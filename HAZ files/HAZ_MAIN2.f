@@ -63,6 +63,7 @@ c     read fault File
      4     br_index, br_wt, segModelFlag, nSegModel, segModelWt1, runflag, 
      7     syn_dip, syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0 )
            
+      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
       do 1000 iSite = 1, nSite      
@@ -95,11 +96,11 @@ c      Open Output6 file which will contain the individual GMPE hazard curves ov
 
 c     Open output3 file
       read (13,'( a80)',err=2106) file1
-      open (12,file=file1,status='new')
+      open (12,file=file1,status='unknown')
 
 c     Open output4 file
       read (13,'( a80)') file1
-      open (14,file=file1,status='new')
+      open (14,file=file1,status='unknown')
 
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
@@ -175,10 +176,12 @@ c        Compute horizontal distance density function for areal sources (polygon
          if ( sourceType(iFlt) .eq. 2 ) then        
            call CalcDistDensity (nPts, xFlt, yFlt, distDensity,
      1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt), minDist )
+           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
          elseif ( sourceType(iFlt) .eq. 3 ) then
            call CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,
      2             x0, y0, sampleStep(iFlt), minDist )
+           mindist = sqrt( mindist**2 + grid_top(iFlt,1)**2 )
            
          elseif ( sourceType(iFlt) .eq. 4 ) then
            call CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
@@ -198,6 +201,7 @@ c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          do 800 iMag = 1, nMag(iFlt)
           mag = minMag(iFlt) + (iMag-0.5) * magStep(iFlt)
           magTotal = mag
+          dirCheck = 0.
 
 c         Set the magnitude bin for deagregating
           call SetBin ( nMagBins, magBins, mag, iMagBin )
@@ -425,20 +429,22 @@ C               Application of Directivity model.
                     
 c               Loop over hypocenter location along strike (aleatory)
                 do 540 iHypoX=1,nHypoX,nHypoXstep
+                 fs = float(iHypoX) / (nHypoX + 1.)
 
 c                Loop over hypocenter location down dip (aleatory)
                  do 530 iHypoZ=1,nHypoZ,nHypoZstep
+                  fd = float(iHypoZ) / (nHypoZ + 1.)
 
 C                 Call to the rupture directivity Subroutine if applicable
                   if ( dirflag1 .eq. 1) then
 c       JWL 4/10/16 changes
-                    call Directivity ( dirFlag(iProb), specT, DistRup, zTOR, 
-     1                 x0, y0, z0,
-     1                 Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), 
-     2                 RupWidth, RupLen, dipavgd, HWflag, dirMed, dirSigma, 
-     3                 fltgrid_x, fltgrid_y, fltgrid_z, 
-     6                 n1, n2, icellRupstrike, icellRupdip, 
-     7                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+                    call Directivity ( dirFlag(iProb), specT(iProb), DistRup, zTOR, 
+     1                 x0, y0, z0, Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), RupWidth, 
+     2                 RupLen, dipavgd, HWflag, dirMed, dirSigma, fltgrid_x, 
+     3                 fltgrid_y, fltgrid_z, n1, n2, icellRupstrike, icellRupdip, 
+     4                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+     
+                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed

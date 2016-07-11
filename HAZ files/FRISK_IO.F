@@ -314,7 +314,6 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2007 write (*,'( 2x,''input file error: jclac line for iProb, jATtenType, and iAtten='')') 
       write (*,'( 3i5)') i,j,k
-      pause 'test 2'
       stop 99
  2008 write (*,'( 2x,''input file error: common for coeff for iProb, jATtenType, and iAtten='',3i5)') i,j,k 
       stop 99

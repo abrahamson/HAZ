@@ -1,6 +1,6 @@
 
 c -------------------------------------------------------------------
-      subroutine DirJWL_V3Uni (specT, Rrup, Rx, Ry, Ruplen, Mag, mech, 
+      subroutine DirJWL_V3Uni (specT, Rrup, Rx1, Ry, Ruplen, Mag, mech, 
      1        RupWidth, dip, HWFlag, medadj, sigadj )
 
       real Rx, Ry, Ruplen, Mag, medadj, sigadj, mech, per, Rrup,
@@ -33,6 +33,11 @@ c -------------------------------------------------------------------
      1       4.3745, 4.6099, 5.0376, 5.3411, 5.7688, 6.0723, 6.5, 6.8035, 7.0389, 7.4666, 7.77 / 
       data c8org / 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 
      1         0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154, 0.2154 /
+
+c     Flip sign of Rx (JWL model used different convention
+c     THis will be corrected in the final documentation)
+      Rx = -Rx1
+
 
 C     Mean Model Coefficients - StrikeSlip
       b0_ssm = -0.10489

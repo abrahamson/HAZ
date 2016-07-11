@@ -47,6 +47,7 @@ c         Is this a slip-rate or moment rate?
 
             if ( RateType(iFlt,iParam,i) .eq. 1 ) then
               momentRate2 = rateParam(iFlt,iParam,i)*faultArea * rigidity * 1.0e9
+c              write (80,'( 3i5,2e12.4)') iflt, i, iParam,faultArea, rateParam(iFlt,iParam,i)
             else
               momentRate2 = rateParam(iFlt,iParam,i)
             endif          

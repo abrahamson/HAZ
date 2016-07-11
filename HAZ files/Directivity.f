@@ -83,34 +83,57 @@ c     Check the mag and period range for applying directivity
 c     **** Later, make these input parameters ****
       if (mag .lt. 5.6 .or. specT .lt. 0.50 ) return
 
-c     Bayless and Somerville model, DIRFLAG = X
+c     Bayless and Somerville model, DIRFLAG = 30
       if (dirflag .eq. 30 ) then 
-c       Temp set for simplified geometry
         len1 = RupLength * fs
-        hypoX = len1 + fltGrid_x(iLocDD,iLocAS)
-        theta = 180./3.14 * atan(fltgrid_y(1,1)/hypoX)
-        rake = 0.
-        X = abs(hypoX/rupLength)
-c        write (*,'( 2x,''theta(deg):''4f10.2)') fltgrid_y(1,1), hypoX, theta, X
-        
-c       Compute the source-to-site azimuth term  (note: not used for SS)
-        xLeft = fltgrid_x(1,iLocAS) 
-        xright = fltgrid_x(1,n2) 
-        if (xLeft .le. x0 .and. xRight .ge. x0 ) then
-          az = 90.
-        elseif (xRight .le. x0 .and. xLeft .ge. x0 ) then
-          az = 90.
+      
+c       Set X, Y, theta
+        Y = fd
+
+c       is the site along the rupture?
+        if ( ry0 .eq. 0 ) then
+          s = abs( Ry - (fs-0.5)*RupLength)
+          x =  s / RupLength
+          theta = atan(Rx/s)
         else
-c         not working, but not used
-          az = 0.
+          s = len1
+          x =  s / RupLength
+          theta = atan( Rx/abs(s+Ry0) )
+        endif
+
+c       Change to degrees
+        theta = 180./3.14 * theta
+        
+c       set rake
+        if ( ftype .eq. 0. ) then
+          rake = 0.
+        elseif ( ftype .eq. 0.5 ) then
+          rake = 45.
+        elseif ( ftype .eq. 1. ) then
+          rake = 90
+        elseif ( ftype .eq. -0.5 ) then
+          rake = -45.
+        elseif ( ftype .eq. -1 ) then
+          rake = -90.
+        endif
+        
+c       Compute the source-to-site azimuth term (as defined by PEER)
+        if ( Ry0 .eq. 0. ) then
+          if ( Rx .ge. 0. ) then
+            az = 90.
+          else
+            az = -90.
+          endif
+        else
+          az = atan( Rx/Ry0) * 180./3.14 
         endif
 
 c       compute Bayless model
         call ruptdirct2012_jrb ( specT, Rrup, mag, rupLength, rupWidth, ftype, 
      1                           theta, rake, Rx, X, Y, az, lnfd, lnfn, lnfp ) 
         medadj = lnfd
-
-c       set sigma reduction
+        
+c       set sigma reduction based on JWL model (not used, but keep in case we want to add it)
         if (specT .eq. 0.0) then
           count1=1
           count2=1
@@ -124,10 +147,12 @@ c       set sigma reduction
         endif
         call interp (period(count1),period(count2),phi2_red(count1),phi2_red(count2),
      +                   specT,sigadj,iflag)
-     
-        dirMed = medadj
-        dirSigma = sigadj
-        
+
+c      zero sigma adj for now    
+       sigadj = 0.
+
+c        write (*,'( 20f8.3)') mag, rupLength, rupWidth, ftype, theta, rake, Rx, X, Y, az, 
+c     1        specT, fs, fd, lnfd, dirSigma, sigadj
       endif
        
 c     JWL 2015 model, uniform Hypocenter model for SS and RV faults
