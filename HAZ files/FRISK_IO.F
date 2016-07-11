@@ -243,11 +243,11 @@ C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
                backspace (13)
                read (13,*,err=2006) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
      1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
-               write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,2x,i6,2x,f8.4,2x,2i6)')
+               write (18,'(i6,3x,f8.4,2x,f8.4,1x,f9.5,f11.4,2x,i6,4x,i6,6x,f8.4)')
      1              jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
      1             sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
             else
-            write (18,'(i6,3x,f8.4,1x,f8.4,f9.5,f11.4,31x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+            write (18,'(i6,3x,f8.4,2x,f8.4,2x,f9.5,f11.4,2x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
      1           sigvaradd(i,j,k), iMixture(i,j,k)
             endif
 
