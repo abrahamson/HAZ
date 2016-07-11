@@ -26,5 +26,5 @@ script:
     - cmake ..
     - make
     - cd ../scripts
-    - python3 run_tests.py --cores 2 --haz_bin ../build/HAZ --rtol 0.001
+    - python3 run_tests.py --cores 2 --haz_bin ../build/HAZ --rtol 0.005
 
