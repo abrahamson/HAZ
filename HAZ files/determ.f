@@ -15,12 +15,12 @@ C       attenflag = 2 Spectra
      1     coefrr(MAX_PER,11), coefrj(MAX_PER,11), mag, distrup, distjb, 
      2     distseismo, vs, sigfix1, lgInten, sigmaY, depthvs10, depthvs15, 
      3     D25, minaper, maxaper, aper(MAX_PER), ftype(MAX_FLT,MAX_FTYPE),
-     4     fTop(MAX_FLT, MAX_SEG), dip1(MAX_SEG), AR, tau, phi
+     4     fTop(MAX_FLT, MAX_SEG), dipd, AR, tau, phi, hypodepth1 
       real attenrupdist(MAXDETM_DIST), attenjbdist(MAXDETM_DIST), 
      1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST), 
-     2     attenRx(MAXDETM_DIST), hypodepth, hypodepth1, rupWidth, 
+     2     attenRx(MAXDETM_DIST), attenRy0(MAXDETM_DIST), hypodepth,  
      3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), 
-     4     period1(4,1), disthypo, Rx, Ry0, temp
+     4     period1(4,1), disthypo, Rx, Ry0, temp, rupWidth
       character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), 
      1             sigmaName(4,MAX_PROB)
 
@@ -72,12 +72,12 @@ C     Check for Common Functional Form with RJB Distance (11000<jcalc<12000) sel
             do idist=1,ndist
                read (13,*) attenrupdist(idist), attenjbdist(idist), 
      1                     attenseisdist(idist), attenhypodist(idist),
-     2                     attenRx(idist)     
+     2                     attenRx(idist), attenRy0(idist)     
             enddo
-            read (13,*) ftype(1,1), dip1(1), hwflag
+            read (13,*) ftype(1,1), dipd, hwflag
             
 c     Check for dipping fault type with Dip angle = 90.
-            if (ftype(1,1) .ne. 0.0 .and .dip1(1) .eq. 90.0) then
+            if (ftype(1,1) .ne. 0.0 .and .dipd .eq. 90.0) then
                write (*,*) 'Fault Type Not Strike-Slip and Dip of '
                write (*,*) '      fault is 90 degrees!'
                write (*,*) '  *** Check input parameters ***'
@@ -95,7 +95,7 @@ c     Write input parameters to output file.
             write (67,'(2x,a15,f8.3)')  'SigVarAdd  = ', svad(1)
             write (67,'(2x,a15,f8.3)')  'Mag        = ', mag
             write (67,'(2x,a15,f8.2)')  'Ftype      = ', ftype(1,1)
-            write (67,'(2x,a15,f8.3)')  'Dip        = ', dip1(1)
+            write (67,'(2x,a15,f8.3)')  'Dip        = ', dipd
             write (67,'(2x,a15,i8)')    'HWFlag     = ', hwflag
             write (67,'(2x,a15,f8.3)')  'Vs30m      = ', vs
             if (vs30_class .eq. 1) then
@@ -114,9 +114,9 @@ c     Write input parameters to output file.
             elseif (forearc .eq. 1) then
                write (67,'(4x,a16)')     'Backarc Site    '
             endif
-            write (67, '(1x,a38,a98,8x,a80)') ' Period(s)   Mag    RupDist    JBDist ',
-     1            ' SeisDist  HypoDist    RxDist      SA(g)   Sigma   Const1  Const2  SigAdd     Phi     Tau    Model',
-     2            '  Sigma Model'
+            write (67, '(1x,a38,a110,10x,a80)') ' Period(s)   Mag    Rrup      Rjb     ',
+     1            ' SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau ',
+     2            ' GMModel                                               SigmaModel'
 
 C     Perform loop over distances for attenuation models.
             do idist = 1, ndist
@@ -125,13 +125,14 @@ C     Perform loop over distances for attenuation models.
                distSeismo = attenseisdist(idist)
                disthypo = attenhypodist(idist)
                Rx = attenRx(idist)
+               Ry0 = attenRy0(idist)
                iAtten = 1
                jType = 1
 
                call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), period1, 
-     3               iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dip1,
+     3               iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dipd,
      4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0)
@@ -145,7 +146,7 @@ C     Check for sigma values different than requested GMPE.
                  call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, scalc1, specT(1,1),  
      2               temp, sigmaY, ftype(1,1), sigmaName(1,1), period1, 
-     3               iAtten, iProb, jType, vs, hypoDepth,intflag,AR,dip1,
+     3               iAtten, iProb, jType, vs, hypoDepth,intflag,AR,dipd,
      4               disthypo, depthvs10, depthvs15, D25, tau,  ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0 )
@@ -170,7 +171,7 @@ c               Check for reduction of sigma is greater than 0.0.
                 endif
 
                 write (67, 676) specT(1,1), mag, distrup, distJB,
-     1                         distseismo, disthypo, Rx, exp(lgInten), sigmaY, 
+     1                         distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY, 
      2                         gfac1(1), gfac2(1), svad(1), phi, tau,
      4                         attenname(1,1), sigmaname(1,1)
 
@@ -181,7 +182,7 @@ c               Check for reduction of sigma is greater than 0.0.
          write (*,*) 'End of Attenuation Ground Motion Modeling.'
 
       endif
- 676  format (f10.3,f8.3,5f10.3,e12.4,6f8.4,4x,a80,2x,a80)
+ 676  format (f10.3,f8.3,6f10.3,e12.4,6f8.4,4x,a80,2x,a80)
 
 C     If requested compute ground motion spectra from input data file.
 c        (i.e., attenflag = 2)
@@ -214,12 +215,12 @@ C         Check for different sigma models either fixed or GMPE.
           do idist=1,ndist
             read (13,*) attenrupdist(idist), attenjbdist(idist), 
      1                     attenseisdist(idist), attenhypodist(idist),
-     2                     attenRx(idist)
+     2                     attenRx(idist), attenRy0(idist)
           enddo
-          read (13,*) ftype(1,1), dip1(1), hwflag
+          read (13,*) ftype(1,1), dipd, hwflag
 
 c         Check for dipping fault type with Dip angle = 90.
-          if (ftype(1,1) .ne. 0.0 .and .dip1(1) .eq. 90.0) then
+          if (ftype(1,1) .ne. 0.0 .and .dipd .eq. 90.0) then
              write (*,*) 'Fault Type Not Strike-Slip and Dip of '
              write (*,*) '      fault is 90 degrees!'
              write (*,*) '  *** Check input parameters ***'
@@ -251,7 +252,7 @@ c         Write input parameters to output file.
           write (67,'(2x,a15,i8)')    'Jcalc      = ', jcalc1
           write (67,'(2x,a15,f8.3)')  'Mag        = ', mag
           write (67,'(2x,a15,f8.2)')  'Ftype      = ', ftype(1,1)
-          write (67,'(2x,a15,f8.3)')  'Dip        = ', dip1(1)
+          write (67,'(2x,a15,f8.3)')  'Dip        = ', dipd
           write (67,'(2x,a15,i8)')    'HWFlag     = ', hwflag
           write (67,'(2x,a15,f8.3)')  'Vs30m      = ', vs
           if (vs30_class .eq. 1) then
@@ -270,9 +271,9 @@ c         Write input parameters to output file.
           elseif (forearc .eq. 1) then
             write (67,'(4x,a16)')     'Backarc Site    '
           endif
-          write (67, '(1x,a38,a108,8x,a80)') ' Period(s)   Mag    RupDist    JBDist ',
-     1             ' SeisDist  HypoDist    RxDist      SA(g)   Sigma  Const1  Const2  Sigadd     Phi    Tau    Per Notes   Model',
-     2             '  Sigma Model'
+          write (67, '(1x,a38,a110,2x,a80)') ' Period(s)   Mag    Rrup      Rjb     ',
+     1             ' SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau ',
+     2             ' Per_Notes                     GMModel                     Sigma Model'
 
 C         Perform loop over distances for attenuation models.
           do idist = 1, ndist
@@ -281,6 +282,7 @@ C         Perform loop over distances for attenuation models.
             distSeismo = attenseisdist(idist)
             disthypo = attenhypodist(idist)
             Rx = attenRx(idist)
+            Ry0 = attenRy0(idist)
             iAtten = 1
             jType = 1
 
@@ -316,7 +318,7 @@ c             is not defined (output will be set to null value of -9.99999)
                 call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten, sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dip1,
+     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0 )
@@ -328,7 +330,7 @@ c             is not defined (output will be set to null value of -9.99999)
                 call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dip1,
+     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
@@ -340,7 +342,7 @@ c             is not defined (output will be set to null value of -9.99999)
                 call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dip1,
+     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
@@ -352,7 +354,7 @@ c             is not defined (output will be set to null value of -9.99999)
                 call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
      2               lgInten,sigmaY, ftype(1,1), attenName(1,1), 
-     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dip1,
+     2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau, 
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
@@ -372,7 +374,7 @@ C              Now compute the sigma if requested is different than jcalc GMPE.
                    call meanInten ( distRup, distJB, distSeismo,
      1                     hwflag, mag, scalc1, specT(1,1),  
      2                     temp,sigmaY, ftype(1,1), sigmaName(1,1), 
-     2                     period1, iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dip1,
+     2                     period1, iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dipd,
      4                     disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5                     theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
      6                     cfcoefRrup, cfcoefRjb, Ry0 )
@@ -400,17 +402,17 @@ c                Check for reduction of sigma is greater than 0.0.
 C              Write out spectra with notes for each spectral period.
                if (intflag(1,icalc) .eq. 0 ) then
                  write (67, 678) specT(1,1), mag, distrup, distJB,
-     1                            distseismo, disthypo, Rx, exp(lgInten), sigmaY, 
+     1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY, 
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
      4                            'Defined', attenname(1,1), sigmaname(1,1)
                elseif (intflag(1,icalc) .eq. 1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
-     1                            distseismo, disthypo, Rx, exp(lgInten), sigmaY, 
+     1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY, 
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau, 
      4                            'Interp', attenname(1,1), sigmaname(1,1)
                elseif (intflag(1,icalc) .eq. -1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
-     1                            distseismo, disthypo, Rx, -9.99999, -9.9999, 
+     1                            distseismo, disthypo, Rx, Ry0, -9.99999, -9.9999, 
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau, 
      4                            'Outside', attenname(1,1), sigmaname(1,1)
                endif
@@ -422,7 +424,7 @@ C              Write out spectra with notes for each spectral period.
          write (*,*) 'End of Spectra Ground Motion Modeling.'
 
       endif
- 678  format (f10.3,f8.3,5f10.3,e12.4,6f8.4,4x,a7,3x,a80,2x,a80)
+ 678  format (f10.3,f8.3,6f10.3,e12.4,6f8.4,4x,a7,3x,a80,2x,a80)
 
       return
       end

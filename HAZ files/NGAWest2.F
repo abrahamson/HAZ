@@ -3107,7 +3107,7 @@ C     Compute tau, with non-linear effects (eq. 7.9)
       
 c     Compute median ground motion (eq. 1)
       lnSa = f1 + f4 + f5 + f6 + f7 + f8 + f9 + f10 + f11 + freg 
-      
+
       return
       end
  
