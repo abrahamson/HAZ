@@ -1,51 +1,50 @@
-1  iCoor  (0=(x,y), 1=(long,lat)
-1  flts
+1  			iCoor  (0=x,y 1=long,lat)
+1  			Number of flts
 Set2Test2d
-1.0 	Prob Activity - this is used for the linked branch weight 
-1  	nSeg model
-1.   	segments, wt   
-1	total number of sources
-1 	flags for Los_Osos
+1.0 			Prob Activity 
+1  			Number of seg models
+1.   		  	  wts for seg models   
+1			Number of segments
+1 		  	  flags for seg model
 01_Set2Test2d
-1 1  0. 0 0 	source type, atten type, sampleStep (km), fltdirect, synchron
-1.0  		aleatory seg wt
-90 0.0	Dip, Depth to Top
-2
--65.00000	0.38221
--65.00000	-0.38221
-1              	Number of dip variations
-0.           		dip variations
-1.	       		wt for dip variations
-1             	Number of b-values
-0.9          		b-values
-1.            		weights for b-values
-0		Number of Act. Rates
-1.0 0.0 0.0 0.0       	weights for sr, activity rate, rec int, MoRate branches (required)
-1             	Number of slip-rates
-2		   (obl and rev values)      	Slip rates (mm/yr)  
-1       	Weights for slip rates
-0        	Number of rec. int.
-0		Number MoRates
-1             	nRecur
-1           	recur model (3=max mag, 0=Y&C, 1=exp)
-1.0		mag recurrence weights
-0.0 0.0 0.0     	delta_M1 and delta_M2 for char. mag. recur. relationship 
-1             	Number of fault widths
-12.            		fault widths
-1.0          		weights for fault widths 
-0   0.0  0.0  0.0		Depth pdf model and param
-1             	overridgemag option
-1             	number of maximum magnitudes (fault width 1)
-7.0
-1.
-    5.0    0.05  0.05 0.05  1  1  0.0  (minmag, magstep, hxStep, hzStep, nRupArea, nRupWidth, minDepth)
-      -4.0  1.0  0.0001  (rupArea: a, b, sigma in log10 units) W&C all
-     -2.15  0.5  0.0001  (rupWidth: a, b, sigma in log10 units) W&C all
-1              	Number of Fault Mechanism Models
-1.0           		Fault Mech Model Wt
-1              	Number of mechanisms
-   0.0             	ftype
-   1.0            	wts
+1  1  0.  0  0 		source type, atten type, sample step (km), dirflag, synflag
+1.0  			aleatory seg wt
+90 0.0			dip, depth to top
+2			Number of long/lat pts
+-65.00000  0.38221 	  long lat pts
+-65.00000  -0.38221
+1              		Number of dip variations
+0.           		  dip variations
+1.	       		  wt for dip variations
+1             		Number of b-values
+0.9          		  b-values
+1.            		  wts for b-values
+0			Number of act rates
+1.0  0.0  0.0  0.0	  wts for sr, act. rate, rec int, MoRate branches
+1             		Number of slip-rates
+2		   	  slip rates (mm/yr)  
+1       		  wts for slip rates
+0        		Number of rec. int.
+0			Number of moment rates
+1             		Number of mag recur models
+1           		  mag recur model (1=exp)
+1.0			  wts for mag recur model
+0.0  0.0  0.0     	  mpdf1, mpdf2, mpdf3 
+1             		Number of fault widths
+12.            		  fault widths
+1.0          		  wts for fault widths 
+0  0.0  0.0  0.0	Depth pdf model (0=uniform) and params
+1             		Number of max mags (fault width 1)
+7.0			  max mags
+1.			  wts for max mags
+5.0  0.05  0.05  0.05  1  1  0.0  minmag, magstep, hxStep, hzStep, nRupArea, nRupWidth, minDepth
+-4.00  1.0  0.0  	rupArea coeff: a, b, sigma in log10 units
+-2.15  0.5  0.0  	rupWidth coeff: a, b, sigma in log10 units
+1              		Number of fault mech models
+1.0           		  wts for fault mech models
+1              		Number of fault mech
+0.0             	  fault mech
+1.0            	  	  wts for fault mech
 
    
 

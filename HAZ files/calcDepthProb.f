@@ -87,7 +87,6 @@ c         Uniform distribution
 
         elseif (iDepthModel .eq. 2 ) then
 c         Triangle distribution (using the hypocenter at the center of the rupture)
-          write (*,'( 2x,'' use triangle'')')
           z_half = rupWidth * sin(dip*3.1415926/180.) / 2.
 
           do iLocY=1,nLocY

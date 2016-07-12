@@ -1,31 +1,31 @@
 Source_S2Test5b.txt
--1.0 1.0 -66.0 -64.0  min max long lat
-200. maxdist
+-1.0 1.0 -66.0 -64.0			min max lat long
+200. 					maxdist
 PEER Verification, Set 2 Test 5b
-1  1  (Prob, nAttenType)
-  0.0  8  0   (period, max epsilon, dir flag)
+1  1  					nProb, nAttenType
+0.0  8  0   				  period, max epsilon, dir flag
 18 
-0.001	0.01	0.05	0.1	0.2	0.4	0.6	0.8	1.0	1.25	1.5	2.0	2.5	3.0	4.0	5.0	6.0	7.0
-1      Number of GM Models for Atten Type 1
--2798 0.0 0.0 1.0 0.0 1 -1 0.65 0    CY14 measured  Vs
-0  psCorFlag  (0=no, 1=yes)
-3
-5.9 6.1 6.2
-3
-0.0 10.0 20.0
-9 
--10 0.0 6.0 6.2 6.4 6.6 6.8 7.0 7.5
-7
-0.0 0.10 0.20 0.30 0.35 0.40 2.0
-0  soil amp
-1     nSites
--65.13490  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DepthVs1.0, DepthVs1.5, z25, Vrup, FABA)
+0.001  0.01  0.05  0.1  0.2  0.4  0.6  0.8  1.0  1.25  1.5  2.0  2.5  3.0  4.0  5.0  6.0  7.0
+1      					  Number of GM Models for Atten Type 1
+-2798 0.0 0.0 1.0 0.0 1 -1 0.65    	  jcalc, const1, const2, wt, SigVaradd, mixflag, j_sigma, fix_sigma (CY14 meas)
+0  					psCorFlag  (0=no, 1=yes)
+5					Number of deag mag values
+4.75  5.75  6.25  6.75  7.25	  	  deag mag values
+6					Number of deag dist values
+0.0  12.5  17.5  20.0  22.5  30.0  	  deag dist values  
+9 					Number of deag eps values
+-10.  0.  1.  2.  3.  4.  5.  6.  10.   deag eps values
+4					Number of deag dir values
+0.0 0.10 0.40 2.0		  	  deag dir values
+0  					soil amp
+1     					nSites
+-65.13490  0.00000   760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
 Set2Test5b_Site1.out1
 Set2Test5b_Site1.out2
-Set2Test5b_Site1.out5
-Set2Test5b_Site1.out6
 Set2Test5b_Site1.out3
 Set2Test5b_Site1.out4
+Set2Test5b_Site1.out5
+Set2Test5b_Site1.out6
 
 
 

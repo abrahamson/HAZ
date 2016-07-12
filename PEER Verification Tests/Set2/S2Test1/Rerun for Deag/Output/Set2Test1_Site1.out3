@@ -8,15 +8,15 @@ Fault Name                       nFlt System Number Rupture Dist   BJF Dist  Cam
     1  nAtten
   Attenuation:     1      0.0000
     1  nAmp
- AMP:                                     pSeg al_Wt  MinDis    0.187066
-  01_AreaSource                          1.000 1.000     0.7   0.3846E-03
-  01_FaultB                              1.000 1.000    50.0   0.2191E-04
-  01_FaultC                              1.000 1.000    25.0   0.5951E-03
-  Wt_Total_Events/yr                     0.000 0.000     0.0   0.1002E-02
-  Poisson_Prob:                          0.000 0.000     0.0   0.1001E-02
+ AMP:                                     pSeg al_Wt  MinRrup    0.186070
+  01_AreaSource                          1.000 1.000     5.0   0.3893E-03
+  02_FaultB                              1.000 1.000    50.0   0.2267E-04
+  03_FaultC                              1.000 1.000    25.0   0.6044E-03
+  Wt_Total_Events/yr                     0.000 0.000     0.0   0.1016E-02
+  Poisson_Prob:                          0.000 0.000     0.0   0.1016E-02
   M_bar                                  0.000 0.000     0.0   0.612E+01
   D_bar                                  0.000 0.000     0.0   0.222E+02
-  Eps_bar                                0.000 0.000     0.0   0.880E+00
+  Eps_bar                                0.000 0.000     0.0   0.873E+00
 
 ------------------
 

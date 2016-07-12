@@ -1,0 +1,50 @@
+1  			iCoor  (0=x,y 1=long,lat)
+1  			Number of flts
+Set1Test7_fast
+1.0 			Prob Activity 
+1  			Number of seg models
+1.   		  	  wts for seg models   
+1			Number of segments
+1 		  	  flags for seg model
+01_Set1Test7_fast
+1  1  0.  0  0 		source type, atten type, sample step (km), dirflag, synflag
+1.0  			aleatory seg wt
+90 0.0			dip, depth to top
+2			Number of long/lat pts
+-122.0000  38.2248	  long lat pts
+-122.0000  38.0000
+1              		Number of dip variations
+0.           		  dip variations
+1.	       		  wt for dip variations
+1             		Number of b-values
+0.9          		  b-values
+1.            		  wts for b-values
+0			Number of act rates
+1.0  0.0  0.0  0.0	  wts for sr, act. rate, rec int, MoRate branches
+1             		Number of slip-rates
+2		   	  slip rates (mm/yr)  
+1       		  wts for slip rates
+0        		Number of rec. int.
+0			Number of moment rates
+1             		Number of mag recur models
+0           		  mag recur model (0=Y&C)
+1.0			  wts for mag recur model
+0.5 1.0 0.25     	  mpdf1, mpdf2, mpdf3 
+1             		Number of fault widths
+12.            		  fault widths
+1.0          		  wts for fault widths 
+0  0.0  0.0  0.0	Depth pdf model (0=uniform) and params
+1             		Number of max mags (fault width 1)
+6.2			  max mags
+1.			  wts for max mags
+5.0  0.05  0.1  0.1  1  1  0.0  minmag, magstep, hxStep, hzStep, nRupArea, nRupWidth, minDepth
+-4.00  1.0  0.0  	rupArea coeff: a, b, sigma in log10 units
+-2.15  0.5  0.0  	rupWidth coeff: a, b, sigma in log10 units
+1              		Number of fault mech models
+1.0           		  wts for fault mech models
+1             	 	Number of fault mech
+0.0             	  fault mech
+1.0            		  wts for fault mech
+
+   
+
