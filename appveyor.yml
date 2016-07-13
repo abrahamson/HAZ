@@ -1,0 +1,38 @@
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: false
+
+# Consider both master and devlopment branches
+branches:
+    # White list
+    only:
+        - master
+        - develop
+
+# Configure git linebreaks
+init:
+    - git config --global core.autocrlf input
+
+environment:
+    fast_finish: true
+    matrix:
+    - BUILD: mingw32
+      PATH: C:\msys64\mingw32\bin;C:\msys64\usr\bin;%PATH%
+      FC: C:/msys64/mingw32/bin/gfortran.exe
+      
+    - BUILD: mingw64
+      PATH: C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+      FC: C:/msys64/mingw64/bin/gfortran.exe
+
+build_script:
+    - mkdir build tests
+    - cd build
+    - cmake.exe -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC% -DSTATIC=ON ..
+    - C:\\msys64\\usr\\bin\\make.exe
+    - 7z a %APPVEYOR_BUILD_FOLDER%\haz-%BUILD%.zip haz.exe
+
+artifacts:
+    - path: haz-mingw32.zip
+      name: HAZ MinGW32 (32-bit) Executable
+
+    - path: haz-mingw64.zip
+      name: HAZ MinGW64 (64-bit) Executable
