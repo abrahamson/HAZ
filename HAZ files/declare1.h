@@ -106,7 +106,7 @@ c    Declarations for Main file
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS),
      1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11)
-      real ati(MAX_PROB, MAX_INTEN), distRx
+      real ati(MAX_PROB, MAX_INTEN)
 
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2,
      1             sigmaName(4,MAX_PROB), filebmode
