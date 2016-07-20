@@ -11,7 +11,7 @@ c    Declarations for Main file
      3       Xcost_bar(MAX_PROB,MAX_INTEN)
       real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
      1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
-     2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), risk(MAX_INTEN,MAX_PROB,MAX_FLT)
+     2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
      1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), nNode(MAX_NODE),
@@ -106,7 +106,7 @@ c    Declarations for Main file
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS)
       real fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS),
      1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11)
-      real ati(MAX_PROB, MAX_INTEN)
+
 
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2,
      1             sigmaName(4,MAX_PROB), filebmode

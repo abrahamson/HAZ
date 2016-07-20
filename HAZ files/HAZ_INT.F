@@ -277,11 +277,14 @@ c -------------------------------------------------------------
 
 c -------------------------------------------------------------
 
-      subroutine InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar )
-      include 'pfrisk.h'                                                        
+      subroutine InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar_s )
+      implicit none
+      include 'pfrisk.h'                                                       
+
       real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
       real*8 rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
       real*8 e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+      integer iFlt, i, ii
 
       do iFlt=1,MAX_FLT
         do i=1,MAX_PROB
