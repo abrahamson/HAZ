@@ -85,8 +85,6 @@
       real mechS7(MAX_FLT,MAX_S7), version
       character*80 fName(MAX_FLT), fName1
       
-      write (*,'( f10.3)') version
-      pause 'flt file format version'
       if ( version .eq. 45.1 ) then
         call Rd_Fault_Data_45_1 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 

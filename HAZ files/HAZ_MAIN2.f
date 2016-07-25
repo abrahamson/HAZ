@@ -29,7 +29,10 @@ c     Write Program information to the screen.
          read (*,'(a80)') filebmode
          open (77,file=filebmode,status='old')
       endif
-      
+
+      write (*,*) 'Enter the version for the format of the fault file'
+      read (*,*) version
+    
 c     Start loop over number of batch mode runs
       do 2000 ibnum=1,bnum
          if (bnumflag .eq. 1) then

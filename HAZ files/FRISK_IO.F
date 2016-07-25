@@ -126,8 +126,6 @@ c     Create log filename for PHSA run.
          write (*,*) 'Enter the input fault file name for Fault File testing.'
          read (*,'( A80)') file1
          open (10,file=file1,status='old')
-         write (*,*) 'Enter the version for the format of the fault file'
-         read (*,*) version
 
          write (*,*) 'Enter the ouput file name for Fault File testing.'
          read (*,'( A80)') filelog
@@ -186,7 +184,6 @@ c         stop
 c     Read fault file name and version format     
       read (13,'( a80)') filein
       open (10,file=filein,status='old',err=2101)
-      read (13,*,err=2020) version
 
       if (runflag .eq. 4) then
          write (19,*) 'Distance Checking Results:'
