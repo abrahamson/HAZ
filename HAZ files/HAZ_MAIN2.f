@@ -5,6 +5,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       implicit none
       include 'pfrisk.h'
       include 'declare1.h' 
+      real version
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
@@ -42,7 +43,7 @@ c     Read Run File
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
-     6               coefcountRrup, coefcountRjb, iMixture )
+     6               coefcountRrup, coefcountRjb, iMixture, version )
 
 c     read fault File
       call Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
@@ -61,8 +62,8 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
      5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7 )             
-      
+     7     DistS7, DipS7, mechS7, ncountS7, version )             
+     
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
       do 1000 iSite = 1, nSite      

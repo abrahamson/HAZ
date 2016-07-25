@@ -5,7 +5,7 @@
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
-     6               coefcountrrup, coefcountRjb, iMixture )
+     6               coefcountrrup, coefcountRjb, iMixture, version )
 
       implicit none
       include 'pfrisk.h'
@@ -62,7 +62,7 @@
      3     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), depthParam(MAX_FLT,5),
      4     segWt1(MAX_FLT), magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7)
       real distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
-     1     mechS7(MAX_FLT,MAX_S7)
+     1     mechS7(MAX_FLT,MAX_S7), version
      
       character*80 filein, title, file1, filelog, filehyp, 
      1             fName(MAX_FLT)
@@ -126,14 +126,17 @@ c     Create log filename for PHSA run.
          write (*,*) 'Enter the input fault file name for Fault File testing.'
          read (*,'( A80)') file1
          open (10,file=file1,status='old')
+         write (*,*) 'Enter the version for the format of the fault file'
+         read (*,*) version
+
          write (*,*) 'Enter the ouput file name for Fault File testing.'
          read (*,'( A80)') filelog
          open (17,file=filelog,status='new')        
          write (17,*) 'Fault File Testing for fault file: ', file1
          write (17,*) 
 
-c     read fault File
-      call Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
+c        read fault File
+         call Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
      1     yStep, segModelWt, rateParam, rateParamWt, beta,
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag,  
      3     maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, ftype, 
@@ -149,7 +152,7 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
      5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7 )  
+     7     DistS7, DipS7, mechS7, ncountS7, version )  
 
            write (*,*)
            write (*,*) 'Normal termination of fault file for testing.'
@@ -180,9 +183,10 @@ c         stop
          goto 123
       endif
  
-c     Read fault file name      
+c     Read fault file name and version format     
       read (13,'( a80)') filein
       open (10,file=filein,status='old',err=2101)
+      read (13,*,err=2020) version
 
       if (runflag .eq. 4) then
          write (19,*) 'Distance Checking Results:'
@@ -341,6 +345,8 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2018 write (*,'( 2x,''input file error: soil amp flag'')') 
       stop 99
+ 2020 write (*,'( 2x,''input error for version for fault file version'')') 
+      stop 99
  2100 write (*,'( 2x,''run file does not exist'')')
       write (*,'( 2x,a80)') file1
       stop 99
@@ -457,9 +463,8 @@ c  -------------------------------------------------------------------
 
       do iProb=1,nProb
 
-      if ( iFltWidth .eq. 1 ) write (11,'( 20i5)') iFlt, iProb, nAtten(iProb,jType),
-     1         nWidth(iFlt), nFtype(iFlt),(nParamVar(iFlt,i),i=1,nWidth(iFlt)), 
-     2         nInten(iProb)
+      write (11,'( 20i5)') iFlt, iFltWidth, iProb, nAtten(iProb,jType),
+     1     nWidth(iFlt), nFtype(iFlt),nParamVar(iFlt,iFltWidth), nInten(iProb)
 
        do iAtten = 1,nAtten(iProb,jType)
           do iFtype=1,nFtype(iFlt)
