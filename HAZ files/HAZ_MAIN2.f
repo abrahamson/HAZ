@@ -78,29 +78,40 @@ c      Read site-specific site amplification
 c      Open Output1 file which will contain the individual hazard curves. 
        read (13,'( a80)',err=2102) file1
        open (11,file=file1,status='unknown')
+       write (11, *) '45.2 Haz45.2 Out1 file - individual hazard curves'
        
 c      Open Output2 file for Probability of Magnitude Density for each parameter combination.
        read (13,'( a80)',err=2104) file2
        open (17,file=file2,status='unknown')
+       write (17, *) '45.2 Haz42.1 Out2 file - magnitude recurrence curves for SSC fractile code'
        write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
        write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
 
 c      Open Output3 file
        read (13,'( a80)',err=2106) file1
        open (12,file=file1,status='unknown')
-
+       write (12, *) '45.2 Haz45.2 Out3 file - mean hazard curves'
+       
 c      Open Output4 file
        read (13,'( a80)') file1
        open (14,file=file1,status='unknown')
+       write (14, *) '45.2 Haz45.2 Out4 file - deaggregation output'
        
 c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
        read (13,'( a80)',err=2105) file1
        open (27,file=file1,status='unknown')
+       write (27, *) '45.2 Haz45.2 Out5 file - SSC tornado output file'
        
 c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
        read (13,'( a80)',err=2106) file1
        open (28,file=file1,status='unknown')
+       write (28, *) '45.2 Haz45.2 Out6 file - GMC tornado output file'
 
+c      Open Output7 file which will contain deaggregations for each source.
+       read (13,'( a80)',err=2107) file1
+       open (29,file=file1,status='unknown')
+       write (29, *) '45.2 Haz45.2 Out7 file - deaggregation by source'
+       
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
        call InitHaz ( magbar1 )
@@ -109,6 +120,7 @@ c      Initialize Haz Arrays to zero
 
 c      Initialize Mean Deagg values for this site
        call InitDeagg ( m_bar, d_bar, e_bar, Xcost_bar )
+       call InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar_s)
 
 C      Initialize temp hazard array for GM sensitivity
        call Init_tempHaz2 ( tempHaz2 )
@@ -539,7 +551,28 @@ c                    Add to mean deagg
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
                      d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
+<<<<<<< HEAD
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost                    
+=======
+                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
+
+c DGM addition
+c                    Add to source deagg 
+                     wt1 = wt * gm_wt(iProb,jType,iAtten)
+                     m_bar_s(iFlt,iProb,jInten) = m_bar_s(iFlt,iProb,jInten) + mHaz*wt1*magTotal
+                     rrup_bar_s(iFlt,iProb,jInten) = rrup_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distRup
+                     rjb_bar_s(iFlt,iProb,jInten) = rjb_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distjb
+                     rx_bar_s(iFlt,iProb,jInten) = rx_bar_s(iFlt,iProb,jInten) + mHaz*wt1*Rx
+                     e_bar_s(iFlt,iProb,jInten) = e_bar_s(iFlt,iProb,jInten) + mHaz*wt1*epsilon1
+c                     write (*,*) m_bar_s(iFlt,iProb,jInten),rrup_bar_s(iFlt,iProb,jInten), rjb_bar_s(iFlt,iProb,jInten), 
+c     1                           rx_bar_s(iFlt,iProb,jInten), e_bar_s(iFlt,iProb,jInten) 
+c                     pause 'm_bar_s, rrup_bar_s'
+
+c                    Set up branch hazard curves for later output for fractile analysis.
+                     call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
+     1                                iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
+     2                                iParam, nNode, jInten, iProb, iSeg )                      
+>>>>>>> out7_and_versioning
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
@@ -629,6 +662,12 @@ c      Write out the deagrregated hazard
      4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
      5       HazBinsX)
      
+
+       call output_sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
+     1           nFlt, Haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
+     2           rx_bar_s, e_bar_s, specT, nProb)
+     
+
         call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue
@@ -653,5 +692,7 @@ c      Write out the deagrregated hazard
       stop 99
  2106 write (*,'( 2x,''input file error: output file name'')')
       stop 99
-     
+ 2107 write (*,'( 2x,''input file error: output file name'')')
+      stop 99 
+      
       end
