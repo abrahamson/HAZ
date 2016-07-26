@@ -466,6 +466,8 @@ c  -------------------------------------------------------------------
        do iAtten = 1,nAtten(iProb,jType)
           do iFtype=1,nFtype(iFlt)
            do iParam=1,nParamVar(iFlt,iFltWidth)
+c             write (11,'( 6i4,20e15.6 )')  iFlt, iFltWidth, iProb, iAtten, iFtype, iParam,
+c     1           (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
              write (11,'( 20e15.6 )')  (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
            enddo
           enddo
