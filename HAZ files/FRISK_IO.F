@@ -1061,7 +1061,7 @@ c        Write MBar, RrupBar, Rjbbar, Rxbar and EpsBar Results
       return
       
  910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
- 920  FORMAT(1X,'AMP:',36x,30F12.6)
+ 920  FORMAT(1X,'AMP:',39x,30(F8.3,2x))
       end
       
 c  -------------------------------------------------------------------

@@ -551,9 +551,6 @@ c                    Add to mean deagg
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
                      d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
-<<<<<<< HEAD
-                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost                    
-=======
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
 
 c DGM addition
@@ -566,13 +563,6 @@ c                    Add to source deagg
                      e_bar_s(iFlt,iProb,jInten) = e_bar_s(iFlt,iProb,jInten) + mHaz*wt1*epsilon1
 c                     write (*,*) m_bar_s(iFlt,iProb,jInten),rrup_bar_s(iFlt,iProb,jInten), rjb_bar_s(iFlt,iProb,jInten), 
 c     1                           rx_bar_s(iFlt,iProb,jInten), e_bar_s(iFlt,iProb,jInten) 
-c                     pause 'm_bar_s, rrup_bar_s'
-
-c                    Set up branch hazard curves for later output for fractile analysis.
-                     call Set_Br_Haz (nBr, Br_Index, Br_wt, Br_Haz, Br_wt1,     
-     1                                iFtype, ftype_Wt, nSegModel, segModelWt1, iflt, ifltwidth, 
-     2                                iParam, nNode, jInten, iProb, iSeg )                      
->>>>>>> out7_and_versioning
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
