@@ -104,7 +104,7 @@ c    Declarations for Main file
      1     cfcoefrrup(MAX_ATTEN,11), cfcoefRjb(MAX_ATTEN,11),
      2     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
      3     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
-     4     mechS7(MAX_FLT,MAX_S7)
+     4     mechS7(MAX_FLT,MAX_S7), version
 
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2, 
      1             sigmaName(4,MAX_PROB), filebmode   

@@ -5,7 +5,6 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       implicit none
       include 'pfrisk.h'
       include 'declare1.h' 
-      real version
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
@@ -29,9 +28,6 @@ c     Write Program information to the screen.
          read (*,'(a80)') filebmode
          open (77,file=filebmode,status='old')
       endif
-
-      write (*,*) 'Enter the version for the format of the fault file'
-      read (*,*) version
     
 c     Start loop over number of batch mode runs
       do 2000 ibnum=1,bnum

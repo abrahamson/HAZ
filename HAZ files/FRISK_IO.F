@@ -126,6 +126,7 @@ c     Create log filename for PHSA run.
          write (*,*) 'Enter the input fault file name for Fault File testing.'
          read (*,'( A80)') file1
          open (10,file=file1,status='old')
+         write (*,*) 'Enter the version number for the format of the fault file'
 
          write (*,*) 'Enter the ouput file name for Fault File testing.'
          read (*,'( A80)') filelog
@@ -184,6 +185,7 @@ c         stop
 c     Read fault file name and version format     
       read (13,'( a80)') filein
       open (10,file=filein,status='old',err=2101)
+      read (13,*,err=2020) version
 
       if (runflag .eq. 4) then
          write (19,*) 'Distance Checking Results:'
@@ -342,7 +344,7 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2018 write (*,'( 2x,''input file error: soil amp flag'')') 
       stop 99
- 2020 write (*,'( 2x,''input error for version for fault file version'')') 
+ 2020 write (*,'( 2x,''input file error: fault file version number'')') 
       stop 99
  2100 write (*,'( 2x,''run file does not exist'')')
       write (*,'( 2x,a80)') file1
@@ -352,8 +354,6 @@ c     Read bins for de-aggregating the hazard
       stop 99
 
       end
-
-
 
 c  --------------------------
       subroutine CheckDim ( n, nMax, name )
@@ -453,25 +453,23 @@ c  -------------------------------------------------------------------
       implicit none 
       include 'pfrisk.h'
 
-      integer nProb, jType, iProb, i, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
+      integer nProb, jType, iProb, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
      1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iflt, nfType(MAX_FLT),
      2        iFltWidth, nWidth(MAX_FLT), iAtten, iParam
       real*8 tempHaz(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_ATTEN,MAX_FTYPE)
 
       do iProb=1,nProb
 
-      write (11,'( 20i5)') iFlt, iFltWidth, iProb, nAtten(iProb,jType),
+        write (11,'( 20i5)') iFlt, iFltWidth, iProb, nAtten(iProb,jType),
      1     nWidth(iFlt), nFtype(iFlt),nParamVar(iFlt,iFltWidth), nInten(iProb)
 
-       do iAtten = 1,nAtten(iProb,jType)
+        do iAtten = 1,nAtten(iProb,jType)
           do iFtype=1,nFtype(iFlt)
-           do iParam=1,nParamVar(iFlt,iFltWidth)
-c             write (11,'( 6i4,20e15.6 )')  iFlt, iFltWidth, iProb, iAtten, iFtype, iParam,
-c     1           (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
-             write (11,'( 20e15.6 )')  (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
-           enddo
+            do iParam=1,nParamVar(iFlt,iFltWidth)
+              write (11,'( 20e15.6 )')  (tempHaz(iParam,j,iProb,iAtten,iFtype),j=1,nInten(iProb))
+            enddo
           enddo
-       enddo
+        enddo
       enddo
     
       return
