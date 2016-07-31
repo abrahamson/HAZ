@@ -1,4 +1,5 @@
 Source_S1Test8b.txt
+45.2					version of fault file
 36.5 39.5 -123.5 -120.5  		min max lat long 
 200. 					maxdist
 PEER Verification, Set 1 Test 8b

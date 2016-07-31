@@ -1,4 +1,5 @@
 Source_S2Test2d_fast.txt
+45.2					version of fault file
 -1.0 1.0 -66.0 -64.0			min max lat long
 200. 					maxdist
 PEER Verification, Set 2 Test 2d fast
