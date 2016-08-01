@@ -5,17 +5,18 @@ This folder contains scripts for reading HAZ files, and running tests on the
 
 ## Requirements
 
-The scripts are written for Python 3.5, and currently does not support
-previous versions. Additionally, `numpy` is required for the numeric tests.
-The Python installer is available from
-[here](https://www.python.org/downloads/). After Python is installed, `numpy`
-may be installed using `pip`:
+The scripts are written for Python 3.5, and currently do not support
+earlier versions. Additionally, the `numpy` library is required for the
+numeric tests.  The Python installer is available from
+[here](https://www.python.org/downloads/). After Python is installed, the
+`numpy` library may be installed using `pip`:
 
     pip install numpy
 
-Alternatively, Python and `numpy` can be installed via `conda`. After
-installing [miniconda3](http://conda.pydata.org/miniconda.html), the `numpy`
-library can be installed with:
+Alternatively, Python and the `numpy` library can be installed via the `conda`
+package manager. After installing
+[miniconda3](http://conda.pydata.org/miniconda.html), the `numpy` library can
+be installed with:
 
     conda install numpy
 
