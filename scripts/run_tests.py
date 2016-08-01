@@ -238,7 +238,7 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_src', type=str,
-                        default='../PEER Verification Tests/',
+                        default='../PEER_Verification_Tests/',
                         help='Root path of test cases')
     parser.add_argument('-t', '--root_test', type=str,
                         default='../tests',
