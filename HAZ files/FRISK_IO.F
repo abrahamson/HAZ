@@ -580,11 +580,6 @@ c     a total number of fault listings in the output file.
       nwr = 12
       write (nwr,'(2i8,10x,''Number of faults, fault cases'')')
      1       nFlt,casecount
-      write (nwr,'(a28,5x,a19,a61,a33)') 
-     1 'Fault Name                  ',
-     2 'nFlt System Number ',
-     3 'Rupture Dist   BJF Dist  Campbell Dist nWidth nMaxmag Max Mag',
-     4 '  Wts.  Fault Type   HWFlag    Vs'
 
       do ii=1,nFlt
          do k=1,nWidth(ii)

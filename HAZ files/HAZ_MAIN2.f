@@ -83,7 +83,7 @@ c      Open Output1 file which will contain the individual hazard curves.
 c      Open Output2 file for Probability of Magnitude Density for each parameter combination.
        read (13,'( a80)',err=2104) file2
        open (17,file=file2,status='unknown')
-       write (17, *) '45.2 Haz42.1 Out2 file - magnitude recurrence curves for SSC fractile code'
+       write (17, *) '45.2 Haz45.2 Out2 file - magnitude recurrence curves for SSC fractile code'
        write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
        write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
 
