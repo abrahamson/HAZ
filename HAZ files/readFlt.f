@@ -59,9 +59,10 @@
      4     rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp3(MAXPARAM)
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rp4(MAXPARAM), 
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp5(MAXPARAM),
+     1     rp6(MAXPARAM), 
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), mtest
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), mtest
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT), 
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
@@ -192,9 +193,10 @@ c  --------------------------------------------------------------------
      4     rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp3(MAXPARAM)
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rp4(MAXPARAM), 
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp5(MAXPARAM),
+     1     rp6(MAXPARAM),
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), mtest
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), mtest
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT), 
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
@@ -548,20 +550,26 @@ c        Read in corresponding magnitude parameters.
          do iRecur=1,nMagRecur
            if (magRecur1(iRecur) .eq. 4) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             rp6(iRecur) = 0.0
 c          Read in necessary parameters for bi-exponential distribution.
            elseif (magRecur1(iRecur) .eq. 5) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             rp6(iRecur) = 0.0
             elseif (magRecur1(iRecur) .eq. 10) then
-             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur),
+     1           rp6(iRecur)
           else              
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur)
              rp4(iRecur) = 0.0
              rp5(iRecur) = 0.0
+             rp6(iRecur) = 0.0
            endif
 
         if (runflag .eq. 3) then
-           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
-           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), 
+     1        rp4(iRecur), rp5(iRecur), rp6(iRecur)
+           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur),
+     1        rp4(iRecur), rp5(iRecur), rp6(iRecur)
         endif
 
          enddo
@@ -797,6 +805,7 @@ c  temp fix - the maxmag, refmag problem for waacy
                  mpdf_param(iFlt,i,iWidth,3) = rP3(iRecur)
                  mpdf_param(iFlt,i,iWidth,4) = rP4(iRecur)
                  mpdf_param(iFlt,i,iWidth,5) = rP5(iRecur)
+                 mpdf_param(iFlt,i,iWidth,6) = rP6(iRecur)
 
 c      Test for the maximum magnitude value for all realizations of this fault.
                  if (maxMag(iFlt,i,iWidth) .ge. mtest) then
@@ -1064,9 +1073,10 @@ c ----------------------------
      4     rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp3(MAXPARAM)
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rp4(MAXPARAM), 
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), rp5(MAXPARAM),
+     1     rp6(MAXPARAM),
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), mtest
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), mtest
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT), 
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG), 
@@ -1421,20 +1431,26 @@ c        Read in corresponding magnitude parameters.
          do iRecur=1,nMagRecur
            if (magRecur1(iRecur) .eq. 4) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             rp6(iRecur) = 0.0
 c          Read in necessary parameters for bi-exponential distribution.
            elseif (magRecur1(iRecur) .eq. 5) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             rp6(iRecur) = 0.0
             elseif (magRecur1(iRecur) .eq. 10) then
-             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), 
+     1           rp5(iRecur), rp6(iRecur)
           else              
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur)
              rp4(iRecur) = 0.0
              rp5(iRecur) = 0.0
+             rp6(iRecur) = 0.0
            endif
 
         if (runflag .eq. 3) then
-           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
-           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
+           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur),
+     1         rp5(iRecur), rp6(iRecur)
+           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), 
+     1         rp5(iRecur), rp6(iRecur)
         endif
 
          enddo
@@ -1677,6 +1693,7 @@ c  temp fix - the maxmag, refmag problem for waacy
                  mpdf_param(iFlt,i,iWidth,3) = rP3(iRecur)
                  mpdf_param(iFlt,i,iWidth,4) = rP4(iRecur)
                  mpdf_param(iFlt,i,iWidth,5) = rP5(iRecur)
+                 mpdf_param(iFlt,i,iWidth,6) = rP6(iRecur)
 
 c      Test for the maximum magnitude value for all realizations of this fault.
                  if (maxMag(iFlt,i,iWidth) .ge. mtest) then

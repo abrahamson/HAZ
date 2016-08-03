@@ -50,7 +50,7 @@
      1     dip(MAX_FLT,MAX_WIDTH, MAX_SEG), ftype(MAX_FLT,MAX_N1),
      2     coeff_area(2,MAX_FLT), sigArea(MAX_FLT), coeff_width(2,MAX_FLT),
      3     sigWidth(MAX_FLT), minDepth(MAX_FLT), probAct(MAX_FLT),
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), al_segWt(MAX_FLT) 
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), al_segWt(MAX_FLT) 
       real sampleStep(MAX_FLT), grid_a(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT),
      1     grid_dlat(MAX_FLT), grid_long(MAX_FLT,MAX_GRID),
      2     grid_lat(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID),

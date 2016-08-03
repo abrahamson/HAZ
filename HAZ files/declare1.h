@@ -67,7 +67,7 @@ c    Declarations for Main file
      4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), sigfix1
       real MagRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), xStep(MAX_FLT), 
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), wt2(MAXPARAM),
-     2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), epsilon1, 
+     2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), epsilon1, 
      3     yStep(MAX_FLT), pMag(MAXPARAM,MAX_WIDTH), xcost, fd,
      4     wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), vs, vrup 
       real rout(MAXPARAM,MAX_WIDTH), period1(4,MAX_PROB), D25,

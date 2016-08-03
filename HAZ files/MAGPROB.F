@@ -14,7 +14,7 @@ c     magprob.f
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
      2     pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2,           
      3     maxMagWA, mChar, zmL, zmU, zmagU, zmagL, meanMag, sigma, 
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), magcut, betaAC 
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), magcut, betaAC 
       real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH),
      1     magnorm, sumnorm, mUnorm, mLnorm, aknorm, pmagnorm(MAXPARAM,MAX_WIDTH),
      2     beta1, ak, deltaM1, deltaM2, p1, p2, pChar, d, pExp, c1, Btail,
@@ -316,6 +316,9 @@ c           WAACY Model
               else
                MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
               endif
+              if (MaxMagWA .gt. mpdf_param(iFlt,iParam,iwidth,6) ) then
+                MaxMagWA = mpdf_param(iFlt,iParam,iwidth,6)
+              endif
               Btail = mpdf_param(iFlt,iParam,iwidth,3)
               SigM = mpdf_param(iFlt,iParam,iwidth,1)
               Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
@@ -413,6 +416,7 @@ c     Compute the probability of mag bewteen ML and MU
         endif
         WA_Pmag = WA_Pmag + pdf1*step1   
       enddo
+      write (*,'( 4f10.3)') mL, MU, mMax, WA_Pmag
 
       return
       end
