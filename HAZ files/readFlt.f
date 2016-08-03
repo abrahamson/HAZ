@@ -97,7 +97,7 @@
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
       else
-        write (*,'( 2x,''bad version'')')
+        write (*,'( 2x,''Incompatible fault file, use Haz45.2 or Haz45.1'')')
         stop 99
       endif
       
