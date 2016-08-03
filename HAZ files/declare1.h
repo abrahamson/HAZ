@@ -65,9 +65,9 @@ c    Declarations for Main file
      4     maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), minMag(MAX_FLT)
       real sigMaxWidth, areaStep, widthStep, segModelWt(MAX_FLT),
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH), rate(MAXPARAM,MAX_WIDTH),
-     2     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), maxmag1, mag,
+     2     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), mag,
      3     RateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), MinRrup_temp,
-     4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), maxInten, sigfix1
+     4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), sigfix1
       real MagRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), xStep(MAX_FLT),
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), wt2(MAXPARAM),
      2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), epsilon1,
