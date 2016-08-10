@@ -7942,6 +7942,416 @@ C     Convert ground motion to units of gals.
       END
 
 c ---------------------------------------------------------------------            
+C     *** Kale, O., Akkar, S., Ansari, A., & Hamzehloo, H. (2015). ***
+c ---------------------------------------------------------------------            
+
+      subroutine KAAH_2015 ( mag, Rbjf, specT, 
+     1                     period2, lnY, sigma, iflag, vs, ftype, pgaref, region ) 
+
+      parameter (MAXPER=20)
+      REAL Period(MAXPER), a1(MAXPER), a2(MAXPER)
+      real b1(MAXPER), b2(MAXPER), b3(MAXPER), b4(MAXPER), b5(MAXPER)
+      Real b6(MAXPER), b7(MAXPER), b8(MAXPER), b9(MAXPER), b10(MAXPER)
+	    real sd1(MAXPER), sd2(MAXPER), sb1(MAXPER), sb2(MAXPER)
+      REAL da1(MAXPER), da2(MAXPER), dsd1(MAXPER), dsd2(MAXPER)
+      real db1(MAXPER), db2(MAXPER), db3(MAXPER), db4(MAXPER), db5(MAXPER)
+      Real db6(MAXPER), db7(MAXPER), db8(MAXPER), db9(MAXPER), db10(MAXPER)
+      real specT, a1T, a2T, b1T, b2T, b3T, b4T, b5T, b6T, b7T, b8T, b9T, b10T
+	    real sd1T, sd2T, sb1T, sb2T
+      real a1p, a2p, b1p, b2p, b3p, b4p, b5p, b6p, b7p, b8p, b9p, b10p
+	    real sd1p, sd2p, sb1p, sb2p
+	    real a1a, a2a, b1a, b2a, b3a, b4a, b5a, b6a, b7a, b8a, b9a, b10a
+	    real sd1a, sd2a, sb1a, sb2a
+      real a1b, a2b, b1b, b2b, b3b, b4b, b5b, b6b, b7b, b8b, b9b, b10b
+	    real sd1b, sd2b, sb1b, sb2b
+      real mag, Rbjf, Vs, Ftype, Fn, Fr pgaref
+      real c1, vref, vcon, LnY
+      real c, n, term1
+      INTEGER iFlag, count1, count2, region
+
+      Data Period / 0.0, -1, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15,
+     1              0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4 / 
+      Data b1   / 1.74221, 5.58266, 1.75746, 1.78825, 1.87916, 2.00393, 
+     1            2.16076, 2.52625, 2.72364, 2.91835, 2.85623, 2.44252,  
+     2            1.97772, 1.5641, 0.84856, 0.41833, -0.10161, -0.45413,  
+     3            -0.95276, -1.29675 / 
+      Data b2   / 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193,  
+     1            0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193,  
+     2            0.193, 0.193, 0.193, 0.193 / 
+      Data b3   / -0.07049, -0.13822, -0.06981, -0.07058, -0.06976, -0.06732,  
+     1            -0.06226, -0.05082, -0.05217, -0.06397, -0.07494, -0.09387,  
+     2            -0.10977, -0.12342, -0.15056, -0.17099, -0.19999, -0.21978,  
+     3            -0.2453, -0.26119 / 
+      Data b4   / -1.18164, -0.94043, -1.18362, -1.18653, -1.19699, -1.21315,  
+     1            -1.24101, -1.3039, -1.32996, -1.31888, -1.27072, -1.16008,  
+     2            -1.05535, -0.97014, -0.83799, -0.77438, -0.72272, -0.70389,  
+     3            -0.69065, -0.6862 / 
+      Data b5   / 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17,  
+     1            0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17 / 
+      Data b6   / 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 / 
+      Data b7   / -0.354, -0.354, -0.354, -0.354, -0.354, -0.354, -0.354,  
+     1            -0.354, -0.354, -0.354, -0.354, -0.354, -0.354, -0.354,  
+     2            -0.354, -0.354, -0.354, -0.354, -0.354, -0.354 / 
+      Data b8   / -0.01329, -0.17037, -0.01349, -0.01189, -0.00748, 0.00788,  
+     1            0.03907, 0.08131, 0.1, 0.06727, 0.0162, -0.03697, -0.06582,  
+     2            -0.08511, -0.11756, -0.14267, -0.14621, -0.14621, -0.14621,  
+     3            -0.14621 / 
+      Data b9   / -0.09158, -0.08609, -0.09158, -0.09158, -0.09158, -0.09158,  
+     1            -0.09158, -0.09158, -0.09158, -0.09158, -0.09158, -0.09158,  
+     2            -0.09158, -0.01297, 0, 0, 0, 0, 0, 0 / 
+      Data b10  / -0.00156, -0.00052, -0.00156, -0.0016, -0.0017, -0.00182,  
+     1            -0.00197, -0.00235, -0.00267, -0.00296, -0.00275, -0.00204,  
+     2            -0.00161, -0.00127, -0.00066, -0.00022, 0, 0, 0, 0 / 
+      Data a1   / 0.57, 0.56, 0.574, 0.577, 0.581, 0.584, 0.588, 0.597, 0.606,  
+     1            0.624, 0.642, 0.678, 0.7, 0.673, 0.62, 0.62, 0.62, 0.62,  
+     2            0.62, 0.62 / 
+      Data a2   / 0.45, 0.46, 0.453, 0.455, 0.458, 0.46, 0.463, 0.469, 0.475,  
+     1            0.488, 0.5, 0.525, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55,  
+     2            0.55 / 
+      Data sd1  / 1.0521, 1.0449, 1.0444, 1.0424, 1.0459, 1.0557, 1.0609,  
+     1            1.0692, 1.0429, 1.0063, 0.9781, 0.9407, 0.943, 0.9519,  
+     2            1.0489, 1.0534, 1.0988, 1.1594, 1.1596, 1.0373 / 
+      Data sd2  / 0.7203, 0.6452, 0.715, 0.7137, 0.7113, 0.7155, 0.7166,  
+     1            0.7677, 0.7735, 0.7442, 0.7213, 0.6547, 0.6413, 0.6496,  
+     2            0.6582, 0.6342, 0.6173, 0.5724, 0.6251, 0.5409 / 
+      Data sb1  / -0.41997, -0.72057, -0.41729, -0.39998, -0.34799, -0.27572,  
+     1            -0.21231, -0.13909, -0.26492, -0.48496, -0.64239, -0.82052,  
+     2            -0.90568, -0.95097, -1.00027, -1.01881, -0.96317, -0.91305,  
+     3            -0.84242, -0.79231 / 
+      Data sb2  / -0.28846, -0.19688, -0.28685, -0.28241, -0.26842, -0.24759,  
+     1            -0.22385, -0.17798, -0.28832, -0.39525, -0.44574, -0.45287,  
+     2            -0.41105, -0.37956, -0.32233, -0.28172, -0.22449, -0.18388,  
+     3            -0.12665, -0.08605 / 
+      Data db1  / -0.21234, 0.20834, -0.22738, -0.241, -0.25702, -0.2526,  
+     1            -0.24029, -0.13086, -0.02321, -0.23382, -0.33645, -0.30222,  
+     2            -0.16785, 0.01469, 0.40612, 0.58724, 0.75311, 0.83361,  
+     3            0.90733, 0.82641 / 
+      Data db2  / -0.146, -0.146, -0.146, -0.146, -0.146, -0.146, -0.146,  
+     1            -0.146, -0.146, -0.146, -0.146, -0.146, -0.146, -0.146,  
+     2            -0.146, -0.146, -0.146, -0.146, -0.146, -0.146 / 
+      Data db3  / -0.03826, -0.05505, -0.03877, -0.03674, -0.0337, -0.0285,  
+     1            -0.02834, -0.03978, -0.03843, -0.03475, -0.03634, -0.03939,  
+     2            -0.04263, -0.04586, -0.05345, -0.06008, -0.07073, -0.07873,  
+     3            -0.08977, -0.09696 / 
+      Data db4  / 0.1721, 0.0489, 0.1741, 0.1759, 0.1691, 0.1603, 0.1614,  
+     1            0.1655, 0.1596, 0.2061, 0.2205, 0.1969, 0.1435, 0.0897,  
+     2            -0.0031, -0.0498, -0.0875, -0.1008, -0.1097, -0.1125 / 
+      Data db5  / -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12,  
+     1            -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12,  
+     2            -0.12, -0.12, -0.12, -0.12 / 
+      Data db6  / 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 / 
+      Data db7  / 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396,  
+     1            0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396,  
+     2            0.396, 0.396, 0.396, 0.396 / 
+      Data db8  / -0.11697, 0.17037, -0.11677, -0.11837, -0.12278, -0.13814,  
+     1            -0.16933, -0.21157, -0.23026, -0.19753, -0.14646, 0.03697,  
+     2            0.06582, 0.08511, 0.11756, 0.14267, 0.14621, 0.14621,  
+     3            0.14621, 0.14621 / 
+      Data db9  / 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00185, 0.09158, 0.01297,  
+     1            0, 0, 0, 0, 0, 0 / 
+      Data db10 / 0.00156, 0.00052, 0.00156, 0.0016, 0.0017, 0.00182, 0.00197,  
+     1            0.00235, 0.00267, 0.00296, 0.00275, 0.00204, 0.00161, 0.00127,  
+     2            0.00066, 0.00022, 0, 0, 0, 0 / 
+      Data da1  / 0.12, 0.14, 0.116, 0.113, 0.109, 0.106, 0.122, 0.143, 0.154,  
+     1            0.136, 0.118, 0.082, 0.06, 0.087, 0.14, 0.16, 0.16, 0.16,  
+     2            0.16, 0.16 / 
+      Data da2  / 0.05, -0.02, 0.047, 0.045, 0.042, 0.04, 0.037, 0.031, 0.025,  
+     1            -0.018, -0.05, -0.075, -0.1, -0.1, -0.088, -0.025, 0.05,  
+     2            0.05, 0.05, 0.05 / 
+      Data dsd1 / -0.0808, -0.0597, -0.0723, -0.0701, -0.0705, -0.0597, -0.07,  
+     1            -0.0994, -0.0486, 0.0394, 0.1081, 0.0759, 0.0563, 0.0209,  
+     2            -0.0161, -0.0793, -0.1337, -0.2183, -0.2262, -0.2279 / 
+      Data dsd2 / -0.325, -0.3013, -0.3231, -0.318, -0.3143, -0.3064, -0.277,  
+     1            -0.3045, -0.3358, -0.2839, -0.305, -0.2651, -0.2308, -0.1724,  
+     2            -0.2379, -0.2569, -0.2358, -0.1482, -0.1356, -0.0862 / 
+	 
+	  
+C     Set parameters
+      vref = 750.0
+      c1 = 6.75
+      c = 2.5
+      n = 3.2
+      vcon = 1000.0
+
+C    Region=0 for Turkey	  
+C    Region=1 for Iran
+	    if (Region .eq. 0) then 
+          da1  =  da1  *0
+          da2  =  da2  *0
+          db1  =  db1  *0
+          db2  =  db2  *0
+          db3  =  db3  *0
+          db4  =  db4  *0
+          db5  =  db5  *0
+          db6  =  db6  *0
+          db7  =  db7  *0
+          db8  =  db8  *0
+          db9  =  db9  *0
+          db10 =  db10 *0
+          dsd1 =  dsd1 *0
+          dsd2 =  dsd2 *0
+		  dc1 = 0
+		  else
+		  dc1 =  0.25
+      endif		
+
+c     Set Parameters to compute PGA rock
+      a1p  = a1(1)  +  da1(1)  
+      a2p  = a2(1)  +  da2(1) 
+      b1p  = b1(1)  +  db1(1) 
+      b2p  = b2(1)  +  db2(1)
+      b3p  = b3(1)  +  db3(1)
+      b4p  = b4(1)  +  db4(1)
+      b5p  = b5(1)  +  db5(1)
+      b6p  = b6(1)  +  db6(1)
+      b7p  = b7(1)  +  db7(1)
+      b8p  = b8(1)  +  db8(1) 
+      b9p  = b9(1)  +  db9(1) 
+      b10p = b10(1) +  db10(1)
+      sb1p = sb1(1) 
+      sb2p = sb2(1) 
+      sd1p = sd1(1) +  dsd1(1)
+      sd2p = sd2(1) +  dsd2(1)
+
+C First check for the PGA case (i.e., specT=0.0) 
+      nPer = 20
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         a1T = a1(1)   +  da1(1) 
+         a2T = a2(1)   +  da2(1) 
+         b1T = b1(1)   +  db1(1) 
+         b2T = b2(1)   +  db2(1)
+         b3T = b3(1)   +  db3(1)
+         b4T = b4(1)   +  db4(1)
+         b5T = b5(1)   +  db5(1)
+         b6T = b6(1)   +  db6(1)
+         b7T = b7(1)   +  db7(1)
+         b8T = b8(1)   +  db8(1) 
+         b9T = b9(1)   +  db9(1) 
+         b10T = b10(1) +  db10(1)
+         sb1T = sb1(1) 
+         sb2T = sb2(1) 
+         sd1T = sd1(1) +  dsd1(1)
+         sd2T = sd2(1) +  dsd2(1)
+         goto 1011
+C Check for the PGV case (i.e., specT=-1.0) 
+      elseif (specT .eq. -1.0) then
+         period1 = period(2)
+         a1T = a1(2)   +  da1(2) 
+         a2T = a2(2)   +  da2(2) 
+         b1T = b1(2)   +  db1(2) 
+         b2T = b2(2)   +  db2(2)
+         b3T = b3(2)   +  db3(2)
+         b4T = b4(2)   +  db4(2)
+         b5T = b5(2)   +  db5(2)
+         b6T = b6(2)   +  db6(2)
+         b7T = b7(2)   +  db7(2)
+         b8T = b8(2)   +  db8(2) 
+         b9T = b9(2)   +  db9(2) 
+         b10T = b10(2) +  db10(2)
+         sb1T = sb1(2) 
+         sb2T = sb2(2) 
+         sd1T = sd1(2) +  dsd1(2)
+         sd2T = sd2(2) +  dsd2(2)
+         goto 1011
+      elseif (specT .gt. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=3,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+
+C Selected spectral period is outside range defined by attenuaton model.
+      write (*,*) 
+      write (*,*) 'Kale, et al. (2015) Horizontal'
+      write (*,*) 'attenuation model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+
+ 1020 a1a  = a1(count1) + da1(count1)
+      a2a  = a2(count1) + da2(count1)
+      b1a  = b1(count1) + db1(count1)
+      b2a  = b2(count1) + db2(count1)
+      b3a  = b3(count1) + db3(count1)
+      b4a  = b4(count1) + db4(count1)
+      b5a  = b5(count1) + db5(count1)
+      b6a  = b6(count1) + db6(count1)
+      b7a  = b7(count1) + db7(count1)
+      b8a  = b8(count1) + db8(count1)
+      b9a  = b9(count1) + db9(count1)
+      b10a = b10(count1)+ db10(count1)
+      sd1a = sd1(count1)+ dsd1(count1)
+      sd2a = sd2(count1)+ dsd2(count1)
+
+      a1b  = a1(count2) + da1(count2)
+      a2b  = a2(count2) + da2(count2)
+      b1b  = b1(count2) + db1(count2)
+      b2b  = b2(count2) + db2(count2)
+      b3b  = b3(count2) + db3(count2)
+      b4b  = b4(count2) + db4(count2)
+      b5b  = b5(count2) + db5(count2)
+      b6b  = b6(count2) + db6(count2)
+      b7b  = b7(count2) + db7(count2)
+      b8b  = b8(count2) + db8(count2)
+      b9b  = b9(count2) + db9(count2)
+      b10b = b10(count2)+ db10(count2)
+      sd1b = sd1(count2)+ dsd1(count2)
+      sd2b = sd2(count2)+ dsd2(count2)
+
+            call interp (period(count1),period(count2),a1a,a1b,
+     +                   specT,a1T,iflag)
+            call interp (period(count1),period(count2),a2a,a2b,
+     +                   specT,a2T,iflag)
+            call interp (period(count1),period(count2),b1a,b1b,
+     +                   specT,b1T,iflag)
+            call interp (period(count1),period(count2),b2a,b2b,
+     +                   specT,b2T,iflag)
+            call interp (period(count1),period(count2),b3a,b3b,
+     +                   specT,b3T,iflag)
+            call interp (period(count1),period(count2),b4a,b4b,
+     +                   specT,b4T,iflag)
+            call interp (period(count1),period(count2),b5a,b5b,
+     +                   specT,b5T,iflag)
+            call interp (period(count1),period(count2),b6a,b6b,
+     +                   specT,b6T,iflag)
+            call interp (period(count1),period(count2),b7a,b7b,
+     +                   specT,b7T,iflag)
+            call interp (period(count1),period(count2),b8a,b8b,
+     +                   specT,b8T,iflag)
+            call interp (period(count1),period(count2),b9a,b9b,
+     +                   specT,b9T,iflag)
+            call interp (period(count1),period(count2),b10a,b10b,
+     +                   specT,b10T,iflag)
+            call interp (period(count1),period(count2),sd1a,sd1b,
+     +                   specT,sd1T,iflag)
+            call interp (period(count1),period(count2),sd2a,sd2b,
+     +                   specT,sd2T,iflag)
+            call interp (period(count1),period(count2),sb1(count1),sb1(count2),
+     +                   specT,sb1T,iflag)
+            call interp (period(count1),period(count2),sb2(count1),sb2(count2),
+     +                   specT,sb2T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+
+C.....Set the mechanism terms based on ftype............
+C     Set mechanism term and corresponding Frv and Fnm values.
+C     fType     Mechanism                      Rake
+C     ------------------------------------------------------
+C      -1       Normal                    -120 < Rake <  -60
+C     -0.5      Normal/Oblique            -150 < Rake < -120
+C                                          -60 < Rake <  -30
+C       0       Strike-Slip               -180 < Rake < -150
+C                                          -30 < Rake <   30
+C                                          150 < Rake <  180
+C      0.5      Reverse/Oblique             30 < Rake <   60
+C                                          120 < Rake <  150
+C       1       Reverse                     60 < Rake <  120   
+      if (ftype .eq. -1.0) then
+         Fr = 0.0
+         Fn = 1.0
+      elseif (ftype .eq. -0.5) then 
+         Fr = 0.0
+         Fn = 1.0
+      elseif (ftype .eq. 0.0) then 
+         Fr = 0.0
+         Fn = 0.0
+      elseif (ftype .eq. 0.5) then
+         Fr = 1.0
+         Fn = 0.0
+      elseif (ftype .eq. 1.0) then
+         Fr = 1.0
+         Fn = 0.0
+      endif 
+
+C.....First compute the Reference Rock PGA value.........
+      if (mag .le. c1+dc1) then
+         fmag = b1p + b2p*(mag-(c1+dc1)) + b3p*(8.5-mag)**2.0 
+      else
+         fmag = b1p + b7p*(mag-(c1+dc1)) + b3p*(8.5-mag)**2.0 
+      endif
+
+         fdis = ( b4p + b5p*(mag-(c1+dc1)) ) * alog(sqrt(Rbjf*Rbjf+b6p*b6p))
+
+         fsof = b8p*Fn + b9p*Fr
+
+      if (Rbjf .le. 80) then
+         faat = 0
+      else
+         faat = b10p *(Rbjf-80) 
+      endif
+
+      term1 = fmag + fdis + fsof + faat 
+      pgaref = exp(term1)
+
+C.....magnitude term........
+      if (mag .le. c1+dc1) then
+         fmag = b1T + b2T*(mag-(c1+dc1)) + b3T*(8.5-mag)**2.0 
+      else
+         fmag = b1T + b7T*(mag-(c1+dc1)) + b3T*(8.5-mag)**2.0 
+      endif
+ 
+C.....distance term........
+         fdis = ( b4T + b5T*(mag-(c1+dc1)) ) * alog(sqrt(Rbjf*Rbjf+b6T*b6T))
+
+C.....Style of fault term........
+         fsof = b8T*Fn + b9T*Fr
+
+C.....anelastic attenuation term........
+      if (Rbjf .le. 80) then
+         faat = 0
+      else
+         faat = b10T *(Rbjf-80) 
+      endif
+
+C.....Site Response Term.........
+      if (vs .lt. vref) then
+        fsite = sb1T*alog(vs/vref) + 
+     1          sb2T*alog((pgaref+c*(vs/vref)**n)/((pgaref+c)*(vs/vref)**n))
+      else
+        fsite = sb1T*alog(min(vs,vcon)/vref)
+      endif
+
+
+
+      lnY = fmag + fdis + fsof + faat + fsite
+
+       
+C     Convert ground motion to units of gals.
+      lnY = lnY + 6.89
+
+      period2 = period1
+
+C.....magnitude-dependent sigma.....
+      
+      if (mag .lt. 6.0) then
+         w = a1T
+       elseif(mag .lt. 6.5 .and. mag .ge. 6.0) then
+         w = a1T + (a2T - a1T)*((mag - 6.0)/0.5)
+       else 
+         w = a2T
+      endif 
+
+      phi = w * sd1T
+      tau = w * sd2T 
+
+      sigma = sqrt (tau**2 + phi**2)
+
+      return
+      END
+
+c ---------------------------------------------------------------------            
 C ** Bradley (2010) Horizontal **
 c ---------------------------------------------------------------------            
       Subroutine Bradley_2010 ( m, Rrup, Rbjf, specT,

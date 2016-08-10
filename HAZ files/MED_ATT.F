@@ -76,6 +76,31 @@ c  *** Turkey adjusted NGA1 models
      3                     hwflag, Rx )
       endif
 
+C     Kale, Ö., Akkar, S., Ansari, A., & Hamzehloo, H. (2015). 
+C     - "A Ground‐Motion Predictive Model for Iran and Turkey for Horizontal PGA, 
+C     PGV, and 5% Damped Response Spectrum: Investigation of Possible Regional Effects"
+C     BSSA: Vol. 105, No.2A, pp. 963-980.
+C     Model Number = 2150
+      if ( jcalc .eq. 2150 ) then
+C     For Turkey
+        region = 0          
+
+         call KAAH_2015 ( mag, jbdist, specT,
+     1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
+         attenname1 = 'Kale et AL. (2015)_Hor_Turkey'
+         lnY = lnY + efac
+       endif
+
+      if ( jcalc .eq. 3150 ) then
+C     For Iran
+        region = 1          
+
+         call KAAH_2015 ( mag, jbdist, specT,
+     1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
+         attenname1 = 'Kale et AL. (2015)_Hor_Iran'
+         lnY = lnY + efac
+      endif
+
 c    Taiwan GMPEs
 
 
