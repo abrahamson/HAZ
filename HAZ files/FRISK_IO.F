@@ -565,7 +565,7 @@ c  -------------------------------------------------------------------
       integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount, iProb
       integer J2, iInten, iFlt, M, iMagBin, iDistBin, iEpsBin
       real ftype(1), vs, specT(MAX_PROB)
-      character*80 fName(MAX_FLT), file1, attenName(4,MAX_ATTEN)
+      character*80 fName(MAX_FLT), file1, attenName(4,MAX_PROB)
 
       nwr = 12
 c     Loop over different maximum magnitude values to get 
@@ -747,7 +747,7 @@ c  ------------------------------------------------------------------
       integer nMagBins, nDistBins, nEpsBins, nXcostBins, J2,
      1        iEpsBin, iDistBin, iMagBin, iXcostBin, iInten,
      2        iMagbins, iDistbins, iProb, nwr, nAttenType
-      character*80 file1, attenName(4,MAX_ATTEN) 
+      character*80 file1, attenName(4,MAX_PROB) 
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'
       write (18,*)

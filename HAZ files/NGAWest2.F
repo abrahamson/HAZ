@@ -2278,6 +2278,7 @@ c     1       max(0.0, 1.0-max(0.0,Rrup-40.0)/30.0) *
 c     1       min(max(0.0,M-5.5)/0.8, 1.0) * cDPP
 
 c Predicted median Sa on reference condition (Vs=1130 m/sec)
+        fd = 0.0
         psa_ref = r1+r2+r3+r4+hw+fd
 
 C     Set Phi1, Phi5, and Phi6 term for Japan is region is requested
@@ -3106,7 +3107,7 @@ C     Compute tau, with non-linear effects (eq. 7.9)
       tau = tauB * (1. + dAmp_dSa1180)
       
 c     Compute median ground motion (eq. 1)
-      lnSa = f1 + f4 + f5 + f6 + f7 + f8 + f9 + f10 + f11 + freg 
+      lnSa = f1 + f4 + f5 + f6 + f7 + f8 + f10 + f11 + freg 
 
       return
       end
