@@ -23,22 +23,19 @@ c      ftype - Is SS ftype 0?
 c      April 10, 2016
 
 
-c -------------------------------------------------------------------      subroutine calc_DPP (iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
+c ------------------------------------------------------------------- 
 
       subroutine calc_DPP (hypoX, hypoY, hypoZ, 
      1           fltgrid_x, fltgrid_y, fltgrid_z, x0, y0, z0, n2, n1, specT, 
      2           RupLength, rupWidth, ftype,DPP, iLocAS, iLocDD)  
 
       implicit none
-
       include 'pfrisk.h'
       
-      integer iHypoX, iHypoZ
       integer n2, n1
-      integer nStrike
       real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS),
      1      fltGrid_y(MAXFLT_DD,MAXFLT_AS)
-      real  ctildap, Rhypo, Rd, f, FS_bar, velrat, DPP, period, ftype
+      real  ctildap, Rhypo, Rd, FS_bar, velrat, DPP, ftype
       real Ix, In, Iphi, L2, E, cosPhi, sinPhi, zs
       real hypoX, hypoY, hypoZ, x0, y0, z0, specT
       real rupLength, rupWidth
@@ -125,8 +122,6 @@ c      f = max(rupLength, rupWidth)
       
 C     Compute DPP prime (Eq. 6.12).
       DPP = alog ( ctildap * max(E,0.1*rupLength) * max(FS_bar, 0.2) )
-      
-c      write (*,'( 2x,''E, FS, DPP'',3f10.3)') E, FS_bar, DPP
 
       return
       end

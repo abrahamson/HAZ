@@ -9,7 +9,7 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2   *'
-      write (*,*) '*          July, 2016           *'
+      write (*,*) '*           Aug, 2016           *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -450,12 +450,11 @@ c                Loop over hypocenter location down dip (aleatory)
 
 C                 Call to the rupture directivity Subroutine if applicable
                   if ( dirflag1 .eq. 1) then
-c       JWL 4/10/16 changes
                     call Directivity ( dirFlag(iProb), specT(iProb), DistRup, zTOR, 
      1                 x0, y0, z0, Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), RupWidth, 
      2                 RupLen, dipavgd, HWflag, dirMed, dirSigma, fltgrid_x, 
-     3                 fltgrid_y, fltgrid_z, n1, n2, icellRupstrike, icellRupdip, 
-     4                 dip(iFlt,iFltWidth,1), fs, fd, dpp_flag, iLocX, iLocY)
+     3                 fltgrid_y, fltgrid_z, n1, n2, fs, fd, dpp_flag, 
+     4                 iLocX, iLocY)
      
                        write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 
@@ -553,7 +552,7 @@ c                    Add to mean deagg
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
 
-c DGM addition
+c
 c                    Add to source deagg 
                      wt1 = wt * gm_wt(iProb,jType,iAtten)
                      m_bar_s(iFlt,iProb,jInten) = m_bar_s(iFlt,iProb,jInten) + mHaz*wt1*magTotal
