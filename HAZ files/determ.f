@@ -20,7 +20,7 @@ C       attenflag = 2 Spectra
      1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST), 
      2     attenRx(MAXDETM_DIST), attenRy0(MAXDETM_DIST), hypodepth,  
      3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER), 
-     4     period1(4,1), disthypo, Rx, Ry0, temp, rupWidth
+     4     period1(4,MAX_PROB), disthypo, Rx, Ry0, temp, rupWidth
       character*80 attentitle, attenoutfile, attenName(4,MAX_PROB), 
      1             sigmaName(4,MAX_PROB)
 

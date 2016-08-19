@@ -87,6 +87,9 @@ c         Set other distance values equal to corresponding distance measures.
           distepi = distJB
           distRx = distJB
           disthypo = distRup
+          Rx = distJB
+          Ry = 0.0
+          Ry0 = 0.0
 C         Set HWflag = 0 for areal or grid sources.
           HWFlag = 0    
           dipavgd = dip(iFlt,ifltWidth,1)

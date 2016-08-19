@@ -371,7 +371,7 @@ c               Loop over synchronous ruptures (aleatory)
      4                iAtten, iProb, jType, vs, synhypo(iflt,1), intflag, AR, syn_dip(iFlt,isyn),
      5                disthypo, depthvs10, depthvs15, D25, tau,
      6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
-     7                vs30_class, forearc, syn_Rx, phi,
+     7                vs30_class, forearc, syn_Rx(iFlt,isyn), phi,
      8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
 
 c                 Compute SRSS of median                
@@ -455,7 +455,7 @@ c       JWL 4/10/16 changes
      1                 x0, y0, z0, Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), RupWidth, 
      2                 RupLen, dipavgd, HWflag, dirMed, dirSigma, fltgrid_x, 
      3                 fltgrid_y, fltgrid_z, n1, n2, icellRupstrike, icellRupdip, 
-     4                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+     4                 dip(iFlt,iFltWidth,1), fs, fd, dpp_flag, iLocX, iLocY)
      
                        write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 

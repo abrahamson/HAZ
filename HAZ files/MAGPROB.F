@@ -184,10 +184,10 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR(zmL,pmL,d)        
-                 call NDTR(zmU,pmU,d)        
-                 call NDTR(zmagL,pmagL,d)           
-                 call NDTR(zmagU,pmagU,d)           
+                 call NDTR(zmL,reaL(pmL),d)        
+                 call NDTR(zmU,real(pmU),d)        
+                 call NDTR(zmagL,real(pmagL),d)           
+                 call NDTR(zmagU,real(pmagU),d)           
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
