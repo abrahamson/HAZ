@@ -1,0 +1,30 @@
+addons:
+    apt:
+        packages:
+            - cmake
+            - gfortran
+
+before_install:
+    # Need to install Python3.5 for running the tests.
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    # Useful for debugging any issues with conda
+    - conda info -a
+
+install:
+    - conda create -q -n testenv --yes pip python=3.5
+    - source activate testenv
+    - conda install --yes numpy
+
+script:
+    - mkdir build tests
+    - cd build
+    - cmake ..
+    - make
+    - cd ../scripts
+    - python3 run_tests.py --cores 2 --haz_bin ../build/HAZ --rtol 0.005
+

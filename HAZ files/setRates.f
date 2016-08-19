@@ -1,41 +1,43 @@
 c ------------------------------------------------------------------  
 
-      subroutine Set_Rates ( nParamVar, magRecur, rate, beta, minMag,           
+      subroutine Set_Rates ( sourceType, nParamVar, magRecur, rate, beta, minMag,           
      1           maxMag, iFlt, iWidth, faultArea, 
-     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                     
+     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
 
-      include 'pfrisk.h'                
-
-c     implicit none                     
+      implicit none
+      include 'pfrisk.h'                       
 
       real magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH),                                    
      1     minMag(MAX_FLT), maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH),                 
      1     rate(MAXPARAM,MAX_WIDTH),charMeanMo(MAXPARAM,MAX_WIDTH),    
-     1     expMeanMo(MAXPARAM,MAX_WIDTH),
-     2     faultWidth(MAX_FLT,MAX_WIDTH), fLength,                              
+     1     expMeanMo(MAXPARAM,MAX_WIDTH),                             
      2     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
-     3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)                                     
+     3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6)                                     
       real magStep(MAX_FLT)             
-      real mU, mL, momentMU, rigidity, momentRate1, momentRate2                 
-      real b, c, beta1, t1, t2, t3, t4, t5, c1, deltaM1, deltaM2             
+      real mU, mL, rigidity, momentRate1, momentRate2                 
+      real c, beta1, t1, t2, t3, c1, deltaM1, deltaM2, deltaM3             
       real mean, sigma, zmagL, zmagU, pmagL, pmagU, dd, mag                     
       real mU1, mL1, mch, mchr, mexp, aexp, achr, m1
       real*8 sum
-      real term1,term2, term3
-      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH), nWidth(1)                  
-      integer nmstep                    
+      real term1, term2, term3, scale, pL1, pU1, contrmaxmag
+      integer iParam, iFlt, i, nParamVar(MAX_FLT,MAX_WIDTH)                  
+      integer nmstep, iWidth, i1, sourceType                    
       real RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), meanMoment2
-      real maxmag1, magstep1, nsigma
-      real bAC, gamma, bGR, fGR, fAC, gAC
-      real c2, c3, c4, bM2, bM1, scale1
-      real meanMoRelease1, meanMoRelease2, meanMoRelease3
+      real maxmag1, magstep1, texp, contrexp, rate_M_gt_0
+      real bAC, gamma, bGR, fGR, fAC, gAC, meanMoChar, pRatio
+      real c2, c3, c4, bM2, bM1, scale1, faultArea, x, deltamac
+      real meanMoRelease1, meanMoRelease2, meanMoRelease3, fix_step
+
+c     No rate calculation needed for SourceType 7
+      if (sourceType .eq. 7) then
+        goto 100
+      endif
       
       rigidity = 3.0e11       
 
       i = iWidth          
-        do iParam=1,nParamVar(iFlt,i)   
-        
+        do iParam=1,nParamVar(iFlt,i)          
      
           beta1 = beta(iFlt,iParam,i) 
           mU = maxMag(iFlt,iParam,i)           
@@ -50,6 +52,7 @@ c         Is this a slip-rate or moment rate?
 
             if ( RateType(iFlt,iParam,i) .eq. 1 ) then
               momentRate2 = rateParam(iFlt,iParam,i)*faultArea * rigidity * 1.0e9
+c              write (80,'( 3i5,2e12.4)') iflt, i, iParam,faultArea, rateParam(iFlt,iParam,i)
             else
               momentRate2 = rateParam(iFlt,iParam,i)
             endif          
@@ -184,17 +187,16 @@ c        calculate the rate
 
 c            SINGLE MAXIMUM MAGNITUDE MODEL (magRecur = 3)                       
              mean =  mU - mpdf_param(iFlt,iParam,i,1) 
-cnjg             mean =  mU 
              sigma = mpdf_param(iFlt,iParam,i,2)       
-cnjg             mu = mu + mpdf_param(iFlt,iParam,i,1)*sigma
 
              if (sigma .eq. 0.0) then 
                 sum = 10.**(1.5*mean+16.05)
              else
-c    Use a fixed mag step of 0.01 for getting the moment balance
-             nmstep = int((mU - mL)/0.01)  
+c            Use a fixed mag step of 0.01 for getting the moment balance
+             fix_step = 0.01
+             nmstep = int((mU - mL)/fix_step)  
              sum = 0.                           
-             mag = mL + 0.01/2.        
+             mag = mL + fix_step/2.        
              zmagU=(mU-mean)/sigma       
              zmagL=(mL-mean)/sigma       
 
@@ -202,13 +204,12 @@ c    Use a fixed mag step of 0.01 for getting the moment balance
              call NDTR(zmagU,pmagU,dd)   
        
              do i1 = 1,nmstep                   
-               mL1 = mag - 0.01/2.    
-               mU1 = mag + 0.01/2.    
+               mL1 = mag - fix_step/2.    
+               mU1 = mag + fix_step/2.    
                call NDTR((mL1-mean)/sigma,pL1,dd)                                      
-               call NDTR((mU1-mean)/sigma,pU1,dd)                                      
-c               sum = sum + (pL1-pU1)/(pmagL-pmagU)*(10.**(1.5*mag+16.05))    
+               call NDTR((mU1-mean)/sigma,pU1,dd)                                       
                sum = sum + (pL1-pU1)/(1.-pmagU)*(10.**(1.5*mag+16.05))    
-               mag = mag + magStep(iFlt)       
+               mag = mag + fix_step       
              enddo                       
              endif
 
@@ -221,9 +222,7 @@ c     WAACY Model
  
 c            Set the rate for M> Mmin (scale the rate for M>0 by pRatio,
 c            where pRatio is the ratio of eqk with M>Mmin / M>0
-             rate(iParam,i) = rate_M_gt_0 * pRatio 
-c             write (*,'( 3e12.5)')   rate(iParam,i), rate_M_gt_0,  pRatio 
-c             pause 'out of waacy rate'   
+             rate(iParam,i) = rate_M_gt_0 * pRatio   
 
 C..........Working Group Model...................
            elseif (magRecur(iFlt,iParam,i) .eq. 4.) then     
@@ -390,9 +389,10 @@ c........does not work with BC Hydro Alternative Characteristic Model
                write (*,*) 'with BC Hydro Alternative model!!!!'
                stop 99
            endif
-         endif
-c         write (*,'( 2i5,e12.5)') iParam, i, rate(iParam,i)           
+         endif           
         enddo                                  
+
+ 100  continue
 
       return                            
       end                               
@@ -401,18 +401,19 @@ c -----------------------------------------------------------
 
       subroutine calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minmag,
      1          iFlt, iParam, iwidth, faultArea, pRatio)  
+
       implicit none
       include 'pfrisk.h'                
 
-      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5),                                     
+      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6),                                     
      1       beta(MAX_FLT,MAXPARAM,MAX_WIDTH), 
      1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real minMag(MAX_FLT), Mmin
-      real MaxMagWA, Btail, SigM, Fract_Exp, dM1, nSig1, mChar, b_value, mMag, stepM
-      real*8 sum, moment
-      real step, ML, MU, pMag(10000), pMagTest(10000), WA_PMag(10000)
+      real MaxMagWA, Btail, SigM, Fract_Exp, mChar, b_value, stepM
+      real*8 sum, moment, sum1, sum2
+      real WA_PMag(10000)
       real cumProb(10000)
-      real mag, dMag0
+      real mag, M1
       integer iMag, nMag, iFlt, iParam, iWidth, iMag1
       real pratio
       real faultArea, areaRatio, area_rup
@@ -424,19 +425,20 @@ c     Set WAACY model parameters (haz45 version)
       else
         MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
       endif
+      if (MaxMagWA .gt. mpdf_param(iFlt,iParam,iwidth,6) ) then
+        MaxMagWA = mpdf_param(iFlt,iParam,iwidth,6)
+      endif
       Btail = mpdf_param(iFlt,iParam,iwidth,3)
       SigM = mpdf_param(iFlt,iParam,iwidth,1)
       Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
       mChar = maxMag(iFlt,iParam,iWidth)
       b_value = beta(iFlt,iParam,iWidth)/alog(10.0)
-      write (*,'( 10f10.4)') Btail, sigM, Fract_exp, mChar, b_value, MaxMagWA
-
 
 c     start integration at Mag=0 for momment balance
       Mmin = 0
       stepM =0.001
       nMag = inT ( (MaxMagWA - Mmin) / stepM )
-      write (*,'( i5)') nMag
+c      write (*,'( i5)') nMag
      
 c     Compute the probabilities of magnitudes using WAACY 
 c     without correction for rupture past the modelled fault      
@@ -447,9 +449,46 @@ c     Adjust the moment release to account for the part of the rupture
 c     that is not modelled.
 
 c     First, Initialize moment sum
-      sum = 0.
+      sum1 = 0.
+      sum2 = 0.
+      M1 = mChar - 0.25
 
 c     Compute the moment * mag pdf for the part of the rupture this is modelled.
+c     this is separated into the moment in the exp part (sum1) and the moment
+c     in the char part (sum2)
+      do iMag=1,nMag
+        mag = Mmin + (iMag-0.5)*stepM
+        moment = 10.**(1.5*mag+16.05)
+
+c       Scale the moment from the eqk for the part that is released on the modelled fault
+c       Just use log(A)= M-4 for now
+        area_rup = 10.**(mag -4)
+        areaRatio = area_rup / faultArea
+        if (areaRatio .gt. 1. ) then
+          moment = moment / areaRatio
+        endif
+        if ( mag .LT. M1 ) then
+          sum1 = sum1 + moment*WA_Pmag(iMag)
+        else
+          sum2 = sum2 + moment*WA_Pmag(iMag)
+        endif
+      enddo
+
+c     Find the fraction of the moment in the exp part after the correction for 
+c     moment released in non-modelled ruptures
+      Fract_Exp = (Fract_Exp / (sum1 / (sum1 + sum2)) ) * Fract_Exp  
+
+c     Reset the value in the array so this this corrected fraction is 
+c     later used for the mag prob
+      mpdf_param(iFlt,iParam,iwidth,4)= Fract_Exp 
+
+c     Recompute the probabilities of magnitudes using WAACY 
+c     with the correction for rupture past the modelled fault      
+      call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_Exp, 
+     1                     MaxMagWA, Mmin, WA_Pmag, stepM, nMag )
+
+c     Compute the moment * mag pdf for the part of the rupture this is modelled.
+      sum = 0.
       do iMag=1,nMag
         mag = Mmin + (iMag-0.5)*stepM
         moment = 10.**(1.5*mag+16.05)
@@ -468,8 +507,7 @@ c     Find the cumulative rate which will be used to scale the rate from M>0 to 
       cumProb(nMag) = WA_Pmag(nMag) 
       do iMag=nMag-1,1,-1
         cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag)
-      enddo
-      
+      enddo     
 
 c     Set the ratio of Prob for M>Mmin to M>0
 c     Note: cumProb(1) should be unity.

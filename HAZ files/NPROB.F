@@ -3,6 +3,11 @@
 C          X IS NO. OF STANDARDIZED NORMAL DEVIATES.                            
 C          P IS COMP. CUMULATIVE VALUE (OUTPUT).                                
 C          D IS DENSITY VALUE (OUTPUT).
+
+      implicit none
+
+      real X, AX, P, D, T
+
       IF (X) 1,2,2                                                              
     1 AX = -X                                                                   
       GOTO 3                                                                    
@@ -26,12 +31,13 @@ c ------------------------------------------------------------------
 C          Reference: Abramowitz and Stegan equation 7.1.26                                             
 C          X IS NO. OF STANDARDIZED NORMAL DEVIATES.                            
 C          P IS COMP. CUMULATIVE VALUE (OUTPUT).                               
-      real*8 p, x1, x2
-	  real*8 p1, a1, a2, a3, a4, a5, t
-	  real x
-	  data p1, a1, a2, a3, a4, a5 / 0.3275911, 0.254829592, 
+
+      implicit none
+
+      real x
+      real*8 p, x1, x2, p1, a1, a2, a3, a4, a5, t
+      data p1, a1, a2, a3, a4, a5 / 0.3275911, 0.254829592, 
      1     -0.284496736, 1.421413741, -1.453152027, 1.061405429 /
-c       write (*,'( f10.4,2x,''test ndtr3'')') x
      
       if ( x .lt. 0. ) then
 	    x1 = abs(x)
@@ -53,8 +59,12 @@ c       write (*,'( f10.4,2x,''test ndtr3'')') x
 c ------------------------------------------------------------------
 
       real function pxceed ( eti, ti, siga, jj, i, sigTrunc )                   
-      include 'pfrisk.h'                                                        
-      real eti, ti(MAX_PROB,1), siga, sigTrunc 
+
+      implicit none
+      include 'pfrisk.h'      
+            
+      integer jj, i                                
+      real eti, ti(MAX_PROB,1), siga, sigTrunc, W, G, D, g1 
                                                                                       
       W = (ti(JJ,I)-ETI)/SIGA                                                   
       CALL NDTR(W,G,D)                                                          
@@ -71,8 +81,12 @@ c     TRUNCATE DISTRIBUTION AT SigTrunc
 
 c ------------------------------------------------------------------
 
-      real*8 function pxceed3 ( eti, ti, siga, jj, i, sigTrunc )                   
-      include 'pfrisk.h'                                                        
+      real*8 function pxceed3 ( eti, ti, siga, jj, i, sigTrunc ) 
+
+      implicit none                    
+      include 'pfrisk.h'      
+       
+      integer jj, i                                           
       real eti, ti(MAX_PROB,MAX_INTEN), siga, sigTrunc, w
       real*8 g, g1
 
@@ -95,25 +109,31 @@ c     truncates and renormalizes on both low and high end
 
 c ------------------------------------------------------------------
                                                                                 
-      subroutine rupDimProb ( mag, coef, sigma, step, sigmaMax,                 
-     1           rupDim, prob, iFlt, idim )                                     
-                                                                                
+      subroutine rupDimProb ( sourceType, mag, coef, sigma, 
+     1           step, sigmaMax, rupDim, prob, iFlt, idim )                                     
+                         
+      implicit none                                                 
       include 'pfrisk.h'                                                       
+
+      integer sourceType, iFlt, idim                                                                                 
+      real mag, coef(2,MAX_FLT), sigma(1), rupDim, prob, nSigma, 
+     1     nSigma_plus, nSigma_minus, F0, F1, F2, D, step, sigmaMax                                    
+         
+      if (sourceType .eq. 7) then
+        prob = 1.0
+      else                                                               
+        nSigma = -sigmaMax + (idim-0.5)*step                                      
+        nSigma_plus = (nSigma + step/2.)                                          
+        nSigma_minus = (nSigma - step/2.)                                         
+        rupDim = 10.**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))              
                                                                                 
-      real mag, coef(2,MAX_FLT), sigma(1), rupDim, prob                                  
-      real nSigma, nSigma_plus, nSigma_minus                                    
-                                                                                
-      nSigma = -sigmaMax + (idim-0.5)*step                                      
-      nSigma_plus = (nSigma + step/2.)                                          
-      nSigma_minus = (nSigma - step/2.)                                         
-      rupDim = 10.**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))              
-                                                                                
-c     Compute probability that (log) rupture dimension is between               
-c     dim_log_minus and dim_log_plus                                            
-      CALL NDTR ( sigmaMax, F0, D )                                             
-      CALL NDTR ( nSigma_minus, F1, D )                                         
-      CALL NDTR ( nSigma_plus, F2, D )                                          
-      prob = (F1-F2)/(1-2*f0)                                                   
-                                                                                
+c       Compute probability that (log) rupture dimension is between               
+c       dim_log_minus and dim_log_plus                                            
+        CALL NDTR ( sigmaMax, F0, D )                                             
+        CALL NDTR ( nSigma_minus, F1, D )                                         
+        CALL NDTR ( nSigma_plus, F2, D )                                          
+        prob = (F1-F2)/(1-2*f0)                                                   
+      endif          
+                                                                      
       return                                                                    
       end                                                                       
