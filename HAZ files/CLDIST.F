@@ -36,7 +36,7 @@ c     declarations passed out
 
 c     declarations only used within subroutine
       integer i, j, celly, cellx
-      real top_grid, hypo1, distRx, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
+      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
       
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -44,7 +44,6 @@ c     Initialize closest distance
       distSeismo = 1.0e30
       disthypo = 1.0e30
       distepi = 1.0e30
-      distRx = 1.0e30
       
 c     Set top_grid for sourceTypes 2/3 and 4 (different)
         if (sourceType .eq. 2 .or. sourceType .eq. 3) then
@@ -85,7 +84,6 @@ C         added limit on only shallow areal sources (Hypo>30.0km)
        
 c         Set other distance values equal to corresponding distance measures.
           distepi = distJB
-          distRx = distJB
           disthypo = distRup
           Rx = distJB
           Ry = 0.0
