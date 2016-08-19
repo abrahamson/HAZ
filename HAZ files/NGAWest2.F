@@ -2470,7 +2470,7 @@ c ----------------------------------------------------------------------
       real lnSa, SA1180, rjb, rRup, Rx, Ry0, dip, mag, vs30
       real HW_taper1, HW_taper2, HW_taper3, HW_taper4, HW_taper5
       real damp_dSA1180, sigAmp, fltWidth
-      real f1, f4, f5, f6, f7, f8, f9, f10, f11, fReg, f12, f13
+      real f1, f4, f5, f6, f7, f8, f10, f11, fReg, f12, f13
       real Ry1, ZTOR, Frv, Fn, SpecT
       real phiA, phiB, tauA, tauB, phi, tau
       integer vs30_class, hwflag, iflag, nPer, regionflag, msasflag
