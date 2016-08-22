@@ -114,6 +114,7 @@ c      Open Output7 file which will contain deaggregations for each source.
        
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
+       call InitPoiss ( Poiss )
        call InitHaz ( magbar1 )
        call InitHazBins ( HazBins )
        call InitHazBinsX ( HazBinsX )
@@ -552,7 +553,6 @@ c                    Add to mean deagg
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
 
-c
 c                    Add to source deagg 
                      wt1 = wt * gm_wt(iProb,jType,iAtten)
                      m_bar_s(iFlt,iProb,jInten) = m_bar_s(iFlt,iProb,jInten) + mHaz*wt1*magTotal
@@ -560,8 +560,6 @@ c                    Add to source deagg
                      rjb_bar_s(iFlt,iProb,jInten) = rjb_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distjb
                      rx_bar_s(iFlt,iProb,jInten) = rx_bar_s(iFlt,iProb,jInten) + mHaz*wt1*Rx
                      e_bar_s(iFlt,iProb,jInten) = e_bar_s(iFlt,iProb,jInten) + mHaz*wt1*epsilon1
-c                     write (*,*) m_bar_s(iFlt,iProb,jInten),rrup_bar_s(iFlt,iProb,jInten), rjb_bar_s(iFlt,iProb,jInten), 
-c     1                           rx_bar_s(iFlt,iProb,jInten), e_bar_s(iFlt,iProb,jInten) 
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
@@ -571,7 +569,7 @@ c                    Save Marginal Hazard to temp array for fractile output
      1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
                      tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
-     1                        + tempHaz2(jType, jInten,iProb,iAtten)
+     1                        + tempHaz2(jType, jInten,iProb,iAtten)  
 
  500                continue
  510               continue
@@ -621,6 +619,11 @@ c        Write temp Haz array to file
      
          call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
+     
+c        Calculate the Poisson probability
+         call CalcPoisson ( tempHaz, nParamVar, nInten, nProb, 
+     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth, wtout,
+     2        al_segWt, segwt1, gm_wt, Poiss )
 
  860    continue
 
@@ -640,7 +643,8 @@ c      Write out the mean Haz
      3       HazBins, nMagBins, nDistBins, nEpsBins, magBins, distBins,
      4       epsBins, al_segWt, MinRrup, nAttenType, attenType,
      5       segwt1, dirflag, tapflag,intflag, fsys, SourceDist,
-     6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
+     6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT, 
+     7       Poiss)
 
 c      Write out the deagrregated hazard
         call output_HazBins ( isite, sitex, sitey, testInten, nInten,
@@ -651,12 +655,10 @@ c      Write out the deagrregated hazard
      4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
      5       HazBinsX)
      
-
        call output_sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
      1           nFlt, Haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
      2           rx_bar_s, e_bar_s, specT, nProb)
      
-
         call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue

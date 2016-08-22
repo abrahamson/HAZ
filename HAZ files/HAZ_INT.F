@@ -42,7 +42,23 @@ c --------------------------------------------------------------
   80    continue                                                                
   90  continue                                                                  
       return                                                                    
-      end                                                                       
+      end  
+      
+c --------------------------------------------------------------  
+                                                                                
+      subroutine InitPoiss ( Poiss ) 
+
+      implicit none                                             
+      include 'pfrisk.h'         
+                                               
+      real*8 Poiss( MAX_INTEN )
+      integer i                               
+                                                                                                                                         
+          do 70 i = 1, MAX_INTEN                                                      
+                Poiss(i) = 0.0                                                       
+  70      continue                                                                                                                               
+      return                                                                    
+      end                                                                     
                                                                                 
 c --------------------------------------------------------------                
                                                                                 
