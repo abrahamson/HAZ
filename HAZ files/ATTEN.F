@@ -7948,6 +7948,9 @@ c ---------------------------------------------------------------------
       subroutine KAAH_2015 ( mag, Rbjf, specT, 
      1                     period2, lnY, sigma, iflag, vs, ftype, pgaref, region ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=20)
       REAL Period(MAXPER), a1(MAXPER), a2(MAXPER)
       real b1(MAXPER), b2(MAXPER), b3(MAXPER), b4(MAXPER), b5(MAXPER)
@@ -7961,13 +7964,15 @@ c ---------------------------------------------------------------------
       real a1p, a2p, b1p, b2p, b3p, b4p, b5p, b6p, b7p, b8p, b9p, b10p
 	    real sd1p, sd2p, sb1p, sb2p
 	    real a1a, a2a, b1a, b2a, b3a, b4a, b5a, b6a, b7a, b8a, b9a, b10a
-	    real sd1a, sd2a, sb1a, sb2a
+	    real sd1a, sd2a
       real a1b, a2b, b1b, b2b, b3b, b4b, b5b, b6b, b7b, b8b, b9b, b10b
-	    real sd1b, sd2b, sb1b, sb2b
-      real mag, Rbjf, Vs, Ftype, Fn, Fr pgaref
+	    real sd1b, sd2b
+      real mag, Rbjf, Vs, Ftype, Fn, Fr, pgaref
       real c1, vref, vcon, LnY
       real c, n, term1
-      INTEGER iFlag, count1, count2, region
+      INTEGER iFlag, count1, count2, region, nPer, i
+      real period2, sigma, dc1, period1, fmag, fdis, fsof, faat, fsite
+      real w, phi, tau
 
       Data Period / 0.0, -1, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15,
      1              0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4 / 

@@ -15,7 +15,7 @@ c meanpga.f
       character*80 attenName(4,MAX_ATTEN), attenname1, attenname0
       integer intflag(4,MAX_PROB), iflag, vs30_class, iBranch
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
-      integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
+      integer coefcountRrup, coefcountRjb, iAtten, iProb, jType, region
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
       real magc, rupdistc, ftypec, lnYc, depthTop, phiSS
@@ -27,7 +27,7 @@ c meanpga.f
       real phi, tau, lnYH, sourceclass, sigmac, fth, frv, vs, sigma
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11), c1
       real depthTop1, s03vfs, s03sr, s03fr, soil, GB, GC, pga4nl
-      real sigmaH, phiH, tauH, sclass
+      real sigmaH, phiH, tauH, sclass, pgaref
       
 C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       lnY = 1.e30
@@ -77,8 +77,8 @@ c  *** Turkey adjusted NGA1 models
       endif
 
 C     Kale, Ö., Akkar, S., Ansari, A., & Hamzehloo, H. (2015). 
-C     - "A Ground‐Motion Predictive Model for Iran and Turkey for Horizontal PGA, 
-C     PGV, and 5% Damped Response Spectrum: Investigation of Possible Regional Effects"
+C     -A Ground‐Motion Predictive Model for Iran and Turkey for Horizontal PGA, 
+C     PGV, and 5% Damped Response Spectrum: Investigation of Possible Regional Effects
 C     BSSA: Vol. 105, No.2A, pp. 963-980.
 C     Model Number = 2150
       if ( jcalc .eq. 2150 ) then
@@ -88,7 +88,6 @@ C     For Turkey
          call KAAH_2015 ( mag, jbdist, specT,
      1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
          attenname1 = 'Kale et AL. (2015)_Hor_Turkey'
-         lnY = lnY + efac
        endif
 
       if ( jcalc .eq. 3150 ) then
@@ -98,7 +97,6 @@ C     For Iran
          call KAAH_2015 ( mag, jbdist, specT,
      1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
          attenname1 = 'Kale et AL. (2015)_Hor_Iran'
-         lnY = lnY + efac
       endif
 
 c    Taiwan GMPEs
