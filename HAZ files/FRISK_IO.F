@@ -1031,6 +1031,7 @@ c     Write Site Coordinates
 
         do iProb=1,nProb
 c       Write Test Intensities
+         write (nwr,'( 2x,''iProb, specT: '',i5,2x,f10.4)') iProb, specT(iProb)
          write (nwr,'( i5,2x,''nAmp'')') nInten(iProb)
          write(nwr,920) (ati(iProb,J2),J2=1,nInten(iProb))
 
@@ -1049,7 +1050,7 @@ c        Write MBar, RrupBar, Rjbbar, Rxbar and EpsBar Results
           write (nwr,'( 2x,a30,''EBar      '',30f10.2)') fName(iFlt), 
      1          (e_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
          enddo
-
+        write (nwr,'( /,''------------------'',/)')
         enddo
        
                  
