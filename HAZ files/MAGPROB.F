@@ -55,7 +55,7 @@ c         Lower magnitude equal to the minimum magnitude for each fault.
           magL = minMag(iFlt)        
           
 c         CHECK IF MAGNITUDE STEP EXCEEDS THE MAX MAG                                      
-          if ( mag .gt. magU ) then                              
+          if ( mL .gt. magU ) then                              
             pmag(iParam,iWidth) = 0.           
           else                                 
       
