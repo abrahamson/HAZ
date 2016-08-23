@@ -531,6 +531,41 @@ c  -------------------------------------------------------------------
       end
 
 c  -------------------------------------------------------------------
+
+      subroutine CalcPoisson ( tempHaz, nParamVar, nInten, 
+     1                nProb, nAtten, iFlt, jtype, nfType, iFltWidth, nWidth, wtout,
+     2                al_segWt, segwt1, gm_wt, tempPoiss )
+     
+      implicit none 
+      include 'pfrisk.h'
+
+      integer nProb, jType, iProb, iFtype, j, nParamVar(MAX_FLT,MAX_WIDTH),
+     1        nInten(MAX_PROB), nAtten(MAX_PROB,4), iflt, nfType(MAX_FLT),
+     2        iFltWidth, nWidth(MAX_FLT), iAtten, iParam
+      real all_wt, wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE),
+     1     al_segWt(MAX_FLT), segWt1(MAX_FLT), gm_wt(MAX_PROB,4,MAX_ATTEN)
+      real*8 tempHaz(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_ATTEN,MAX_FTYPE),
+     1       Poiss_br_wt(MAX_PROB,MAX_INTEN), tempPoiss(MAX_PROB,MAX_INTEN)
+
+      do iProb=1,nProb
+        do iAtten=1,nAtten(iProb,jType)
+          do iFtype=1,nFtype(iFlt)
+            do iParam=1,nParamVar(iFlt,iFltWidth)              
+              all_wt = wtout(iFlt,iParam,iFltWidth,iFtype) * al_segWt(iFlt) * 
+     1                 segwt1(iFlt) * gm_wt(iProb,jType,iAtten)
+              do j=1,nInten(iProb)                               
+                Poiss_br_wt(iProb,j) = (1. - exp(-tempHaz(iParam,j,iProb,iAtten,iFtype)))*all_wt
+                tempPoiss(iProb,j) = tempPoiss(iProb,j) + Poiss_br_wt(iProb,j)
+              enddo
+            enddo
+          enddo
+        enddo
+      enddo
+    
+      return
+      end
+      
+c  -------------------------------------------------------------------
  
       subroutine output_TotalHaz ( isite, sitex, sitey, ati, nInten, 
      1           nFlt, nAtten, risk, fName, jCalc, sigTrunc, csrflag,
@@ -539,7 +574,7 @@ c  -------------------------------------------------------------------
      5           nEpsBins, magBins, distBins, epsBins,
      6           al_segWt, MinRrup, nAttenType, attenType, segWt1,
      7           dirflag,tapflag, intflag, fsys, SourceDist, mMagout,
-     8           hwflagout, ftype, vs, nmaxmag2, mMagoutwt, specT)
+     8           hwflagout, ftype, vs, nmaxmag2, mMagoutwt, specT, Poiss)
 
       implicit none
       include 'pfrisk.h'
@@ -555,7 +590,7 @@ c  -------------------------------------------------------------------
      9     sumbar, xx
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM)
       real MinRrup(MAX_FLT), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM)
-      real*8 risk2(MAX_INTEN), sum, risk2t(MAX_INTEN)
+      real*8 risk2(MAX_INTEN), sum, Poiss(MAX_PROB,MAX_INTEN)
       real  period1(4,MAX_PROB),
      1     sigTrunc(MAX_PROB), probAct(MAX_FLT), SourceDist(MAX_FLT,MAX_WIDTH,3)
       integer csrflag(MAX_PROB), attenType(MAX_FLT), nAttenType, dirflag(MAX_PROB)
@@ -564,7 +599,7 @@ c  -------------------------------------------------------------------
       integer isite, nInten(MAX_PROB), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(MAX_FLT) 
       integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount, iProb
       integer J2, iInten, iFlt, M, iMagBin, iDistBin, iEpsBin
-      real ftype(1), vs, specT(MAX_PROB)
+      real ftype(1), vs, specT(MAX_PROB) 
       character*80 fName(MAX_FLT), file1, attenName(4,MAX_PROB)
 
       nwr = 12
@@ -647,18 +682,10 @@ c       Write Total Number of Events
         xx = 0.
         write(NWR,'( 2x,''Wt_Total_Events/yr'',20x,2f6.3,f8.1,1x,30e12.4)' )
      1        xx, xx, xx, (risk2( M ), M=1,nInten(iProb))
-
-c       Compute Probability of Exceedance  (Poisson)
-        do iInten=1,nInten(iProb)
-          risk2t( iInten ) = risk2 (iInten)
-          if ( risk2( iInten ) .GT. 0.0001 ) then
-            risk2 ( iInten ) = (1. - EXP( -risk2( iInten)))
-          endif
-        enddo
         
 c       Write hazard        
         write(NWR,'( 2x,''Poisson_Prob:  '',23x,2f6.3,f8.1,1x,30e12.4)')
-     1        xx, xx, xx, ( risk2( M ), M=1,nInten(iProb))
+     1        xx, xx, xx, ( Poiss(iProb,M), M=1,nInten(iProb))
 
 c       Write out M,D and epsilon Bar values.
 c       Normalize for each intensity
@@ -688,9 +715,9 @@ c       Normalize for each intensity
                 enddo
               enddo
             enddo
-            m_bar(iProb,iInten) = m_bar(iProb,iInten)/risk2t(iInten)
-            d_bar(iProb,iInten) = d_bar(iProb,iInten)/risk2t(iInten)
-            e_bar(iProb,iInten) = e_bar(iProb,iInten)/risk2t(iInten)
+            m_bar(iProb,iInten) = m_bar(iProb,iInten)/risk2(iInten)
+            d_bar(iProb,iInten) = d_bar(iProb,iInten)/risk2(iInten)
+            e_bar(iProb,iInten) = e_bar(iProb,iInten)/risk2(iInten)
           endif  
         enddo 
 
@@ -709,11 +736,7 @@ c       Write MBar, DBar and EpsBar Results
       return
       
  910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
- 919  FORMAT(' LOG (AMPLITUDE):',7X,10F10.2)
  920  FORMAT(1X,'AMP:',36x,' pSeg al_Wt  MinRrup',30F12.6)
- 950  FORMAT('     FAULT',I2,' E(NO/YR)',5X,10E10.3)
- 960  FORMAT('     TOTAL   E(NO/YR)',5X,10E10.3)
- 975  FORMAT('     TOTAL risk',11X,10E10.3)
       end
       
 c  ------------------------------------------------------------------
@@ -910,11 +933,7 @@ c       Write Results
       close (nwr)
       return
  910  FORMAT(//,115('-'),//' SITE',I2,' COORDINATES: ',2F9.3)
- 919  FORMAT(' LOG (AMPLITUDE):',7X,10F10.2)
  920  FORMAT(1X,'AMP:',41x,30(F10.3,2x))
- 950  FORMAT('     FAULT',I2,' E(NO/YR)',5X,10E10.3)
- 960  FORMAT('     TOTAL   E(NO/YR)',5X,10E10.3)
- 975  FORMAT('     TOTAL risk',11X,10E10.3)
       end
       
 c ----------------------------------------------------------------------
