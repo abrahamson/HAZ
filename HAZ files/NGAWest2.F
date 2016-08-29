@@ -3088,11 +3088,15 @@ c     Compute between-event term, tau (eq. 7.2)
       endif
       tauB = tauA
 
-c     Compute phiB, within-event term with site amp variablity removed (eq. 7.7)
+c     Compute phiB, within-event term with site amp variability removed (eq. 7.7)
+c     with fix to model for small mag at long periods - limit sigAmp to be less than phiA
       sigAmp = 0.4
+      if (phiA .le. sigAmp) then
+        sigAmp = phiA*0.99
+      endif
       phiB = sqrt( phiA**2 - sigAmp**2)
       
-c     Compute parital derivative of alog(soil amp) w.r.t. alog(Sa1180) (eq. 7.10)
+c     Compute partial derivative of alog(soil amp) w.r.t. alog(Sa1180) (eq. 7.10)
       if ( vs30 .ge. vLinT) then
         dAmp_dSa1180 = 0.
       else
