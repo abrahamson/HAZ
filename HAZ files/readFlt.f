@@ -756,7 +756,7 @@ c                Set max mag
                    endif
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
-                   nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
+                   nMag(iFlt) = ceiling((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
                    if (sourceType(iFlt) .eq. 7) then
                      nMag(iFlt) = ncountS7(iFlt)
                    endif
