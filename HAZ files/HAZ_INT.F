@@ -51,12 +51,14 @@ c --------------------------------------------------------------
       implicit none                                             
       include 'pfrisk.h'         
                                                
-      real*8 Poiss( MAX_INTEN )
-      integer i                               
+      real*8 Poiss(MAX_PROB,MAX_INTEN)
+      integer i, j                               
                                                                                                                                          
+        do 80 j = 1, MAX_PROB
           do 70 i = 1, MAX_INTEN                                                      
-                Poiss(i) = 0.0                                                       
-  70      continue                                                                                                                               
+                Poiss(j,i) = 0.0                                                       
+  70      continue   
+  80    continue                                                                                                                            
       return                                                                    
       end                                                                     
                                                                                 
