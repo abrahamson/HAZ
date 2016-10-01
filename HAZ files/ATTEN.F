@@ -4,11 +4,14 @@ C -------------------------------------------------------------------
 C****** Abrahamson and Silva (1997), Horizontal *********************
 C -------------------------------------------------------------------           
 
-       subroutine AS_97_H ( mag, dist, mech, soil, hw, specT, period1,           
+      subroutine AS_97_H ( mag, dist, mech, soil, hw, specT, period1,           
      1               lnY, sigma, iflag )                                               
-      parameter (MAXPER=27)                                                     
-                                                                                
-      integer hw, nper, count1, count2, iflag
+
+      implicit none
+
+      integer MAXPER
+      parameter (MAXPER=27)                                                                                                                             
+      integer hw, nper, count1, count2, iflag, i
       real mag, dist, mech, mech1, n, c4(MAXPER), rockPGA                              
       real mag1, c5, period(MAXPER), mu, b1(MAXPER), b2(MAXPER)             
       real lnY, sigma, soil, specT                                                    
@@ -17,7 +20,7 @@ C -------------------------------------------------------------------
       real a1pga, a3pga, a5pga, a6pga, a9pga, a10pga, a11pga, a12pga
       real c4pga, b1pga, b2pga
       real a1sa, a3sa, a5sa, a6sa, a9sa, a10sa, a11sa, a12sa
-      real c4sa, b1sa, b2sa
+      real c4sa, b1sa, b2sa, period1, soil1, rockPga1
                                                                                
       data b1 / 0.700, 0.700, 0.705, 0.713, 0.720, 0.728,                       
      1         0.735, 0.739, 0.746, 0.754, 0.759, 0.765, 0.772,                 
@@ -205,9 +208,12 @@ c ----------------------------------------------------------------------
 
       subroutine AS_97_H_NF ( mag, dist, mech, soil, hw, specT, period1,           
      1               lnY, sigma,iflag )                                               
-      parameter (MAXPER=27)                                                     
-                                                                                
-      integer hw, nper, count1, count2,iflag
+
+      implicit none
+
+      integer MAXPER
+      parameter (MAXPER=27)                                                                                                                                     
+      integer hw, nper, count1, count2, iflag, i
       real mag, dist, mech, mech1, n, c4(MAXPER), rockPGA                              
       real mag1, c5, period(MAXPER), mu, b1(MAXPER), b2(MAXPER)             
       real lnY, sigma, soil, specT                                                 
@@ -216,7 +222,7 @@ c ----------------------------------------------------------------------
       real a1pga, a3pga, a5pga, a6pga, a9pga, a10pga, a11pga, a12pga
       real c4pga, b1pga, b2pga
       real a1sa, a3sa, a5sa, a6sa, a9sa, a10sa, a11sa, a12sa
-      real c4sa, b1sa, b2sa
+      real c4sa, b1sa, b2sa, period1, soil1, rockPga1
                                                                                
       data b1 / 0.700, 0.700, 0.705, 0.713, 0.720, 0.728,                       
      1         0.735, 0.739, 0.746, 0.754, 0.759, 0.765, 0.772,                 
@@ -411,9 +417,13 @@ c -------------------------------------------------------------------
 
       subroutine AS_97_V ( mag, dist, mech, soil, hw, specT, period1,           
      1                      lnY, sigma,iflag )                                        
+
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=27)                                                     
-                                         
-      integer hw,iflag, count1, count2                                  
+                                 
+      integer hw,iflag, count1, count2, nper, i                                  
       real mag, dist, mech, n, c4(MAXPER), rockPGA                              
       real mag1, c5, period(MAXPER), mu, b5(MAXPER), b6(MAXPER)             
       real lnY, sigma, soil, specT                                                     
@@ -423,7 +433,7 @@ c -------------------------------------------------------------------
       real a1pga, a3pga, a5pga, a6pga, a9pga, a10pga, a11pga, a12pga
       real c4pga, b5pga, b6pga
       real a1sa, a3sa, a5sa, a6sa, a9sa, a10sa, a11sa, a12sa
-      real c4sa, b5sa, b6sa  
+      real c4sa, b5sa, b6sa, period1, soil1, rockPga1  
                                       
       data b5 / 0.760, 0.760, 0.760, 0.760, 0.760, 0.760,                       
      1         0.760, 0.760, 0.740, 0.720, 0.700, 0.690, 0.690,                 
@@ -606,12 +616,15 @@ c --------------------------------------------------------------------
 
       subroutine AS_97_V_NF ( mag, dist, mech, soil, hw, specT, period1,           
      1                      lnY, sigma,iflag )                                        
-      parameter (MAXPER=27)                                                     
 
-      integer hw, nper, count1, count2,iflag
+      implicit none
+
+      integer MAXPER
+      parameter (MAXPER=27)                                                     
+      integer hw, nper, count1, count2, iflag, i
       real mag, dist, mech, mech1, n, c4(MAXPER), rockPGA                              
       real mag1, c5, period(MAXPER), mu, b5(MAXPER), b6(MAXPER)             
-      real lnY, sigma, soil, specT                                                     
+      real lnY, sigma, soil, specT, period1, soil1, rockPga1                                                     
       real a1(MAXPER), a2, a3(MAXPER), a4, a5(MAXPER), a6(MAXPER),              
      1     a9(MAXPER), a10(MAXPER), a11(MAXPER), a12(MAXPER), a13               
       real a1pga, a3pga, a5pga, a6pga, a9pga, a10pga, a11pga, a12pga
@@ -808,7 +821,9 @@ c ---------------------------------------------------------------------
                                                                                 
       subroutine Calcarg_as97 (mag,dist,mech,soil,hw,specT,mu,rockPGA,           
      1 a1, a2, a3, a4, a5, a6, a9, a10, a11, a12, a13, c4, c5, mag1, n)         
+
       implicit none                                                             
+
       integer hw                                        
       real a1, a3, a5, a6, a9, a10, a11, a12, specT,          
      1     mag, dist, mech, mu, n, c4, rockPGA, a2, a4, a13                  
@@ -888,14 +903,18 @@ c     component using the Boore, Joyner and Fumal (1994) attenuation
 c     relation                                                                  
 c     it takes into account the ftype of the fault unlike BJF 1993.             
                                                                                 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=11)                                                     
       real ftype, ftype1, dist, m, lnY, sigma, log10Y, specT                                 
       real period(MAXPER), b2(MAXPER), b3(MAXPER),                              
      1     b5(MAXPER), b1ss(MAXPER), b1rv(MAXPER),                              
      1     b6(MAXPER), b7(MAXPER), h(MAXPER), sigma1(MAXPER)                    
       character*80 attenName                                                    
-      integer nper, count1, count2,iflag
-      real b1ssT, b1rvT, b2T, b3T, b5T, b6T, b7T, hT, sigma1T
+      integer nper, count1, count2, iflag, i
+      real b1ssT, b1rvT, b2T, b3T, b5T, b6T, b7T, hT, sigma1T,
+     1     GB, GC, period1, twoPi, r 
                                                                                 
       data period / 0.00, 0.1, 0.15, 0.20,                                      
      1              0.30, 0.40, 0.50, 0.75, 1.00, 1.5, 2. /                     
@@ -1022,15 +1041,18 @@ c     This  subroutine calculates the LOG SA for the ave horizontal
 c     component using the Boore, Joyner and Fumal (1994) attenuation            
 c     relation                                                                  
 c     it takes into account the ftype of the fault unlike BJF 1993.             
-                                                                                
+         
+      implicit none
+
+      integer MAXPER                                                                       
       parameter (MAXPER=12)                                                     
-      real ftype, dist, m, lnY, sigma                                  
+      real ftype, dist, m, lnY, sigma, period1, vs, r                                  
       real period(MAXPER), b2(MAXPER), b3(MAXPER),                              
      1     b5(MAXPER), b1ss(MAXPER), b1rv(MAXPER),                              
      1     bv(MAXPER), va(MAXPER), h(MAXPER), sigma1(MAXPER)                    
       character*80 attenName                                                    
       real specT, b1ssT, b1rvT, b2T, b3T, b5T, bvT, vaT, hT, sigma1T
-      integer count1, count2, nper,iflag
+      integer count1, count2, nper, iflag, i, ftype1
                                                                   
       data period / 0.00, 0.1, 0.15, 0.20, 0.24,                                       
      1              0.30, 0.40, 0.50, 0.75, 1.00, 1.5, 2. /                     
@@ -1147,17 +1169,20 @@ c -------------------------------------------------------------
 
 c     This  subroutine calculates the LOG SA for the ave horizontal             
 c     component using the Campbell (1990) attenuation relation.                 
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
-                                                                                
+
+      implicit none
+
+      integer MAXPER                                                                                
       parameter (MAXPER=16)                                                     
       real ftype, ftype1, dist, m, lnY, sigma, baseDepth, period1               
       character*80 attenName                                                    
-      real period(MAXPER)                                                       
+      real period(MAXPER), specT, twoPi                                                       
       real a(MAXPER), f1(MAXPER), g1(MAXPER), sigma1(MAXPER),                   
      1     sigma2(MAXPER), b, c1, c2, d, e, f2, f3, g2  
       real aT, f1T, g1T, sigma1T, sigma2T  
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
 
       data period / 0.00, 0.04, 0.05, 0.075, 0.10, 0.15, 0.20,                  
      1              0.30, 0.40, 0.50, 0.75, 1.00, 1.5, 2., 3., 4. /             
@@ -1274,18 +1299,21 @@ c ----------------------------------------------------------
 
 c     This  subroutine calculates the LOG SA for the ave horizontal             
 c     component using the Campbell (1990) attenuation relation.                 
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
-                                                                                
+ 
+      implicit none
+
+      integer MAXPER                                                                               
       parameter (MAXPER=16)                                                     
       real ftype, ftype1, dist, m, lnY, sigma, baseDepth, period1               
       integer iflag                                                  
       character*80 attenName                                                    
-      real period(MAXPER)                                                       
+      real period(MAXPER), twoPi                                                       
       real a(MAXPER), f1(MAXPER), g1(MAXPER), sigma1(MAXPER),                   
      1     sigma2(MAXPER), b, c1, c2, d, e, f2, f3, g2                          
       real aT,f1T,g1T,sigma1T,sigma2T, specT
-      integer nper, count1, count2
+      integer nper, count1, count2, i
 
       data period / 0.00, 0.04, 0.05, 0.075, 0.10, 0.15, 0.20,                  
      1              0.30, 0.40, 0.50, 0.75, 1.00, 1.5, 2., 3., 4. /             
@@ -1400,18 +1428,22 @@ c -------------------------------------------------------------
 c     This  subroutine calculates the LOG SA/PGA for the ave horizontal         
 c     component using the Campbell (1990) attenuation relation.                 
 c     The LOG SA curve is calculated from the LOG PGA of Campbell 1994          
-c     Sigma1 and Sigma2 are directly from Campbell's paper                      
+c     Sigma1 and Sigma2 are directly from Campbells paper                      
 c      for M < 6.2 and M>= 6.2, respectively.                                   
-                                                                                
+
+      implicit none
+
+      integer MAXPER                                                                                
       parameter (MAXPER=16)                                                     
       real ftype, ftype1, dist, m, lnY, sigma, baseDepth, period1               
-      real lnPGA94, lnPGA90                                                     
+      real lnPGA94, lnPGA90, twoPi                                                     
       character*80 attenName                                                    
-      real period(MAXPER)                                                       
+      real period(MAXPER), d                                                       
       real a(MAXPER), f1(MAXPER), g1(MAXPER), sigma1(MAXPER),                   
      1     sigma2(MAXPER), b, c(12), c1, c2, e, f2, f3, g2                      
-      real specT, aT, f1T, g1T, sigma1T, sigma2T
-      integer nper, count1, count2,iflag
+      real specT, aT, f1T, g1T, sigma1T, sigma2T, softrock,
+     1     hardrock, r, scale
+      integer nper, count1, count2, iflag, i
 
       data period / 0.00, 0.04, 0.05, 0.075, 0.10, 0.15, 0.20,                  
      1              0.30, 0.40, 0.50, 0.75, 1.00, 1.5, 2., 3., 4. /             
@@ -1553,16 +1585,19 @@ c -----------------------------------------------------------
      1                         soilFlag, softRock, hardRock, baseDepth,         
      2                         attenName, period1,iflag )                             
 c     This subroutine uses the Campbell 1994 PGA with the 1993 Sa/a             
-                                                                                
+
+      implicit none
+
+      integer MAXPER                                                                                
       parameter (MAXPER=16)                                                     
-      real m, d, ftype, lnY, sigma, baseDepth                                   
+      real m, d, ftype, lnY, sigma, baseDepth, period1, ftype1                                   
       integer soilFlag, softRock, hardRock,iflag                            
-      real lnPGA93, lnPGA94                                                     
+      real lnPGA93, lnPGA94, alpha                                                     
       real b0(MAXPER), b1(MAXPER), b2(MAXPER), b3(MAXPER), b4(MAXPER),          
      1     b5(MAXPER), sig0(MAXPER), c(12), period(MAXPER)                      
       character*80 attenName                                                    
-      real specT, b0T, b1T, b2T, b3T, b4T, b5T, sig0T
-      integer nper, count1, count2
+      real specT, b0T, b1T, b2T, b3T, b4T, b5T, sig0T, r, scale
+      integer nper, count1, count2, i
                                                                                 
       data period / 0.0, 0.04, 0.05, 0.075, 0.10, 0.15, 0.2, 0.3, 0.4,          
      1               0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0 /                       
@@ -1709,16 +1744,19 @@ c ------------------------------------------------------------------
      1                    specT,attenName, period1, Ssr, Shr,iflag )                             
 
 c     Campbell (1997) - Horizontal                            
-                                                                                
+      
+      implicit none
+
+      integer MAXPER                                                                          
       parameter (MAXPER=14)                                                     
       real ftype, dist, m, lnY, sigma, baseDepth, period1                             
       integer Ssr, Shr,iflag                                                          
       character*80 attenName                                                    
-      real period(MAXPER), lndist                                                  
-          real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER),
+      real period(MAXPER), lndist, twoPi, ftype1, accH, fSA                                                  
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER),
      1     c5(MAXPER), c6(MAXPER), c7(MAXPER), c8(MAXPER)
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T
-      integer nper, count1, count2
+      integer nper, count1, count2, i
 
       data period / 0.00, 0.05, 0.075, 0.10, 0.15, 0.20,                  
      1              0.30, 0.50, 0.75, 1.00, 1.5, 2., 3., 4. / 
@@ -1858,16 +1896,19 @@ c ------------------------------------------------------------------
      1                    specT,attenName, period1, Ssr, Shr,iflag )                             
 
 c     Campbell (1997) - Vertical                             
-                                                                                
+
+      implicit none
+       
+      integer MAXPER                                                                         
       parameter (MAXPER=14)                                                     
       real ftype, dist, m, lnY, sigma, baseDepth, period1               
-      real lnY_H                                        
+      real lnY_H, ftype1                                        
       integer Ssr, Shr,iflag                                                              
       character*80 attenName                                                    
       real period(MAXPER)                                                                      
       real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)                      
       real specT, c1T, c2T, c3T, c4T, c5T
-      integer nper, count1, count2
+      integer nper, count1, count2, i
 
       data period / 0.00, 0.05, 0.075, 0.10, 0.15, 0.20,                  
      1              0.30, 0.50, 0.75, 1.00, 1.5, 2., 3., 4. / 
@@ -1981,13 +2022,15 @@ C *** Idriss (1991) Horizontal, Rock *************************
 c ------------------------------------------------------------                  
                                                                                 
       subroutine Idriss91_rock ( m, d, ftype, lnY, sigma, specT,                 
-     1                           attenName, period1,iflag )                           
+     1                           attenName, period1, iflag )                           
 c     This  subroutine calculates the LOG SA using the                          
 c     Idriss (1991) attenuation relation for horizontal Sa.                     
 c     (Ave of horizontal comp)                                                  
+
+      implicit none
                                                                                 
-      real ftype                                                                
-      real d,m,lnY,sigma, specT                                                      
+      real ftype, ftype1                                                                
+      real d,m,lnY,sigma, specT, period1                                                      
       integer iflag                                                             
       character*80 attenName                                                    
       attenName = 'Idriss (1991), rock'                                              
@@ -2011,12 +2054,16 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Idriss91_rock_m6 ( m, d, ftype, lnY, sigma,                    
      1           specT, period1,iflag )                                                
+
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=24)                                                     
       real ftype, d, m, lnY, sigma, period1                                     
       real a0(MAXPER), a1(MAXPER), a2(MAXPER), b0(MAXPER), sig0(MAXPER),        
      1     period(MAXPER)                                                       
-      real specT, a0T, a1T, a2T, b0T, sig0T
-      integer nper, count1, count2,iflag
+      real specT, a0T, a1T, a2T, b0T, sig0T, b1, b2
+      integer nper, count1, count2, iflag, i
  
       data period / 0.0, 0.03, 0.05, 0.075, 0.1, 0.11, 0.13, 0.15, 0.2,         
      1              0.25, 0.30, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,        
@@ -2104,12 +2151,16 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Idriss91_rock_m61 ( m, d, ftype, lnY, sigma,                   
      1           specT, period1,iflag )                                                
+
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=24)                                                     
       real ftype, d, m, lnY, sigma, period1                                     
       real a0(MAXPER), a1(MAXPER), a2(MAXPER), b0(MAXPER), sig0(MAXPER),        
      1     period(MAXPER), sig1(MAXPER)                                         
-      real specT, a0T, a1T, a2T, b0T, sig0T, sig1T
-      integer nper, count1, count2,iflag
+      real specT, a0T, a1T, a2T, b0T, sig0T, sig1T, b1, b2
+      integer nper, count1, count2, iflag, i
 
       data period / 0.0, 0.03, 0.05, 0.075, 0.1, 0.11, 0.13, 0.15, 0.2,         
      1              0.25, 0.30, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,             
@@ -2213,9 +2264,11 @@ c -------------------------------------------------------------------
 c     This  subroutine calculates the LOG SA using the                          
 c     Idriss (1991) attenuation relation for horizontal Sa.                     
 c     (Ave of horizontal comp)                                                  
+
+      implicit none
                                                                                 
-      real ftype                                                                
-      real d,m,lnY,sigma                                                           
+      real ftype, ftype1                                                                
+      real d,m,lnY,sigma, period1, b1, b2, a1, a2                                                           
       character*80 attenName                                                    
       attenName = 'Idriss (1991), soft-soil'                                         
 
@@ -2256,9 +2309,11 @@ c -------------------------------------------------------------------
 c     This  subroutine calculates the LOG SA using the                          
 c     Idriss (1991) attenuation relation for horizontal Sa.                     
 c     (Ave of horizontal comp)                                                  
+
+      implicit none
                                                                                 
       real ftype                                                                
-      real d,m,lnY,sigma                                                                                        
+      real d,m,lnY,sigma, period1, ftype1, b1, b2, a0, a1, a2, f                                                                                        
       character*80 attenName                                                    
       attenName = 'Idriss (1997), soft-soil'                                         
 
@@ -2302,9 +2357,11 @@ c ------------------------------------------------------------
 c     This  subroutine calculates the LOG SA using the                          
 c     Idriss (1991) attenuation relation for horizontal Sa.                     
 c     and the PGA from the 1995 relationship (Ave of horizontal comp)                                                  
+
+      implicit none
                                                                                 
       real ftype                                                                
-      real d,m,lnY,sigma,specT                                                      
+      real d,m,lnY,sigma,specT, period1, ftype1                                                      
       integer iflag                                                             
       character*80 attenName                                                    
       attenName = 'Idriss (1991;1995), Rock'                                              
@@ -2328,12 +2385,16 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Idriss91_95_rock_m6 ( m, d, ftype, lnY, sigma,                    
      1           specT, period1,iflag )                                                
+
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=24)                                                     
-      real ftype, d, m, lnY, sigma, period1                                     
+      real ftype, d, m, lnY, sigma, period1, b1, b2                                     
       real a0(MAXPER), a1(MAXPER), a2(MAXPER), b0(MAXPER), sig0(MAXPER),        
      1     period(MAXPER)                                                       
       real specT, a0T, a1T, a2T, b0T, sig0T, pga91, pga95
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
  
       data period / 0.0, 0.03, 0.05, 0.075, 0.1, 0.11, 0.13, 0.15, 0.2,         
      1              0.25, 0.30, 0.35, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0,        
@@ -2563,8 +2624,10 @@ c ----------------------------------------------------------------
 
 c     This  subroutine calculates the LOG SA using the                          
 c     Sadigh et al (1993) attenuation relation for vertical Sa.                 
+
+      implicit none
                                                                                 
-      real ftype                                                                
+      real ftype, specT, ftype1                                                                
       real d,m,lnY,sigma, period1                                               
       integer iflag                                                              
       character*80 attenName                                                    
@@ -2588,10 +2651,12 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Geomatrix93_V_rock_mLT65 ( m, d, ftype, lnY, sigma,            
      1            specT, period1,iflag )                                               
+
+      implicit none
+
       real ftype, d, m, lnY, sigma, period1
-      real specT, c1T, c3T, c4T
-      integer nper, count1, count2,iflag
-                                                                                
+      real specT, c1T, c3T, c4T, c2, c5, c6, c8
+      integer nper, count1, count2, iflag, MAXPER, i                                                                                
       parameter (MAXPER=22)                                                     
       real c1(MAXPER), c3(MAXPER), c4(MAXPER), period(MAXPER)                           
                                                                                 
@@ -2688,10 +2753,12 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Geomatrix93_V_rock_mGE65 ( m, d, ftype, lnY, sigma,            
      1           specT, period1,iflag )                                                
+
+      implicit none
+
       real ftype, d, m, lnY, sigma, period1, specT                                    
-      real c1T, c3T, c4T
-      integer nper, count1, count2,iflag                                                              
-                                                                                
+      real c1T, c3T, c4T, c2, c5, c6, c8
+      integer nper, count1, count2, iflag, MAXPER, i                                                                                                                                              
       parameter (MAXPER=22)                                                     
       real c1(MAXPER), c3(MAXPER), c4(MAXPER), period(MAXPER)                           
                                                                                 
@@ -2785,9 +2852,11 @@ c ------------------------------------------------------------
 c     This  subroutine calculates the LOG SA using the                          
 c     Sadigh et al (1993) attenuation relation for horizontal Sa.               
 c     (Ave of horizontal comp)                                                  
+
+      implicit none
                                                                                 
       real ftype, period1                                                       
-      real d,m,lnY,sigma, specT                                                       
+      real d,m,lnY,sigma, specT, ftype1                                                       
       integer iflag                                                              
       character*80 attenName                                                    
       attenName = 'Sadigh et al. (1997), Horizontal, rock'                              
@@ -2810,10 +2879,12 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Geomatrix93_H_rock_mLT65 ( m, d, ftype, lnY, sigma,            
      1           specT, period1,iflag )                                                
+
+      implicit none
+
       real ftype, d, m, lnY, sigma, period1, specT                                    
-      integer nPer, count1, count2,iflag                                                              
-      real c1T, c3T, c4T, c7T, sig0T
-                                                                                
+      integer nPer, count1, count2, iflag, MAXPER, i                                                              
+      real c1T, c3T, c4T, c7T, sig0T, c2, c5, c6                                                                                
       parameter (MAXPER=22)                                                     
       real c1(MAXPER), c3(MAXPER), c4(MAXPER), c7(MAXPER),                      
      1     sig0(MAXPER), period(MAXPER)                                         
@@ -2910,13 +2981,16 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Geomatrix93_H_rock_mGE65 ( m, d, ftype, lnY, sigma,            
      1           specT, period1,iflag )                                                
+
+      implicit none
+
       real ftype, d, m, lnY, sigma, period1, specT                                     
       real c1T, c3T, c4T, c7T, sig0T, sig1T
-      integer nper, count1, count2,iflag                                                    
-                                                                                
+      integer nper, count1, count2, iflag, MAXPER, i                                                                                                                                    
       parameter (MAXPER=22)                                                     
       real c1(MAXPER), c3(MAXPER), c4(MAXPER), c7(MAXPER),                      
-     1     sig0(MAXPER), sig1(MAXPER), period(MAXPER)                           
+     1     sig0(MAXPER), sig1(MAXPER), period(MAXPER), c2,
+     2     c5, c6                           
                                                                                 
       data period / 0.00, 0.05, 0.07, 0.09, 0.10, 0.12, 0.14, 0.15,             
      1              0.17, 0.20, 0.24, 0.30, 0.40, 0.50, 0.75, 1.00,             
@@ -3023,11 +3097,14 @@ c ------------------------------------------------------------
                                                                                 
       subroutine Sadigh97_H_soil ( m, dist, ftype, lnY, sigma, specT,         
      1           attenName, period1,iflag )                                                      
-      real ftype, dist, m, lnY, sigma                                              
-      real specT, c6ssT, c6rvT, c7T, sig0T
-      integer iflag, count1, count2                                                              
-      character*80 attenName
-   
+
+      implicit none
+
+      real ftype, dist, m, lnY, sigma, c1ss, c1rv, c2, c3, c4,
+     1     c5                                              
+      real specT, c6ssT, c6rvT, c7T, sig0T, ftype1
+      integer iflag, count1, count2, MAXPER, nPer, i                                                              
+      character*80 attenName   
       parameter (MAXPER=13)                                                      
       real c7(MAXPER),                      
      1     sig0(MAXPER), period(MAXPER), period1 , 
@@ -3137,19 +3214,22 @@ c -------------------------------------------------------------------
 C *** Spudich et al. (1997) Horizontal for Extensional Regimes ******
 c -------------------------------------------------------------------           
       subroutine Spudich96 ( m, dist, lnY, sigma, iSite, specT,           
-     1                   attenName, period1,iflag )                                   
+     1                   attenName, period1, iflag )                                   
 c     This  subroutine calculates the LOG SA for the ave horizontal             
 c     component using the Spudich (1996) attenuation relation                   
 c     Sigma is sqrt( sigma1**2+sigma2**2) log10 units                           
 c     iSite = 0 for rock, 1 for soil                                            
-                                                                                
+
+      implicit none
+
+      integer MAXPER                                                                                
       parameter (MAXPER=11)                                                     
-      real dist, m, lnY, sigma, log10Y                                   
+      real dist, m, lnY, sigma, log10Y, period1, twoPi, r                                   
       real period(MAXPER), b2(MAXPER), b3(MAXPER),                              
      1     b5(MAXPER), b1(MAXPER),                                              
      1     b6(MAXPER), h(MAXPER), sigma0(MAXPER)                    
       real specT, b1T, b2T, b3T, b5T, b6T, hT, sigma0T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, iSite, i
       character*80 attenName                                                    
                                                                                 
       data period / 0.00, 0.1, 0.15, 0.20,                                      
@@ -3261,13 +3341,16 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine youngs93 ( mag, rupDist, lnY, sigma, attenName, period,        
      1           specT, flag,iflag )                                                   
+
+      implicit none
                                                                                 
-      real mag, rupDist, lnY, sigma, period                                     
+      real mag, rupDist, lnY, sigma, period, c1, c2, c4, c5, c8,
+     1     c9, c10, c11                                     
       character*80 attenName                                                    
       real flag                                                                 
       real c3(10), c6(10), c7(10), period1(10)                                  
       real specT, c3T, c6T, c7T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       data period1 / 0.0, 0.067, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 2.0,             
      1               3.0 /                                                      
       data c3 /2.5526, 2.72782, 2.654613, 2.527905, 2.453786, 2.4011998,        
@@ -3359,16 +3442,18 @@ C *** Youngs et al. (1997) Horizontal Rock for Subduction Zones *****
 c -------------------------------------------------------------------           
 
       subroutine youngs97_rock ( mag, rupDist, lnY, sigma, 
-     1   attenName, period, specT, ftype, depth,iflag )                                                   
+     1   attenName, period, specT, ftype, depth, iflag )                                                   
 
 c     Youngs et al (1997) -- subduction (Rock)
 
-      real mag, rupDist, lnY, sigma, period                                     
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, depth, c5                                     
       character*80 attenName                                                    
       real ftype                                                                 
       real c1(12), c2(12), c3(12), c4(12), period1(12)                                  
       real specT, c1T, c2T, c3T, c4T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
  
       data period1 / 0.0, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 
      1               1.0, 1.5, 2.0, 3.0 /    
@@ -3451,14 +3536,16 @@ C *** Youngs et al. (1997) Horizontal Soil for Subduction Zones *****
 c -------------------------------------------------------------------
 
       subroutine youngs97_soil ( mag, rupDist, lnY, sigma,         
-     1           attenName, period, specT, ftype, depth,iflag )                                                   
+     1           attenName, period, specT, ftype, depth, iflag )                                                   
 
 c     Youngs et al (1997) -- subduction (Soil)
 
-      real mag, rupDist, lnY, sigma, period                                     
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, depth, c5                                     
       character*80 attenName                                                    
-      real ftype,specT, c1T, c2T,c3T, c4T                                                                 
-      integer iflag, count1, count2, nper
+      real ftype,specT, c1T, c2T, c3T, c4T                                                                 
+      integer iflag, count1, count2, nper, i
       real c1(13), c2(13), c3(13), c4(13), period1(13)                                  
 
       data period1 / 0.0, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 
@@ -3554,7 +3641,10 @@ c          NEHRP C --> Sc=1, Sd=0, Se=0   360<Vs<760
 c          NEHRP D --> Sc=0, Sd=1, Se=0   180<Vs<360
 c          NEHRP E --> Sc=0, Sd=0, Se=1   Vs<180
 
-      real mag, rupDist, lnY, sigma, period, mag1, depth1                                    
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, mag1, depth1, sigT,
+     1     sigsT, g                                    
       character*80 attenName                                                    
       real ftype, depth, Sc, Sd, Se                                                             
       real c1(8), c2(8), c3(8), c4(8), c5(8), c6(8), c7(8) 
@@ -3562,7 +3652,7 @@ c          NEHRP E --> Sc=0, Sd=0, Se=1   Vs<180
       real period1(8), sig(8), sigs(8), r, delta, PGArx, sl                               
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
       real c1sT, c2sT, c3sT, c4sT, c5sT, c6sT, c7sT
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
  
       data period1 / 0.0, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0, 3.0 /
       data c1 /  2.991, 2.8753, 2.7789, 2.6638, 2.5249, 2.1442,
@@ -3800,15 +3890,17 @@ c          NEHRP D --> Sc=0, Sd=1, Se=0   180<Vs<360
 c          NEHRP E --> Sc=0, Sd=0, Se=1   Vs<180
 C     This version is specifically for the Cascadia Subduction Source Zone
 
-      real mag, rupDist, lnY, sigma, period, mag1, depth1                                 
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, mag1, depth1, g                                 
       character*80 attenName                                                    
-      real ftype, depth, Sc, Sd, Se                                                             
+      real ftype, depth, Sc, Sd, Se, sigT, sigsT                                                             
       real c1(8), c2(8), c3(8), c4(8), c5(8), c6(8), c7(8) 
       real c1s(8), c2s(8), c3s(8), c4s(8), c5s(8), c6s(8), c7s(8) 
       real period1(8), sig(8), sigs(8), r, delta, PGArx, sl                               
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
       real c1sT, c2sT, c3sT, c4sT, c5sT, c6sT, c7sT
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
  
       data period1 / 0.0, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0, 3.0 /
       data c1 /  2.79, 2.60, 2.50, 2.54, 2.50, 2.18,
@@ -4049,15 +4141,17 @@ c          NEHRP D --> Sc=0, Sd=1, Se=0   180<Vs<360
 c          NEHRP E --> Sc=0, Sd=0, Se=1   Vs<180
 C     This version is specifically for the Japanese Subduction Source Zone
 
-      real mag, rupDist, lnY, sigma, period, mag1, depth1                                     
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, mag1, depth1, sigT, sigsT                                     
       character*80 attenName                                                    
-      real ftype, depth, Sc, Sd, Se                                                             
+      real ftype, depth, Sc, Sd, Se, g                                                             
       real c1(8), c2(8), c3(8), c4(8), c5(8), c6(8), c7(8) 
       real c1s(8), c2s(8), c3s(8), c4s(8), c5s(8), c6s(8), c7s(8) 
       real period1(8), sig(8), sigs(8), r, delta, PGArx, sl                               
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
       real c1sT, c2sT, c3sT, c4sT, c5sT, c6sT, c7sT
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
  
       data period1 / 0.0, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0, 3.0 /
       data c1 /  3.14, 3.05, 2.95, 2.84, 2.58, 2.18,
@@ -4290,12 +4384,14 @@ C     This relationship is constrained to a limited magnitude range of:
 c             8.0 < M < 9.0
 c     This magnitude range is checked before calling this subroutine.
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                     
       character*80 attenName                                                    
       real c1(25), c2(25), c3(25), c4(25), c5(25), c6(25)
       real period1(25), sig(25)                               
-      real specT, c1T, c2T, c3T, c4T, c5T, c6T
-      integer nper, count1, count2,iflag
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, sigT
+      integer nper, count1, count2, iflag, i
  
       data period1 / 0.000, 0.020, 0.025, 0.032, 0.040, 0.050, 0.056, 
      1               0.063, 0.071, 0.083, 0.100, 0.125, 0.143, 0.167,
@@ -4419,12 +4515,14 @@ C     This relationship is constrained to a limited magnitude range of:
 c             8.0 < M < 9.0
 c     This magnitude range is checked before calling this subroutine.
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                     
       character*80 attenName                                                    
       real c1(25), c2(25), c3(25), c4(25), c5(25), c6(25)
-      real period1(25), sig(25)                               
+      real period1(25), sig(25), sigT                               
       real specT, c1T, c2T, c3T, c4T, c5T, c6T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
 
       data period1 / 0.000, 0.020, 0.025, 0.032, 0.040, 0.050, 0.056,
      1               0.063, 0.071, 0.083, 0.100, 0.125, 0.143, 0.167,
@@ -4543,14 +4641,16 @@ c -------------------------------------------------------------------
       subroutine Gregor06Cas ( mag, rupdist, lnY, sigma, specT,                              
      1                  attenName, vs30, period,iflag )                                    
 
-      real mag, rupDist, lnY, sigma, period                                     
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, pgaRock                                     
       character*80 attenName                                                    
       real c1(25), c2(25), c3(25), c4(25), c5(25), c6(25)
-      real period1(25), sig(25)                               
+      real period1(25), sig(25), soilamp                               
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, vs30
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       real n, c, b_soil(25), theta10(25), vref(25), sampadj(25) 
-      real b_soilT, Theta10T, vrefT, sampadjT
+      real b_soilT, Theta10T, vrefT, sampadjT, sigT, sigrock
 
       data Period1 / 0.00, 0.02, 0.025, 0.03, 0.04, 0.05, 0.056, 0.063, 0.071428571,
      1               0.083, 0.1, 0.125, 0.143, 0.167, 0.2, 0.25, 0.333, 0.4, 
@@ -4727,15 +4827,18 @@ c ---------------------------------------------------------------------
       subroutine kanno2006 ( mag, Rrup, specT, 
      1                     period2, lnY, sigma, iflag, vs30, depth ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=38)
       REAL Period(MAXPER), a1(MAXPER), b1(MAXPER), c1(MAXPER), d1(MAXPER)
       real a2(MAXPER), b2(MAXPER), c2(MAXPER)
       real sig1(MAXPER), sig2(MAXPER), p(MAXPER), q(MAXPER)
 
       REAL MAG, Rrup, VS30, logY, lnY, sigma, specT, period2, depth, e1
-      INTEGER iFlag, count1, count2
+      INTEGER iFlag, count1, count2, nPer, i
       real a1T, b1T, c1T, d1T, sig1T, a2T, b2T, c2T, sig2T
-      real pT, qT
+      real pT, qT, period1, X
 
       data period / 0,0.05,0.06,0.07,0.08,0.09,0.1,0.11,0.12,0.13,0.15,0.17,
      1         0.2,0.22,0.25,0.3,0.35,0.4,0.45,0.5,0.6,0.7,0.8,0.9,1,1.1,
@@ -4882,9 +4985,12 @@ c -------------------------------------------------------------------
 c     This  subroutine calculates the spectral acceleration from the 
 c     Zhao et al. (2006) attenuation model which is defined for crustal
 c     and subduction events. Five separate site classes are also modeled.
-                                                                         
+        
+      implicit none
+
+      integer MAXPER                                                                 
       parameter (MAXPER=22)                                                     
-      real ftype, dist, m, lnY, sigma, specT
+      real ftype, dist, m, lnY, sigma, specT, period1
       real a(MAXPER), b(MAXPER), c(MAXPER), d(MAXPER), e(MAXPER)
       real Sr(MAXPER), Si(MAXPER), Ss(MAXPER), Ssl(MAXPER)
       real Ch(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER)
@@ -4893,14 +4999,14 @@ c     and subduction events. Five separate site classes are also modeled.
       real Ps(MAXPER)
       real sigma1(MAXPER), period(MAXPER)      
       character*80 attenName                                                    
-      integer nper, count1, count2, iflag
+      integer nper, count1, count2, iflag, i
       real aT, bT, cT, dT, eT, sourcetype, sclass
       real SrT, SiT, SsT, SslT
       real ChT, C1T, C2T, C3T, C4T, sigma1T    
       real taucT, tauiT, tausT
       real QcT, WcT, QiT, WiT, QsT, WsT, PsT
       real hc, mech, deltac, classterm, msq, hypo
-      real phi, tau
+      real phi, tau, r
                                                                                 
       data period / 0.00, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.40, 0.50,                                     
      1              0.60, 0.70, 0.80, 0.90, 1.00, 1.25, 1.50, 2.00, 2.50,
@@ -5225,9 +5331,13 @@ c -------------------------------------------------------------------
      1                  attenName, period1,iflag )                                    
 
 c     Atkinson and Boore (1995) Eastern North America - Eq model                                                                                
-      real lnY, m, dist, sigma, period1                                         
+
+      implicit none
+
+      integer MAXPER
+      real lnY, m, dist, sigma, period1, twoPi                                         
       real specT, c1T, c2T, c3T, c4T, sig0T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=12)                                                     
@@ -5318,9 +5428,12 @@ c ------------------------------------------------------------------------
       subroutine AB95Mn ( m, dist, lnY, sigma, specT,                            
      1                  attenName, period1,iflag )                                    
                                                                                 
-      real lnY, m, dist, sigma, period1,mgsigma,sgmod                           
-      real specT, c1T, c2T, c3T, c4T, sig0T
-      integer nper, count1, count2,iflag
+      implicit none
+
+      integer MAXPER
+      real lnY, m, dist, sigma, period1, mgsigma, sgmod                           
+      real specT, c1T, c2T, c3T, c4T, sig0T, twoPi
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
                                                                                 
       parameter (MAXPER=12)                                                     
@@ -5414,10 +5527,13 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine TAS96 ( m, dist, lnY, sigma, specT,                             
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigma, period1, rm, rmmax                              
+
+      implicit none
+
+      integer MAXPER                                                                                
+      real lnY, m, dist, sigma, period1, rm, rmmax, twoPi                              
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
       real sigma_aMag, sigma_aRjb                                                
       real sig_aMag1T, sig_aMag2T, sig_aMag3T
@@ -5566,10 +5682,13 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine TAS96MLg ( m, dist, lnY, sigma, specT,                          
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigma, period1, rm, rmmax                              
+
+      implicit none
+
+      integer MAXPER                                                                                
+      real lnY, m, dist, sigma, period1, rm, rmmax, twoPi                              
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
       real sigma_aMag, sigma_aRjb
       real sig_aMag1T, sig_aMag2T, sig_aMag3T
@@ -5681,15 +5800,7 @@ c     Set atten name
                                                                                 
 c     Convert to spectral acceleration in gal                                   
       lnY = lnY + 6.89                                                          
-                                                                                
-C     Set the sigma value.                                                          
-c      if (specT .eq. 2.0) then                                                     
-c         sigma = 0.37 + 0.10*(m-6.0)                                            
-c      elseif (specT .eq. 1.0) then                                                 
-c         sigma = 0.35 + 0.08*(m-6.0)                                            
-c      else                                                                      
-c         sigma = 0.34 + 0.07*(m-6.0)                                            
-c      endif                                                                     
+                                                                                                                                                    
 C     Aleatory uncertainty - Magnitude Dependence
       if ( m <= 5 ) then
         sigma_aMag = sig_aMag1T
@@ -5720,10 +5831,13 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine TAS96Gulf ( m, dist, lnY, sigma, specT,                         
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigma, period1, rm, rmmax                              
+
+      implicit none
+
+      integer MAXPER                                                                                
+      real lnY, m, dist, sigma, period1, rm, rmmax, twoPi                              
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
       real sigma_aMag, sigma_aRjb
       real sig_aMag1T, sig_aMag2T, sig_aMag3T
@@ -5872,10 +5986,13 @@ c -------------------------------------------------------------------
                                                                                 
       subroutine TAS96GulfMLg ( m, dist, lnY, sigma, specT,                      
      1                  attenName, period1,iflag )                                    
-                                                                                
-      real lnY, m, dist, sigma, period1, rm, rmmax                              
+
+      implicit none
+
+      integer MAXPER                                                                                
+      real lnY, m, dist, sigma, period1, rm, rmmax, twoPi                              
       real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       character*80 attenName                                                    
       real sigma_aMag, sigma_aRjb 
       real sig_aMag1T, sig_aMag2T, sig_aMag3T
@@ -5987,15 +6104,7 @@ c     Set atten name
                                                                                 
 c     Convert to spectral acceleration in gal                                   
       lnY = lnY + 6.89                                                          
-                                                                                
-C     Set the sigma value.                                                          
-c      if (specT .eq. 2.00) then                                                     
-c         sigma = 0.37 + 0.10*(m-6.0)                                            
-c      elseif (specT .eq. 1.00) then                                                 
-c         sigma = 0.35 + 0.08*(m-6.0)                                            
-c      else                                                                      
-c         sigma = 0.34 + 0.07*(m-6.0)                                            
-c      endif                                                                     
+                                                                                                                                                    
 c     Aleatory uncertainty - Magnitude Dependence
       if ( m <= 5 ) then
         sigma_aMag = sig_aMag1T
@@ -6005,7 +6114,8 @@ c     Aleatory uncertainty - Magnitude Dependence
         sigma_aMag = sig_aMag2T+(sig_aMag3T-sig_aMag2T)/(7.5-6.0) * (m-6.0)    
       elseif ( m > 7.5 ) then
         sigma_aMag = sig_aMag3T
-      endif        
+      endif 
+       
 c     Aleatory uncertainty - Distance Dependence
       if ( dist <= 5 ) then
         sigma_aRjb = sig_aRjb1T
@@ -6025,8 +6135,10 @@ C *** McVerry et al. (1993) New Zealand Horizontal (PGA only) ***
 c ---------------------------------------------------------------               
 
       subroutine mcverry93 ( mag, rupDist, lnY, sigma, attenName, ftype)        
+
+      implicit none
                                                                                 
-      real mag, rupDist, lnY, sigma, pgalog10                                   
+      real mag, rupDist, lnY, sigma, pgalog10, ftype                                   
       character*80 attenName                                                    
       attenName = 'McVerry et al. (1993)'                                       
                                                                                 
@@ -6053,8 +6165,10 @@ C *** Fukushima (1990) Horizontal Rock (PGA only) ************
 c ------------------------------------------------------------                  
                                                                                 
       subroutine fukushima90 ( mag, rupDist, lnY, sigma, attenName )            
+
+      implicit none
                                                                                 
-      real mag, rupDist, lnY, sigma                                     
+      real mag, rupDist, lnY, sigma, pgaLog10                                     
       character*80 attenName                                                    
       attenName = 'McVerry et al. (1993)'                                       
                                                                                 
@@ -6076,6 +6190,8 @@ c ------------------------------------------------------------
                                                                                 
       subroutine HighSpeedRail ( mag, rupDist, lnY, sigma, 
      1            attenName, period )
+
+      implicit none
           
       real mag, rupDist, lnY, sigma, period, lnY1, lnY2, lnY3
       character*80 attenName
@@ -6106,6 +6222,8 @@ c ------------------------------------------------------------
 C *** Loh (1996) Horizontal Rock (PGA only) ******************
 c ------------------------------------------------------------
       subroutine Loh96 ( mag, rupDist, lnY, sigma, attenName, period )
+
+      implicit none
           
       real mag, rupDist, lnY, sigma, period
       character*80 attenName
@@ -6132,10 +6250,13 @@ c ------------------------------------------------------------
 
 c     Campbell and Bozorgnia (2003) - Horizontal                            
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=15)                                                     
-      real seismodist, m, lnY, sigma, period1, jbDist                             
-      integer iflag, hwflag
-      real Svfs, Ssr, Sfr, Frv, Fth
+      real seismodist, m, lnY, sigma, period1, jbDist, gs                             
+      integer iflag, hwflag, i
+      real Svfs, Ssr, Sfr, Frv, Fth, sum
       real period(MAXPER)                                                  
       real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER),
      1     c5(MAXPER), c6(MAXPER), c7(MAXPER), c8(MAXPER),
@@ -6347,10 +6468,13 @@ c ------------------------------------------------------------------
      2                      Frv, Fth, hwflag, iflag )   
 
 c     Campbell and Bozorgnia (2003) - Vertical                            
-                                                                                
+
+      implicit none
+
+      integer MAXPER                                                                                
       parameter (MAXPER=15)                                                     
-      real seismodist, m, lnY, sigma, period1, jbDist                             
-      integer iflag, hwflag
+      real seismodist, m, lnY, sigma, period1, jbDist, gs, sum                             
+      integer iflag, hwflag, i
       real Svfs, Ssr, Sfr, Frv, Fth
       real period(MAXPER)                                                  
       real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER),
@@ -6566,11 +6690,13 @@ c ------------------------------------------------------------------
 c     Garcia et al. (2005) Horizontal Subduction (inslab only), Rock
 C     Rock Site Conditions
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
-      real depth                                                             
+      real depth, sigT                                                             
       real c1(16), c2(16), c3(16), c4(16), c5(16) 
       real specT, c1T, c2T, c3T, c4T, c5T, R, Delta
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
 
       real period1(16), sig(16)
  
@@ -6665,11 +6791,13 @@ c ------------------------------------------------------------------
 c     Garcia et al. (2005) Vertical Subduction (inslab only), Rock
 C     Rock Site Conditions
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
       real depth                                                             
       real c1(16), c2(16), c3(16), c4(16), c5(16) 
-      real specT, c1T, c2T, c3T, c4T, c5T, R, delta
-      integer nper, count1, count2,iflag
+      real specT, c1T, c2T, c3T, c4T, c5T, R, delta, sigT
+      integer nper, count1, count2, iflag, i
 
       real period1(16), sig(16)
  
@@ -6764,11 +6892,13 @@ c ------------------------------------------------------------------
 c     Lin and Lee (2008) Horizontal Subduction, Rock
 C     Rock Site Conditions
 
+      implicit none
+
       real mag, rupDist, lnY, sigma, period                                    
-      real depth, ftype                                                             
+      real depth, ftype, sigT                                                             
       real c1(28), c2(28), c3(28)
       real specT, c1T, c2T, c3T, c4, c5, c6, c7
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       real period1(28), sig(28)
  
       data period1 / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.09,     
@@ -6865,11 +6995,13 @@ c ------------------------------------------------------------------
 c     Lin and Lee (2008) Horizontal Subduction, Soil
 C     Rock Site Conditions
 
-      real mag, rupDist, lnY, sigma, period                                    
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, sigT                                    
       real depth, ftype                                                             
       real c1(28), c2(28), c3(28)
       real specT, c1T, c2T, c3T, c4, c5, c6, c7
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
       real period1(28), sig(28)
  
       data period1 / 0.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.09,     
@@ -6963,10 +7095,12 @@ c -------------------------------------------------------------------
       subroutine AM09_Cas ( mag, rupDist, lnY, sigma, 
      1   specT, period, iflag )                                                   
 
-      real mag, rupDist, lnY, sigma, period                                     
+      implicit none
+
+      real mag, rupDist, lnY, sigma, period, R                                     
       real c0(25), c1(25), c2(25), c3(25), c4(25), period1(25), sig(25)                                  
       real specT, c0T, c1T, c2T, c3T, c4T, sigT, h
-      integer nper, count1, count2,iflag
+      integer nper, count1, count2, iflag, i
 
       data  period1 / 0.01, 0.05, 0.0631, 0.0794, 0.1, 0.125, 0.1587, 0.2, 0.25, 
      1    0.3165, 0.4, 0.5, 0.6329, 0.7937, 1.0, 1.2658, 1.5873, 2.0, 2.5, 3.125, 
@@ -7061,7 +7195,11 @@ c     This function computes the scale factor to convert an acceleration
 c     from a magnitude "mag" earthquake to the equivalent acceleration          
 c     from a magnitude 7.5 earthquake for liquifaction potential.               
 c     See Seed and Idriss (1982) pg 110.                                        
-      real mag, xnode(6), ynode(6)                                              
+
+      implicit none
+
+      real mag, xnode(6), ynode(6), temp 
+      integer i, n                                             
       data xnode /5.0, 5.25, 6.0, 6.75, 7.5, 8.5/                               
       data ynode /1.58, 1.50, 1.32, 1.13, 1.00, 0.89/                           
       n = 6                                                                     
@@ -7092,15 +7230,19 @@ c ---------------------------------------------------------------------
       subroutine AC_2010 ( mag, Rbjf, specT, 
      1                     period2, lnY, sigma, iflag, vs, ftype, pga4nl ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=17)
       REAL Period(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER), a4(MAXPER)
       Real a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real sigtot(MAXPER), Blin(MAXPER), b1(MAXPER), b2(MAXPER)
       real specT, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T, sigmaT
-      real mag, Rbjf, Vs, Ftype, Fn, Fr, Flin, Fnl, pga4nl
+      real mag, Rbjf, Vs, Ftype, Fn, Fr, pga4nl, period2
       real blinT, b1T, b2T, c1, vref, v1, v2, pga_low, bnl, LnY
-      real deltaX, deltaY, a1slope, a2slope, c, d, term1, term3
-      INTEGER iFlag, count1, count2
+      real deltaX, deltaY, a1slope, a2slope, c, d, term1, term3, sigma
+      real a1p, a2p, a3p, a4p, a5p, a6p, a7p, a8p, a9p, period1
+      INTEGER iFlag, count1, count2, nPer, i
 
       Data Period / 0.0, -1.0, 0.01, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 
      1              0.25, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0  /
@@ -7350,13 +7492,16 @@ c ---------------------------------------------------------------------
       subroutine AB_2010 ( mag, Rbjf, specT, 
      1                     period2, lnY, sigma, iflag, ftype, Ss, Sa ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=63)
       REAL Period(MAXPER), b1(MAXPER), b2(MAXPER), b3(MAXPER), b4(MAXPER)
       Real b5(MAXPER), b6(MAXPER), b7(MAXPER), b8(MAXPER), b9(MAXPER)
-      real b10(MAXPER), sigtot(MAXPER)
+      real b10(MAXPER), sigtot(MAXPER), sigma
       real specT, b1T, b2T, b3T, b4T, b5T, b6T, b7T, b8T, b9T, b10T, sigmaT
-      real mag, Rbjf, Ftype, Fn, Fr, Ss, Sa, Term1, lnY
-      INTEGER iFlag, count1, count2
+      real mag, Rbjf, Ftype, Fn, Fr, Ss, Sa, Term1, lnY, period2, period1
+      INTEGER iFlag, count1, count2, nPer, i
 
       data period / 0.00, -1.0, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 
      1              0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 
@@ -7593,13 +7738,16 @@ c ---------------------------------------------------------------------
       subroutine ASB_2013 ( mag, Rbjf, specT, 
      1                     period2, lnY, sigma, iflag, ftype, Vs, phiT, tauT ) 
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=20)
       REAL Period(MAXPER), a1(MAXPER), a3(MAXPER), a4(MAXPER), a8(MAXPER)
       Real a9(MAXPER), b1(MAXPER), b2(MAXPER), phi(MAXPER), tau(MAXPER)
-      real specT, a1T, a3T, a4T, a8T, a9T, b1T, b2T, phiT, tauT
+      real specT, a1T, a3T, a4T, a8T, a9T, b1T, b2T, phiT, tauT, period2
       real mag, Rbjf, Ftype, Fn, Fr, Vs, lnY
-      real a2, a5, a6, a7, c1, c, n
-      INTEGER iFlag, count1, count2
+      real a2, a5, a6, a7, c1, c, n, sigma, period1, pgaref
+      INTEGER iFlag, count1, count2, nPer, i
 
 
       Data period / 0.00, -1.00, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 
@@ -7794,6 +7942,421 @@ C     Convert ground motion to units of gals.
       END
 
 c ---------------------------------------------------------------------            
+C     *** Kale, O., Akkar, S., Ansari, A., & Hamzehloo, H. (2015). ***
+c ---------------------------------------------------------------------            
+
+      subroutine KAAH_2015 ( mag, Rbjf, specT, 
+     1                     period2, lnY, sigma, iflag, vs, ftype, pgaref, region ) 
+
+      implicit none
+
+      integer MAXPER
+      parameter (MAXPER=20)
+      REAL Period(MAXPER), a1(MAXPER), a2(MAXPER)
+      real b1(MAXPER), b2(MAXPER), b3(MAXPER), b4(MAXPER), b5(MAXPER)
+      Real b6(MAXPER), b7(MAXPER), b8(MAXPER), b9(MAXPER), b10(MAXPER)
+	    real sd1(MAXPER), sd2(MAXPER), sb1(MAXPER), sb2(MAXPER)
+      REAL da1(MAXPER), da2(MAXPER), dsd1(MAXPER), dsd2(MAXPER)
+      real db1(MAXPER), db2(MAXPER), db3(MAXPER), db4(MAXPER), db5(MAXPER)
+      Real db6(MAXPER), db7(MAXPER), db8(MAXPER), db9(MAXPER), db10(MAXPER)
+      real specT, a1T, a2T, b1T, b2T, b3T, b4T, b5T, b6T, b7T, b8T, b9T, b10T
+	    real sd1T, sd2T, sb1T, sb2T
+      real a1p, a2p, b1p, b2p, b3p, b4p, b5p, b6p, b7p, b8p, b9p, b10p
+	    real sd1p, sd2p, sb1p, sb2p
+	    real a1a, a2a, b1a, b2a, b3a, b4a, b5a, b6a, b7a, b8a, b9a, b10a
+	    real sd1a, sd2a
+      real a1b, a2b, b1b, b2b, b3b, b4b, b5b, b6b, b7b, b8b, b9b, b10b
+	    real sd1b, sd2b
+      real mag, Rbjf, Vs, Ftype, Fn, Fr, pgaref
+      real c1, vref, vcon, LnY
+      real c, n, term1
+      INTEGER iFlag, count1, count2, region, nPer, i
+      real period2, sigma, dc1, period1, fmag, fdis, fsof, faat, fsite
+      real w, phi, tau
+
+      Data Period / 0.0, -1, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15,
+     1              0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4 / 
+      Data b1   / 1.74221, 5.58266, 1.75746, 1.78825, 1.87916, 2.00393, 
+     1            2.16076, 2.52625, 2.72364, 2.91835, 2.85623, 2.44252,  
+     2            1.97772, 1.5641, 0.84856, 0.41833, -0.10161, -0.45413,  
+     3            -0.95276, -1.29675 / 
+      Data b2   / 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193,  
+     1            0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193, 0.193,  
+     2            0.193, 0.193, 0.193, 0.193 / 
+      Data b3   / -0.07049, -0.13822, -0.06981, -0.07058, -0.06976, -0.06732,  
+     1            -0.06226, -0.05082, -0.05217, -0.06397, -0.07494, -0.09387,  
+     2            -0.10977, -0.12342, -0.15056, -0.17099, -0.19999, -0.21978,  
+     3            -0.2453, -0.26119 / 
+      Data b4   / -1.18164, -0.94043, -1.18362, -1.18653, -1.19699, -1.21315,  
+     1            -1.24101, -1.3039, -1.32996, -1.31888, -1.27072, -1.16008,  
+     2            -1.05535, -0.97014, -0.83799, -0.77438, -0.72272, -0.70389,  
+     3            -0.69065, -0.6862 / 
+      Data b5   / 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17,  
+     1            0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17, 0.17 / 
+      Data b6   / 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 / 
+      Data b7   / -0.354, -0.354, -0.354, -0.354, -0.354, -0.354, -0.354,  
+     1            -0.354, -0.354, -0.354, -0.354, -0.354, -0.354, -0.354,  
+     2            -0.354, -0.354, -0.354, -0.354, -0.354, -0.354 / 
+      Data b8   / -0.01329, -0.17037, -0.01349, -0.01189, -0.00748, 0.00788,  
+     1            0.03907, 0.08131, 0.1, 0.06727, 0.0162, -0.03697, -0.06582,  
+     2            -0.08511, -0.11756, -0.14267, -0.14621, -0.14621, -0.14621,  
+     3            -0.14621 / 
+      Data b9   / -0.09158, -0.08609, -0.09158, -0.09158, -0.09158, -0.09158,  
+     1            -0.09158, -0.09158, -0.09158, -0.09158, -0.09158, -0.09158,  
+     2            -0.09158, -0.01297, 0, 0, 0, 0, 0, 0 / 
+      Data b10  / -0.00156, -0.00052, -0.00156, -0.0016, -0.0017, -0.00182,  
+     1            -0.00197, -0.00235, -0.00267, -0.00296, -0.00275, -0.00204,  
+     2            -0.00161, -0.00127, -0.00066, -0.00022, 0, 0, 0, 0 / 
+      Data a1   / 0.57, 0.56, 0.574, 0.577, 0.581, 0.584, 0.588, 0.597, 0.606,  
+     1            0.624, 0.642, 0.678, 0.7, 0.673, 0.62, 0.62, 0.62, 0.62,  
+     2            0.62, 0.62 / 
+      Data a2   / 0.45, 0.46, 0.453, 0.455, 0.458, 0.46, 0.463, 0.469, 0.475,  
+     1            0.488, 0.5, 0.525, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55,  
+     2            0.55 / 
+      Data sd1  / 1.0521, 1.0449, 1.0444, 1.0424, 1.0459, 1.0557, 1.0609,  
+     1            1.0692, 1.0429, 1.0063, 0.9781, 0.9407, 0.943, 0.9519,  
+     2            1.0489, 1.0534, 1.0988, 1.1594, 1.1596, 1.0373 / 
+      Data sd2  / 0.7203, 0.6452, 0.715, 0.7137, 0.7113, 0.7155, 0.7166,  
+     1            0.7677, 0.7735, 0.7442, 0.7213, 0.6547, 0.6413, 0.6496,  
+     2            0.6582, 0.6342, 0.6173, 0.5724, 0.6251, 0.5409 / 
+      Data sb1  / -0.41997, -0.72057, -0.41729, -0.39998, -0.34799, -0.27572,  
+     1            -0.21231, -0.13909, -0.26492, -0.48496, -0.64239, -0.82052,  
+     2            -0.90568, -0.95097, -1.00027, -1.01881, -0.96317, -0.91305,  
+     3            -0.84242, -0.79231 / 
+      Data sb2  / -0.28846, -0.19688, -0.28685, -0.28241, -0.26842, -0.24759,  
+     1            -0.22385, -0.17798, -0.28832, -0.39525, -0.44574, -0.45287,  
+     2            -0.41105, -0.37956, -0.32233, -0.28172, -0.22449, -0.18388,  
+     3            -0.12665, -0.08605 / 
+      Data db1  / -0.21234, 0.20834, -0.22738, -0.241, -0.25702, -0.2526,  
+     1            -0.24029, -0.13086, -0.02321, -0.23382, -0.33645, -0.30222,  
+     2            -0.16785, 0.01469, 0.40612, 0.58724, 0.75311, 0.83361,  
+     3            0.90733, 0.82641 / 
+      Data db2  / -0.146, -0.146, -0.146, -0.146, -0.146, -0.146, -0.146,  
+     1            -0.146, -0.146, -0.146, -0.146, -0.146, -0.146, -0.146,  
+     2            -0.146, -0.146, -0.146, -0.146, -0.146, -0.146 / 
+      Data db3  / -0.03826, -0.05505, -0.03877, -0.03674, -0.0337, -0.0285,  
+     1            -0.02834, -0.03978, -0.03843, -0.03475, -0.03634, -0.03939,  
+     2            -0.04263, -0.04586, -0.05345, -0.06008, -0.07073, -0.07873,  
+     3            -0.08977, -0.09696 / 
+      Data db4  / 0.1721, 0.0489, 0.1741, 0.1759, 0.1691, 0.1603, 0.1614,  
+     1            0.1655, 0.1596, 0.2061, 0.2205, 0.1969, 0.1435, 0.0897,  
+     2            -0.0031, -0.0498, -0.0875, -0.1008, -0.1097, -0.1125 / 
+      Data db5  / -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12,  
+     1            -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12, -0.12,  
+     2            -0.12, -0.12, -0.12, -0.12 / 
+      Data db6  / 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 / 
+      Data db7  / 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396,  
+     1            0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396, 0.396,  
+     2            0.396, 0.396, 0.396, 0.396 / 
+      Data db8  / -0.11697, 0.17037, -0.11677, -0.11837, -0.12278, -0.13814,  
+     1            -0.16933, -0.21157, -0.23026, -0.19753, -0.14646, 0.03697,  
+     2            0.06582, 0.08511, 0.11756, 0.14267, 0.14621, 0.14621,  
+     3            0.14621, 0.14621 / 
+      Data db9  / 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.00185, 0.09158, 0.01297,  
+     1            0, 0, 0, 0, 0, 0 / 
+      Data db10 / 0.00156, 0.00052, 0.00156, 0.0016, 0.0017, 0.00182, 0.00197,  
+     1            0.00235, 0.00267, 0.00296, 0.00275, 0.00204, 0.00161, 0.00127,  
+     2            0.00066, 0.00022, 0, 0, 0, 0 / 
+      Data da1  / 0.12, 0.14, 0.116, 0.113, 0.109, 0.106, 0.122, 0.143, 0.154,  
+     1            0.136, 0.118, 0.082, 0.06, 0.087, 0.14, 0.16, 0.16, 0.16,  
+     2            0.16, 0.16 / 
+      Data da2  / 0.05, -0.02, 0.047, 0.045, 0.042, 0.04, 0.037, 0.031, 0.025,  
+     1            -0.018, -0.05, -0.075, -0.1, -0.1, -0.088, -0.025, 0.05,  
+     2            0.05, 0.05, 0.05 / 
+      Data dsd1 / -0.0808, -0.0597, -0.0723, -0.0701, -0.0705, -0.0597, -0.07,  
+     1            -0.0994, -0.0486, 0.0394, 0.1081, 0.0759, 0.0563, 0.0209,  
+     2            -0.0161, -0.0793, -0.1337, -0.2183, -0.2262, -0.2279 / 
+      Data dsd2 / -0.325, -0.3013, -0.3231, -0.318, -0.3143, -0.3064, -0.277,  
+     1            -0.3045, -0.3358, -0.2839, -0.305, -0.2651, -0.2308, -0.1724,  
+     2            -0.2379, -0.2569, -0.2358, -0.1482, -0.1356, -0.0862 / 
+	 
+	  
+C     Set parameters
+      vref = 750.0
+      c1 = 6.75
+      c = 2.5
+      n = 3.2
+      vcon = 1000.0
+
+C    Region=0 for Turkey	  
+C    Region=1 for Iran
+	    if (Region .eq. 0) then 
+          da1  =  da1  *0
+          da2  =  da2  *0
+          db1  =  db1  *0
+          db2  =  db2  *0
+          db3  =  db3  *0
+          db4  =  db4  *0
+          db5  =  db5  *0
+          db6  =  db6  *0
+          db7  =  db7  *0
+          db8  =  db8  *0
+          db9  =  db9  *0
+          db10 =  db10 *0
+          dsd1 =  dsd1 *0
+          dsd2 =  dsd2 *0
+		  dc1 = 0
+		  else
+		  dc1 =  0.25
+      endif		
+
+c     Set Parameters to compute PGA rock
+      a1p  = a1(1)  +  da1(1)  
+      a2p  = a2(1)  +  da2(1) 
+      b1p  = b1(1)  +  db1(1) 
+      b2p  = b2(1)  +  db2(1)
+      b3p  = b3(1)  +  db3(1)
+      b4p  = b4(1)  +  db4(1)
+      b5p  = b5(1)  +  db5(1)
+      b6p  = b6(1)  +  db6(1)
+      b7p  = b7(1)  +  db7(1)
+      b8p  = b8(1)  +  db8(1) 
+      b9p  = b9(1)  +  db9(1) 
+      b10p = b10(1) +  db10(1)
+      sb1p = sb1(1) 
+      sb2p = sb2(1) 
+      sd1p = sd1(1) +  dsd1(1)
+      sd2p = sd2(1) +  dsd2(1)
+
+C First check for the PGA case (i.e., specT=0.0) 
+      nPer = 20
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         a1T = a1(1)   +  da1(1) 
+         a2T = a2(1)   +  da2(1) 
+         b1T = b1(1)   +  db1(1) 
+         b2T = b2(1)   +  db2(1)
+         b3T = b3(1)   +  db3(1)
+         b4T = b4(1)   +  db4(1)
+         b5T = b5(1)   +  db5(1)
+         b6T = b6(1)   +  db6(1)
+         b7T = b7(1)   +  db7(1)
+         b8T = b8(1)   +  db8(1) 
+         b9T = b9(1)   +  db9(1) 
+         b10T = b10(1) +  db10(1)
+         sb1T = sb1(1) 
+         sb2T = sb2(1) 
+         sd1T = sd1(1) +  dsd1(1)
+         sd2T = sd2(1) +  dsd2(1)
+         goto 1011
+C Check for the PGV case (i.e., specT=-1.0) 
+      elseif (specT .eq. -1.0) then
+         period1 = period(2)
+         a1T = a1(2)   +  da1(2) 
+         a2T = a2(2)   +  da2(2) 
+         b1T = b1(2)   +  db1(2) 
+         b2T = b2(2)   +  db2(2)
+         b3T = b3(2)   +  db3(2)
+         b4T = b4(2)   +  db4(2)
+         b5T = b5(2)   +  db5(2)
+         b6T = b6(2)   +  db6(2)
+         b7T = b7(2)   +  db7(2)
+         b8T = b8(2)   +  db8(2) 
+         b9T = b9(2)   +  db9(2) 
+         b10T = b10(2) +  db10(2)
+         sb1T = sb1(2) 
+         sb2T = sb2(2) 
+         sd1T = sd1(2) +  dsd1(2)
+         sd2T = sd2(2) +  dsd2(2)
+         goto 1011
+      elseif (specT .gt. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=3,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+
+C Selected spectral period is outside range defined by attenuaton model.
+      write (*,*) 
+      write (*,*) 'Kale, et al. (2015) Horizontal'
+      write (*,*) 'attenuation model is not defined for a '
+      write (*,*) ' spectral period of: ' 
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+
+ 1020 a1a  = a1(count1) + da1(count1)
+      a2a  = a2(count1) + da2(count1)
+      b1a  = b1(count1) + db1(count1)
+      b2a  = b2(count1) + db2(count1)
+      b3a  = b3(count1) + db3(count1)
+      b4a  = b4(count1) + db4(count1)
+      b5a  = b5(count1) + db5(count1)
+      b6a  = b6(count1) + db6(count1)
+      b7a  = b7(count1) + db7(count1)
+      b8a  = b8(count1) + db8(count1)
+      b9a  = b9(count1) + db9(count1)
+      b10a = b10(count1)+ db10(count1)
+      sd1a = sd1(count1)+ dsd1(count1)
+      sd2a = sd2(count1)+ dsd2(count1)
+
+      a1b  = a1(count2) + da1(count2)
+      a2b  = a2(count2) + da2(count2)
+      b1b  = b1(count2) + db1(count2)
+      b2b  = b2(count2) + db2(count2)
+      b3b  = b3(count2) + db3(count2)
+      b4b  = b4(count2) + db4(count2)
+      b5b  = b5(count2) + db5(count2)
+      b6b  = b6(count2) + db6(count2)
+      b7b  = b7(count2) + db7(count2)
+      b8b  = b8(count2) + db8(count2)
+      b9b  = b9(count2) + db9(count2)
+      b10b = b10(count2)+ db10(count2)
+      sd1b = sd1(count2)+ dsd1(count2)
+      sd2b = sd2(count2)+ dsd2(count2)
+
+            call interp (period(count1),period(count2),a1a,a1b,
+     +                   specT,a1T,iflag)
+            call interp (period(count1),period(count2),a2a,a2b,
+     +                   specT,a2T,iflag)
+            call interp (period(count1),period(count2),b1a,b1b,
+     +                   specT,b1T,iflag)
+            call interp (period(count1),period(count2),b2a,b2b,
+     +                   specT,b2T,iflag)
+            call interp (period(count1),period(count2),b3a,b3b,
+     +                   specT,b3T,iflag)
+            call interp (period(count1),period(count2),b4a,b4b,
+     +                   specT,b4T,iflag)
+            call interp (period(count1),period(count2),b5a,b5b,
+     +                   specT,b5T,iflag)
+            call interp (period(count1),period(count2),b6a,b6b,
+     +                   specT,b6T,iflag)
+            call interp (period(count1),period(count2),b7a,b7b,
+     +                   specT,b7T,iflag)
+            call interp (period(count1),period(count2),b8a,b8b,
+     +                   specT,b8T,iflag)
+            call interp (period(count1),period(count2),b9a,b9b,
+     +                   specT,b9T,iflag)
+            call interp (period(count1),period(count2),b10a,b10b,
+     +                   specT,b10T,iflag)
+            call interp (period(count1),period(count2),sd1a,sd1b,
+     +                   specT,sd1T,iflag)
+            call interp (period(count1),period(count2),sd2a,sd2b,
+     +                   specT,sd2T,iflag)
+            call interp (period(count1),period(count2),sb1(count1),sb1(count2),
+     +                   specT,sb1T,iflag)
+            call interp (period(count1),period(count2),sb2(count1),sb2(count2),
+     +                   specT,sb2T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+
+C.....Set the mechanism terms based on ftype............
+C     Set mechanism term and corresponding Frv and Fnm values.
+C     fType     Mechanism                      Rake
+C     ------------------------------------------------------
+C      -1       Normal                    -120 < Rake <  -60
+C     -0.5      Normal/Oblique            -150 < Rake < -120
+C                                          -60 < Rake <  -30
+C       0       Strike-Slip               -180 < Rake < -150
+C                                          -30 < Rake <   30
+C                                          150 < Rake <  180
+C      0.5      Reverse/Oblique             30 < Rake <   60
+C                                          120 < Rake <  150
+C       1       Reverse                     60 < Rake <  120   
+      if (ftype .eq. -1.0) then
+         Fr = 0.0
+         Fn = 1.0
+      elseif (ftype .eq. -0.5) then 
+         Fr = 0.0
+         Fn = 1.0
+      elseif (ftype .eq. 0.0) then 
+         Fr = 0.0
+         Fn = 0.0
+      elseif (ftype .eq. 0.5) then
+         Fr = 1.0
+         Fn = 0.0
+      elseif (ftype .eq. 1.0) then
+         Fr = 1.0
+         Fn = 0.0
+      endif 
+
+C.....First compute the Reference Rock PGA value.........
+      if (mag .le. c1+dc1) then
+         fmag = b1p + b2p*(mag-(c1+dc1)) + b3p*(8.5-mag)**2.0 
+      else
+         fmag = b1p + b7p*(mag-(c1+dc1)) + b3p*(8.5-mag)**2.0 
+      endif
+
+         fdis = ( b4p + b5p*(mag-(c1+dc1)) ) * alog(sqrt(Rbjf*Rbjf+b6p*b6p))
+
+         fsof = b8p*Fn + b9p*Fr
+
+      if (Rbjf .le. 80) then
+         faat = 0
+      else
+         faat = b10p *(Rbjf-80) 
+      endif
+
+      term1 = fmag + fdis + fsof + faat 
+      pgaref = exp(term1)
+
+C.....magnitude term........
+      if (mag .le. c1+dc1) then
+         fmag = b1T + b2T*(mag-(c1+dc1)) + b3T*(8.5-mag)**2.0 
+      else
+         fmag = b1T + b7T*(mag-(c1+dc1)) + b3T*(8.5-mag)**2.0 
+      endif
+ 
+C.....distance term........
+         fdis = ( b4T + b5T*(mag-(c1+dc1)) ) * alog(sqrt(Rbjf*Rbjf+b6T*b6T))
+
+C.....Style of fault term........
+         fsof = b8T*Fn + b9T*Fr
+
+C.....anelastic attenuation term........
+      if (Rbjf .le. 80) then
+         faat = 0
+      else
+         faat = b10T *(Rbjf-80) 
+      endif
+
+C.....Site Response Term.........
+      if (vs .lt. vref) then
+        fsite = sb1T*alog(vs/vref) + 
+     1          sb2T*alog((pgaref+c*(vs/vref)**n)/((pgaref+c)*(vs/vref)**n))
+      else
+        fsite = sb1T*alog(min(vs,vcon)/vref)
+      endif
+
+
+
+      lnY = fmag + fdis + fsof + faat + fsite
+
+       
+C     Convert ground motion to units of gals.
+      lnY = lnY + 6.89
+
+      period2 = period1
+
+C.....magnitude-dependent sigma.....
+      
+      if (mag .lt. 6.0) then
+         w = a1T
+       elseif(mag .lt. 6.5 .and. mag .ge. 6.0) then
+         w = a1T + (a2T - a1T)*((mag - 6.0)/0.5)
+       else 
+         w = a2T
+      endif 
+
+      phi = w * sd1T
+      tau = w * sd2T 
+
+      sigma = sqrt (tau**2 + phi**2)
+
+      return
+      END
+
+c ---------------------------------------------------------------------            
 C ** Bradley (2010) Horizontal **
 c ---------------------------------------------------------------------            
       Subroutine Bradley_2010 ( m, Rrup, Rbjf, specT,
@@ -7801,6 +8364,9 @@ c ---------------------------------------------------------------------
      2                     vs, Delta, DTor, Ftype, depthvs10,
      3                     hwflag, Rx )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=23)
       REAL Period(MAXPER), C1(MAXPER), C1a(MAXPER), C1b(MAXPER)
       REAL cn(MAXPER), cm(MAXPER), c5(MAXPER), c6(MAXPER)
@@ -7808,16 +8374,17 @@ c ---------------------------------------------------------------------
       REAL phi1(MAXPER), phi2(MAXPER), phi3(MAXPER), phi4(MAXPER)
       REAL phi5(MAXPER), phi6(MAXPER), phi7(MAXPER), phi8(MAXPER)
       REAL tau1(MAXPER), tau2(MAXPER), sigma1(MAXPER), sigma2(MAXPER)
-      REAL sigma3(MAXPER), sigma4(MAXPER), c9a(MAXPER)
+      REAL sigma3(MAXPER), c9a(MAXPER), period1
       real c3(MAXPER), c8(MAXPER) , ctvz(MAXPER)
       REAL c1T, c1aT, c1bT, cnT, cmT, c5T, c6T, c7T, c9T, c9aT, c3T, c8T, ctvzT
-      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T, sigma4T
+      REAL gamma1T, gamma2T, phi1T, phi2T, phi3T, phi4T, sigma3T
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
-      integer iflag, count1, count2, hwflag
-      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx
+      integer iflag, count1, count2, hwflag, nPer, i
+      REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx, vs, v1
       REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
+      real vs30_class
 
       data period / 0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 0.2,
      1             0.25, 0.3,   0.4,  0.5, 0.75,  1.0,   1.5, 2.0,  3.0, 4.0, 
@@ -8060,23 +8627,6 @@ C     0,-0.5    Strike-Slip and NMl/Obl        Otherwise
             F_NM = 0.0
          endif
 
-C HW factors......
-c     For now, convert hwflag to an equivalent srcSiteA      
-c      if ( hwflag .eq. 1 ) then
-c        srcSiteA = 90.
-c      else
-c        srcSiteA = 0.
-c      endif
-C No longer needed since Rx is computed and passed.
-C     Compute Rx value given source to site azimuth
-c      if (srcsiteA .eq. 90.0) then         
-c         Rx = Rrup/sin(abs(delta)*3.14159/180.0) - DTor/tan(abs(delta)*3.14159/180.0)
-c      elseif (srcsiteA .gt. 0.0) then
-c         Rx = Rbjf*tan(srcSiteA*3.14159/180.0)
-c      elseif (srcsiteA .le. 0.0) then
-c         Rx = 0.0
-c      endif
-
         c2 = 1.06
         c4 = -2.1
         c4a = -0.5
@@ -8169,6 +8719,9 @@ c----------------------------------------------------------------------
      1                     period2, lnY, sigma, iflag, Ftype, 
      3                     hwflag, Sc, Sd )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=14)
       REAL Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER)
       REAL c5(MAXPER), c6(MAXPER), c8(MAXPER), c10(MAXPER)
@@ -8177,13 +8730,13 @@ c----------------------------------------------------------------------
 
       REAL c1T, c3T, c4T, c5T, c6T, c8T, c10T, c32T, c33T
       REAL sigmaM6T, sigslopeT, tauT, sigma, a9T, c29T, c30T, c43T
-      REAL M, RRUP, specT, Ftype, sig
-      REAL period2, lnY, F_RV, F_NM, lnYab
+      REAL M, RRUP, specT, Ftype, sig, Sc, Sd
+      REAL period2, lnY, F_RV, F_NM, lnYab, period1
       REAL c1up, c3up, c4up, c5up, c6up, c8up, c10up, c29up, c30up, c43up
       REAL c32up, c33up, fhw, fhwm, fhwr, fhwp, fhwmp, fhwrp
       REAL pgaupab, pgaup, pgapab, pgap
 
-      integer iflag, count1, count2, hwflag
+      integer iflag, count1, count2, hwflag, nPer, i
 
       Data Period / 0.0, 0.01, 0.03, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0 /
       Data C1 / 0.07713, 0.07713, 0.07713, 1.2205, 1.53365, 1.22565, 0.21124, -0.10541, -0.1426, 
@@ -8416,15 +8969,18 @@ c----------------------------------------------------------------------
       Subroutine Bindi_Hor_2009 ( m, jbDist, specT,
      1                     period2, lnY, sigma, iflag, Sr, Ss, Sd )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=23)
       REAL Period(MAXPER), a(MAXPER), b1(MAXPER), b2(MAXPER)
       REAL c1(MAXPER), c2(MAXPER), h(MAXPER), Bigc0(MAXPER)
       REAL Bigc1(MAXPER), Bigc2(MAXPER), sig(MAXPER)
       REAL aT, b1T, b2T, c1T, c2T, hT, Bigc0T, Bigc1T, Bigc2T, sigT
       REAL M, jbDist, specT, sigma
-      REAL period2, lnY, Sr, Ss, Sd
+      REAL period2, lnY, Sr, Ss, Sd, period1
 
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
 
 
       data Period / 0.0, 0.01, 0.03, 0.04, 0.07, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 
@@ -8546,6 +9102,9 @@ c----------------------------------------------------------------------
       Subroutine Bindi_Hor_2011 ( m, jbDist, ftype, specT,
      1                     period2, lnY, sigma, iflag, SCa, SCb, SCc, SCd, SCe, phiT, tauT )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=23)
       REAL Period(MAXPER), e1(MAXPER), c1(MAXPER), c2(MAXPER), h(MAXPER)
       REAL c3(MAXPER), b1(MAXPER), b2(MAXPER), SCacoef(MAXPER), SCbcoef(MAXPER)
@@ -8553,12 +9112,12 @@ c----------------------------------------------------------------------
       REAL f3(MAXPER), f4(MAXPER), phi(MAXPER), tau(MAXPER), sig(MAXPER)
       real e1T, c1T, c2T, hT, c3T, b1T, b2T, SCacoefT, SCbcoefT, SCccoefT, SCdcoefT, SCecoefT
       real f1T, f2T, f3T, f4T, phiT, tauT, sigT
-      real Rref, Mref, Mh, b3, termsof, termsite, R
+      real Rref, Mref, Mh, b3, termsof, termsite, R, period1
  
       REAL M, jbDist, specT, sigma
       REAL period2, lnY, SCa, SCb, SCc, SCd, SCe, ftype
 
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
 
       data period  /  0.0, -1.0, 0.01, 0.04, 0.07, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 
      1       0.4, 0.45, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2.0 / 
@@ -8770,18 +9329,21 @@ c----------------------------------------------------------------------
       Subroutine Bindi_Hor_2013 ( m, jbDist, ftype, specT,
      1                     period2, lnY, sigma, iflag, vs, phiT, tauT )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=26)
       REAL Period(MAXPER), e1(MAXPER), c1(MAXPER), c2(MAXPER), h(MAXPER)
       REAL c3(MAXPER), b1(MAXPER), b2(MAXPER), b3(MAXPER), gamma(MAXPER)
       REAL sofN(MAXPER), sofR(MAXPER), sofS(MAXPER), phi(MAXPER), tau(MAXPER), sig(MAXPER), sigs2s(MAXPER)
       real e1T, c1T, c2T, hT, c3T, b1T, b2T, b3T, gammaT, sofNT, sofRT, sofST, sigs2sT
-      real phiT, tauT, sigT
+      real phiT, tauT, sigT, period1
       real Rref, Mref, Mh, R, Vref, vs
  
       REAL M, jbDist, specT, sigma, termsof
       REAL period2, lnY, ftype
 
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.0, -1.0, 0.01, 0.02, 0.04, 0.07, 0.1, 0.15, 0.2, 0.26, 0.3, 
      1              0.36, 0.4, 0.46, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.3, 1.5, 1.8, 
@@ -8993,21 +9555,14 @@ C     Convert ground motion to units of gals in natural log units.
 
       return
       end 
-                        
-
-
-
-                        
-
-
-
-
-
 
 c----------------------------------------------------------------------                
       Subroutine GK_Nov2012 ( m, Rrup, specT, ftype,
      1                     period2, lnY, sigma, iflag, vs, q0, depthvs15 )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=36)
       REAL Period(MAXPER), sig(MAXPER)
       REAL period1, sigT
@@ -9016,10 +9571,10 @@ c----------------------------------------------------------------------
       REAL c1, c2, c3, c4, c5, c6, c7, c8, c9, bv, Va, R1, c11, D1, sigpga
       REAL A, Y1, Frv, R0, D0, abdepth, slope, Y
       REAL e1, e2, e3, e4, a1, a2, a3, dsp, t1, t2, t3, t4, s1, s2, s3
-      REAL mu, amp, si, tspo
+      REAL mu, amp, si, tspo, Abdist, x0, x1
       REAL SA, SA1, SA2, Pern, temp1, temp2
 
-      integer iflag, count1, count2
+      integer iflag, count1, count2, nPer, i
       
       data Period / 0.0, 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 
      1              0.18, 0.2, 0.22, 0.24, 0.27, 0.3, 0.33, 0.36, 0.4, 0.46, 0.5, 
@@ -9199,14 +9754,17 @@ C     Convert ground motion to units of gals
 c----------------------------------------------------------------------                
       Subroutine DCPP_CommonASK ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.228898132, 4.140227065, 3.497359438, 2.932255747, 2.214950878  / 
@@ -9316,14 +9874,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_CommonBSSA ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T
+      REAL a6T, a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.413425074, 4.849580469, 4.390103785, 3.942432001, 3.024220488  / 
@@ -9434,14 +9995,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common001 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.153292577, 5.56843321, 4.499092916, 3.580962972, 2.483313462  / 
@@ -9551,14 +10115,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common002 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.766432545, 4.850577559, 3.800480116, 2.899595843, 1.970732776  / 
@@ -9668,14 +10235,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common003 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.26700257, 5.095267482, 5.118384786, 5.211651552, 4.753316415  / 
@@ -9785,14 +10355,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common004 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
+      implicit none
+      
+      integer MAXPER
       parameter (MAXPER=5)
-
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.870448951, 4.887688516, 4.514455374, 3.759666642, 2.965961472  / 
@@ -9902,14 +10475,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common005 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER    
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.493293094, 4.392226445, 3.95601353, 3.469189558, 2.770559363  / 
@@ -10019,14 +10595,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common006 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.251986267, 3.79460145, 3.214007046, 3.209422039, 2.780584602  / 
@@ -10136,14 +10715,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common007 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.522281793, 3.779815051, 3.790127509, 3.366254154, 2.993648492  / 
@@ -10253,14 +10835,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common008 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
+      implicit none
+ 
+      integer MAXPER
       parameter (MAXPER=5)
-
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.252954349, 3.26016395, 2.995497924, 2.902377492, 2.667079617  / 
@@ -10370,14 +10955,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine DCPP_Common009 ( m, Rrup, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rrup, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 2.87957963, 3.267451272, 2.934459189, 2.807261175, 2.375468933  / 
@@ -10483,24 +11071,22 @@ C     Convert ground motion to units of gals in natural log units.
 
       return
       end 
-                        
-
-
-
-
-
 
 c----------------------------------------------------------------------                
       Subroutine PVNGS_CommonASK ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER
       parameter (MAXPER=5)
 
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.343907904, 4.252801795, 3.566737128, 2.938042573, 2.075468023  / 
@@ -10610,14 +11196,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_CommonBindi ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 5.477789171, 6.506273744, 5.14623719, 3.78029147, 2.717755816  / 
@@ -10727,14 +11316,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common001 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
+      implicit none
+ 
+      integer MAXPER
       parameter (MAXPER=5)
-
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
-      real Mref1, MRef2, Rjb, Ztor
+      real Mref1, MRef2, Rjb, Ztor, period1
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T
+      REAL a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.359674285, 2.999532571, 2.513715574, 1.550253211, 0.481805389  / 
@@ -10844,14 +11436,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common002 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.469511159, 4.669919592, 5.026559877, 4.778429922, 3.674178555  / 
@@ -10961,14 +11556,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common003 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
-      REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL M, specT, sigma, period1
+      REAL period2, lnY, a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T
+      REAL a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.875846016, 4.604039829, 5.09888582, 5.595457504, 4.923491709  / 
@@ -11078,14 +11676,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common004 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 3.831573393, 2.035301483, 2.680210979, 2.127825912, 0.975642192  /
@@ -11195,14 +11796,17 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common005 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
       REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL period2, lnY, period1, a0T, a1T, a2T, a3T, a4T, a5T, a6T
+      REAL a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.305480459, 5.832489255, 5.193434708, 4.707772707, 3.781149495  / 
@@ -11312,14 +11916,16 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common006 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
-      REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL M, specT, sigma, period1, period2, lnY
+      REAL a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.86597378, 6.144703681, 5.121782642, 4.387039752, 3.546300844  / 
@@ -11429,14 +12035,16 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common007 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
-      REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL M, specT, sigma, period1, period2, lnY
+      REAL a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 4.844064933, 4.219255167, 3.534385513, 2.390354801, 1.425024701  / 
@@ -11546,14 +12154,16 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common008 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
-      real Mref1, MRef2, Rjb, Ztor
-      REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      real Mref1, MRef2, Rjb, Ztor, M, specT, sigma
+      REAL a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T
+      REAL period1, period2, lnY
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 5.196560414, 6.3779206, 6.168012597, 5.517927695, 4.200672553  / 
@@ -11663,14 +12273,16 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine PVNGS_Common009 ( m, Rjb, ztor, specT, lnY, sigma, iflag )
 
-      parameter (MAXPER=5)
+      implicit none
 
+      integer MAXPER
+      parameter (MAXPER=5)
       REAL Period(MAXPER), a0(MAXPER), a1(MAXPER), a2(MAXPER), a3(MAXPER)
       REAL a4(MAXPER), a5(MAXPER), a6(MAXPER), a7(MAXPER), a8(MAXPER), a9(MAXPER)
       real Mref1, MRef2, Rjb, Ztor
-      REAL M, specT, sigma
-      REAL period2, lnY
-      integer iflag, count1, count2
+      REAL M, specT, sigma, period1, period2, lnY
+      REAL a0T, a1T, a2T, a3T, a4T, a5T, a6T, a7T, a8T, a9T
+      integer iflag, count1, count2, nPer, i
 
       data period / 0.01, 0.2, 0.5, 1.0, 2.0 / 
       data a0 / 5.049167566, 6.676980195, 5.593480621, 4.911257887, 4.152761337  / 
@@ -11786,6 +12398,7 @@ C     the spectral period specified in the input file.
       Subroutine SWUS_CFRrup ( m, Rrup, Rjb, ztor, ftype, dip, Width, Rx, HWFlag, 
      1                   specT, lnY, sigma, iflag, cfcoefrrup, coefcountRrup, phi, tau )
 
+      implicit none
       include 'pfrisk.h'
       
       REAL a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
@@ -11847,13 +12460,14 @@ C     the spectral period specified in the input file.
 
       Subroutine SWUS_CFRjb ( m, Rrup, Rjb, ztor, ftype, dip, Width, Rx, HWFlag, 
      1                   specT, lnY, sigma, iflag, cfcoefrjb, coefcountRjb, phi, tau )
-     
+
+      implicit none   
       include 'pfrisk.h'
       
       REAL a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
       real cfcoefRjb(MAX_ATTEN,11)
       REAL M, specT, sigma, Rrup, Ztor, lnY, termmag, ftype
-      real Rjb, dip, Width, Rx, HWFactor
+      real Rjb, dip, Width, Rx, HWFactor, phi, tau
       integer iflag, coefcountRjb, HWFlag
    
 C     Set the Coefficients.
@@ -11903,13 +12517,15 @@ C     Convert ground motion to units of gals in natural log units.
 c----------------------------------------------------------------------                
       Subroutine SWUS_HWModel ( m, Rrup, Rjb, Rx, Dip, Width, a10, ztor, specT, HWFactor )
 
+      implicit none
+      
+      integer MAXPER
       parameter (MAXPER=22)
-
       REAL Period(MAXPER), c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
-      REAL c2(MAXPER), c3(MAXPER), c4(MAXPER)
+      REAL c1, c2(MAXPER), c3(MAXPER), c4(MAXPER)
       real M, Rrup, Rjb, Rx, Dip, Width, specT, HWFactor, period1, ztor
       real c11T, c12T, c13T, c14T, c15T, c2T, c3T, c4T, a10, magtaper, disttaper, ztorTaper
-      integer count1, count2
+      integer count1, count2, nPer, i, iflag
 
       data Period  /  0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4,
      1         0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 7.5, 10  / 

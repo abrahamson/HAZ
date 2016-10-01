@@ -4,10 +4,32 @@
 *.amake.bk
 *.o
 *.app
+*.exe
 mrweprefs.r
 project.r
 absoft_run_env.sh
-
+release
 
 # Ignore Mac OS X system files
 .DS_Store
+
+# Python, Byte-compiled / optimized / DLL files
+__pycache__/
+.cache/
+.idea/
+*.py[cod]
+*$py.class
+
+# CMake Files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Status API Training Shop Blog About
+
+# Build and testing directories
+build/
+tests/

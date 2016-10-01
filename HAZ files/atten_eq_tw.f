@@ -7,11 +7,14 @@ C *** New Lin et al. (2011) Taiwan crustal hangingwall model SOIL (jClac=316)***
 c ------------------------------------------------------------
       subroutine Lin_hw_soil(mag, rupDist, specT, period1, lnY, sigma, iflag )
 
+      implicit none  
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=16)
-      REAL Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
-      real mag, rupDist, lnY, sigma, period1, sig(MAXPER)                                  
-      real specT, c1T,  c2T,  c3T, c4T,  c5T
-      integer nper, count1, count2,iflag
+      real Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), 
+     1     C5(MAXPER), mag, rupDist, lnY, sigma, period1, sig(MAXPER),                                  
+     2     specT, c1T, c2T, c3T, c4T, c5T, sigT
+
       
 C.....MODEL COEFFICIENTS.....................
       data C1  / -3.248,-3.008,-1.994,-1.408, -1.508, -3.226, -4.050, -5.293, 
@@ -102,11 +105,13 @@ C *** New Lin et al. (2011) Taiwan crustal hangingwall model ROCK (jClac=317)***
 c ------------------------------------------------------------
       subroutine Lin_hw_rock(mag, rupDist, specT, period1, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=16)
-      REAL Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
-      real mag, rupDist, lnY, sigma, period1, sig(MAXPER)                                  
-      real specT, c1T,  c2T,  c3T, c4T,  c5T
-      integer nper, count1, count2,iflag
+      real Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), 
+     1     C5(MAXPER), mag, rupDist, lnY, sigma, period1, sig(MAXPER),                                 
+     2     specT, c1T, c2T, c3T, c4T, c5T, sigT
       
 C.....MODEL COEFFICIENTS.....................
       data C1  / -3.279,-3.253,-1.738,-1.237, -1.103, -2.767, -4.440, -5.630, 
@@ -197,11 +202,13 @@ C *** New Lin et al. (2011) Taiwan crustal footwall model SOIL (jClac=316)******
 c ------------------------------------------------------------
       subroutine Lin_fw_soil(mag, rupDist, specT, period1, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=16)
-      REAL Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
-      real mag, rupDist, lnY, sigma, period1, sig(MAXPER)                                  
-      real specT, c1T,  c2T,  c3T, c4T,  c5T
-      integer nper, count1, count2,iflag
+      real Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), 
+     1     C5(MAXPER), mag, rupDist, lnY, sigma, period1, sig(MAXPER),                                  
+     2     specT, c1T, c2T, c3T, c4T, c5T, sigT
       
 C.....MODEL COEFFICIENTS.....................
       data C1  / -3.218,-3.306,-1.896,-1.256, -1.306, -3.310, -4.880, -5.628, 
@@ -292,11 +299,13 @@ C *** New Lin et al. (2011) Taiwan crustal footwall model ROCK (jClac=317)******
 c ------------------------------------------------------------
       subroutine Lin_fw_rock(mag, rupDist, specT, period1, lnY, sigma, iflag )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=16)
-      REAL Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), C5(MAXPER)
-      real mag, rupDist, lnY, sigma, period1, sig(MAXPER)                                  
-      real specT, c1T,  c2T,  c3T, c4T,  c5T
-      integer nper, count1, count2,iflag
+      real Period(MAXPER), C1(MAXPER), C2(MAXPER), C3(MAXPER), C4(MAXPER), 
+     1     C5(MAXPER), mag, rupDist, lnY, sigma, period1, sig(MAXPER),                                  
+     2     specT, c1T, c2T, c3T, c4T, c5T, sigT
       
 C.....MODEL COEFFICIENTS.....................
       data C1  / -3.232,-3.193,-2.643, -2.093, -1.993, -2.659, -4.387, -5.634, 
@@ -388,14 +397,15 @@ c ------------------------------------------------------------
       subroutine Lin2009(mag, rupDist, specT, period1, lnY, sigma, vs,
      + iflag, ftype )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=32)
-      REAL Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER)
-      REAL C6(MAXPER), C7(MAXPER), Phi1(MAXPER), sig(MAXPER)
-      real mag, rupDist, lnY, sigma  , VS ,c2 ,c5 ,c8                                 
-      real ftype , F_RV, F_NM, period1                                                            
-      real specT, c1T,  c3T, c4T,  c6T, c7T, phi1T
-      integer nper, count1, count2,iflag
-    
+      real Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER),
+     1     C6(MAXPER), C7(MAXPER), Phi1(MAXPER), sig(MAXPER), 
+     2     mag, rupDist, lnY, sigma, VS, c2, c5, c8, ftype, F_RV, 
+     3     F_NM, period1, specT, c1T, c3T, c4T, c6T, c7T, phi1T, r1,
+     4     sigT   
       
 C.....MODEL COEFFICIENTS.....................
       data Period / 0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 
@@ -548,15 +558,15 @@ c ------------------------------------------------------------
       subroutine TG09221_2012(mag, rupDist, specT, period1, lnY, sigma, 
      +vs, iflag, ftype )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=106)
-      REAL Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER)
-      REAL C6(MAXPER), C7(MAXPER), Phi1(MAXPER), sig(MAXPER)
-      real mag, rupDist, lnY, sigma  , VS ,c2 ,c5 ,c8                                 
-      real ftype , F_RV, F_NM                                                            
-      real specT, c1T,  c3T, c4T,  c6T, c7T, phi1T
-      integer nper, count1, count2,iflag
-    
-      
+      real Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER),
+     1     C6(MAXPER), C7(MAXPER), Phi1(MAXPER), sig(MAXPER),
+     2     mag, rupDist, lnY, sigma, VS, c2, c5, c8, ftype, F_RV, 
+     3     F_NM, specT, c1T, c3T, c4T, c6T, c7T, phi1T, r1, period1,
+     4     sigT       
 
 C.....MODEL COEFFICIENTS.....................
       data period / 0.0, 0.01, 0.02, 0.022, 0.025, 0.029, 0.03, 0.032, 
@@ -780,16 +790,17 @@ c     Convert units to spectral acceleration in gal
       end                                                                       
 
 c ------------------------------------------------------------
-C *** NCREE (2011)  Vs30¡Ù360m/sec  ******************
+C *** NCREE (2011)  Vs30360m/sec  ******************
 c ------------------------------------------------------------
       subroutine NCREE_2011(mag, rupDist, specT, period1, lnY, sigma )
 
+      implicit none
+
+      integer MAXPER, nper, count1, count2, iflag, i
       parameter (MAXPER=30)
-      REAL Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER)
-      REAL sig(MAXPER)
-      real mag, rupDist, lnY, sigma   ,c2(MAXPER) ,c5(MAXPER)                                  
-      real specT, c1T, c2T,  c3T, c4T,  c5T
-      integer nper, count1, count2,iflag
+      real Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER), sig(MAXPER),
+     1     mag, rupDist, lnY, sigma, c2(MAXPER), c5(MAXPER), specT, c1T, 
+     2     c2T, c3T, c4T, c5T, period1, sigT
     
       
 C.....MODEL COEFFICIENTS.....................

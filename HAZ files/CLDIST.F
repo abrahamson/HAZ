@@ -1,12 +1,12 @@
 c closestDist.f
 
-      subroutine CalcDist (sourceType, pscorflag, hypoDepth, RupWidth, RupLen, 
-     1             r_horiz, seismoDepth, nFltGrid, n1AS, iLocX, iLocY, n2AS,
-     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, 
-     3             fltgrid_z1, fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb,
-     5             distJB, distRup, ZTOR, distSeismo, distepi, disthypo, HWFlag,
-     6             dipavg, n1, n2, Rx, Ry, Ry0, icellRupstrike, icellRupdip, dip, iFltWidth, iFlt)
+      subroutine CalcDist (sourceType, pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS, 
+     1             iFltWidth, iFlt, iMag, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 
+     2             fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+     3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3, 
+     4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb, dip, dipS7,
+     5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
+     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -16,26 +16,27 @@ c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
 
 c     declarations passed in 
       integer sourceType, pscorflag, nfltGrid(2), n1AS(MAXFLT_AS), iLocX, 
-     1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt
-      real hypoDepth, RupWidth, RupLen, r_horiz, seismoDepth,
+     1        iLocY, n2AS(MAXFLT_AS), iFltWidth, iFlt, iMag
+      real ystep, grid_top(MAX_FLT,MAX_GRID), RupWidth, RupLen, r_horiz, seismoDepth,
      1     fltgrid_x(MAXFLT_DD,MAXFLT_AS), fltgrid_y(MAXFLT_DD,MAXFLT_AS),
      2     fltgrid_z(MAXFLT_DD,MAXFLT_AS), fltgrid_x1(MAXFLT_DD,MAXFLT_AS), 
      3     fltgrid_y1(MAXFLT_DD,MAXFLT_AS), fltgrid_z1(MAXFLT_DD,MAXFLT_AS), 
      4     fltgrid_x2(MAXFLT_DD,MAXFLT_AS), fltgrid_y2(MAXFLT_DD,MAXFLT_AS), 
-     5     fltgrid_x3(MAXFLT_DD,MAXFLT_AS), fltgrid_y3(MAXFLT_DD,MAXFLT_AS), 
+     5     fltgrid_z2(MAXFLT_DD,MAXFLT_AS), fltgrid_x3(MAXFLT_DD,MAXFLT_AS), 
+     6     fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_z3(MAXFLT_DD,MAXFLT_AS),
      6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS), 
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS)
-       real dip(MAX_FLT,MAX_WIDTH, MAX_SEG)
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG),
+     9     distS7(MAX_FLT,MAX_S7), dipS7(MAX_FLT,MAX_S7)
 
 c     declarations passed out
-      real distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
-     1     dipavg, Rx, Ry, Ry0
       integer HWFlag, n1, n2, icellRupstrike, icellRupdip  
+      real hypoDepth, distJB, distRup, ZTOR, distSeismo, distepi, disthypo,
+     1     dipavgd, Rx, Ry, Ry0
 
 c     declarations only used within subroutine
-      integer i, j
-      real hypo1, distRx, rupLength2, r_horiz1 
+      integer i, j, celly, cellx
+      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
       
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -43,14 +44,23 @@ c     Initialize closest distance
       distSeismo = 1.0e30
       disthypo = 1.0e30
       distepi = 1.0e30
-      distRx = 1.0e30
+      
+c     Set top_grid for sourceTypes 2/3 and 4 (different)
+        if (sourceType .eq. 2 .or. sourceType .eq. 3) then
+          top_grid = grid_top(iFlt,1)
+        else if (sourceType .eq. 4) then
+          top_grid = grid_top(iFlt,iLocX)
+        endif
       
 c     Compute distances for areal sources      
         if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
+
+c         Set hypoDepth for areal sources
+          hypoDepth = (iLocY-0.5)*ystep + top_grid
  
 c         Approximate correction for using point source with extended source model
 C         added limit on only shallow areal sources (Hypo>30.0km)
-          if ( psCorFlag .eq. 1  .and. hypodepth .le. 30.0) then
+          if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
             hypo1=hypoDepth-rupWidth/2.   
           if (hypo1 .lt. 0.0) hypo1=0.0
           rupLength2 = rupLen/2.
@@ -74,14 +84,27 @@ C         added limit on only shallow areal sources (Hypo>30.0km)
        
 c         Set other distance values equal to corresponding distance measures.
           distepi = distJB
-          distRx = distJB
           disthypo = distRup
+          Rx = distJB
+          Ry = 0.0
+          Ry0 = 0.0
 C         Set HWflag = 0 for areal or grid sources.
-          HWFlag = 0
-C         Set Dipaverage equal to 90 for gridded sources.
-c          dipavg = 3.14159/2.0      
-          dipavg = dip(iFlt,ifltWidth,1) * 3.1415926/180.
+          HWFlag = 0    
+          dipavgd = dip(iFlt,ifltWidth,1)
           return
+          
+c     Compute distances for SourceType 7
+        elseif (sourceType .eq. 7) then
+          distrup = distS7(iFlt,iMag)
+          distJB  = distS7(iFlt,iMag)
+          distseismo = distS7(iFlt,iMag)
+          dipavgd = dipS7(iFlt,iMag)
+          disthypo = distS7(iFlt,iMag)
+c         Fixed Parameters
+          ZTOR = 0.0
+          HWFlag = 0
+          hypoDepth = 8.0
+          Rx = distrup
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
         else 
@@ -90,19 +113,38 @@ c         n1 is the last cell that makes up the rupture plane down dip
 c         n2 is the last cell that makes up the rupture plane along strike       
           n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
           n2 = n2AS(iLocX)
-       
-c         Calculate Rx, Ry, Ry0, dipavg, and HWFlag
-c         Average Strike method
-c          call AveStrike (fltgrid_x, fltgrid_y, fltgrid_z, fltgrid_x1,
-c     1                    fltgrid_y1, fltgrid_x2, fltgrid_y2, fltgrid_x4,
-c     2                    fltgrid_y4, rupLen, distRx, iLocX, iLocY, n2, 
-c     3                    n1, Rx, Ry, Ry0, HWFlag, dipavg)
+          
+c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
+         if (sourceType .eq. 1 .or. sourceType .eq. 5 .or. sourceType .eq. 6) then       
+           testy = ((n1-iLocY)+1.)/2.
+           celly = int(iLocY+testy) 
+           testx = ((n2-iLocX)+1.)/2.
+           cellx = int(iLocX+testx)           
+           if (int(testy) .eq. testy .and. int(testx) .eq. testx) then                    
+             hypoDepth = fltgrid_z1(celly,cellx)
+             hypox = fltgrid_x1(celly,cellx)
+             hypoy = fltgrid_y1(celly,cellx) 
+           else if (int(testy) .eq. testy .and. int(testx) .ne. testx) then
+             hypoDepth = (fltgrid_z2(celly,cellx) + fltgrid_z1(celly,cellx))/2.
+             hypox = (fltgrid_x2(celly,cellx) + fltgrid_x1(celly,cellx))/2.
+             hypoy = (fltgrid_y2(celly,cellx) + fltgrid_y1(celly,cellx))/2.
+           else if (int(testy) .ne. testy .and. int(testx) .eq. testx) then
+             hypoDepth = (fltgrid_z4(celly,cellx) + fltgrid_z1(celly,cellx))/2.  
+             hypox = (fltgrid_x4(celly,cellx) + fltgrid_x1(celly,cellx))/2.   
+             hypoy = (fltgrid_y4(celly,cellx) + fltgrid_y1(celly,cellx))/2.             
+           else 
+             hypoDepth = fltgrid_z(celly,cellx)    
+             hypox = fltgrid_x(celly,cellx)
+             hypoy = fltgrid_y(celly,cellx)                 
+           endif
+         endif
 
-c         OR Global Coordinate System 2 method
+c         Calculate Rx, Ry, Ry0, dipavgd, and HWFlag        
+c         Global Coordinate System 2 method
           call GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
-     1              fltgrid_x2, fltgrid_y2, fltgrid_x3, fltgrid_y3,
-     2              fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
-     3              HWFlag, dipavg)          
+     1              fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3,
+     2              fltgrid_z3, fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
+     3              HWFlag, dipavgd)        
 
 c         Calculate ZTOR
           ZTOR = fltgrid_z1(iLocY,iLocX)             
@@ -132,9 +174,9 @@ C         Compute the DistSeismo value based on min depth being equal to seismoD
             enddo
           enddo
 
-C         Set the JB and Hypo distances for faults.
-          distepi = fltgrid_Rjb(iLocY,iLocX)
-          disthypo = fltgrid_Rrup(iLocY,iLocX)
+C         Set the Epi and Hypo distances for faults.
+          distepi = sqrt(hypox**2.+hypoy**2.)
+          disthypo = sqrt(hypox**2.+hypoy**2.+hypoDepth**2.)
       
         endif
 
@@ -143,8 +185,38 @@ C         Set the JB and Hypo distances for faults.
 
 c ----------------------------------------------------------------------
 
+      Subroutine Set_MinDist (sourceType, iFlt, iFltWidth, distRup, distJB, distSeismo, 
+     1                        SourceDist, MinRrup_temp, MinRjb_temp, MinSeismo_temp)
+
+      implicit none
+      include 'pfrisk.h'
+      
+      integer sourceType, iFlt, iFltWidth
+      real distRup, distJB, distSeismo, SourceDist(MAX_FLT,MAX_WIDTH,3),
+     1     MinRrup_temp, MinRjb_temp, MinSeismo_temp
+      
+       if ( distRup .lt. SourceDist(iFlt,iFltWidth,1) ) then
+         SourceDist(iFlt,iFltWidth,1)=distRup
+       endif
+       if ( distJB .lt. SourceDist(iFlt,iFltWidth,2) ) then
+         SourceDist(iFlt,iFltWidth,2)=distJB
+       endif
+       if ( distSeismo .lt. SourceDist(iFlt,iFltWidth,3) ) then
+         SourceDist(iFlt,iFltWidth,3)=distSeismo
+       endif
+       MinRrup_temp = SourceDist(iFlt,iFltWidth,1)
+       MinRjb_temp = SourceDist(iFlt,iFltWidth,2)
+       MinSeismo_temp = SourceDist(iFlt,iFltWidth,3)
+
+      return
+      end
+
+c ----------------------------------------------------------------------
+
       Subroutine SetnRupLoc ( n1, n2, nHypoX, pHypoX, nHypoXStep, 
      1                        nHypoZ, pHypoZ, nHypoZstep ) 
+
+      implicit none
 
       integer n1, n2, nHypoX, nHypoXstep, nHypoZ, nHypoZstep
       real pHypoX, pHypoZ
@@ -179,19 +251,21 @@ c     Compute the step sizes down dip
 
 c -------------------------------------------------------------------
       subroutine DetermDist (hAScell, hDDcell, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavg,
-     2                      iLocY, iLocX, rupLen, RupWidth, x0, y0, z0,
+     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavgd,
+     2                      iLocY, iLocX, rupLen, rupWidth, x0, y0, z0,
      3                      edist, hdist, slit, azp1p2, step, dlit, phiang, FltGrid_rRup,
-     4                      s2site, Rx, astrike )
+     4                      s2site, Rx, astrike)
 
+      implicit none
       include 'pfrisk.h'
-      include 'declare1.h'
+
       integer hAScell, hDDcell, icellRupStrike, icellRupDip
-      integer n2, n1, iLocx, iLocY
+      integer n2, n1, iLocx, iLocY, icell
       real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS),
      1      fltGrid_y(MAXFLT_DD,MAXFLT_AS), dx, dy, dz, edist, hdist
       real dist, step, phiang, dlit, strikeX, strikeY, astrike
-      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), Rx
+      real fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS), Rx, dipavgd, x0, y0, z0, rupLen,
+     1     rupWidth, azp1p2, slit, s2site, c1temp
 
 C     Variable: hDDcell, hAScell --> Location of hypocenter locations down-dip and along strike.
 C               iLocY, iLocX --> number of rupture areas to complete fill fault plane.
@@ -216,7 +290,7 @@ C     Compute the downdip distance dlit.
       dlit = real(step*(abs(icellRupDip-hDDcell)))
 
 C     Compute the angle Phi between Hypocenter and Station location. 
-      phiang = (180.0/3.14159)*atan2(Rx,dlit) - (90.0 - dipavg)
+      phiang = (180.0/3.14159)*atan2(Rx,dlit) - (90.0 - dipavgd)
 
 C     Compute Hypocentral and Epicentral Distances.
       dx = fltGrid_x(hDDcell,hAScell) - x0
@@ -261,476 +335,6 @@ C     Case where closest point cell is further down strike than hypocenter.
       end
 
 c -------------------------------------------------------------------
-      subroutine ngaRDirmodel (iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
-     1                      fltgrid_x, fltgrid_y, fltgrid_z, n2, n1, dipavg,
-     2                      iLocY, iLocX, fltgrid_rrup, Rx, HWFlag, flttype,
-     3                      dflag, lnDir, period, mag, sigDirY, rupLen, RupWidth )
-
-      include 'pfrisk.h'
-      include 'declare1.h'
-c      integer iHypoX, iHypoZ, icellRupStrike, icellRupDip, HWFlag, dflag
-      integer iHypoX, iHypoZ, icellRupStrike, icellRupDip, dflag
-      integer n2, n1, iLocx, iLocY
-      real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS),
-     1      fltGrid_y(MAXFLT_DD,MAXFLT_AS), dipavg, fltgrid_rrup(MAXFLT_DD,MAXFLT_AS),
-     2      Rx, dprod1, distcorn, ctildap, BigD, BigS, h, litd, velrat, BigC,
-     3      Ts, Us, Th, Uh, Radri, IDP, flttype, BigRu, BigRt, radterm1, 
-     2      radterm2, radterm3, radterm4, radterm5, radterm6, zhyp, lnDir,
-c     3      period, mag, sigDirY, rupLen, RupWidth
-     3      period, sigDirY, Y, X
-
-
-C     Hypocenter is in (iHypoX, iHypoZ) location for given (iLocX,iLocY) rupture area.
-C     Compute the distance down the fault plane for hypocenter
-cnjg      h = abs((fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoY,iHypoX)) / sin(dipavg) )
-      h = abs((fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX)) / sin(dipavg) )
-
-C     Compute distances from hypocenter cell to closest distance cell.
-      BigD = sqrt( (fltgrid_x(iHypoZ,iHypoX) - fltgrid_x(icellRupdip,icellRupStrike))**2.0 +
-     1             (fltgrid_y(iHypoZ,iHypoX) - fltgrid_y(icellRupdip,icellRupStrike))**2.0 + 
-     2             (fltgrid_z(iHypoZ,iHypoX) - fltgrid_z(icellRupdip,icellRupStrike))**2.0 )        
-
-      litd = abs((fltgrid_z(iHypoZ,icellRupStrike) - fltgrid_z(icellRupDip,icellRupStrike)) /sin(dipavg) )
-
-      if (litd .gt. BigD) then
-         s = sqrt (litd*litd - BigD*BigD)
-      else
-         s = sqrt (BigD*BigD - litd*litd)
-      endif
-C     Compute c tilda prime (Eq. 4 of Spudich and Chiou).
-      velrat = 0.80
-      rhypo = fltgrid_rrup(iHypoZ,iHypoX)
-      rrup  = fltgrid_rrup(icellRupdip,icellRupStrike)
-
-      if (BigD .eq. 0.0) then
-         ctildap = velrat
-      else
-         ctildap = ((1.0/velrat) - ((rhypo-rrup)/BigD))
-         ctildap = 1.0/ctildap
-      endif
-
-C     Now compute BigC term. 
-      if (ctildap .lt. 2.45) then 
-         BigC = (ctildap - 0.80) / (2.45 - 0.80)
-      else
-         BigC = (2.45 - 0.80) / (2.45 - 0.80)
-      endif   
-C     Now compute BigS term.
-      if (s .gt. 0.0 .or. h .gt. 0.0) then
-         BigS = alog( min(75.0,max(s,h)) )
-      else
-         BigS = 0.0
-      endif
-C     Compute the Radiation term.
-C     Set Ts (perpendicular distance from station to top of fault trace)
-C         distance equal to Rx distance. Note that Rx value is based on 
-C         average strike for given fault rupture segment. Hanging wall sites 
-C         are given positive values and footwall sites are negative.
-      if (HWFlag .eq. 1) then
-         Ts = Rx
-      else
-         Ts = -1.0*Rx
-      endif
-C     Now compute the Us value which is the distance along the strike at
-C         the top of the fault rupture area to the closest perpendicular
-C         distance to the site. To be consistent with the calculation of Rx
-C         the calculation of Us is based on the average strike for a given
-C         rupture area. 
-      Us = 0.0
-C     Compute distance from first cell of rupture area and site location
-C         which is assumed to be at (0.0, 0.0, 0.0).
-      Distcorn = sqrt ( (fltgrid_x(iLocY,iLocX)*fltgrid_x(iLocY,iLocX)) +
-     1                  (fltgrid_y(iLocY,iLocX)*fltgrid_y(iLocY,iLocX)) )
-      if (distcorn*distcorn .gt. Rx*Rx) then
-         Us = sqrt ( Distcorn*Distcorn - Rx*Rx )
-      else
-         Us = 0.0
-      endif
-C     Now check for sign on Us value. Take dot product and if positive then
-C         Us --> positive and if negative then Us --> negative      
-      dprod1 = ( (fltgrid_x(iLocY,n2)-fltgrid_x(iLocY,iLocX)) * (0.0 - fltgrid_x(iLocY,iLocX) ) +
-     1          (fltgrid_y(iLocY,n2)-fltgrid_y(iLocY,iLocX)) * (0.0 - fltgrid_y(iLocY,iLocX) ) ) 
-      if (dprod1 .lt. 0.0) then
-         Us = -1.0*Us
-      endif
-
-C     Now compute the Th and Uh distances for the given rupture area and hypocenter location.
-      Uh = 0.0
-      do i=iLocX,iHypoX
-         Uh = Uh + sqrt( (fltgrid_x(iLocY,i)*fltgrid_x(iLocY,i)) +      
-     1                   (fltgrid_y(iLocY,i)*fltgrid_y(iLocY,i)) )  
-      enddo
-
-C     Compute Th distance checking for near vertical dipping faults.       
-C         If Dip > 80 then assume vertical dip for depth calculation.
-      Th = 0.0
-      if (abs(dipavg) .gt. 1.396) then
-cnjg         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoY,iHypoX) )
-         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX) )
-      else
-cnjg         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoY,iHypoX) ) / tan(dipavg)
-         Th = (fltgrid_z(iLocY,iHypoX) - fltgrid_z(iHypoZ,iHypoX) ) / tan(dipavg)
-      endif
-
-C     Now compute the additional distance terms for the radiation pattern. 
-      uprime = Us - Uh
-      tprime = Ts - Th
-      BigR = sqrt ( uprime*uprime + tprime*tprime )
-cnjg      zhyp = fltgrid_z(iHypoY,iHypoX)
-      zhyp = fltgrid_z(iHypoZ,iHypoX)
-      rh = sqrt ( zhyp*zhyp + BigR*BigR ) 
-
-C     Now assign rake angles given fault mechanism type. 
-C          Mech Type    Mech Flag     Rake Angle
-C          -------------------------------------
-C          Strike-slip     0.0            0.0
-C          Reverse         1.0           60.0
-C          Reverse/Obl     0.5           60.0
-C          Normal         -1.0          -50.0
-C          Normal/Obl     -0.5          -50.0
-      if (flttype .eq. 0.0) then
-          rake = 0.0*3.14159/180.0
-      elseif (flttype .eq. 0.5) then
-          rake = 60.0*3.14159/180.0
-      elseif (flttype .eq. 1.0) then
-          rake = 60.0*3.14159/180.0
-      elseif (flttype .eq. -0.5) then
-          rake = -50.0*3.14159/180.0
-      elseif (flttype .eq. -1.0) then
-          rake = -50.0*3.14159/180.0
-      endif
-
-      radterm1 = tprime*sin(dipavg)/rh + zhyp*cos(dipavg)/rh
-      radterm2 = (zhyp*tprime*sin(dipavg))/(rh*BigR) - (BigR*cos(dipavg)/rh)
-      radterm3 = uprime*sin(dipavg)/BigR
-      radterm4 = -cos(rake)*uprime/rh + sin(rake)*cos(dipavg)*tprime/rh -
-     1           sin(rake)*sin(dipavg)*zhyp/rh
-      radterm5 = (-cos(rake)*zhyp*uprime)/(rh*BigR) + (sin(rake)*cos(dipavg)*zhyp*tprime)/(rh*BigR) +
-     1           sin(rake)*sin(dipavg)*BigR/rh
-      radterm6 = cos(rake)*tprime/BigR + sin(rake)*cos(dipavg)*uprime/BigR
-      BigRu = (-uprime/BigR)*(radterm1*radterm5+radterm2*radterm4) +    
-     1            (tprime/BigR)*(radterm1*radterm6+radterm3*radterm4)
-
-      BigRt = (-tprime/BigR)*(radterm1*radterm5+radterm2*radterm4) -    
-     1            (uprime/BigR)*(radterm1*radterm6+radterm3*radterm4)
-
-      Radri = sqrt (BigRu*BigRu + BigRt*BigRt)
-      Radri = max(Radri,0.2)
-
-C     Compute the IDP term.
-      IDP = BigC*BigS*Radri
-
-C     Now call the specified directivity model based on dflag value:
-c        dflag    Directivity Model
-c          1      Average Horizontal Directivity (Abrahamson, 2000)
-c          2      Fault Normal with Directivity (Abrahamson, 2000)
-c          3      Fault Parallel with Directivity (Abrahamson, 2000)
-c          4      Fault Normal without Directivity (Abrahamson, 2000)
-c          5      Fault Parallel without Directivity (Abrahamson, 2000)
-c          6      Abrahamson and Silva NGA (2008)
-c          7      Boore and Atkinson NGA (2008)
-c          8      Campbell and Bozorgnia NGA (2008)
-c          9      Chiou and Youngs NGA (2008)
-c         10      Abrahamson NGA (2010) - strike slip events only
-
-      if (dflag .ge. 1 .and. dflag .lt. 6) then
-c      if (dflag .eq. 1 ) then
-
-          if (abs(flttype) .ne. 1) then
-
-          call rupdirct_strike (period, rrup, mag, rupLen, rupwidth, flttype, tprime, 
-     1                         uprime, s, lnDir, sigdirY, dflag, X, Y )
-          endif
-
-      endif
-
-c     NGA Specific Directivity Models
-      if (dflag .ge. 6 .and. dflag .le. 9) then
-         call ngadircalc (dflag, period, IDP, rrup, mag, lnDir, sigdirY)
-      endif
-
-C     Abrahamson (2010) NGA Directivity Model. Note only applies for strike-slip sources. 
-      if (dflag .eq. 10 .and. period .gt. 1.0) then
-         if (flttype .eq. 0) then
-            call dirmodelA2010 (dflag, period, rrup, mag, lnDir, sigdirY,
-     1                          iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
-     2                          fltgrid_x, fltgrid_y, fltgrid_z, n2, n1 )
-         endif
-      endif
-
-
-      return
-      end
-
-c -------------------------------------------------------------------
-      subroutine dirmodelA2010 (dflag, per, rrup, mag, lnDir, sigDirY,
-     1                          iHypoX, iHypoZ, icellRupStrike, icellRupdip, 
-     2                          fltgrid_x, fltgrid_y, fltgrid_z, n2, n1 )
-
-C     Subroutine to compute the directivity factors for the Abrahamson 2010 model. 
-C     Model is only applicable to Strike-slip events. 
-
-      include 'pfrisk.h'
-c      include 'declare1.h'
-
-      real c1T, b2T, a1T, a2T, mag, somag
-      real per, rrup, sigDirY, lnDir, taper1, taper2, lnDirT3
-      real so, sdist, p1p2ang, dx, dy, s
-      real Period(7), c1(7), b2(7), a1(7), a2(7)
-      integer nper, dflag, count1, count2
-      integer iHypoX, iHypoZ, icellRupstrike, icellRupdip, n2, n1
-      real  fltGrid_z(MAXFLT_DD,MAXFLT_AS), fltGrid_x(MAXFLT_DD,MAXFLT_AS)
-      real  fltGrid_y(MAXFLT_DD,MAXFLT_AS)
-
-      data period / 1.0, 2.00, 3.00, 4.00, 5.00, 7.00, 10.00 /
-      data c1 / 10.0, 20.0, 30.0, 40.0, 50.0, 50.0, 50.0 /
-      data b2 / 0.018, 0.041, 0.044, 0.037, 0.034, 0.028, 0.023 /
-      data a1 / -2.07, -0.27, -0.32, 0.43, 0.42, 0.22, 0.04 /
-      data a2 / -0.061, -0.201, -0.303, -0.371, -0.391, -0.380, -0.392 /
-
-      nper = 7
-C   Check for the need for interpolation of the sigma adjustments based 
-c   on the requested spectral period.
-      do i=1,nper-1
-         if (per .ge. period(i) .and. per .le. period(i+1) ) then
-            count1 = i
-            count2 = i+1
-            goto 1020 
-         endif
-      enddo
-
-C Selected spectral period is outside range defined by attenuaton model.
-      write (*,*) 
-      write (*,*) 'Abrahamson 2010 directity model is not'
-      write (*,*) 'defined for a spectral period of: '
-      write (*,'(a10,f10.5)') ' Period = ',per
-      write (*,*) 'This spectral period is outside the defined'
-      write (*,*) 'period range in the code or beyond the range'
-      write (*,*) 'of spectral periods for interpolation.'
-      write (*,*) 'Please check the input file.'
-      write (*,*) 
-      stop 99
-
-C Interpolate the coefficients for the requested spectral period.
- 1020       call interp (period(count1),period(count2),c1(count1),c1(count2),
-     +                   per,c1T,iflag)
-            call interp (period(count1),period(count2),b2(count1),b2(count2),
-     +                   per,b2T,iflag)
-            call interp (period(count1),period(count2),a1(count1),a1(count2),
-     +                   per,a1T,iflag)
-            call interp (period(count1),period(count2),a2(count1),a2(count2),
-     +                   per,a2T,iflag)
-
-C     Compute the Taper 1 model based on rupture distance
-      if (rrup .le. 10.0) then
-         taper1 = 1.0
-      elseif (rrup .lt. 40.0) then
-         taper1 = (rrup - 10.0)/30.0
-      else
-         taper1 = 0.0
-      endif
-C     Compute taper 2 model based on magnitude
-      if (mag .le. 6.0) then
-         taper2 = 0.0
-      elseif (mag .lt. 6.5) then
-         taper2 = 2.0*(mag-6.0)
-      else
-         taper2 = 1.0
-      endif
-
-C     Now compute the length term So
-      somag = 10.0 + 20.0*(mag-6.0)
-      so = min(c1T,somag)
-
-C     Now find the location of the cell for the So distance.
-      sdist = 0.0
-      if (icellRupstrike .gt. iHypoX) then
-         do icell=icellRupstrike,iHypoX+1,-1
-            dx = fltGrid_x(iHypoZ,icell) - fltGrid_x(iHypoZ,icell-1) 
-            dy = fltGrid_y(iHypoZ,icell) - fltGrid_y(iHypoZ,icell-1) 
-            sdist = sdist + sqrt(dx*dx + dy*dy)
-            if (sdist .le. so) then
-               iAS = icell
-               s = sdist
-            endif
-         enddo
-      elseif (icellRupstrike .lt. iHypoX) then
-         do icell=iHypoX,icellRupstrike+1,-1
-            dx = fltGrid_x(iHypoZ,icell) - fltGrid_x(iHypoZ,icell-1) 
-            dy = fltGrid_y(iHypoZ,icell) - fltGrid_y(iHypoZ,icell-1) 
-            sdist = sdist + sqrt(dx*dx + dy*dy)
-            if (sdist .le. so) then
-               iAS = icell
-               s = sdist
-            endif
-         enddo
-      elseif (icellRupstrike .eq. iHypoX) then
-         iAS = icell
-         s = 0.0
-      endif
-
-C     Now compute the angle between the station and the cell for So distance.
-C     Assumes that the station is at location (0.0,0.0,0.0).
-      dx = -fltGrid_x(iHypoZ,iAS)  
-      dy = -fltGrid_y(iHypoZ,iAS) 
-      p1p2ang = atan2(dx,dy)
-
-C     Now compute directivity factor/adjustment.
-      lnDir = (b2T*min(so,s)*cos(p1p2ang) - exp(a1T-a2T*(8.5-mag)**2.0))*taper1*taper2
-
-C     Now adjust the sigma values. Adjustment is based on a reduction of 0.05 Ln Units for T=3.0sec.
-      lnDirT3 = (b2(3)*min(so,s)*cos(p1p2ang) - exp(a1(3)-a2(3)*(8.5-mag)**2.0))*taper1*taper2
-
-      sigDirY = 0.05*(lnDir/lnDirT3)
-
-      write (94,'(5i4,14f10.3)') iHypoZ, iHypoX, icellRupDip, iCellRupStrike, iAS, mag, rrup,
-     1       somag, c1T, so, s, p1p2ang*180.0/3.14159, taper1, taper2, lnDir, lnDirT3, sigDirY, 
-     1       fltGrid_x(iHypoZ,iAS), fltgrid_y(iHypoZ,iAS)
-
-      return
-      end
-c -------------------------------------------------------------------
-      subroutine ngadirCalc (dflag, per, IDP, rrup, mag, lnDir, sigDirY)
-
-C     This subroutine computes the NGA based Directivity factors given IDP and spectral period. 
-    
-      real IDP, lnDir, per, rrup, mag, fr, fm, sigDirY
-      real Period(10), aAS(10), aBA(10), aCB(10), aCY(10)
-      real bAS(10), bBA(10), bCB(10), bCY(10)
-      real sigAS(10), sigBA(10), sigCB(10), sigCY(10)
-      real aAST, aBAT, aCBT, aCYT, bAST, bBAT, bCBT, bCYT
-      real sigAST, sigBAT, sigCBT, sigCYT
-      integer dflag, iflag, count1, count2
-      character*80 attenname1
-
-      data period / 0.5, 0.75, 1.00, 1.50, 2.00, 3.00, 4.00, 5.00, 7.50, 10.00 /
-      data aAS / 0.0000, -0.0447, -0.0765, -0.1213, -0.1531, -0.1979,   
-     1          -0.2296, -0.2542, -0.3636, -0.5755 /
-      data aBA / 0.0000, -0.0532, -0.0910, -0.1443, -0.1821, -0.2353,   
-     1          -0.2731, -0.3021, -0.4627, -0.8285 /
-      data aCB / 0.0000, 0.0000, -0.0329, -0.0795, -0.1125, -0.1590,   
-     1          -0.1921, -0.2172, -0.3227, -0.6419 /
-      data aCY / 0.0000, 0.0000, -0.0260, -0.0627, -0.0887, -0.1254,   
-     1          -0.1514, -0.1715, -0.2797, -0.4847 /
-
-      data bAS / 0.0000, 0.0298, 0.0510, 0.0809, 0.1020, 0.1319,   
-     1           0.1530, 0.1695, 0.2411, 0.3489 /
-      data bBA / 0.0000, 0.0355, 0.0607, 0.0962, 0.1214, 0.1569,   
-     1           0.1821, 0.2015, 0.2727, 0.4141 /
-      data bCB / 0.0000, 0.0000, 0.0220, 0.0530, 0.0750, 0.1060,   
-     1           0.1280, 0.1450, 0.2147, 0.3522 /
-      data bCY / 0.0000, 0.0000, 0.0200, 0.0482, 0.0682, 0.0965,   
-     1           0.1165, 0.1320, 0.1865, 0.2933 /
-
-      data sigAS / 0.000, 0.002, 0.008, 0.010, 0.019, 0.040, 0.039,      
-     1             0.041, 0.074, 0.160 / 
-      data sigBA / 0.000, 0.001, 0.009, 0.008, 0.021, 0.052, 0.056,      
-     1             0.077, 0.111, 0.205 / 
-      data sigCB / 0.000, 0.000, 0.002, 0.002, 0.010, 0.032, 0.033,      
-     1             0.050, 0.082, 0.174 / 
-      data sigCY / 0.000, 0.000, 0.002, 0.003, 0.008, 0.022, 0.022,      
-     1             0.023, 0.041, 0.098 / 
-
-      nPer = 10
-
-C     Check for given attenuation model is one of the four specific NGA models.
-      if (dflag .eq. 6) then
-          attenname1 = 'A&S, NGA Directivity Model'
-      elseif (dflag .eq. 7 ) then          
-          attenname1 = 'Boore&Atkinson, NGA Directivity Model'
-      elseif (dflag .eq. 8 ) then          
-          attenname1 = 'Campbell&Bozorgnia, NGA Directivity Model'
-      elseif (dflag .eq. 9 ) then          
-          attenname1 = 'Chiou&Youngs, NGA Directivity Model'
-      endif
-
-C   Check for the need for interpolation of the sigma adjustments based 
-c   on the requested spectral period.
-      do i=1,nper-1
-         if (per .ge. period(i) .and. per .le. period(i+1) ) then
-            count1 = i
-            count2 = i+1
-            goto 1020 
-         endif
-      enddo
-
-C Selected spectral period is outside range defined by attenuaton model.
-      write (*,*) 
-      write (*,*) 'NGA model specific directity model is not'
-      write (*,*) 'defined for a spectral period of: '
-      write (*,'(a10,f10.5)') ' Period = ',per
-      write (*,*) 'This spectral period is outside the defined'
-      write (*,*) 'period range in the code or beyond the range'
-      write (*,*) 'of spectral periods for interpolation.'
-      write (*,*) 'Please check the input file.'
-      write (*,*) 
-      stop 99
-
-C Interpolate the coefficients for the requested spectral period.
- 1020       call interp (period(count1),period(count2),aAS(count1),aAS(count2),
-     +                   per,aAST,iflag)
-            call interp (period(count1),period(count2),aBA(count1),aBA(count2),
-     +                   per,aBAT,iflag)
-            call interp (period(count1),period(count2),aCB(count1),aCB(count2),
-     +                   per,aCBT,iflag)
-            call interp (period(count1),period(count2),aCY(count1),aCY(count2),
-     +                   per,aCYT,iflag)
-            call interp (period(count1),period(count2),bAS(count1),bAS(count2),
-     +                   per,bAST,iflag)
-            call interp (period(count1),period(count2),bBA(count1),bBA(count2),
-     +                   per,bBAT,iflag)
-            call interp (period(count1),period(count2),bCB(count1),bCB(count2),
-     +                   per,bCBT,iflag)
-            call interp (period(count1),period(count2),bCY(count1),bCY(count2),
-     +                   per,bCYT,iflag)
-            call interp (period(count1),period(count2),sigAS(count1),sigAS(count2),
-     +                   per,sigAST,iflag)
-            call interp (period(count1),period(count2),sigBA(count1),sigBA(count2),
-     +                   per,sigBAT,iflag)
-            call interp (period(count1),period(count2),sigCB(count1),sigCB(count2),
-     +                   per,sigCBT,iflag)
-            call interp (period(count1),period(count2),sigCY(count1),sigCY(count2),
-     +                   per,sigCYT,iflag)
-       
-C Compute the distance taper function.
-      if (rrup .gt. 70.0) then
-         fr = 0.0
-      elseif (rrup .le. 40.0) then
-         fr = 1.0
-      else
-         fr = 1.0 - (rrup-40.0)/30.0
-      endif
-       
-C Compute the magnitude taper function.
-      if (mag .gt. 6.0) then
-         fm = 1.0
-      elseif (mag .le. 5.6) then
-         fm = 0.0
-      else
-         fm = (mag-5.6)/0.4
-      endif
-
-C Compute the directivity adjustment. 
-C Adjust the sigma value.
-
-       if (dflag .eq. 6) then
-          lndir = fr*fm*(aAST+bAST*IDP)
-          sigdirY = sigAST
-       elseif (dflag .eq. 7) then
-          lndir = fr*fm*(aBAT+bBAT*IDP)
-          sigdirY = sigBAT
-       elseif (dflag .eq. 8) then
-          lndir = fr*fm*(aCBT+bCBT*IDP)
-          sigdirY = sigCBT
-       elseif (dflag .eq. 9) then
-          lndir = fr*fm*(aCYT+bCYT*IDP)
-          sigdirY = sigCYT
-       endif
-
-      return
-      end
-
-c -------------------------------------------------------------------
 
       subroutine Get_plane_dist (x, y, z, x0, y0, z0, insideFlag, dist)
       
@@ -751,12 +355,6 @@ c     Determine if the site is inside the surface projection of the cell
 c     boundary
       nSeg = 4
       call Inside_OutSide ( nSeg, x, y, x0, y0, insideFlag )
-
-c     Compute closest distance for inside
-c      if ( insideFlag .eq. 1 ) then
-c         call CalcPlaneDist ( x0, y0, z0, x, y, z, dist )
-c         return
-c      endif
       
 c     Compute the shortest dist to each edge
       dist = 1.0e30
@@ -776,6 +374,9 @@ c ---------------------------------------------------------------
 
       subroutine Calc_LineSeg_dist ( x1, y1, z1, x2, y2, z2, x0, y0,
      1           z0, dist )
+     
+      implicit none
+     
       real x0, x1, x2, y0, y1, y2, z0, z1, z2, dist
       real t1, t2, x, y, z, L, L1, L2, d1, d2
  
@@ -880,12 +481,15 @@ c     If sumTheta = +-2 pi , then point is inside
 c -------------------------------------------------------------
 
       subroutine CalcPlaneDist ( x0, y0, z0, x, y, z, dist )
-      parameter (MAXPTS=3, MAXTERM=3)
-c     implicit none 
-      integer arow, acol, i, nterm, npts
+
+      implicit none
+
+      integer MAXPTS, MAXTERM, arow, acol, i, nterm, npts
+      parameter (MAXPTS=3, MAXTERM=3)       
       real*8 A(MAXPTS,MAXTERM), b(MAXPTS,1)
       real*8 xhat(MAXPTS,1), eps, deter, work(1000)
-      real x(1), y(1), z(1), x0, y0, z0, dist, cx, cy, cz, c
+      real x(5), y(5), z(5), x0, y0, z0, dist, cx, cy, cz, c
+      
       eps = 1.0e-11
       arow = MAXPTS
       acol = MAXTERM
@@ -938,62 +542,19 @@ c     Compute distance from point to plane
 
       return
       end
-      
-      
-c -----------------------------------------------------------------
-
-      subroutine CalcBottomPt ( x1, y1, z1, strike, dip0, width,
-     1           x3, y3, z3 )
-      real width, dip0
-      real L1, L2, Lz
-      pi = 3.1415926
-
-c     Points 1 and 2 are at the top of the plane      
-      dip = dip0/180 * pi
-      theta1 = strike + pi/2.
-      
-      if ( dip .lt. 0 ) then
-         theta1 = theta1 + pi
-      endif
-
-c     Set coordinates of lower corners of plane
-c     point 3 is below point 1
-      L1 = cos(dip)*width
-      L2 = L1
-      Lz = abs(sin(dip))*width
-      cos1 = cos(theta1)
-      sin1 = sin(theta1) 
-      x3 = x1 + cos1 * L1
-      y3 = y1 + sin1 * L1
-      z3 = z1 + Lz
-
-      return
-      end
-
-c ------------------------------------------
-
-      subroutine transpose ( A, arow, m, n, At, atrow )
-      integer arow, atrow
-      real*8 A(arow,1), At(atrow,1)
-
-      do i=1,m
-         do j=1,n
-            At(j,i) = A(i,j)
-         enddo
-      enddo
-      return
-      end
 
 c --------------------------------------------------------------------
 
       subroutine CalcDistDensity (nPts, xFlt2, yFlt2, distDensity,
-     1                            dr, nr, x0, y0, step, minDist )
+     1                            dr, nr, x0, y0, step)
+
+      implicit none  
       include 'pfrisk.h'
-      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), minDist, maxdist
-      real xFlt(MAX_SEG), yFlt(MAX_SEG)
-      real distDensity(MAX_DIST1)
-      
-      nnGrid = 1
+
+      integer i, ix, iy, nx, ny, nPts, nr, insideFlag, iBin, iz, iBinMax
+      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), maxdist
+      real xFlt(MAX_SEG), yFlt(MAX_SEG), xMin, xMax, yMin, yMax, sum
+      real distDensity(MAX_DIST1), dr, step, x, y, x0, y0, horDist
 
 c     Copy to 1-D array
       iz = 1
@@ -1019,7 +580,6 @@ c     Initialize distDensity
       do i=1,MAX_DIST1
         distDensity(i) = 0.
       enddo
-      minDist = 1.e10
       maxdist = 0.
       
 c     Loop over bounding rectangle to estimate density function
@@ -1041,9 +601,6 @@ C     Reset Max and Min distances if needed
              if ( horDist .gt. maxDist ) then
                maxDist = horDist
                iBinMax = iBin               
-             endif
-             if (horDist .le. mindist) then
-                minDist = horDist
              endif
 
              distDensity(iBin) = distDensity(iBin) + 1.
@@ -1067,25 +624,21 @@ c     Normalize density function
 c --------------------------------------------------------------------
 
       subroutine CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y,
-     1           grid_dx, grid_dy,
-     1           grid_n, distDensity, dr, nr, x0, y0, step, minDist )
+     1           grid_dx, grid_dy, grid_n, distDensity, dr, nr, 
+     2           x0, y0, step)
      
+      implicit none
       include 'pfrisk.h'
-c     implicit none
-
-      real grid_a(MAX_FLT,MAX_GRID)
-      real grid_x(MAX_GRID), grid_y(MAX_GRID)
-      real grid_dx, grid_dy, minDist
-      integer grid_n(MAX_FLT)
-      real distDensity(MAX_DIST1)
-      
-      nnGrid = 1
+ 
+      integer grid_n(MAX_FLT), iFlt, nr, i, nx, ny, ix, iy, iBin
+      real grid_a(MAX_FLT,MAX_GRID), grid_x(MAX_GRID), grid_y(MAX_GRID),
+     1     grid_dx, grid_dy, distDensity(MAX_DIST1), dr, x0, y0,
+     2     step, x, y, horDist, sum, rate1
     
       nx = grid_dx/step + 1
       ny = grid_dy/step + 1
       write (*,'( 3f10.4)')grid_dx, grid_dy, step
       sum = 0.0
-      minDist = 1.e10
 
 C     Reset distdensity array.
       do i=1,max_dist1
@@ -1100,9 +653,6 @@ C     Reset distdensity array.
           y = step/2. + grid_y(i)
           do iy=1,ny
              horDist = sqrt( (x-x0)**2 + (y-y0)**2 )
-             if (horDist .le. mindist) then
-                minDist = horDist
-             endif
              iBin = int( horDist / dr ) + 1
              call CheckDim ( iBin, MAX_DIST1, 'MAX_DIST1  ' )
              distDensity(iBin) = distDensity(iBin) + rate1
@@ -1124,12 +674,12 @@ c --------------------------------------------------------------------
 
       subroutine CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
      
+      
+      implicit none
       include 'pfrisk.h'
-c     implicit none
 
-      real grid_a(MAX_FLT,MAX_GRID)
-      integer grid_n(MAX_FLT)
-      real distDensity2(MAX_GRID)
+      integer grid_n(MAX_FLT), iFlt, i
+      real grid_a(MAX_FLT,MAX_GRID), distDensity2(MAX_GRID), sum
       
       sum = 0.
       do i=1,grid_n(iFlt)
@@ -1147,15 +697,15 @@ c -------------------------------------------------------------------
 
       subroutine Get_plane_dist2 ( xRup, yRup, zRup, iSeg, 
      1           x0, y0, z0, dip0, dist, xclp, yclp, zclp )
-c     implicit none
-      real xRup(4,1), yRup(4,1), zRup(4,1)
-      real x(4), y(4), z(4), xSeg(5), ySeg(5)
-      real dist, dip0
-      real x0, y0, z0, dist1
-      real pi, dip, theta, theta1, sin1, cos1, 
-     1     tan1, d1, d2
-      real xclp, yclp, zclp, xclp2, yclp2, zclp2
+
+      implicit none
+      
       integer i, i1, nSeg, insideFlag, iSeg
+      real xRup(4,1), yRup(4,1), zRup(4,1), x(4), y(4), z(4), xSeg(5), 
+     1     ySeg(5), dist, dip0, x0, y0, z0, dist1, pi, dip, theta, 
+     2     theta1, sin1, cos1, tan1, d1, d2, xclp, yclp, zclp, xclp2, 
+     3     yclp2, zclp2
+
       pi = 3.1415926
 
       do i=1,4
@@ -1227,8 +777,11 @@ c ---------------------------------------------------------------
 
       subroutine Calc_LineSeg_dist2 ( x1, y1, z1, x2, y2, z2, x0, y0,
      1           z0, dist, x, y, z )
-      real x0, x1, x2, y0, y1, y2, z0, z1, z2, dist
-      real t1, t2, x, y, z, L, L1, L2, d1, d2
+     
+      implicit none
+     
+      real x0, x1, x2, y0, y1, y2, z0, z1, z2, dist, t1, t2, x, y, z, 
+     1     L, L1, L2, d1, d2
  
 c     Find shortest distance to line (without ends)
 c     Interesection at (x,y,z)     
@@ -1270,12 +823,15 @@ c     Intersection does not hit segment
 c -------------------------------------------------------------
 
       subroutine CalcPlaneDist2 ( x0, y0, z0, x, y, z, dist, cx, cy, cz )
+
+      implicit none
+
+      integer MAXPTS, MAXTERM, arow, acol, i, nterm, npts
       parameter (MAXPTS=3, MAXTERM=3)
-c     implicit none 
-      integer arow, acol, i, nterm, npts
-      real*8 A(MAXPTS,MAXTERM), b(MAXPTS,1)
-      real*8 xhat(MAXPTS,1), eps, deter, work(1000)
-      real x(1), y(1), z(1), x0, y0, z0, dist, cx, cy, cz, c
+      real x(4), y(4), z(4), x0, y0, z0, dist, cx, cy, cz, c      
+      real*8 A(MAXPTS,MAXTERM), b(MAXPTS,1), xhat(MAXPTS,1), eps, 
+     1       deter, work(1000)
+
       eps = 1.0e-11
       arow = MAXPTS
       acol = MAXTERM

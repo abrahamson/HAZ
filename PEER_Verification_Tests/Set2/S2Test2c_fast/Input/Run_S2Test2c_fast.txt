@@ -1,0 +1,77 @@
+Source_S2Test2c_fast.txt
+45.2					version of fault file
+-1.0 1.0 -66.0 -64.0			min max lat long
+200. 					maxdist
+PEER Verification, Set 2 Test 2c fast
+1  1  					nProb, nAttenType
+0.0  8  0   				  period, max epsilon, dir flag
+18 
+0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
+1      					  Number of GM Models for Atten Type 1
+2836 0.0 0.0 1.0 0.0 0   		  jcalc, const1, const2, wt, SigVaradd, mixflag (CB14) 
+0  					psCorFlag  (0=no, 1=yes)
+5					Number of deag mag values
+4.75  5.75  6.25  6.75  7.25	  	  deag mag values
+6					Number of deag dist values
+0.0  7.5  12.5  17.5  30.0  110.0  	  deag dist values  
+6 					Number of deag eps values
+-10.  -2.  0.  1.  2.  10.		  deag eps values
+4					Number of deag dir values
+0.0 0.10 0.40 2.0		  	  deag dir values
+0  					soil amp
+6     					nSites
+-64.91005  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site1.out1
+Set2Test2c_fast_Site1.out2
+Set2Test2c_fast_Site1.out3
+Set2Test2c_fast_Site1.out4
+Set2Test2c_fast_Site1.out5
+Set2Test2c_fast_Site1.out6
+Set2Test2c_fast_Site1.out7
+-65.04497  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site2.out1
+Set2Test2c_fast_Site2.out2
+Set2Test2c_fast_Site2.out3
+Set2Test2c_fast_Site2.out4
+Set2Test2c_fast_Site2.out5
+Set2Test2c_fast_Site2.out6
+Set2Test2c_fast_Site2.out7
+-65.08995  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site3.out1
+Set2Test2c_fast_Site3.out2
+Set2Test2c_fast_Site3.out3
+Set2Test2c_fast_Site3.out4
+Set2Test2c_fast_Site3.out5
+Set2Test2c_fast_Site3.out6
+Set2Test2c_fast_Site3.out7
+-65.13490  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site4.out1
+Set2Test2c_fast_Site4.out2
+Set2Test2c_fast_Site4.out3
+Set2Test2c_fast_Site4.out4
+Set2Test2c_fast_Site4.out5
+Set2Test2c_fast_Site4.out6
+Set2Test2c_fast_Site4.out7
+-65.22483  0.00000     760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site5.out1
+Set2Test2c_fast_Site5.out2
+Set2Test2c_fast_Site5.out3
+Set2Test2c_fast_Site5.out4
+Set2Test2c_fast_Site5.out5
+Set2Test2c_fast_Site5.out6
+Set2Test2c_fast_Site5.out7
+-65.00900  -0.42718    760.0  0.048  0.250  0.607  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+Set2Test2c_fast_Site6.out1
+Set2Test2c_fast_Site6.out2
+Set2Test2c_fast_Site6.out3
+Set2Test2c_fast_Site6.out4
+Set2Test2c_fast_Site6.out5
+Set2Test2c_fast_Site6.out6
+Set2Test2c_fast_Site6.out7
+
+
+
+
+
+
+

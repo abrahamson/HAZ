@@ -1,34 +1,43 @@
 c     magprob.f                             
 
-      subroutine magProb ( mag, maxMag, minMag, magStep, beta, iFlt,            
-     1                     pmag, nParam, nWidth,                                
-     2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo,
-     3                     Rup1_flag )
-      include 'pfrisk.h'            
+      subroutine magProb ( sourceType, mag, maxMag, minMag, magStep, beta, 
+     1                     iFlt, iFltWidth, pmag, nParam, nWidth, magRecur, 
+     2                     mpdf_param, ExpMeanMo, CharMeanMo, Rup1_flag )
+
+      implicit none
+      include 'pfrisk.h'  
+          
+      integer rup1_flag, iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(MAX_FLT),
+     1        iWidth, iParam, nsummag, imagsum, sourceType, iFltWidth
       real mag, maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), beta(MAX_FLT,MAXPARAM,MAX_WIDTH),           
-     1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH)                  
-      real pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2         
-      real maxMagWA, mMag, mChar                
-      real zmL, zmU, zmagU, zmagL    
-      real*8 pmL, pmU, pmagL, pmagU       
-      real meanMag, sigma                                   
-      real mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)
-      integer iFlt, nParam(MAX_FLT,MAX_WIDTH), nWidth(MAX_FLT)
-      real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH)                        
-      real magcut, betaAC, magnorm, sumnorm, mUnorm, mLnorm
-      real aknorm, pmagnorm(MAXPARAM,MAX_WIDTH) 
-      real WA_PMag(10000), sum
-      integer rup1_flag
-      
-      rup1_flag = 0
-            
-c     Set magnitude range               
-      mU = mag + magStep(iFlt)/2.       
-      mL = mag - magStep(iFlt)/2.   
+     1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
+     2     pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2,           
+     3     maxMagWA, mChar, zmL, zmU, zmagU, zmagL, meanMag, sigma, 
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), magcut, betaAC 
+      real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH),
+     1     magnorm, sumnorm, mUnorm, mLnorm, aknorm, pmagnorm(MAXPARAM,MAX_WIDTH),
+     2     beta1, ak, deltaM1, deltaM2, p1, p2, pChar, d, pExp, c1, Btail,
+     3     SigM, Fract_Exp, b_value, pMag1
+      real*8 pmL, pmU, pmagL, pmagU                                         
+
+c     set pmag for SourceType 7
+      if (sourceType .eq. 7) then
+        do iParam=1,nParam(iFlt,iFltWidth)
+          pmag(iParam,iFltWidth) = 1.0
+        enddo
+        goto 100
+
+c     all other SourceTypes       
+      else
+    
+      rup1_flag = 0   
 
 c     Compute the mag probability for each parameter variation                  
       do iWidth=1,nWidth(iFlt)          
-        do iParam=1,nParam(iFlt,iWidth)        
+        do iParam=1,nParam(iFlt,iWidth)
+c         Set magnitude range                     
+          mL = mag - magStep(iFlt)/2. 
+          mU = mag + magStep(iFlt)/2.    
           beta1 = beta(iFlt,iParam,iWidth) 
           if ( magRecur(iFlt,iParam,iWidth) .ne. 10 ) then 
             magU = maxMag(iFlt,iParam,iWidth)                
@@ -39,7 +48,7 @@ c     Compute the mag probability for each parameter variation
               magU = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
             endif
           endif
-
+          
 c         Lower magnitude equal to the minimum magnitude for each fault.		  
           magL = minMag(iFlt)        
           
@@ -50,10 +59,14 @@ c         CHECK IF MAGNITUDE STEP EXCEEDS THE MAX MAG
       
 c           WHICH MAG RECURRENCE RELATION?
 c           TRUNCATED EXPONENTIAL MODEL   
-            if ( magRecur(iFlt,iParam,iWidth) .eq. 1. ) then                      
+            if ( magRecur(iFlt,iParam,iWidth) .eq. 1. ) then 
+c             Reset mU to magU if necessary (when last mag is not a full step size)
+              if (mU .gt. magU) then
+                mU = magU
+              endif                     
               if (beta(iFlt,iParam,iWidth) .ne. 0.0) then
-              ak = 1. / (1. - exp(-beta(iFlt,iParam,iWidth)                            
-     1           *(magU - magL)) )      
+                ak = 1. / (1. - exp(-beta(iFlt,iParam,iWidth)                            
+     1          *(magU - magL)) )      
               else                               
                 write (*,'( 2x,''Error - b-value = 0.0'')')                                   
                 stop 99                               
@@ -63,7 +76,7 @@ c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU
 c             FOR THE EXPONENTIAL MODEL.
               pmag(iParam,iWidth) = ak*(exp(-beta1*(mL - magL))                                
      1                   - exp(-beta1*(mU - magL)) )  
-c             set flag if this is part of the large eqk'                          
+c             set flag if this is part of the large eqk                          
               if ( mag .gt. MagU-mpdf_param(iFlt,iParam,iwidth,3)) then
                 Rup1_flag = 1
               else
@@ -71,11 +84,10 @@ c             set flag if this is part of the large eqk'
               endif
 
 c           MAXIMUM MAGNITUDE MODEL       
-            elseif ( magRecur(iFlt,iParam,iWidth) .eq. 3. ) then                         
-cnjg              meanMag = magU - mpdf_param(iFlt,iParam,iwidth,3)                          
+            elseif ( magRecur(iFlt,iParam,iWidth) .eq. 3. ) then 
               meanMag = magU - mpdf_param(iFlt,iParam,iwidth,1)                          
               sigma = mpdf_param(iFlt,iParam,iwidth,2)    
-c           Check for Delta Function, i.e., Sigma=0
+c           Check for Delta Function, i.e., mLSigma=0
               if (sigma .eq. 0.0) then
                  if (meanMag .ge. mL .and. meanMag .lt. mU) then
 c            Set probability of Magnitude equal to 1.0 for this 
@@ -85,33 +97,34 @@ c            magnitude bin.
                     pmag(iParam,iWidth) = 0.0               
                  endif
               else
-                 zmL = (mL-meanMag)/sigma    
-                 zmU = (mU-meanMag)/sigma    
-                 zmagU=(magU-meanMag)/sigma  
-                 zmagL=(magL-meanMag)/sigma 
-                 if ( zmU .lt. -4. .or. zmu .gt. 4. ) then
-                   pmag(iParam,iWidth) = 0.
-                 else
-                   call NDTR3(zmL,pmL)        
-                   call NDTR3(zmU,pmU)        
-                   call NDTR3(zmagL,pmagL)           
-                   call NDTR3(zmagU,pmagU)        
-                   pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)
-c              write (*,'( e12.4)')  pmag(iParam,iWidth)
-c              write (*,'( 4e12.3)') pmL,  pmU, pmagL, pmagU  
-c              write (*,'( 4f12.4)') zmL,  zmU, zmagL, zmagU 
-c              write (*,'( 6f10.4)') ML, MU, magU, magL, meanMag, sigma              
-c              pause 'pmag'
-                 endif                        
+c               Reset mU to magU if necessary (when last mag is not a full step size)
+                if (mU .gt. magU) then
+                  mU = magU
+                endif                                                  
+                zmL = (mL-meanMag)/sigma    
+                zmU = (mU-meanMag)/sigma    
+                zmagU=(magU-meanMag)/sigma  
+                zmagL=(magL-meanMag)/sigma 
+                if ( zmU .lt. -4. .or. zmu .gt. 4. ) then
+                  pmag(iParam,iWidth) = 0.
+                else
+                  call NDTR3(zmL,pmL)        
+                  call NDTR3(zmU,pmU)        
+                  call NDTR3(zmagL,pmagL)           
+                  call NDTR3(zmagU,pmagU)        
+                  pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)
+                endif                        
               endif      
 
 c             All ruptures are large mag ruptures for syn rup
-              Rup1_flag = 1
-              
+              Rup1_flag = 1              
       
- 
 c           CHARACTERISTIC MODEL (Youngs and Coppersmith)                         
-            elseif (magRecur(iFlt,iParam,iWidth) .eq. 0. ) then                         
+            elseif (magRecur(iFlt,iParam,iWidth) .eq. 0. ) then 
+c             Reset mU to magU if necessary (when last mag is not a full step size)
+              if (mU .gt. magU) then
+                mU = magU
+              endif                          
               deltaM1 = mpdf_param(iFlt,iParam,iwidth,1)                                 
               deltaM2 = mpdf_param(iFlt,iParam,iwidth,2)
               mag1 = magU - deltaM1 - deltaM2    
@@ -151,7 +164,7 @@ c             NORMALIZE
      1         + beta1*exp(-beta1*(mag1-minMag(iFlt))) * deltaM1                
               pmag(iParam,iWidth) = pmag(iParam,iWidth) / ak   
 
-c             Set large rup falg for syn rupture
+c             Set large rup flag for syn rupture
               if ( mag .gt. mag2) then
                 Rup1_flag = 1
               else
@@ -180,18 +193,17 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR(zmL,pmL,d)        
-                 call NDTR(zmU,pmU,d)        
-                 call NDTR(zmagL,pmagL,d)           
-                 call NDTR(zmagU,pmagU,d)           
+                 call NDTR(zmL,reaL(pmL),d)        
+                 call NDTR(zmU,real(pmU),d)        
+                 call NDTR(zmagL,real(pmagL),d)           
+                 call NDTR(zmagU,real(pmagU),d)           
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
 
                  if (mag .ge. meanMag-mpdf_param(iFlt,iParam,iwidth,4)*sigma 
-     1         .and. mag .le. meanMag+mpdf_param(iFlt,iParam,iwidth,4)*Sigma) then
-c                    pChar = (pmL - pmU)/(pmagL-pmagU)                        
-c   change to truncate only on th high end
+     1         .and. mag .le. meanMag+mpdf_param(iFlt,iParam,iwidth,4)*Sigma) then                      
+c   change to truncate only on the high end
                     pChar = (pmL - pmU)/(1.-pmagU)                        
                  else
                     pChar = 0.0
@@ -301,8 +313,6 @@ c             FOR THE SECOND EXPONENTIAL MODEL.
 
                  sumnorm = sumnorm + pmagnorm(iParam,iWidth)
 
-c                 write (*,'(f8.3,2e12.4)') magnorm, pmagnorm(iParam,iWidth), sumnorm
-
               enddo
               
 C             Now normalize BC Hydro Model by total 
@@ -314,6 +324,9 @@ c           WAACY Model
                MaxMagWA =  mpdf_param(iFlt,iParam,iwidth,2)
               else
                MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
+              endif
+              if (MaxMagWA .gt. mpdf_param(iFlt,iParam,iwidth,6) ) then
+                MaxMagWA = mpdf_param(iFlt,iParam,iwidth,6)
               endif
               Btail = mpdf_param(iFlt,iParam,iwidth,3)
               SigM = mpdf_param(iFlt,iParam,iwidth,1)
@@ -330,24 +343,15 @@ c             Brute force calc of Pmag.  Fix this later to be faster.
      1                  minMag(iFlt), ML, MU, pMag1)
               pMag(iParam,iWidth) = pMag1
 
-c              stepM = 0.01
-c              nMag = int ( (MaxMagWA - minMag(iFlt)) / stepM )
-c              call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_exp, MaxMagWA,
-c     1                    minMag(iFlt), WA_Pmag, stepM, nMag)
-
-c              sum = 0.
-c              do iMag=1,nMag
-c               mag = minMag(iFlt) + (iMag-1)*stepM  
-c               if ( mag .gt. ML .and. mag .le. MU ) sum = sum + WA_Pmag(iMag)
-c               write (*,'( i5,f10.3,2e12.4)') iMag, mag, WA_Pmag(iMag), sum              
-c              enddo
-c              pMag(iParam,iWidth) = sum
             endif                                
-          endif     
+          endif
 
-        enddo                                  
+        enddo                               
+      enddo  
+      
+      endif 
 
-      enddo   
+ 100  continue
 
       return                            
       end                               
@@ -358,14 +362,14 @@ C------WAACY Subroutine for Magnitude Prob Values --------------
      1       Mmin, ML, MU, WA_Pmag)
 
       implicit none
-      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
+      real mChar, sigM, b_value, btail, Mmax, F
       real M1, M2
-      real Mmin, stepM, ML, MU, WA_Pmag
+      real Mmin, ML, MU, WA_Pmag
       real pdf1, PHI_15, PHI1, x, step1, mag1
       real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
       real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer nStep, i
-      real temp1, temp2, oneMinusAlpha, x2, x3, x4, x5
+      real temp1, temp2, oneMinusAlpha, x2, x3, x4
 
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -431,14 +435,14 @@ C------WAACY Subroutine for Magnitude Prob Values Used for Rates --------------
      1       Mmin, WA_Pmag, stepM, nMag)
 
       implicit none
-      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
+      real mChar, sigM, b_value, btail, Mmax, F
       real M1, M2, d
-      real Mmin, stepM, ML, MU, WA_Pmag(1)
-      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
+      real Mmin, stepM, WA_Pmag(1)
+      real pdf1(10000), PHI_15, PHI1, x, mag1
       real*8  beta, betaTail, c1, c2, c3, t1
       real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2
       real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
-      integer nStep, i, nMag, iBin, iMag
+      integer i, nMag
       real*8  temp1, temp2
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -519,17 +523,14 @@ C------WAACY Subroutine for to correct for rupture outside of modelled flt -----
       subroutine Calc_F2_Waacy ( mChar, sigM, b_value, bTail, F, Mmax,
      1       Mmin, F2 )
 
-      implicit none
-      real mChar, sigM, b_value, btail, Fract_exp, Mmax, F
-      real M1, M2, d
-      real Mmin, stepM, ML, MU, WA_Pmag(1)
-      real F2
-      real pdf1(10000), PHI_15, PHI1, x, step1, mag1
-      real*8  beta, betaTail, c1, c2, c3, t1
-      real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2
-      real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
-      integer nStep, i, nMag, iBin, iMag
-      real*8  temp1, temp2
+      implicit none     
+      
+      real mChar, sigM, b_value, btail, Mmax, F, M1, M2, d, Mmin,
+     1     F2, PHI_15, PHI1, x
+      real*8  beta, betaTail, c1, c2, c3, t1, d1, d2, alpha, a1, a2, 
+     1        alpha1, Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char, temp1, 
+     2        temp2
+     
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
 
@@ -544,9 +545,6 @@ c     Calculate WAACY terms
       PHI_15 = 0.933
       c2 = 1./ ( PHI_15-phi1) 
       c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
-
-c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
-c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
 
       temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) 
       temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
@@ -564,35 +562,6 @@ c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
       a2 = d1*(1.-F)+d2*F
       alpha = d2*F / ( d1*(1.-F)+d2*F )
       alpha1 = d1*(1-F) / (d1*(1.-F)+d2*F)
-
-c     Compute the pdf of the upper tail only 
-c     and find the fraction of the moment (F2) that is released
-c     along the modelled part of the fault 
-c      sum1 = 0.
-c      sum2 = 0.
-c      i1 = int(M2/stepM + 0.5) 
-c      do i=i1,nMag
-c        mag1 = Mmin + (i-1)*stepM 
-c        moment = 10.**(1.5*mag+16.05)
-c        if ( mag1 .lt. M2) then
-c          pdf1 = 0.
-c        elseif ( mag1 .lt. Mmax ) then
-c          pdf1 = 1. / (1.+c3) * exp( -betaTail*(mag1-M2) ) 
-c        endif
-        
-c       Sum up moment including ruptures longer than modelled fault        
-c        sum1 = sum1 + pdf1 * moment
-
-c       Sum up moment excluding ruptures longer than modelled fault                
-c        area_rup = 10.**(mag -4)
-c        areaRatio = area_rup / faultArea
-c        if (areaRatio .gt. 1. ) then
-c          moment = moment / areaRatio
-c        endif
-c        sum2 = sum2 + pdf1 * moment        
-
-c      enddo
-c      F2 = sum2 / sum1
         
       return
       end                             
