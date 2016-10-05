@@ -1,4 +1,3 @@
-c matrix.f
 
       subroutine mult (a,arow,m1,n1,b,brow,m2,n2,c,crow)
 c     This subroutine multiplies two matrices.

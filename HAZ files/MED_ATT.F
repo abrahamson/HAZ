@@ -1,4 +1,3 @@
-c meanpga.f
 
       subroutine meanInten (rupdist, jbdist, seismodist, hwflag,
      1  mag, jcalc, specT, lnY, siga, ftype, attenName, period1, iAtten, iProb,

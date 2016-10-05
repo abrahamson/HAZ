@@ -1,5 +1,4 @@
-c fHaz_init.f                                                                  
-
+                                                               
 c -------------------------------------------------------------- 
 
       subroutine InitMinDis (iFlt, nWidth, MinRrup_temp, MinRjb_temp, 
@@ -43,25 +42,7 @@ c --------------------------------------------------------------
   90  continue                                                                  
       return                                                                    
       end  
-      
-c --------------------------------------------------------------  
-                                                                                
-      subroutine InitPoiss ( Poiss ) 
-
-      implicit none                                             
-      include 'pfrisk.h'         
-                                               
-      real*8 Poiss(MAX_PROB,MAX_INTEN)
-      integer i, j                               
-                                                                                                                                         
-        do 80 j = 1, MAX_PROB
-          do 70 i = 1, MAX_INTEN                                                      
-                Poiss(j,i) = 0.0                                                       
-  70      continue   
-  80    continue                                                                                                                            
-      return                                                                    
-      end                                                                     
-                                                                                
+                                                                          
 c --------------------------------------------------------------                
                                                                                 
       subroutine InitHaztree ( Haz )                                              

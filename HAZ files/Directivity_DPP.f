@@ -1,4 +1,3 @@
-c     calc_DPP
 
 c      Subroutine created to calculate the DPP parameter defined in Spudich  al. (2013)
 

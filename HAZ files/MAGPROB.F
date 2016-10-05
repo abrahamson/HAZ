@@ -1,5 +1,4 @@
-c     magprob.f                             
-
+                           
       subroutine magProb ( sourceType, mag, maxMag, minMag, magStep, beta, 
      1                     iFlt, iFltWidth, pmag, nParam, nWidth, magRecur, 
      2                     mpdf_param, ExpMeanMo, CharMeanMo, Rup1_flag )

@@ -1,4 +1,3 @@
-c closestDist.f
 
       subroutine CalcDist (sourceType, pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS, 
      1             iFltWidth, iFlt, iMag, ystep, grid_top, RupWidth, RupLen, r_horiz, seismoDepth, 

@@ -115,7 +115,6 @@ c      Open Output7 file which will contain deaggregations for each source.
        
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
-       call InitPoiss ( Poiss )
        call InitHaz ( magbar1 )
        call InitHazBins ( HazBins )
        call InitHazBinsX ( HazBinsX )
@@ -620,11 +619,6 @@ c        Write temp Haz array to file
      
          call WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb, 
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
-     
-c        Calculate the Poisson probability
-         call CalcPoisson ( tempHaz, nParamVar, nInten, nProb, 
-     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth, wtout,
-     2        al_segWt, segwt1, gm_wt, Poiss )
 
  860    continue
 
@@ -644,8 +638,7 @@ c      Write out the mean Haz
      3       HazBins, nMagBins, nDistBins, nEpsBins, magBins, distBins,
      4       epsBins, al_segWt, MinRrup, nAttenType, attenType,
      5       segwt1, dirflag, tapflag,intflag, fsys, SourceDist,
-     6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT, 
-     7       Poiss)
+     6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 
 c      Write out the deagrregated hazard
        call output_HazBins ( isite, sitex, sitey, testInten, 

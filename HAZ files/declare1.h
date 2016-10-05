@@ -7,7 +7,7 @@ c    Declarations for Main file
      4       tempHaz2(4,MAX_INTEN,MAX_PROB,MAX_ATTEN), p1
       real*8 mHaz, pxceed3, d_bar(MAX_PROB,MAX_INTEN),
      1       m_bar(MAX_PROB,MAX_INTEN), e_bar(MAX_PROB,MAX_INTEN),
-     2       Xcost_bar(MAX_PROB,MAX_INTEN), Poiss(MAX_PROB,MAX_INTEN)
+     2       Xcost_bar(MAX_PROB,MAX_INTEN)
       real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
      1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
      2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
