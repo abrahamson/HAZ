@@ -9,7 +9,8 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
 c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2   *'
-      write (*,*) '*          Sept, 2016           *'
+      write (*,*) '*       Under Development       *'
+      write (*,*) '*          Oct, 2016            *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -58,7 +59,7 @@ c     read fault File
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
-     4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDD, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version )             
@@ -379,7 +380,7 @@ c                 Compute SRSS of median
                   lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
                 endif
 
-C               Second call got GPE for different sigma model 
+C               Second call get GMPE for different sigma model 
                 if (sigflag .eq. 1) then
                   if (sourceType(iFlt) .ne. 7) then
                     call meanInten ( distRup, distJB, distSeismo,
@@ -647,19 +648,18 @@ c      Write out the mean Haz
      7       Poiss)
 
 c      Write out the deagrregated hazard
-        call output_HazBins ( isite, sitex, sitey, testInten, nInten,
-     1       nProb, HazBins, jCalc, sigTrunc, csrflag,
-     1       nMagBins, nDistBins,
-     2       nEpsBins, magBins, distBins, epsBins,
-     3       attenName, period1, m_bar, d_bar, e_bar,
-     4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
-     5       HazBinsX)
+       call output_HazBins ( isite, sitex, sitey, testInten, 
+     1       nInten, nProb, HazBins, jCalc, sigTrunc, csrflag,
+     2       nMagBins, nDistBins, nEpsBins, magBins, distBins, 
+     3       epsBins, attenName, period1, m_bar, d_bar, e_bar,
+     4       nAttenType, attenType, Xcost_bar, nXcostBins, 
+     5       XcostBins, HazBinsX)
      
        call output_sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
      1           nFlt, Haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
      2           rx_bar_s, e_bar_s, specT, nProb)
      
-        call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
+       call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue
 

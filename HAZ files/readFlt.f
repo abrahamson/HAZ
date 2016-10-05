@@ -11,7 +11,7 @@
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
-     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7, version )
@@ -27,7 +27,7 @@
       integer nRupArea(MAX_FLT), nRupWidth(MAX_FLT), ncountS7(MAX_FLT),
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT), 
      2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), 
-     3        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM), fsys(MAX_FLT),
+     3        fsys(MAX_FLT),
      4        segModelFlag(MAX_FLT,100), nSegModel0(1), runflag 
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
@@ -55,9 +55,8 @@
      3     fLat(MAX_FLT,MAX_DD,MAX_SEG), dip(MAX_FLT,MAX_WIDTH,MAX_SEG), 
      4     faultWidthWt(MAX_FLT,MAX_WIDTH), ftype(MAX_FLT,MAX_N1)
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), distS7(MAX_FLT,MAX_S7),  
-     1     BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), depthParam(MAX_FLT,5),      
-     2     mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), sigArea(MAX_FLT),   
-     3     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH) 
+     1     depthParam(MAX_FLT,5), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), 
+     2     sigArea(MAX_FLT), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH) 
       character*80 fName(MAX_FLT)
       
       if ( version .eq. 45.1 ) then
@@ -74,7 +73,7 @@
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
-     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
@@ -92,7 +91,7 @@
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
-     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
@@ -119,7 +118,7 @@ c  --------------------------------------------------------------------
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
-     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
@@ -137,8 +136,7 @@ c  --------------------------------------------------------------------
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,  
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT) 
-      integer nFtype1(MAX_FLT), temp_BR(MAXPARAM),  
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
+      integer nFtype1(MAX_FLT),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt, 
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip, 
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
@@ -178,8 +176,7 @@ c  --------------------------------------------------------------------
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), 
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top, 
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT), 
-     4     temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)     
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)    
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM), 
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
@@ -472,32 +469,24 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             rateParam1(k) = sr(k)
             rateWt1(k) = wt_sr(k)*wt_srbranch              
             rateType1(k) = 1
-            temp_BR(k) = k
-            temp_BR_wt(k) = wt_sr(k)
             MoRDepth(k) = 1.0
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
             rateWt1(k+nSR) = actRateWt1(k) * wt_actRateBranch             
             rateType1(k+nSR) = 2
-            temp_BR(k+nSR) = k
-            temp_BR_wt(k+nSR) = actRateWt1(k)
             MoRDepth(k+nSR) = 1.0
          enddo
          do k=1,nRecInt
             rateParam1(k+nSR+nActRate) = rec_Int(k)
             rateWt1(k+nSR+nActRate) = wt_recInt(k) *wt_recIntBranch              
             rateType1(k+nSR+nActRate) = 3
-            temp_BR(k+nSR+nActRate) = k
-            temp_BR_wt(k+nSR+nActRate) = wt_recInt(k)
             MoRDepth(k+nSR+nActRate) = 1.0
          enddo
          do k=1,nMoRate
             rateParam1(k+nSR+nActRate+nRecInt) = MoRate(k)
             rateWt1(k+nSR+nActRate+nRecInt) = wt_MoRate(k) *wt_MoRateBranch              
             rateType1(k+nSR+nActRate+nRecInt) = 4
-            temp_BR(k+nSR+nActRate+nRecInt) = k
-            temp_BR_wt(k+nSR+nActRate+nRecInt) =  wt_MoRate(k)
             MoRDepth(k+nSR+nActRate+nRecInt) = 1.0/MoRateDepth(nMoRate)
          enddo
 
@@ -996,7 +985,7 @@ c ----------------------------
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
-     4     faultFlag, nDownDip, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
@@ -1014,8 +1003,7 @@ c ----------------------------
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,  
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT), iOverRideMag,
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT) 
-      integer nFtype1(MAX_FLT), temp_BR(MAXPARAM),  
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
+      integer nFtype1(MAX_FLT),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt, 
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip, 
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
@@ -1055,8 +1043,7 @@ c ----------------------------
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), 
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top, 
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT), 
-     4     temp_BR_wt(MAXPARAM), BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM)     
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)     
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM), 
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
@@ -1350,32 +1337,24 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             rateParam1(k) = sr(k)
             rateWt1(k) = wt_sr(k)*wt_srbranch              
             rateType1(k) = 1
-            temp_BR(k) = k
-            temp_BR_wt(k) = wt_sr(k)
             MoRDepth(k) = 1.0
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
             rateWt1(k+nSR) = actRateWt1(k) * wt_actRateBranch             
             rateType1(k+nSR) = 2
-            temp_BR(k+nSR) = k
-            temp_BR_wt(k+nSR) = actRateWt1(k)
             MoRDepth(k+nSR) = 1.0
          enddo
          do k=1,nRecInt
             rateParam1(k+nSR+nActRate) = rec_Int(k)
             rateWt1(k+nSR+nActRate) = wt_recInt(k) *wt_recIntBranch              
             rateType1(k+nSR+nActRate) = 3
-            temp_BR(k+nSR+nActRate) = k
-            temp_BR_wt(k+nSR+nActRate) = wt_recInt(k)
             MoRDepth(k+nSR+nActRate) = 1.0
          enddo
          do k=1,nMoRate
             rateParam1(k+nSR+nActRate+nRecInt) = MoRate(k)
             rateWt1(k+nSR+nActRate+nRecInt) = wt_MoRate(k) *wt_MoRateBranch              
             rateType1(k+nSR+nActRate+nRecInt) = 4
-            temp_BR(k+nSR+nActRate+nRecInt) = k
-            temp_BR_wt(k+nSR+nActRate+nRecInt) =  wt_MoRate(k)
             MoRDepth(k+nSR+nActRate+nRecInt) = 1.0/MoRateDepth(nMoRate)
          enddo
 

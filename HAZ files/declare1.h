@@ -13,10 +13,9 @@ c    Declarations for Main file
      2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
-     1        BR_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
-     2        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
-     3        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip,
-     4        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
+     1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
+     2        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip,
+     3        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
       integer dirFlag1, iMixture(MAX_PROB,4,MAX_ATTEN), ibnum, nProb,
      1        nRefPer, nRefGM, nRefMag, nLocXAS, nLocYST1, nLocX,
      2        iDepthFlag, iLocX, nLocY, iLocY, n1, n2, iFtype, iProb,
@@ -43,11 +42,10 @@ c    Declarations for Main file
      2     fltGrid_fLen(MAXFLT_DD,MAXFLT_AS), fltGrid_w(MAXFLT_DD,MAXFLT_AS),
      3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), dipavgd
-      real Rx, Ry, Ry0, BR_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
-     1     lgInten0, pLocY(MAXFLT_AS),
-     2     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
-     3     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
-     4     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
+      real Rx, Ry, Ry0, lgInten0, pLocY(MAXFLT_AS),
+     1     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
+     2     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
+     3     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
       real dirMed, dirSigma, fs, pHypoX, pHypoZ, temp, sigma0, AR,
      1     siteX, siteY, testInten(MAX_PROB, MAX_INTEN), lgInten,
      2     fLong(MAX_FLT, MAX_DD, MAX_SEG), fLat(MAX_FLT, MAX_DD, MAX_SEG),

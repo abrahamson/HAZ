@@ -13,20 +13,18 @@
       integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag,
      1        nMagBins, nDistBins, nEpsBins, nXcostBins, nProb, nwr,
      2        psCorFlag, dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN),
-     3        sCalc(MAX_PROB,4,MAX_ATTEN),
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), nDD(MAX_FLT), nfp(MAX_FLT),
      4        nAttenType, nAtten(MAX_PROB,4), soilAmpFlag, iCoor
       integer ichart, charcount, coefcountrrup, coefcountrjb,
      1        iMixture(MAX_PROB,4,MAX_ATTEN), nFlt, i, j, j1, k, jj,
-     2        nSegModel(1), nFtype(MAX_FLT), nfp(MAX_FLT),
+     2        nSegModel(1), nFtype(MAX_FLT), segModelFlag(MAX_FLT,100),
      3        nMag(MAX_FLT), sourceType(MAX_FLT), nRupArea(MAX_FLT),
      4        nRupWidth(MAX_FLT), nParamVar(MAX_FLT,MAX_WIDTH)  
       integer fIndex(3,MAX_FLT), nWidth(MAX_FLT), grid_n(MAX_FLT),
      1        fsys(MAX_FLT), fltDirect(MAX_FLT), synchron(MAX_FLT),
-     2        nsyn_Case(MAX_FLT), synatten(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
-     3        iDepthModel(MAX_FLT), nMaxMag2(MAX_FLT),
-     4        faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT) 
-      integer br_index(MAX_FLT,20,MAX_WIDTH,MAXPARAM),
-     1        segModelFlag(MAX_FLT,100), ncountS7(MAX_FLT)  
+     2        nsyn_Case(MAX_FLT), synatten(MAX_FLT), nMaxMag2(MAX_FLT),
+     3        iDepthModel(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
+     4        faultFlag(MAX_FLT,100,MAX_FLT), ncountS7(MAX_FLT)         
       real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
      1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
      2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
@@ -37,10 +35,9 @@
      2     cfcoefrjb(MAX_Atten,11), syn_dip(MAX_FLT,MAX_SYN),
      3     syn_zTOR(MAX_FLT,MAX_SYN), syn_RupWidth(MAX_FLT,MAX_SYN), 
      4     syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
-      real checkattenwt, segModelWt1(MAX_FLT,100), 
-     1     br_wt(MAX_FLT,20,MAX_WIDTH,MAXPARAM), ftype_wt(MAX_FLT,MAX_N1),    
-     2     minMag(MAX_FLT), magStep(MAX_FLT), xStep(MAX_FLT), yStep(MAX_FLT),
-     3     segModelWt(MAX_FLT), rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH)
+      real checkattenwt, segModelWt1(MAX_FLT,100), ftype_wt(MAX_FLT,MAX_N1),    
+     1     minMag(MAX_FLT), magStep(MAX_FLT), xStep(MAX_FLT), yStep(MAX_FLT),
+     2     segModelWt(MAX_FLT), rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), 
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
      2     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), faultWidth(MAX_FLT,MAX_WIDTH),
@@ -148,7 +145,7 @@ c        read fault File
      1     synchron, nsyn_Case, synatten,synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
-     4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
+     4     faultFlag, nDD, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version )  
@@ -743,33 +740,27 @@ c  ------------------------------------------------------------------
 
       subroutine output_hazBins ( isite, sitex, sitey, testInten,  
      1           nInten, nProb, riskBins, jCalc, sigTrunc,csrflag,
-     1           nMagBins,
-     2           nDistBins, nEpsBins, magBins, distBins, epsBins, 
-     3           attenName, period1, m_bar, d_bar, e_bar,
+     2           nMagBins, nDistBins, nEpsBins, magBins, distBins, 
+     3           epsBins, attenName, period1, m_bar, d_bar, e_bar,
      4           nAttenType, attenType, Xcost_bar, nXcostBins, 
      5           XcostBins, RiskBinsX )
 
       implicit none
       include 'pfrisk.h'
 
-      real siteX, siteY,  
+      integer csrflag(MAX_PROB), attenType(MAX_FLT), nProb, i,
+     1        isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), 
+     2        nMagBins, nDistBins, nEpsBins, nXcostBins, J2,
+     3        iEpsBin, iDistBin, iMagBin, iXcostBin, iInten,
+     4        iMagbins, iDistbins, iProb, nwr, nAttenType
+      real siteX, siteY, period1(4,MAX_PROB), sigTrunc(MAX_PROB), 
      1     riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
      2     magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS),
-     2     testInten(MAX_PROB, MAX_INTEN),
-     3     period1(4,MAX_PROB), sigTrunc(MAX_PROB), 
-     6     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
-     7      XcostBins(MAX_Xcost),
-     8     RiskBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN)
-     
-      real*8 sumX, sum
-      real*8  m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
-     5     e_bar(MAX_PROB,MAX_INTEN),Xcost_bar(MAX_PROB,MAX_INTEN)
-
-      integer csrflag(MAX_PROB), attenType(MAX_FLT), nProb, i
-      integer isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN) 
-      integer nMagBins, nDistBins, nEpsBins, nXcostBins, J2,
-     1        iEpsBin, iDistBin, iMagBin, iXcostBin, iInten,
-     2        iMagbins, iDistbins, iProb, nwr, nAttenType
+     3     testInten(MAX_PROB,MAX_INTEN), XcostBins(MAX_Xcost),
+     4     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
+     5     RiskBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN)
+      real*8 sumX, sum, m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
+     1     e_bar(MAX_PROB,MAX_INTEN), Xcost_bar(MAX_PROB,MAX_INTEN)
       character*80 file1, attenName(4,MAX_PROB) 
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'
@@ -951,32 +942,7 @@ c ----------------------------------------------------------------------
       endif
       return
       end
-      
-c  -------------------------------------------------------------------
- 
-      subroutine Write_BR_Haz ( iFlt, nInten, nBr, nNode, Br_haz, Br_wt1, nProb )
-
-      implicit none
-      include 'pfrisk.h'
-      
-      integer iFlt, nNode(MAX_NODE), nInten(MAX_PROB), nBr, nProb,
-     1        iNode, iBR, jInten, iProb 
-      real*8 BR_haz(MAX_INTEN, MAX_PROB,MAX_BRANCH,MAX_NODE)
-      real Br_wt1(MAX_BRANCH,MAX_NODE)
-
-      do iProb=1,nProb
-        do jInten = 1, nInten(iProb)
-          do iBR=1,nBR
-            write (23,'(5i5,100e12.4)') iFlt, iProb, jInten, iBR, 
-     1             nNode(iBR), (BR_haz(JInten,iProb,iBr,iNode),iNode=1,nNode(iBR) ),
-     2                         (br_wt1(iBr,iNode),iNode=1,nNode(iBR) )
-          enddo
-        enddo
-      enddo
-
-      return
-      end
-      
+          
 c  -------------------------------------------------------------------
       subroutine writedisthead (ioflag)
 
@@ -1025,8 +991,6 @@ c  -------------------------------------------------------------------
       end
 c  -------------------------------------------------------------------
 
-
-C DGM addition 
       subroutine output_Sourcedeagg ( isite, sitex, sitey, ati, nInten, 
      1           nFlt, risk, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
      2           rx_bar_s, e_bar_s, specT, nProb)
@@ -1034,12 +998,11 @@ C DGM addition
       implicit none
       include 'pfrisk.h'
 
-      real siteX, siteY, ati(MAX_PROB, MAX_INTEN) 
-      real*8     risk(MAX_INTEN,MAX_PROB,MAX_FLT)
-      real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
-     1     rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),e_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
       integer isite, nInten(MAX_PROB), iFlt, nFlt, iProb, J2, nProb, iInten, nwr
-      real specT(MAX_PROB)
+      real siteX, siteY, ati(MAX_PROB, MAX_INTEN), specT(MAX_PROB) 
+      real*8 risk(MAX_INTEN,MAX_PROB,MAX_FLT), m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), 
+     1       rrup_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
+     2       rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), e_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
       character*80 fName(MAX_FLT)
 
       nwr = 29
@@ -1055,8 +1018,6 @@ c       Write Test Intensities
          write(nwr,920) (ati(iProb,J2),J2=1,nInten(iProb))
 
 c        Write MBar, RrupBar, Rjbbar, Rxbar and EpsBar Results       
-        
-        
          do iFlt=1,nFlt
           write (nwr,'( 2x,a30,''MBar      '',30f10.2)') fName(iFlt), 
      1          (m_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
