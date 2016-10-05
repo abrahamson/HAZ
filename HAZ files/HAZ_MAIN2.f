@@ -41,7 +41,7 @@ c     Read Run File
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
-     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
      6               coefcountRrup, coefcountRjb, iMixture, version )
 
@@ -60,7 +60,7 @@ c     read fault File
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
      4     faultFlag, nDD, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version )             
      

@@ -13,7 +13,7 @@ c    Declarations for Main file
      2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
-     1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT), runflag,
+     1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT),
      2        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip,
      3        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
       integer dirFlag1, iMixture(MAX_PROB,4,MAX_ATTEN), ibnum, nProb,

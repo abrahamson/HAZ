@@ -5,7 +5,7 @@ c     Set array dimensions
      2        MAX_DIST, MAX_N1, MAX_WIDTH, MAX_DIST1, 
      3        MAX_GRID, MAX_SYN, MAX_AMPMAG, MAX_AMPPER,
      4        MAX_AMPGM, MAX_PER, MAXDETM_DIST, MAX_DD
-      integer MAXFLT_DD, MAXFLT_AS, MAX_BRANCH, MAX_NODE,
+      integer MAXFLT_DD, MAXFLT_AS, MAX_NODE,
      1        MAX_ATTEN, MAX_FTYPE, MAX_S7
 
 
@@ -14,6 +14,6 @@ c     Set array dimensions
      2           MAX_DIST=25, MAX_N1=220, MAX_WIDTH=15, MAX_DIST1=10000, 
      3           MAX_GRID=32000, MAX_SYN=5, MAX_AMPMAG=25, MAX_AMPPER=15, 
      4           MAX_AMPGM=15, MAX_PER=501, MAXDETM_DIST=2000, MAX_DD=12) 
-      parameter (MAXFLT_DD=2000, MAXFLT_AS=2000, MAX_BRANCH=30, MAX_NODE=100,
+      parameter (MAXFLT_DD=2000, MAXFLT_AS=2000, MAX_NODE=100,
      1           MAX_ATTEN=60, MAX_FTYPE=3, MAX_S7=70000)
       

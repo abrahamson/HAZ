@@ -1,3 +1,32 @@
+
+      subroutine CheckDir (dirflag)
+      
+      implicit none
+      
+      integer dirflag
+
+        if (dirflag .eq. 0) then
+          goto 100
+        elseif (dirflag .eq. 20) then
+          goto 100
+        elseif (dirflag .eq. 30) then
+          goto 100
+        elseif (dirflag .eq. 105) then
+          goto 100
+        elseif (dirflag .eq. 106) then
+          goto 100
+        else
+          write (*,*) 'Invalid directivity flag in run file.'
+          stop 99
+        endif
+   
+ 100  continue     
+          
+      return
+      end
+
+c  -------------------------------------------------------------------
+
       subroutine Directivity ( dirFlag, specT, Rrup, ZTOR, x0, y0, z0,
      1                 Rx, Ry, Ry0, mag, ftype, RupWidth, RupLength, 
      2                 dipavgd, HWflag, dirMed, dirSigma, fltgrid_x, 

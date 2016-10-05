@@ -12,7 +12,7 @@
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7, version )
 
@@ -28,7 +28,7 @@
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT), 
      2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), 
      3        fsys(MAX_FLT),
-     4        segModelFlag(MAX_FLT,100), nSegModel0(1), runflag 
+     4        segModelFlag(MAX_FLT,100), nSegModel0(1) 
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
@@ -74,7 +74,7 @@
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
       elseif (version .eq. 45.2 ) then
@@ -92,7 +92,7 @@
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
       else
@@ -119,7 +119,7 @@ c  --------------------------------------------------------------------
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
 
@@ -142,7 +142,7 @@ c  --------------------------------------------------------------------
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
       integer iflt, nSegModel, nMagRecur, nFtypeModels, 
      1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100), 
-     2        nSegModel0(1), runflag, ncountS7(MAX_FLT)
+     2        nSegModel0(1), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
@@ -194,15 +194,6 @@ c     Input Fault Parameters
       read (10,*,err=3001) iCoor
       read (10,*,err=3002) NFLT
 
-      if (runflag .eq. 3) then
-         write (*,*) 'iCoor = ', iCoor
-         write (17,*) 'iCoor = ', iCoor
-         write (*,*) 'NFLT = ' , nFLT
-         write (17,*) 'NFLT = ' , nFLT
-         write (*,*) 
-         write (17,*) 
-      endif
-
       iflt = 0
       ifsystem = 1
       
@@ -210,34 +201,12 @@ c     Input Fault Parameters
        read (10,'( a80)',err=3003) fName1
        read (10,*,err=3004) probAct0
 
-      if (runflag .eq. 3) then
-         write (*,*) 'fName = ', fname1
-         write (17,*)
-         write (17,*) '*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*'
-         write (17,'(a13,i6,a4,i6)') 'Fault Number ', iFlt0, ' of ', NFLT
-         write (17,*) 'fName1 = ', fName1
-         write (*,*) 'ProbAct0 = ', ProbAct0
-         write (17,*) 'ProbAct0 = ', ProbAct0
-      endif
-
 c      Read number of segmentation models for this fault system
        read (10,*,err=3005) nSegModel
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
-      if (runflag .eq. 3) then
-         write (*,*) 'nSegModel = ', nSegModel
-         write (17,*) 'nSegModel = ', nSegModel
-         do k=1,nSegModel
-            write (17,*) 'SetWt = ', k,segWt(iFlt0,k)
-         enddo
-      endif
-
 c      Read total number of fault segments
        read (10,*,err=3007) nFlt2
-      if (runflag .eq. 3) then
-         write (*,*) 'nFlt2 = ', nFlt2
-         write (17,*) 'nFlt2 = ', nFlt2
-      endif
       
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -245,9 +214,7 @@ c      Read total number of fault segments
 
        do iflt2=1,nflt2
         iFlt = iFlt + 1
-        if (runflag .ne. 3) then
-           call CheckDim ( iflt, MAX_FLT, 'MAX_FLT   ' )
-        endif
+        call CheckDim ( iflt, MAX_FLT, 'MAX_FLT   ' )
 
 c       Set fault indexes
         fIndex(1,iflt) = iflt0
@@ -350,29 +317,16 @@ c        Check for custom fault source
 c        Check for Sourcetype 7 (UCERF)
          if ( sourceType(iFlt) .eq. 7 ) then
             read (10,*)  top, HWsource7
-
-            if (runflag .eq. 3) then
-               write (*,*) 'Top, HW = ', top, HWsource7
-               write (17,*) 'Dip1, top = ', top, HWsource7
-            endif
-
             call RdSource7 (iFlt, mags7, rates7, dists7, dips7, mechs7, ncountS7 )
             write (*,*) 'NcountS7 =', ncountS7(iFlt)
-
-            if (runflag .eq. 3) then
-               write (*,*) 'NcountS7 =', ncountS7(iFlt)
-               write (17,*) 'NcountS7 =', ncountS7(iFlt)
-            endif
          endif
 
 c        Read dip Variation
          if ( sourceType(iFlt) .lt. 5 ) then
            read (10,*,err=3019) n_Dip
-
            call CheckDim ( n_Dip, MAX_N1, 'MAX_N1    ' )
            read (10,*,err=3020) (deltaDip1(i),i=1,n_Dip)
            read (10,*,err=3021) (dipWt1(i),i=1,n_Dip)
-
            call CheckWt ( dipWt1, n_Dip, fName(iFlt), 'Dip                 ' )
          else
            n_Dip = 1
@@ -388,13 +342,6 @@ c        Read b-values (not for activity rate cases)
            read (10,*,err=3023) (bValue1(i),i=1,n_bValue)
            read (10,*,err=3024) (bValueWt1(i),i=1,n_bValue)
          endif
-
-        if (runflag .eq. 3) then
-           do i=1,n_bValue
-              write (*,*) 'bValue, bValueWt = ', i, bValue1(i), bValueWt1(i)
-              write (17,*) 'bValue, bValueWt = ', i, bValue1(i), bValueWt1(i)
-           enddo
-        endif
 
 c        Read activity rate - b-value pairs
          read (10,*,err=3025) nActRate 
@@ -415,7 +362,6 @@ C     Scale activity rate for gridded source (i.e., sourcetype 3 or 4) based on 
 
 c        Read weights for rate methods
          read (10,*,err=3027) wt_srBranch, wt_ActRateBranch, wt_recIntBranch, wt_MoRateBranch
-
          sum = wt_srBranch + wt_ActRateBranch + wt_recIntBranch + wt_MoRateBranch
          if ( sum .lt. 0.999 .or. sum .gt. 1.001 ) then
               write (*,'( 2x,''rate method weights do not sum to unity for fault, '',a30)') fName(iFlt)
@@ -427,28 +373,23 @@ c        Read slip-rates
          if ( nSR .gt. 0 ) then
            read (10,*,err=3029) (sr(k),k=1,nSR)
            read (10,*,err=3030) (wt_sr(k),k=1,nSR)
-
            call CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
          endif
 
 c        Read recurrence intervals
          read (10,*,err=3031) nRecInt
-
          if ( nRecInt .gt. 0 ) then
            read (10,*,err=3032) (rec_Int(k),k=1,nRecInt)
            read (10,*,err=3033) (wt_recInt(k),k=1,nRecInt)
-
            call CheckWt (wt_recInt, nRecInt, fName(iFlt), 'Recurrence Intervals')
          endif
 
 c        Read moment-rates
          read (10,*,err=3034) nMoRate
-
-          if ( nMoRate .gt. 0 ) then
+         if ( nMoRate .gt. 0 ) then
            read (10,*,err=3035) (MoRate(k),k=1,nMoRate)
            read (10,*,err=3036) (MoRateDepth(k),k=1,nMoRate)
            read (10,*,err=3037) (wt_MoRate(k),k=1,nMoRate)
-
            call CheckWt (wt_MoRate, nMoRate, fName(iFlt), 'Moment Rates        ')
          endif
 
@@ -492,18 +433,9 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
 
 c        Read Mag recurrence weights (char, exp, etc.)
          read (10,*,err=3038) nMagRecur
-
          call CheckDim ( nMagRecur, MAX_N1, 'MAX_N1    ' )
          read (10,*,err=3039) (magRecur1(i),i=1,nMagRecur)
          read (10,*,err=3040) (magRecurWt1(i),i=1,nMagRecur)
-
-        if (runflag .eq. 3) then
-           do k=1,nMagRecur
-              write (*,*) 'MagRecur1, wt = ',  magRecur1(k),magRecurWt1(k)
-              write (17,*) 'MagRecur1, wt = ', magRecur1(k),magRecurWt1(k)
-           enddo
-        endif
-
          call CheckWt ( magRecurWt1,nMagRecur, fName(iFlt), 'Mag Recur           ' )
 
 c        Read in corresponding magnitude parameters. 
@@ -515,45 +447,23 @@ c          Read in necessary parameters for bi-exponential distribution.
            elseif (magRecur1(iRecur) .eq. 5) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
              rp6(iRecur) = 0.0
-            elseif (magRecur1(iRecur) .eq. 10) then
+           elseif (magRecur1(iRecur) .eq. 10) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur),
-     1           rp6(iRecur)
-          else              
+     1       rp6(iRecur)
+           else              
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur)
              rp4(iRecur) = 0.0
              rp5(iRecur) = 0.0
              rp6(iRecur) = 0.0
            endif
-
-        if (runflag .eq. 3) then
-           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), 
-     1        rp4(iRecur), rp5(iRecur), rp6(iRecur)
-           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur),
-     1        rp4(iRecur), rp5(iRecur), rp6(iRecur)
-        endif
-
          enddo
 
 c        Read seismogenic thickness
          if ( sourceType(iFlt) .lt. 5) then
            read (10,*,err=3042) nThick1
-
-        if (runflag .eq. 3) then
-           write (*,*) 'nThick1 = ', nThick1
-           write (17,*) 'nThick1 = ', nThick1
-        endif
-
            call CheckDim ( nThick1, MAX_WIDTH, 'MAX_WIDTH ' )
            read (10,*,err=3043) (faultThick1(i),i=1,nThick1)
-           read (10,*,err=3044) (faultThickWt1(i),i=1,nThick1)
-
-        if (runflag .eq. 3) then
-           do i=1,nThick1
-              write (*,*) 'FaultThick1, wt = ', faultThick1(i), faultThickWt1(i)
-              write (17,*) 'FaultThick1, wt = ', faultThick1(i), faultThickWt1(i)
-           enddo
-        endif
-           
+           read (10,*,err=3044) (faultThickWt1(i),i=1,nThick1)         
            call CheckWt (faultThickWt1, nThick1, fName(iFlt), 'Seismo Thick        ')
          else
            nThick1 = 1
@@ -563,113 +473,69 @@ c        Read seismogenic thickness
          
 c        Read depth pdf
          read (10,*,err=3045) iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)     
-  
-        if (runflag .eq. 3) then
-              write (*,*) 'Depth Model = ', iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)    
-              write (17,*) 'Depth Model = ', iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)    
-        endif
 
-c         Read reference mags for each fault thickness
-          iThickDip = 1
-          do iThick1=1,nThick1
-            read (10,*,err=3047) nRefMag0
-            read (10,*,err=3048) (refMag0(i),i=1,nRefMag0)
-            read (10,*,err=3049) (refMagWt0(i),i=1,nRefMag0)
+c        Read reference mags for each fault thickness
+         iThickDip = 1
+         do iThick1=1,nThick1
+           read (10,*,err=3047) nRefMag0
+           read (10,*,err=3048) (refMag0(i),i=1,nRefMag0)
+           read (10,*,err=3049) (refMagWt0(i),i=1,nRefMag0)
 
-            if (runflag .eq. 3) then
-              do i=1,nRefMag0
-                 write (*,*) 'Max Mags = ', refMag0(i), refMagWt0(i)  
-                 write (17,*) 'Max Mags = ', refMag0(i), refMagWt0(i)    
-              enddo
-            endif
-
-            if ( nRefMag0 .ne. 0 ) then
-              call CheckWt ( refMagWt0, nrefMag0, fName(iFlt), 'Ref Mag                 ' )
-            endif
+           if ( nRefMag0 .ne. 0 ) then
+             call CheckWt ( refMagWt0, nrefMag0, fName(iFlt), 'Ref Mag                 ' )
+           endif
               
-c           Copy these ref magnitudes for each addtional dip (no correlation allowed)
-            do iDip=1,n_Dip
-              nRefMag(iThickDip) = nRefMag0
-              do i=1,nRefMag0
-                refMag1(iThickDip,i) = refMag0(i)
-                refMagWt1(iThickDip,i) = refMagWt0(i)
-              enddo
-              iThickDip = iThickDip + 1
-            enddo
-          enddo
+c          Copy these ref magnitudes for each addtional dip (no correlation allowed)
+           do iDip=1,n_Dip
+             nRefMag(iThickDip) = nRefMag0
+             do i=1,nRefMag0
+               refMag1(iThickDip,i) = refMag0(i)
+               refMagWt1(iThickDip,i) = refMagWt0(i)
+             enddo
+             iThickDip = iThickDip + 1
+           enddo
+         enddo
 
 c        Read min mag, step sizes, and rupture variability info
          read (10,*,err=3050) minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
      1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
 
-        if (runflag .eq. 3) then
-              write (*,*) 'Fault parameters = ', minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
-     1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
-              write (17,*) 'Fault parameters = ', minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
-     1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
-        endif
-
-C     Allow hxstep and hystep to be different for sourceType 2
+C       Allow hxstep and hystep to be different for sourceType 2
         if (sourceType(iFlt).ne.2) then
-C     Check that Hxstep = Hystep
+C         Check that Hxstep = Hystep
           if (hxstep(iFlt) .ne. hystep(iFlt) ) then
-             write (*,*) 'Hxstep not equal to Hystep for fault: '
-             write (*,*) fname1
-             write (*,*) 'Hxstep = ', hxstep(iFlt) 
-             write (*,*) 'Hystep = ', hystep(iFlt) 
-             write (*,*) 'These values must be equal or errors can occur!'
-             write (*,*) 'Check input fault file.'
-             stop 99
+            write (*,*) 'Hxstep not equal to Hystep for fault: '
+            write (*,*) fname1
+            write (*,*) 'Hxstep = ', hxstep(iFlt) 
+            write (*,*) 'Hystep = ', hystep(iFlt) 
+            write (*,*) 'These values must be equal or errors can occur!'
+            write (*,*) 'Check input fault file.'
+            stop 99
           endif
         endif
 
          read (10,*,err=3051) (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
          read (10,*,err=3052) (coef_width(k,iFlt),k=1,2), sigWidth(iFlt)
 
-        if (runflag .eq. 3) then
-              write (*,*) 'Area and Width Model = ', (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
-              write (17,*) 'Area and Width Model = ', (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
-        endif
-
 c        Read ftype Models
          read (10,*,err=3053) nFtypeModels
-
-        if (runflag .eq. 3) then
-              write (*,*) 'nFtypeModels = ', nFtypeModels
-              write (17,*) 'nFtypeModels = ', nFtypeModels
-        endif
-
          do iFM=1,nFtypeModels
-            read (10,*,err=3054) ftmodelwt(iFM)
-            read (10,*,err=3055) nFtype1(iFM)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'ftmodelwt, nFtype1 = ', ftmodelwt(iFM),nFtype1(iFM)
-              write (17,*) 'ftmodelwt, nFtype1 = ', ftmodelwt(iFM),nFtype1(iFM)
-        endif
-
-            read (10,*,err=3056) (ftype1(iFM,k),k=1,nFtype1(iFM))
-            read (10,*,err=3057) (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-
-        if (runflag .eq. 3) then
-              write (*,*) 'ftype1, ftype_wt = ', (ftype1(iFM,k),k=1,nFtype1(iFM)),
-     1             (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-              write (17,*) 'ftype1, ftype_wt = ', (ftype1(iFM,k),k=1,nFtype1(iFM)),
-     1             (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-        endif
-
-            call CheckWt1a (Ftype_Wt1, nFtype1(iFM), iFM, 
-     1                  MAX_N1, fName(iFlt), 'Fault Mech          ' )
+           read (10,*,err=3054) ftmodelwt(iFM)
+           read (10,*,err=3055) nFtype1(iFM)
+           read (10,*,err=3056) (ftype1(iFM,k),k=1,nFtype1(iFM))
+           read (10,*,err=3057) (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
+           call CheckWt1a (Ftype_Wt1, nFtype1(iFM), iFM, 
+     1          MAX_N1, fName(iFlt), 'Fault Mech          ' )
          enddo
 
 c        Load up Ftype Models and weights.
          nFM = 1
          do iFM=1,nFtypeModels
-            do k=1,nFtype1(iFM)
-               ftype(iFlt,nFM) = ftype1(iFM,k)
-               ftype_wt(iFlt,nFM) = ftype_wt1(iFM,k)*ftmodelwt(iFM)
-               nFm = nFm + 1
-            enddo
+           do k=1,nFtype1(iFM)
+             ftype(iFlt,nFM) = ftype1(iFM,k)
+             ftype_wt(iFlt,nFM) = ftype_wt1(iFM,k)*ftmodelwt(iFM)
+             nFm = nFm + 1
+           enddo
          enddo
          nFm = nFm - 1
          nFtype(iFlt) = nFm
@@ -702,9 +568,7 @@ c        Load up parameter variations into large single dimension arrays
               do i_bValue=1,nb1
                do iRefMag=1,nRefMag(iWidth)
                  i = i + 1
-                 if (runflag .ne. 3) then
-                    call CheckDim ( i, MAXPARAM, 'MAXPARAM  ' )
-                 endif
+                 call CheckDim ( i, MAXPARAM, 'MAXPARAM  ' )
                  magRecur(iFlt,i,iWidth) = magRecur1(iRecur)
                  magRecurWt(iFlt,i,iWidth) = magRecurWt1(iRecur)
 
@@ -770,7 +634,6 @@ c  temp fix - the maxmag, refmag problem for waacy
 c      Test for the maximum magnitude value for all realizations of this fault.
                  if (maxMag(iFlt,i,iWidth) .ge. mtest) then
                    mtest = maxMag(iFlt,i,iWidth)
-c                   write (*,'( 2x,''max mag'',3i5,f10.4 )') iFlt, i, iWidth, mtest
                  endif
 
                  mmagout(iFlt,iWidth,iRefMag) = refMag1(iWidth,iRefMag)
@@ -986,7 +849,7 @@ c ----------------------------
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxMag2, segwt1, 
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel0, segModelWt1, runflag, syn_dip, 
+     5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
 
@@ -1009,7 +872,7 @@ c ----------------------------
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
       integer iflt, nSegModel, nMagRecur, nFtypeModels, 
      1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100), 
-     2        nSegModel0(1), runflag, ncountS7(MAX_FLT)
+     2        nSegModel0(1), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
@@ -1043,7 +906,7 @@ c ----------------------------
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1), 
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top, 
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)     
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)    
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM), 
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
@@ -1061,15 +924,6 @@ c     Input Fault Parameters
       read (10,*,err=3001) iCoor
       read (10,*,err=3002) NFLT
 
-      if (runflag .eq. 3) then
-         write (*,*) 'iCoor = ', iCoor
-         write (17,*) 'iCoor = ', iCoor
-         write (*,*) 'NFLT = ' , nFLT
-         write (17,*) 'NFLT = ' , nFLT
-         write (*,*) 
-         write (17,*) 
-      endif
-
       iflt = 0
       ifsystem = 1
       
@@ -1077,34 +931,12 @@ c     Input Fault Parameters
        read (10,'( a80)',err=3003) fName1
        read (10,*,err=3004) probAct0
 
-      if (runflag .eq. 3) then
-         write (*,*) 'fName = ', fname1
-         write (17,*)
-         write (17,*) '*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*'
-         write (17,'(a13,i6,a4,i6)') 'Fault Number ', iFlt0, ' of ', NFLT
-         write (17,*) 'fName1 = ', fName1
-         write (*,*) 'ProbAct0 = ', ProbAct0
-         write (17,*) 'ProbAct0 = ', ProbAct0
-      endif
-
 c      Read number of segmentation models for this fault system
        read (10,*,err=3005) nSegModel
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
-      if (runflag .eq. 3) then
-         write (*,*) 'nSegModel = ', nSegModel
-         write (17,*) 'nSegModel = ', nSegModel
-         do k=1,nSegModel
-            write (17,*) 'SetWt = ', k,segWt(iFlt0,k)
-         enddo
-      endif
-
 c      Read total number of fault segments
        read (10,*,err=3007) nFlt2
-      if (runflag .eq. 3) then
-         write (*,*) 'nFlt2 = ', nFlt2
-         write (17,*) 'nFlt2 = ', nFlt2
-      endif
       
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -1112,9 +944,7 @@ c      Read total number of fault segments
 
        do iflt2=1,nflt2
         iFlt = iFlt + 1
-        if (runflag .ne. 3) then
-           call CheckDim ( iflt, MAX_FLT, 'MAX_FLT   ' )
-        endif
+        call CheckDim ( iflt, MAX_FLT, 'MAX_FLT   ' )
 
 c       Set fault indexes
         fIndex(1,iflt) = iflt0
@@ -1217,30 +1047,16 @@ c        Check for custom fault source
 c        Check for Sourcetype 7 (UCERF)
          if ( sourceType(iFlt) .eq. 7 ) then
             read (10,*)  top, HWsource7
-
-            if (runflag .eq. 3) then
-               write (*,*) 'Top, HW = ', top, HWsource7
-               write (17,*) 'Dip1, top = ', top, HWsource7
-            endif
-
             call RdSource7 (iFlt, mags7, rates7, dists7, dips7, mechs7, ncountS7 )
             write (*,*) 'NcountS7 =', ncountS7(iFlt)
-
-            if (runflag .eq. 3) then
-               write (*,*) 'NcountS7 =', ncountS7(iFlt)
-               write (17,*) 'NcountS7 =', ncountS7(iFlt)
-            endif
          endif
-
 
 c        Read dip Variation
          if ( sourceType(iFlt) .lt. 5 ) then
            read (10,*,err=3019) n_Dip
-
            call CheckDim ( n_Dip, MAX_N1, 'MAX_N1    ' )
            read (10,*,err=3020) (deltaDip1(i),i=1,n_Dip)
            read (10,*,err=3021) (dipWt1(i),i=1,n_Dip)
-
            call CheckWt ( dipWt1, n_Dip, fName(iFlt), 'Dip                 ' )
          else
            n_Dip = 1
@@ -1256,13 +1072,6 @@ c        Read b-values (not for activity rate cases)
            read (10,*,err=3023) (bValue1(i),i=1,n_bValue)
            read (10,*,err=3024) (bValueWt1(i),i=1,n_bValue)
          endif
-
-        if (runflag .eq. 3) then
-           do i=1,n_bValue
-              write (*,*) 'bValue, bValueWt = ', i, bValue1(i), bValueWt1(i)
-              write (17,*) 'bValue, bValueWt = ', i, bValue1(i), bValueWt1(i)
-           enddo
-        endif
 
 c        Read activity rate - b-value pairs
          read (10,*,err=3025) nActRate 
@@ -1283,7 +1092,6 @@ C     Scale activity rate for gridded source (i.e., sourcetype 3 or 4) based on 
 
 c        Read weights for rate methods
          read (10,*,err=3027) wt_srBranch, wt_ActRateBranch, wt_recIntBranch, wt_MoRateBranch
-
          sum = wt_srBranch + wt_ActRateBranch + wt_recIntBranch + wt_MoRateBranch
          if ( sum .lt. 0.999 .or. sum .gt. 1.001 ) then
               write (*,'( 2x,''rate method weights do not sum to unity for fault, '',a30)') fName(iFlt)
@@ -1295,28 +1103,23 @@ c        Read slip-rates
          if ( nSR .gt. 0 ) then
            read (10,*,err=3029) (sr(k),k=1,nSR)
            read (10,*,err=3030) (wt_sr(k),k=1,nSR)
-
            call CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
          endif
 
 c        Read recurrence intervals
          read (10,*,err=3031) nRecInt
-
          if ( nRecInt .gt. 0 ) then
            read (10,*,err=3032) (rec_Int(k),k=1,nRecInt)
            read (10,*,err=3033) (wt_recInt(k),k=1,nRecInt)
-
            call CheckWt (wt_recInt, nRecInt, fName(iFlt), 'Recurrence Intervals')
          endif
 
 c        Read moment-rates
          read (10,*,err=3034) nMoRate
-
-          if ( nMoRate .gt. 0 ) then
+         if ( nMoRate .gt. 0 ) then
            read (10,*,err=3035) (MoRate(k),k=1,nMoRate)
            read (10,*,err=3036) (MoRateDepth(k),k=1,nMoRate)
            read (10,*,err=3037) (wt_MoRate(k),k=1,nMoRate)
-
            call CheckWt (wt_MoRate, nMoRate, fName(iFlt), 'Moment Rates        ')
          endif
 
@@ -1360,18 +1163,9 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
 
 c        Read Mag recurrence weights (char, exp, etc.)
          read (10,*,err=3038) nMagRecur
-
          call CheckDim ( nMagRecur, MAX_N1, 'MAX_N1    ' )
          read (10,*,err=3039) (magRecur1(i),i=1,nMagRecur)
          read (10,*,err=3040) (magRecurWt1(i),i=1,nMagRecur)
-
-        if (runflag .eq. 3) then
-           do k=1,nMagRecur
-              write (*,*) 'MagRecur1, wt = ',  magRecur1(k),magRecurWt1(k)
-              write (17,*) 'MagRecur1, wt = ', magRecur1(k),magRecurWt1(k)
-           enddo
-        endif
-
          call CheckWt ( magRecurWt1,nMagRecur, fName(iFlt), 'Mag Recur           ' )
 
 c        Read in corresponding magnitude parameters. 
@@ -1383,45 +1177,23 @@ c          Read in necessary parameters for bi-exponential distribution.
            elseif (magRecur1(iRecur) .eq. 5) then
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur)
              rp6(iRecur) = 0.0
-            elseif (magRecur1(iRecur) .eq. 10) then
-             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), 
-     1           rp5(iRecur), rp6(iRecur)
-          else              
+           elseif (magRecur1(iRecur) .eq. 10) then
+             read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), rp5(iRecur),
+     1       rp6(iRecur)
+           else              
              read (10,*,err=3041) rP1(iRecur), rP2(iRecur), rP3(iRecur)
              rp4(iRecur) = 0.0
              rp5(iRecur) = 0.0
              rp6(iRecur) = 0.0
            endif
-
-        if (runflag .eq. 3) then
-           write (*,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur),
-     1         rp5(iRecur), rp6(iRecur)
-           write (17,*) 'rP Array = ', rP1(iRecur), rP2(iRecur), rP3(iRecur), rp4(iRecur), 
-     1         rp5(iRecur), rp6(iRecur)
-        endif
-
          enddo
 
 c        Read seismogenic thickness
          if ( sourceType(iFlt) .lt. 5) then
            read (10,*,err=3042) nThick1
-
-        if (runflag .eq. 3) then
-           write (*,*) 'nThick1 = ', nThick1
-           write (17,*) 'nThick1 = ', nThick1
-        endif
-
            call CheckDim ( nThick1, MAX_WIDTH, 'MAX_WIDTH ' )
            read (10,*,err=3043) (faultThick1(i),i=1,nThick1)
-           read (10,*,err=3044) (faultThickWt1(i),i=1,nThick1)
-
-        if (runflag .eq. 3) then
-           do i=1,nThick1
-              write (*,*) 'FaultThick1, wt = ', faultThick1(i), faultThickWt1(i)
-              write (17,*) 'FaultThick1, wt = ', faultThick1(i), faultThickWt1(i)
-           enddo
-        endif
-           
+           read (10,*,err=3044) (faultThickWt1(i),i=1,nThick1)         
            call CheckWt (faultThickWt1, nThick1, fName(iFlt), 'Seismo Thick        ')
          else
            nThick1 = 1
@@ -1431,12 +1203,7 @@ c        Read seismogenic thickness
          
 c        Read depth pdf
          read (10,*,err=3045) iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)     
-  
-        if (runflag .eq. 3) then
-              write (*,*) 'Depth Model = ', iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)    
-              write (17,*) 'Depth Model = ', iDepthModel(iFlt), (depthParam(iflt,k),k=1,3)    
-        endif
-        
+
 c        Read Mag method (scaling relations or set values)
          read (10,*,err=3046) iOverRideMag
          if ( iOverRideMag .ne. 1 ) then
@@ -1444,107 +1211,68 @@ c        Read Mag method (scaling relations or set values)
            stop 99
          endif
 
-c         Read reference mags for each fault thickness
-          iThickDip = 1
-          do iThick1=1,nThick1
-            read (10,*,err=3047) nRefMag0
-            read (10,*,err=3048) (refMag0(i),i=1,nRefMag0)
-            read (10,*,err=3049) (refMagWt0(i),i=1,nRefMag0)
+c        Read reference mags for each fault thickness
+         iThickDip = 1
+         do iThick1=1,nThick1
+           read (10,*,err=3047) nRefMag0
+           read (10,*,err=3048) (refMag0(i),i=1,nRefMag0)
+           read (10,*,err=3049) (refMagWt0(i),i=1,nRefMag0)
 
-            if (runflag .eq. 3) then
-              do i=1,nRefMag0
-                 write (*,*) 'Max Mags = ', refMag0(i), refMagWt0(i)  
-                 write (17,*) 'Max Mags = ', refMag0(i), refMagWt0(i)    
-              enddo
-            endif
-
-            if ( nRefMag0 .ne. 0 ) then
-              call CheckWt ( refMagWt0, nrefMag0, fName(iFlt), 'Ref Mag                 ' )
-            endif
+           if ( nRefMag0 .ne. 0 ) then
+             call CheckWt ( refMagWt0, nrefMag0, fName(iFlt), 'Ref Mag                 ' )
+           endif
               
-c           Copy these ref magnitudes for each addtional dip (no correlation allowed)
-            do iDip=1,n_Dip
-              nRefMag(iThickDip) = nRefMag0
-              do i=1,nRefMag0
-                refMag1(iThickDip,i) = refMag0(i)
-                refMagWt1(iThickDip,i) = refMagWt0(i)
-              enddo
-              iThickDip = iThickDip + 1
-            enddo
-          enddo
+c          Copy these ref magnitudes for each addtional dip (no correlation allowed)
+           do iDip=1,n_Dip
+             nRefMag(iThickDip) = nRefMag0
+             do i=1,nRefMag0
+               refMag1(iThickDip,i) = refMag0(i)
+               refMagWt1(iThickDip,i) = refMagWt0(i)
+             enddo
+             iThickDip = iThickDip + 1
+           enddo
+         enddo
 
 c        Read min mag, step sizes, and rupture variability info
          read (10,*,err=3050) minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
      1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
 
-        if (runflag .eq. 3) then
-              write (*,*) 'Fault parameters = ', minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
-     1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
-              write (17,*) 'Fault parameters = ', minMag(iFlt), magStep(iFlt), hxStep(iFlt), 
-     1              hyStep(iFlt), nRupArea(iFlt), nRupWidth(iFlt), minDepth(iFlt)
-        endif
-
-C     Allow hxstep and hystep to be different for sourceType 2
+C       Allow hxstep and hystep to be different for sourceType 2
         if (sourceType(iFlt).ne.2) then
-C     Check that Hxstep = Hystep
+C         Check that Hxstep = Hystep
           if (hxstep(iFlt) .ne. hystep(iFlt) ) then
-             write (*,*) 'Hxstep not equal to Hystep for fault: '
-             write (*,*) fname1
-             write (*,*) 'Hxstep = ', hxstep(iFlt) 
-             write (*,*) 'Hystep = ', hystep(iFlt) 
-             write (*,*) 'These values must be equal or errors can occur!'
-             write (*,*) 'Check input fault file.'
-             stop 99
+            write (*,*) 'Hxstep not equal to Hystep for fault: '
+            write (*,*) fname1
+            write (*,*) 'Hxstep = ', hxstep(iFlt) 
+            write (*,*) 'Hystep = ', hystep(iFlt) 
+            write (*,*) 'These values must be equal or errors can occur!'
+            write (*,*) 'Check input fault file.'
+            stop 99
           endif
         endif
 
          read (10,*,err=3051) (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
          read (10,*,err=3052) (coef_width(k,iFlt),k=1,2), sigWidth(iFlt)
 
-        if (runflag .eq. 3) then
-              write (*,*) 'Area and Width Model = ', (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
-              write (17,*) 'Area and Width Model = ', (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
-        endif
-
 c        Read ftype Models
          read (10,*,err=3053) nFtypeModels
-
-        if (runflag .eq. 3) then
-              write (*,*) 'nFtypeModels = ', nFtypeModels
-              write (17,*) 'nFtypeModels = ', nFtypeModels
-        endif
-
          do iFM=1,nFtypeModels
-            read (10,*,err=3054) ftmodelwt(iFM)
-            read (10,*,err=3055) nFtype1(iFM)
-
-        if (runflag .eq. 3) then
-              write (*,*) 'ftmodelwt, nFtype1 = ', ftmodelwt(iFM),nFtype1(iFM)
-              write (17,*) 'ftmodelwt, nFtype1 = ', ftmodelwt(iFM),nFtype1(iFM)
-        endif
-
-            read (10,*,err=3056) (ftype1(iFM,k),k=1,nFtype1(iFM))
-            read (10,*,err=3057) (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-
-        if (runflag .eq. 3) then
-              write (*,*) 'ftype1, ftype_wt = ', (ftype1(iFM,k),k=1,nFtype1(iFM)),
-     1             (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-              write (17,*) 'ftype1, ftype_wt = ', (ftype1(iFM,k),k=1,nFtype1(iFM)),
-     1             (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
-        endif
-
-            call CheckWt1a (Ftype_Wt1, nFtype1(iFM), iFM, 
-     1                  MAX_N1, fName(iFlt), 'Fault Mech          ' )
+           read (10,*,err=3054) ftmodelwt(iFM)
+           read (10,*,err=3055) nFtype1(iFM)
+           read (10,*,err=3056) (ftype1(iFM,k),k=1,nFtype1(iFM))
+           read (10,*,err=3057) (ftype_wt1(iFM,k), k=1,nFtype1(iFM))
+           call CheckWt1a (Ftype_Wt1, nFtype1(iFM), iFM, 
+     1          MAX_N1, fName(iFlt), 'Fault Mech          ' )
          enddo
 
 c        Load up Ftype Models and weights.
          nFM = 1
          do iFM=1,nFtypeModels
-            do k=1,nFtype1(iFM)
-               ftype(iFlt,nFM) = ftype1(iFM,k)
-               ftype_wt(iFlt,nFM) = ftype_wt1(iFM,k)*ftmodelwt(iFM)
-               nFm = nFm + 1
-            enddo
+           do k=1,nFtype1(iFM)
+             ftype(iFlt,nFM) = ftype1(iFM,k)
+             ftype_wt(iFlt,nFM) = ftype_wt1(iFM,k)*ftmodelwt(iFM)
+             nFm = nFm + 1
+           enddo
          enddo
          nFm = nFm - 1
          nFtype(iFlt) = nFm
@@ -1577,9 +1305,7 @@ c        Load up parameter variations into large single dimension arrays
               do i_bValue=1,nb1
                do iRefMag=1,nRefMag(iWidth)
                  i = i + 1
-                 if (runflag .ne. 3) then
-                    call CheckDim ( i, MAXPARAM, 'MAXPARAM  ' )
-                 endif
+                 call CheckDim ( i, MAXPARAM, 'MAXPARAM  ' )
                  magRecur(iFlt,i,iWidth) = magRecur1(iRecur)
                  magRecurWt(iFlt,i,iWidth) = magRecurWt1(iRecur)
 
@@ -1620,7 +1346,7 @@ c                Set max mag
                    endif
                  endif
                  if ( maxMag(iFlt,i,iWidth) .gt. testMaxMag ) then
-                   nMag(iFlt) = nint((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
+                   nMag(iFlt) = ceiling((maxMag(iFlt,i,iWidth) - minMag(iFLt) ) / magStep(iFlt))
                    if (sourceType(iFlt) .eq. 7) then
                      nMag(iFlt) = ncountS7(iFlt)
                    endif
@@ -1645,7 +1371,6 @@ c  temp fix - the maxmag, refmag problem for waacy
 c      Test for the maximum magnitude value for all realizations of this fault.
                  if (maxMag(iFlt,i,iWidth) .ge. mtest) then
                    mtest = maxMag(iFlt,i,iWidth)
-c                   write (*,'( 2x,''max mag'',3i5,f10.4 )') iFlt, i, iWidth, mtest
                  endif
 
                  mmagout(iFlt,iWidth,iRefMag) = refMag1(iWidth,iRefMag)
@@ -1808,10 +1533,10 @@ c     End loop over iFlt
       stop 99
  3045 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      stop 99 
  3046 write (*,'( 2x,''Flt file error: iOverRideMag'', 2i5)') iFlt0, iFlt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99    
+      stop 99       
  3047 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
@@ -1847,4 +1572,3 @@ c     End loop over iFlt
       stop 99
 
       end
-

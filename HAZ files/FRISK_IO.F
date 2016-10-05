@@ -3,28 +3,20 @@
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
-     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
      6               coefcountrrup, coefcountRjb, iMixture, version )
 
       implicit none
       include 'pfrisk.h'
 
-      integer attenType(MAX_FLT), nInten(MAX_PROB), runFlag, bnumflag,
-     1        nMagBins, nDistBins, nEpsBins, nXcostBins, nProb, nwr,
-     2        psCorFlag, dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN),
-     3        sCalc(MAX_PROB,4,MAX_ATTEN), nDD(MAX_FLT), nfp(MAX_FLT),
-     4        nAttenType, nAtten(MAX_PROB,4), soilAmpFlag, iCoor
-      integer ichart, charcount, coefcountrrup, coefcountrjb,
-     1        iMixture(MAX_PROB,4,MAX_ATTEN), nFlt, i, j, j1, k, jj,
-     2        nSegModel(1), nFtype(MAX_FLT), segModelFlag(MAX_FLT,100),
-     3        nMag(MAX_FLT), sourceType(MAX_FLT), nRupArea(MAX_FLT),
-     4        nRupWidth(MAX_FLT), nParamVar(MAX_FLT,MAX_WIDTH)  
-      integer fIndex(3,MAX_FLT), nWidth(MAX_FLT), grid_n(MAX_FLT),
-     1        fsys(MAX_FLT), fltDirect(MAX_FLT), synchron(MAX_FLT),
-     2        nsyn_Case(MAX_FLT), synatten(MAX_FLT), nMaxMag2(MAX_FLT),
-     3        iDepthModel(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
-     4        faultFlag(MAX_FLT,100,MAX_FLT), ncountS7(MAX_FLT)         
+      integer nInten(MAX_PROB), runFlag, bnumflag, nMagBins, nDistBins, 
+     1        nEpsBins, nXcostBins, nProb, nwr, psCorFlag, ichart, 
+     2        dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), i, j, 
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), nAttenType, j1, k, jj,
+     4        nAtten(MAX_PROB,4), soilAmpFlag, charcount
+      integer coefcountrrup, coefcountrjb,
+     1        iMixture(MAX_PROB,4,MAX_ATTEN)
       real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
      1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
      2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
@@ -32,37 +24,8 @@
      4     magBins(MAX_MAG), specT(MAX_PROB), gm1, gm2
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
      1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
-     2     cfcoefrjb(MAX_Atten,11), syn_dip(MAX_FLT,MAX_SYN),
-     3     syn_zTOR(MAX_FLT,MAX_SYN), syn_RupWidth(MAX_FLT,MAX_SYN), 
-     4     syn_RX(MAX_FLT,MAX_SYN), syn_Ry0(MAX_FLT,MAX_SYN)
-      real checkattenwt, segModelWt1(MAX_FLT,100), ftype_wt(MAX_FLT,MAX_N1),    
-     1     minMag(MAX_FLT), magStep(MAX_FLT), xStep(MAX_FLT), yStep(MAX_FLT),
-     2     segModelWt(MAX_FLT), rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH)
-      real rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), 
-     1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
-     2     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), faultWidth(MAX_FLT,MAX_WIDTH),
-     3     faultWidthWt(MAX_FLT,MAX_WIDTH), maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH),
-     4     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), fLong(MAX_FLT,MAX_DD,MAX_SEG)
-      real fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
-     1     dip(MAX_FLT,MAX_WIDTH, MAX_SEG), ftype(MAX_FLT,MAX_N1),
-     2     coeff_area(2,MAX_FLT), sigArea(MAX_FLT), coeff_width(2,MAX_FLT),
-     3     sigWidth(MAX_FLT), minDepth(MAX_FLT), probAct(MAX_FLT),
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), al_segWt(MAX_FLT) 
-      real sampleStep(MAX_FLT), grid_a(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT),
-     1     grid_dlat(MAX_FLT), grid_long(MAX_FLT,MAX_GRID),
-     2     grid_lat(MAX_FLT,MAX_GRID), grid_top(MAX_FLT,MAX_GRID),
-     3     scaleRate(MAX_FLT), mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM),
-     4     mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), synmag(MAX_FLT,MAX_SYN)  
-      real syndistRup(MAX_FLT,MAX_SYN), syndistJB(MAX_FLT,MAX_SYN),
-     1     syndistSeismo(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN),
-     2     synftype(MAX_FLT,MAX_SYN), synwt(MAX_FLT,MAX_SYN),
-     3     RateType(MAX_FLT,MAXPARAM,MAX_WIDTH), depthParam(MAX_FLT,5),
-     4     segWt1(MAX_FLT), magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7)
-      real distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7), 
-     1     mechS7(MAX_FLT,MAX_S7), version
-     
-      character*80 filein, title, file1, filelog, filehyp, 
-     1             fName(MAX_FLT)
+     2     cfcoefrjb(MAX_Atten,11), checkattenwt, version
+      character*80 filein, title, file1, filelog 
 
 c     Set Data file units
       nwr = 11
@@ -71,8 +34,6 @@ C     Run Ground Motion Case or PSHA case.
  123  write (*,*) 'Enter 0 to run hazard'
       write (*,*) 'Enter 1 to run attenuation models'
       write (*,*) 'Enter 2 to run spectra models'
-      write (*,*) 'Enter 3 for Fault File testing'
-      write (*,*) 'Enter 4 for Distance calculation testing'
 
       if (bnumflag .eq. 0) then
          read (*,*) runFlag
@@ -84,23 +45,24 @@ c     Open Input and Output Files
       if (runFlag .eq. 0) then
          write (*,*) 'Enter the input file name for PSHA runs.'
          if (bnumflag .eq. 0 ) then
-            read (*,'( A80)') file1
+           read (*,'( A80)') file1
          else 
-            read (77, '(a80)') file1
+           read (77, '(a80)') file1
          endif
 
          open (13,file=file1,status='old',err=2100)
-c     Create log filename for PHSA run.
+         
+c        Create log filename for PHSA run.
          charcount = 80
          do ichart=80,1,-1
-            if (file1(ichart:ichart) .ne. ' ') then
-                charcount = ichart
-                goto 111
-            endif
+           if (file1(ichart:ichart) .ne. ' ') then
+             charcount = ichart
+             goto 111
+           endif
          enddo
  111     continue
          do ichart=1,charcount,1
-            filelog(ichart:ichart) = file1(ichart:ichart)
+           filelog(ichart:ichart) = file1(ichart:ichart)
          enddo
          filelog(charcount+1:charcount+1) = '.'
          filelog(charcount+2:charcount+2) = 'l'
@@ -119,60 +81,6 @@ c     Create log filename for PHSA run.
          open (13,file=file1,status='old')
          call determ (runFlag)
          stop
-      elseif (runFlag .eq. 3) then
-         write (*,*) 'Enter the input fault file name for Fault File testing.'
-         read (*,'( A80)') file1
-         open (10,file=file1,status='old')
-         write (*,*) 'Enter the version number for the format of the fault file'
-
-         write (*,*) 'Enter the ouput file name for Fault File testing.'
-         read (*,'( A80)') filelog
-         open (17,file=filelog,status='new')        
-         write (17,*) 'Fault File Testing for fault file: ', file1
-         write (17,*) 
-
-c        read fault File
-         call Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
-     1     yStep, segModelWt, rateParam, rateParamWt, beta,
-     2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag,  
-     3     maxMagWt, fLong, fLat, fZ, dip, nfp, nMag, ftype, 
-     4     sourceType, nRupArea, coeff_area, sigArea, nRupWidth, 
-     5     coeff_width, sigWidth, nParamVar, iCoor, minDepth,
-     6     fIndex, probAct, nWidth, mpdf_param, al_segWt, attenType, 
-     7     sampleStep, grid_a, grid_dlong, grid_dlat, grid_n, 
-     8     grid_long, grid_lat, grid_top, minlat, maxlat, minlong, 
-     9     maxlong, scaleRate, fsys, mMagout, mMagoutWt, fltDirect, 
-     1     synchron, nsyn_Case, synatten,synmag, syndistRup, 
-     2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
-     3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
-     4     faultFlag, nDD, nFtype, ftype_wt, 
-     5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
-     6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7, version )  
-
-           write (*,*)
-           write (*,*) 'Normal termination of fault file for testing.'
-           write (17,*)
-           write (17,*) '*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*'
-           write (17,*)
-           write (17,*) 'Normal termination of fault file for testing.'
-
-           close (10)
-           close (17)
-
-         stop
-      elseif (runFlag .eq. 4) then
-         write (*,*) 'Enter the input file name for distance checking.'
-         read (*,'( A80)') file1
-         open (13,file=file1,status='old')
-         write (*,*) 'Enter the output file name for distance checking.'
-         read (*,'( A80)') filelog
-         open (19,file=filelog,status='new')
-         write (*,*) 'Enter the hypocenter location file name for distance checking.'
-         read (*,'( A80)') filehyp
-         open (29,file=filehyp,status='old')
-c         call determ (runFlag)
-c         stop
       else
          write (*,*) 'Invalid entry!!!'
          write (*,*) 'Try again.'
@@ -183,15 +91,6 @@ c     Read fault file name and version format
       read (13,'( a80)') filein
       open (10,file=filein,status='old',err=2101)
       read (13,*,err=2020) version
-
-      if (runflag .eq. 4) then
-         write (19,*) 'Distance Checking Results:'
-         write (19,'(a28,a80)') 'Input Run filename       :  ', file1
-         write (19,'(a28,a80)') 'Output distance filename :  ', filelog
-         write (19,'(a28,a80)') 'Fault File filename      :  ', filein
-         write (19,'(a28,a80)') 'Hypocenter File filename :  ', filehyp
-         write (19,*) 
-      endif
 
 c     Read min max long and lat for grid sources
       read (13,*,err=2001) minlat, maxlat, minlong, maxlong
@@ -215,10 +114,11 @@ c     Input options
 c     Enter GM models for each problem
       do i=1,nProb
         read (13,*,err=2004) specT(i), sigTrunc(i), dirflag(i)
+        call CheckDir (dirflag(i))
         read (13,*,err=2005) nInten(i), (testInten(i,j),j=1,nInten(i))
         call CheckDim ( nInten(i), MAX_INTEN, 'MAX_INTEN ' )
         do j1=1,nInten(i)
-           lgTestInten(i,j1) = alog(testInten(i,j1))
+          lgTestInten(i,j1) = alog(testInten(i,j1))
         enddo
 
         write (18,'(a19,2x,f8.4)') 'Spectral Period  = ', specT(i)
@@ -226,12 +126,12 @@ c     Enter GM models for each problem
         write (18,'(a19,2x,i8)')   'Directivity Flag = ', dirflag(i)
         write (18,'(a21)')         'Ground Motion Values:'
         do j1=1,nInten(i)
-           write (18,'(f12.4)') testInten(i,j1)
+          write (18,'(f12.4)') testInten(i,j1)
         enddo
         do j=1,nAttenType
-           write (18,*) 
-           write (18,'(a19,2x,i4)') 'Attenuation Type = ', j
-           write (18,*) ' Jcalc    Const1    Const2    Weight    SigVaradd    iMix    j_sigma    fix_sigma'
+          write (18,*) 
+          write (18,'(a19,2x,i4)') 'Attenuation Type = ', j
+          write (18,*) ' Jcalc    Const1    Const2    Weight    SigVaradd    iMix    j_sigma    fix_sigma'
 
           checkattenwt = 0.0
           read (13,*,err=2006) nAtten(i,j)
@@ -239,17 +139,17 @@ c     Enter GM models for each problem
           do k=1,nAtten(i,j)
             read (13,*,err=2007) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(i,j,k)  
 
-C     Check for either fixed sigma or different sigma model (i.e., jCalc<0)
+C           Check for either fixed sigma or different sigma model (i.e., jCalc<0)
             if (jcalc(i,j,k) .lt. 0) then
-               backspace (13)
-               read (13,*,err=2006) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+              backspace (13)
+              read (13,*,err=2006) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
      1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
-               write (18,'(i6,3x,f8.4,2x,f8.4,1x,f9.5,f11.4,2x,i6,4x,i6,6x,f8.4)')
+              write (18,'(i6,3x,f8.4,2x,f8.4,1x,f9.5,f11.4,2x,i6,4x,i6,6x,f8.4)')
      1              jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
-     1             sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
+     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
             else
-            write (18,'(i6,3x,f8.4,2x,f8.4,2x,f9.5,f11.4,2x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
-     1           sigvaradd(i,j,k), iMixture(i,j,k)
+              write (18,'(i6,3x,f8.4,2x,f8.4,2x,f9.5,f11.4,2x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(i,j,k)
             endif
 
 C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) selected and if so read in coefficients.
@@ -315,12 +215,12 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2005 write (*,'( 2x,''input file error: Nz & Zvalues line, iProb='', i5)') i 
       stop 99
- 2006 write (*,'( 2x,''input file error: Natten line for iProb and jATtenType='',2i5)') i, j 
+ 2006 write (*,'( 2x,''input file error: Natten line for iProb and jAttenType='',2i5)') i, j 
       stop 99
- 2007 write (*,'( 2x,''input file error: jclac line for iProb, jATtenType, and iAtten='')') 
+ 2007 write (*,'( 2x,''input file error: jcalc line for iProb, jAttenType, and iAtten='')') 
       write (*,'( 3i5)') i,j,k
       stop 99
- 2008 write (*,'( 2x,''input file error: common for coeff for iProb, jATtenType, and iAtten='',3i5)') i,j,k 
+ 2008 write (*,'( 2x,''input file error: common form coeff for iProb, jAttenType, and iAtten='',3i5)') i,j,k 
       stop 99
  2009 write (*,'( 2x,''input file error: pscorflag'')') 
       stop 99
