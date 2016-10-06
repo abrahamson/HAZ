@@ -457,7 +457,7 @@ C                 Call to the rupture directivity Subroutine if applicable
      3                 fltgrid_y, fltgrid_z, n1, n2, fs, fd, dpp_flag, 
      4                 iLocX, iLocY)
      
-                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
+c                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed

@@ -7,8 +7,8 @@
 
         if (dirflag .eq. 0) then
           goto 100
-        elseif (dirflag .eq. 20) then
-          goto 100
+c        elseif (dirflag .eq. 20) then
+c          goto 100
         elseif (dirflag .eq. 30) then
           goto 100
         elseif (dirflag .eq. 105) then
