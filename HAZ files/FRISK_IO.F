@@ -1,5 +1,5 @@
 
-      subroutine RdInput ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+      subroutine RdInput ( runFlag, nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
@@ -12,8 +12,8 @@
 
       integer nInten(MAX_PROB), runFlag, bnumflag, nMagBins, nDistBins, 
      1        nEpsBins, nXcostBins, nProb, nwr, psCorFlag, ichart, 
-     2        dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), i, j, 
-     3        sCalc(MAX_PROB,4,MAX_ATTEN), nAttenType, j1, k, jj,
+     2        dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), 
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), nAttenType, 
      4        nAtten(MAX_PROB,4), soilAmpFlag, charcount
       integer coefcountrrup, coefcountrjb,
      1        iMixture(MAX_PROB,4,MAX_ATTEN)
@@ -21,11 +21,11 @@
      1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
      2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
      3     sigTrunc(MAX_PROB), sigfix(MAX_PROB,4,MAX_ATTEN),
-     4     magBins(MAX_MAG), specT(MAX_PROB), gm1, gm2
+     4     magBins(MAX_MAG), specT(MAX_PROB)
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
      1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
-     2     cfcoefrjb(MAX_Atten,11), checkattenwt, version
-      character*80 filein, title, file1, filelog 
+     2     cfcoefrjb(MAX_Atten,11), version
+      character*80 file1, filelog 
 
 c     Set Data file units
       nwr = 11
@@ -34,6 +34,8 @@ C     Run Ground Motion Case or PSHA case.
  123  write (*,*) 'Enter 0 to run hazard'
       write (*,*) 'Enter 1 to run attenuation models'
       write (*,*) 'Enter 2 to run spectra models'
+      write (*,*) 'Enter 3 to run dam displacement hazard'
+
 
       if (bnumflag .eq. 0) then
          read (*,*) runFlag
@@ -44,7 +46,7 @@ C     Run Ground Motion Case or PSHA case.
 c     Open Input and Output Files
       if (runFlag .eq. 0) then
          write (*,*) 'Enter the input file name for PSHA runs.'
-         if (bnumflag .eq. 0 ) then
+         if (bnumflag .eq. 0) then
            read (*,'( A80)') file1
          else 
            read (77, '(a80)') file1
@@ -69,6 +71,15 @@ c        Create log filename for PHSA run.
          filelog(charcount+3:charcount+3) = 'o'
          filelog(charcount+4:charcount+4) = 'g'
          open (18,file=filelog(1:charcount+4))
+         
+         call Read_GM_Haz_Input ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+     1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
+     2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
+     3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
+     5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
+     6               coefcountrrup, coefcountRjb, iMixture, version )
+
       elseif (runFlag .eq. 1) then
          write (*,*) 'Enter the input file name for attenuation runs.'
          read (*,'( A80)') file1
@@ -80,13 +91,84 @@ c        Create log filename for PHSA run.
          read (*,'( A80)') file1
          open (13,file=file1,status='old')
          call determ (runFlag)
-         stop
+         stop    
+      elseif (runFlag .eq. 3) then    
+         write (*,*) 'Enter the input file name for dam displacement PSHA runs.'
+         if (bnumflag .eq. 0) then
+           read (*,'( A80)') file1
+         else 
+           read (77, '(a80)') file1
+         endif
+
+         open (13,file=file1,status='old',err=2100)
+         
+c        Create log filename for PHSA run.
+         charcount = 80
+         do ichart=80,1,-1
+           if (file1(ichart:ichart) .ne. ' ') then
+             charcount = ichart
+             goto 112
+           endif
+         enddo
+ 112     continue
+         do ichart=1,charcount,1
+           filelog(ichart:ichart) = file1(ichart:ichart)
+         enddo
+         filelog(charcount+1:charcount+1) = '.'
+         filelog(charcount+2:charcount+2) = 'l'
+         filelog(charcount+3:charcount+3) = 'o'
+         filelog(charcount+4:charcount+4) = 'g'
+         open (18,file=filelog(1:charcount+4))
+              
+         call Read_Dam_Haz_Input_1(version, minlat, maxlat, minlong, maxlong, distmax)     
       else
          write (*,*) 'Invalid entry!!!'
          write (*,*) 'Try again.'
          goto 123
       endif
- 
+      
+      continue
+      return
+      
+ 2100 write (*,'( 2x,''run file does not exist'')')
+      write (*,'( 2x,a80)') file1
+      stop 99
+
+      end
+      
+      
+c  --------------------------
+      subroutine Read_GM_Haz_Input ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+     1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
+     2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
+     3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
+     5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
+     6               coefcountrrup, coefcountRjb, iMixture, version )
+
+      implicit none
+      include 'pfrisk.h'
+
+      integer nInten(MAX_PROB), bnumflag, nMagBins, nDistBins, 
+     1        nEpsBins, nXcostBins, nProb, nwr, psCorFlag, 
+     2        dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), i, j, 
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), nAttenType, j1, k, jj,
+     4        nAtten(MAX_PROB,4), soilAmpFlag
+      integer coefcountrrup, coefcountrjb,
+     1        iMixture(MAX_PROB,4,MAX_ATTEN)
+      real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
+     1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
+     2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
+     3     sigTrunc(MAX_PROB), sigfix(MAX_PROB,4,MAX_ATTEN),
+     4     magBins(MAX_MAG), specT(MAX_PROB), gm1, gm2
+      real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
+     1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
+     2     cfcoefrjb(MAX_Atten,11), checkattenwt, version
+      character*80 filein, title
+
+c     Set Data file units
+      nwr = 11
+
 c     Read fault file name and version format     
       read (13,'( a80)') filein
       open (10,file=filein,status='old',err=2101)
@@ -244,14 +326,242 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2020 write (*,'( 2x,''input file error: fault file version number'')') 
       stop 99
- 2100 write (*,'( 2x,''run file does not exist'')')
-      write (*,'( 2x,a80)') file1
-      stop 99
  2101 write (*,'( 2x,''fault file does not exist'')')
       write (*,'( 2x,a80)') filein
       stop 99
 
+      end      
+      
+c  --------------------------
+      subroutine Read_Dam_Haz_Input_1(version, minlat, maxlat, minlong, maxlong, distmax)
+      
+      implicit none
+      
+      real minlat, maxlat, minlong, maxlong, distmax, version
+      character*80 filein
+      
+      
+c     Read fault file name and version format     
+      read (13,'( a80)') filein
+      open (10,file=filein,status='old',err=2101)
+      read (13,*,err=2020) version
+
+c     Read min max long and lat for grid sources
+      read (13,*,err=2001) minlat, maxlat, minlong, maxlong
+      read (13,*,err=2002) distmax
+      
+      return
+      
+ 2001 write (*,'( 2x,''input file error: minlat, maxlat line'')') 
+      stop 99
+ 2002 write (*,'( 2x,''input file error: maxdist line'')') 
+      stop 99
+ 2020 write (*,'( 2x,''input file error: fault file version number'')') 
+      stop 99
+ 2101 write (*,'( 2x,''fault file does not exist'')')
+      write (*,'( 2x,a80)') filein
+      stop 99      
+      
       end
+
+c     ---------------------------------
+      subroutine Read_Dam_Haz_Input_2 ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+     1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
+     2               psCorFlag,
+     3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
+     5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
+     6               coefcountrrup, coefcountRjb, iMixture, version, 
+     7  SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc, 
+     8  refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
+
+      implicit none
+      include 'pfrisk.h'
+c     include 'declare1.h'
+
+      integer nInten(MAX_PROB), bnumflag, nMagBins, nDistBins, 
+     1        nEpsBins, nXcostBins, nProb, nwr, psCorFlag, 
+     2        dirflag(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), i, j, 
+     3        sCalc(MAX_PROB,4,MAX_ATTEN), nAttenType, j1, k, jj,
+     4        nAtten(MAX_PROB,4), soilAmpFlag
+      integer coefcountrrup, coefcountrjb,
+     1        iMixture(MAX_PROB,4,MAX_ATTEN), nRefPer, nRefGM, nRefMag
+      real testInten(MAX_PROB,MAX_INTEN),  
+     1     lgTestInten(MAX_PROB,MAX_INTEN), 
+     2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
+     3     sigTrunc(MAX_PROB), sigfix(MAX_PROB,4,MAX_ATTEN),
+     4     magBins(MAX_MAG), specT(MAX_PROB), gm1, gm2
+      real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
+     1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
+     2     cfcoefrjb(MAX_Atten,11), checkattenwt, version
+      real SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
+      real refPeriod(MAX_AMPPER), RefGM(MAX_AMPMAG,MAX_AMPPER,MAX_AMPGM),
+     1     amp(MAX_AMPMAG,MAX_AMPPER,MAX_AMPGM), RefGM_Mag(MAX_AMPMAG) 
+      character*80 title
+
+c     Set Data file units
+      nwr = 11
+
+c     Input options 
+      read(13,'( a80)') title
+      read(13,*,err=2003) nProb, nAttenType
+      
+      call CheckDim ( nProb, MAX_Prob, 'MAX_PROB ' )        
+      call CheckDim ( nProb, MAX_Prob, 'MAX_ATTEN ' )
+      write (18,*) '45.2 Haz45.2 log file'
+      write (18,'( a80)') title
+      write (18,*) 
+      write (18,*) 'Summary of Attenuation relationship used in the analysis:'
+      write (18,*) 
+      write (18,'(a20,2x,i4)') 'Number of Problems: ', nProb
+      write (18,'(a29,2x,i4)') 'Number of Attenuation Types: ', nAttentype
+      write (18,*)
+
+c     Enter GM models for each problem
+      do i=1,nProb
+        read (13,*,err=2004) specT(i), sigTrunc(i), dirflag(i)
+        call CheckDir (dirflag(i))
+        read (13,*,err=2005) nInten(i), (testInten(i,j),j=1,nInten(i))
+        call CheckDim ( nInten(i), MAX_INTEN, 'MAX_INTEN ' )
+        do j1=1,nInten(i)
+          lgTestInten(i,j1) = alog(testInten(i,j1))
+        enddo
+
+        write (18,'(a19,2x,f8.4)') 'Spectral Period  = ', specT(i)
+        write (18,'(a19,2x,f8.4)') 'Sigma Trunc      = ', sigTrunc(i)
+        write (18,'(a19,2x,i8)')   'Directivity Flag = ', dirflag(i)
+        write (18,'(a21)')         'Ground Motion Values:'
+        do j1=1,nInten(i)
+          write (18,'(f12.4)') testInten(i,j1)
+        enddo
+        do j=1,nAttenType
+          write (18,*) 
+          write (18,'(a19,2x,i4)') 'Attenuation Type = ', j
+          write (18,*) ' Jcalc    Const1    Const2    Weight    SigVaradd    iMix    j_sigma    fix_sigma'
+
+          checkattenwt = 0.0
+          read (13,*,err=2006) nAtten(i,j)
+          call CheckDim ( nAtten(i,j), MAX_ATTEN, 'MAX_ATTEN ' )
+          do k=1,nAtten(i,j)
+            read (13,*,err=2007) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(i,j,k)  
+
+C           Check for either fixed sigma or different sigma model (i.e., jCalc<0)
+            if (jcalc(i,j,k) .lt. 0) then
+              backspace (13)
+              read (13,*,err=2006) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
+              write (18,'(i6,3x,f8.4,2x,f8.4,1x,f9.5,f11.4,2x,i6,4x,i6,6x,f8.4)')
+     1              jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
+            else
+              write (18,'(i6,3x,f8.4,2x,f8.4,2x,f9.5,f11.4,2x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
+     1              sigvaradd(i,j,k), iMixture(i,j,k)
+            endif
+
+C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) selected and if so read in coefficients.
+            if (abs(jcalc(i,j,k)) .gt. 10000 .and. abs(jcalc(i,j,k)) .lt. 11000) then
+                coefcountrrup = abs(jcalc(i,j,k)) - 10000
+                read (13,*,err=2008) (cfcoefrrup(coefcountrrup,jj),jj=1,11)
+                write (18,'(a16,2xi8,10(2x,f12.6))') 
+     1             'CF(RRup) Coefs: ', coefcountrrup,(cfcoefrrup(coefcountrrup,jj),jj=1,11)
+            endif
+C     Check for Common Functional Form with RJB Distance (11000<jcalc<12000) selected and if so read in coefficients.
+            if (abs(jcalc(i,j,k)) .gt. 11000 .and. abs(jcalc(i,j,k)) .lt. 12000) then
+                coefcountrjb = abs(jcalc(i,j,k)) - 11000
+                read (13,*,err=2008) (cfcoefrjb(coefcountrjb,jj),jj=1,11)
+                write (18,'(a16,2x,i8,10(2x,f12.6))') 
+     1              'CF(RJB) Coefs:  ', coefcountrjb, (cfcoefrrup(coefcountrjb,jj),jj=1,11)
+            endif
+
+            gmScale(i,j,k) = gm1 + gm2
+            checkattenwt = checkattenwt + gm_wt(i,j,k)
+          enddo
+          write (18,*)
+C     Check that attenuation model weights sum to unity. 
+          if (abs(checkattenwt-1.0) .gt. 0.001 ) then
+             write (*,*) 'Attenuation Model Weights do not sum to 1.0!!!'
+             write (*,*) 'iProb =', i
+             write (*,*) 'iAttenType = ', j
+             write (*,*) 'Total Weights = ', checkattenwt
+             write (*,*) 'Check input run file.'
+             stop 99
+          endif
+        enddo
+      enddo
+      read (13,*,err=2009) psCorFlag
+      write (18,*)
+      write (18,*) 'psCorFlag = ', psCorflag
+      write (18,*)
+
+c     Read bins for de-aggregating the hazard
+      read (13,*,err=2010) nMagBins
+      call CheckDim ( nMagBins, MAX_MAG,   'MAX_MAG   ' )
+      read (13,*,err=2011) (magBins(k),k=1,nMagBins)
+      read (13,*,err=2012) nDistBins
+      call CheckDim ( nDistBins, MAX_DIST, 'MAX_DIST  ' )
+      read (13,*,err=2013) (distBins(k),k=1,nDistBins)
+      read (13,*,err=2014) nEpsBins
+      call CheckDim ( nEpsBins, MAX_EPS,   'MAX_EPS   ' )
+      read (13,*,err=2015) (epsBins(k),k=1,nEpsBins)
+
+      read (13,*,err=2016) nXcostBins
+      call CheckDim ( nXcostBins, MAX_Xcost, 'MAX_Xcost ' )
+      read (13,*,err=2017) (XcostBins(k),k=1,nXcostBins)
+
+      read (13,*,err=2018) soilAmpFlag   
+                  
+c       Read site coordinates and properties
+        read (13,*,err=2101) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
+       
+c       Read site-specific site amplification
+        if ( soilAmpFlag .eq. 1 ) then
+         call RdSoilAmpModel ( refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
+        endif
+
+      return
+ 2001 write (*,'( 2x,''input file error: minlat, maxlat line'')') 
+      stop 99
+ 2002 write (*,'( 2x,''input file error: maxdist line'')') 
+      stop 99
+ 2003 write (*,'( 2x,''input file error: nProb, nAttenType'')') 
+      stop 99
+ 2004 write (*,'( 2x,''input file error: spectral period line, iProb='',i5)') i 
+      stop 99
+ 2005 write (*,'( 2x,''input file error: Nz & Zvalues line, iProb='', i5)') i 
+      stop 99
+ 2006 write (*,'( 2x,''input file error: Natten line for iProb and jAttenType='',2i5)') i, j 
+      stop 99
+ 2007 write (*,'( 2x,''input file error: jcalc line for iProb, jAttenType, and iAtten='')') 
+      write (*,'( 3i5)') i,j,k
+      stop 99
+ 2008 write (*,'( 2x,''input file error: common form coeff for iProb, jAttenType, and iAtten='',3i5)') i,j,k 
+      stop 99
+ 2009 write (*,'( 2x,''input file error: pscorflag'')') 
+      stop 99
+ 2010 write (*,'( 2x,''input file error: deagg nMagbins'')') 
+      stop 99
+ 2011 write (*,'( 2x,''input file error: deagg magbins'')') 
+      stop 99
+ 2012 write (*,'( 2x,''input file error: deagg nDistbins'')') 
+      stop 99
+ 2013 write (*,'( 2x,''input file error: deagg distbins'')') 
+      stop 99
+ 2014 write (*,'( 2x,''input file error: deagg nEpsbins'')') 
+      stop 99
+ 2015 write (*,'( 2x,''input file error: deagg epsbins'')') 
+      stop 99
+ 2016 write (*,'( 2x,''input file error: deagg nXcosTbins'')') 
+      stop 99
+ 2017 write (*,'( 2x,''input file error: deagg xcosT bins'')') 
+      stop 99
+ 2018 write (*,'( 2x,''input file error: soil amp flag'')') 
+      stop 99
+ 2020 write (*,'( 2x,''input file error: fault file version number'')') 
+      stop 99
+ 2101 write (*,'( 2x,''input file error: site long lat line'')')
+      stop 99
+
+      end      
 
 c  --------------------------
       subroutine CheckDim ( n, nMax, name )

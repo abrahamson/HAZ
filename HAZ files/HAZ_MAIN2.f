@@ -36,8 +36,8 @@ c     Start loop over number of batch mode runs
             write (*,*) 'Looping over Number of Batch Mode Cases: ', ibnum, bnum
          endif
 
-c     Read Run File
-      call RdInput ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+c     Read Run File Part 1
+      call RdInput ( runFlag, nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
@@ -67,13 +67,30 @@ c     read fault File
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
       do 1000 iSite = 1, nSite      
+
+c     Read Run File Part 2      
+       if (runFlag .eq. 0) then
             
-c      Read site coordinates and properties
-       read (13,*,err=2101) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
+c       Read site coordinates and properties
+        read (13,*,err=2101) SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc
        
-c      Read site-specific site amplification
-       if ( soilAmpFlag .eq. 1 ) then
-        call RdSoilAmpModel ( refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
+c       Read site-specific site amplification
+        if ( soilAmpFlag .eq. 1 ) then
+         call RdSoilAmpModel ( refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
+        endif
+        
+       elseif (runFlag .eq. 3) then
+ 
+         call Read_Dam_Haz_Input_2 ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
+     1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
+     2               psCorFlag,
+     3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
+     5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
+     6               coefcountrrup, coefcountRjb, iMixture, version, 
+     7  SiteX, SiteY, vs, depthvs10, depthvs15, D25, vrup, forearc, 
+     8  refPeriod, nRefPer, RefGM, nRefGM, RefGM_mag, nRefMag, amp )
+        
        endif
 
 c      Open Output1 file which will contain the individual hazard curves. 
