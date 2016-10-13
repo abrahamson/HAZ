@@ -1841,6 +1841,26 @@ C     Model Number = 142, Site Class D
          maxaper = 3.0
       endif
 
+c     McVerry et al. (2006) - Subduction, Horizontal
+C     Model Number = 143, Site Class A/B
+      if (jcalc .eq. 143) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif
+C     Model Number = 144, Site Class C
+      if (jcalc .eq. 144) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif
+C     Model Number = 145, Site Class D
+      if (jcalc .eq. 145) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif      
+
 c     Bindi et al. (2009) - Crustal, Horizontal
 C     Model Number = 95, Hor, Rock
       if (jcalc .eq. 95) then

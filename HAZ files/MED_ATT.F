@@ -3631,6 +3631,44 @@ C     Model Number = 142, Site Class D
          attenname1 = 'McVerryetal-Crustal-2006, Hor, Site D'
        endif
 
+c ******* McVerry et al. (2006) Subduction Events, Horizontal *********
+C     McVerry, G. H., J. X. Zhao, N.A. Abrahamson and P.G. Somerville (2006) 
+C        "New Zealand Acceleration Response Spectrum Attenuation 
+C         Reations for Crustal and Subduction Zone Earthquakes",
+C         Bulletin New Zealand Society for Earthquake Engineering, Vol. 39,
+C         No. 1, pp. 1 - 58. 
+C     Model Number = 143, Site Class A/B
+      if ( jcalc .eq. 143 ) then
+         Sc = 0.0
+         Sd = 0.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+     
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site A/B'
+         lnY = lnY + efacs
+       endif
+C     Model Number = 144, Site Class C
+      if ( jcalc .eq. 144 ) then
+         Sc = 1.0
+         Sd = 0.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site C'
+         lnY = lnY + efacs
+       endif
+C     Model Number = 145, Site Class D
+      if ( jcalc .eq. 145 ) then
+         Sc = 0.0
+         Sd = 1.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site D'
+         lnY = lnY + efacs
+       endif
+      
 c ******* Bindi et al. (2009) Crustal Events, Horizontal *********
 C     Bindi, D., L. Luzi, M. Massa, and F. Pacor (2009). Horizontal and Vertical 
 C          ground motion prediction equaitons derived from the Italian
