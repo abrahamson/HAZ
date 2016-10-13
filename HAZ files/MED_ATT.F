@@ -3643,10 +3643,9 @@ C     Model Number = 143, Site Class A/B
          Sd = 0.0
          call McVerry_Subduction_2006 ( mag, rupDist, specT,
      1                     period2, lnY, sigma, iflag, Ftype, 
-     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
      
          attenname1 = 'McVerryetal-Subduction-2006, Hor, Site A/B'
-         lnY = lnY + efacs
        endif
 C     Model Number = 144, Site Class C
       if ( jcalc .eq. 144 ) then
@@ -3654,9 +3653,8 @@ C     Model Number = 144, Site Class C
          Sd = 0.0
          call McVerry_Subduction_2006 ( mag, rupDist, specT,
      1                     period2, lnY, sigma, iflag, Ftype, 
-     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
          attenname1 = 'McVerryetal-Subduction-2006, Hor, Site C'
-         lnY = lnY + efacs
        endif
 C     Model Number = 145, Site Class D
       if ( jcalc .eq. 145 ) then
@@ -3664,9 +3662,8 @@ C     Model Number = 145, Site Class D
          Sd = 1.0
          call McVerry_Subduction_2006 ( mag, rupDist, specT,
      1                     period2, lnY, sigma, iflag, Ftype, 
-     3                     depthtop, dip1, rupwidth, depth, Sc, Sd )
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
          attenname1 = 'McVerryetal-Subduction-2006, Hor, Site D'
-         lnY = lnY + efacs
        endif
       
 c ******* Bindi et al. (2009) Crustal Events, Horizontal *********

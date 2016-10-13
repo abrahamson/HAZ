@@ -8718,7 +8718,10 @@ c----------------------------------------------------------------------
       Subroutine McVerry_crustal_2006 ( m, Rrup, specT,
      1                     period2, lnY, sigma, iflag, Ftype, 
      3                     hwflag, Sc, Sd )
+     
+      Implicit None
 
+      integer MAXPER
       parameter (MAXPER=14)
       REAL Period(MAXPER), C1(MAXPER), C3(MAXPER), C4(MAXPER)
       REAL c5(MAXPER), c6(MAXPER), c8(MAXPER), c10(MAXPER)
@@ -8727,13 +8730,13 @@ c----------------------------------------------------------------------
 
       REAL c1T, c3T, c4T, c5T, c6T, c8T, c10T, c32T, c33T
       REAL sigmaM6T, sigslopeT, tauT, sigma, a9T, c29T, c30T, c43T, c46T
-      REAL M, RRUP, specT, Ftype, sig, RVOL
-      REAL period2, lnY, F_RV, F_NM, lnYab
+      REAL M, RRUP, specT, Ftype, sig, Sc, Sd, RVOL
+      REAL period2, lnY, F_RV, F_NM, lnYab, period1
       REAL c1up, c3up, c4up, c5up, c6up, c8up, c10up, c29up, c30up, c43up, c46up
       REAL c32up, c33up, fhw, fhwm, fhwr, fhwp, fhwmp, fhwrp
       REAL pgaupab, pgaup, pgapab, pgap
 
-      integer iflag, count1, count2, hwflag
+      integer iflag, count1, count2, hwflag, nPer, i
 
       Data Period / 0.0, 0.01, 0.03, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0 /
       Data C1 / 0.07713, 0.07713, 0.07713, 1.2205, 1.53365, 1.22565, 0.21124, -0.10541, -0.1426, 
@@ -8978,7 +8981,10 @@ c----------------------------------------------------------------------
       Subroutine McVerry_Subduction_2006 ( m, Rrup, specT,
      1                     period2, lnY, sigma, iflag, Ftype, 
      3                     depthtop, dip, width, hypodepth, Sc, Sd )
+     
+      Implicit None
 
+      integer MAXPER
       parameter (MAXPER=14)
       REAL Period(MAXPER), C11(MAXPER), C12(MAXPER), C13(MAXPER)
       REAL c15(MAXPER), c17(MAXPER), c18(MAXPER), c19(MAXPER)
@@ -8987,14 +8993,14 @@ c----------------------------------------------------------------------
 
       REAL c11T, c12T, c13T, c15T, c17T, c18T, c19T, c20T, c24T
       REAL sigmaM6T, sigslopeT, tauT, sigma, a9T, c29T, c30T, c43T, c46T
-      REAL M, RRUP, specT, Ftype, sig, RVOL
+      REAL M, RRUP, specT, Ftype, sig, Sc, Sd, RVOL
       REAL depthtop, dip, width, hypodepth
-      REAL period2, lnY, lnYAB, SI, Hc, DS
+      REAL period2, lnY, lnYAB, period1, SI, Hc, DS
       REAL c11up, c12up, c13up, c15up, c17up, c18up, c19up, c29up, c30up, c43up, c46up
       REAL c20up, c24up, fhw, fhwm, fhwr, fhwp, fhwmp, fhwrp
       REAL pgaupab, pgaup, pgapab, pgap
 
-      integer iflag, count1, count2, hwflag
+      integer iflag, count1, count2, hwflag, nPer, i
 
       Data Period / 0.0, 0.01, 0.03, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0 /
       Data C11 / 8.08611, 8.08611, 8.08611, 8.69303, 9.30400, 10.41628, 9.21783, 
