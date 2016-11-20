@@ -138,10 +138,10 @@ c       Initialize p1_sum (check of the integration over all source pdfs)
 
 c       Initialize closest distance for each distance metric
         call InitMinDis (iFlt, nWidth(iFlt), MinRrup_temp, MinRjb_temp, MinSeismo_temp, SourceDist)
-
+ 
 c       Loop over alternative Fault Widths (epistemic)
 c       (This changes the geometry of the source)
-        do 860 iFltWidth=1,nWidth(iFlt)
+        do 860 iFltWidth=1,nWidth(iFlt)     
 
 C         Initialize temp hazard array for this source
           call Init_tempHaz ( tempHaz )
