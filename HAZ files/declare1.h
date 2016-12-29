@@ -36,6 +36,7 @@ c    Declarations for Main file
      2        nSyn_Case(MAX_FLT), synHWFlag(MAX_FLT,MAX_SYN),
      3        soilAmpFlag, iDepthModel(MAX_FLT), nfType(MAX_FLT),
      4        nMaxMag2(MAX_FLT), ncountS7(MAX_FLT), nn10000
+      integer runFlag
 
       real segWt1(MAX_FLT), fltGrid_X(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS),
