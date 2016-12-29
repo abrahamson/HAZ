@@ -8997,10 +8997,10 @@ c----------------------------------------------------------------------
       REAL depthtop, dip, width, hypodepth
       REAL period2, lnY, lnYAB, period1, SI, Hc, DS
       REAL c11up, c12up, c13up, c15up, c17up, c18up, c19up, c29up, c30up, c43up, c46up
-      REAL c20up, c24up, fhw, fhwm, fhwr, fhwp, fhwmp, fhwrp
+      REAL c20up, c24up
       REAL pgaupab, pgaup, pgapab, pgap
 
-      integer iflag, count1, count2, hwflag, nPer, i
+      integer iflag, count1, count2, nPer, i
 
       Data Period / 0.0, 0.01, 0.03, 0.075, 0.1, 0.2, 0.3, 0.4, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0 /
       Data C11 / 8.08611, 8.08611, 8.08611, 8.69303, 9.30400, 10.41628, 9.21783, 
@@ -9040,9 +9040,7 @@ c----------------------------------------------------------------------
      1           0.144, 0.1871, 0.2073, 0.2405, 0.2405, 0.2053 /
       data a9 / 0.370, 0.370, 0.370, 0.370, 0.370, 0.370, 0.370, 0.370, 0.370, 
      1          0.331, 0.281, 0.210, 0.160, 0.089 /
-C     Notes Travel path term for Volcanic region is not included. This subroutine
-C     is also only for crustal earthquakes and includes the Hanging Wall model 
-C     of Abrahamson and Silva (1997) as recommended in the McVerry et al. (2006) paper. 
+C     Notes Travel path term for Volcanic region is not included. 
 
 C Find the requested spectral period and corresponding coefficients
       nPer = 14
