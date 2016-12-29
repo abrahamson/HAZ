@@ -539,6 +539,7 @@ c        Load up Ftype Models and weights.
          enddo
          nFm = nFm - 1
          nFtype(iFlt) = nFm
+         call CheckDim ( nFtype(iFlt), MAX_FTYPE, 'MAX_FTYPE ' )
 
 c        Load up parameter variations into large single dimension arrays
          testMaxMag = 0.
