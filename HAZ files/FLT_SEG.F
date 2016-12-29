@@ -151,7 +151,7 @@ c ---------------------------------------------------------------------
      1     x2n2, y1n2, y2n2, z1n2, z2n2, dxn1, dyn1, dzn1, dxn2, dyn2, 
      2     dzn2, x(5), y(5), z(5), x0, y0, z0, faultLen, dx, dy, dz, width1,
      3     dist, dist1, dist2, x1, y1, z1, x2, y2, z2, xLtop, yLtop, zLtop,
-     4     xLbot, yLbot, zLbot, w, step, faultW, sum1     
+     4     xLbot, yLbot, zLbot, w, step, faultW, sum1, len1     
       real fltGrid_x1(MAXFLT_DD,MAXFLT_AS), fltGrid_y1(MAXFLT_DD,MAXFLT_AS),
      1     fltGrid_z1(MAXFLT_DD,MAXFLT_AS), fltGrid_x2(MAXFLT_DD,MAXFLT_AS),
      2     fltGrid_y2(MAXFLT_DD,MAXFLT_AS), fltGrid_z2(MAXFLT_DD,MAXFLT_AS),
@@ -197,12 +197,13 @@ c     Find the widest part of the fault and set the number of grid points down d
           if ( i .eq. 1 ) then
             xLtop =  xFlt(i,j) - xFlt(i,j-1)
             yLtop =  yFlt(i,j) - yFlt(i,j-1)
-            n1(j) = nint(sqrt(xLtop**2 + yLtop**2)/step)
-            if (n1(j) .eq. 1) then
+            len1 = sqrt(xLtop**2 + yLtop**2)
+            n1(j) = nint(len1/step)
+            if (n1(j) .eq. 0) then
               n1(j) = 1
             endif
             nx1 = nx1 + n1(j)
-            faultLen = faultLen + sqrt(xLtop**2 + yLtop**2)
+            faultLen = faultLen + len1
           endif
           
           xLtop =  xFlt(i,j) - xFlt(i,j-1)
