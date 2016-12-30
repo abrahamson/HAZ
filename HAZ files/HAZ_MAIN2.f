@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.2   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*          Oct, 2016            *'
+      write (*,*) '*          Dec, 2016            *'
       write (*,*) '*********************************'
       write (*,*)
 

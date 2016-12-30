@@ -8362,7 +8362,7 @@ c ---------------------------------------------------------------------
       Subroutine Bradley_2010 ( m, Rrup, Rbjf, specT,
      1                     period2, lnY, sigma, iflag, 
      2                     vs, Delta, DTor, Ftype, depthvs10,
-     3                     hwflag, Rx )
+     3                     vs30_class, hwflag, Rx )
 
       implicit none
 
@@ -8381,10 +8381,9 @@ c ---------------------------------------------------------------------
       REAL phi5T, phi6T, phi7T, phi8T, tau1T, tau2T, sigma1T, sigma2T
       REAL c2, c4, c4a, cRB, cHM, gm, pi, d2r, gamma
       real cc, cosdelta, r1, r2, r3, r4, hw, psa_ref, psa, a, b, c
-      integer iflag, count1, count2, hwflag, nPer, i
+      integer iflag, count1, count2, hwflag, nPer, i, vs30_class
       REAL M, RRUP, RBJF, DTOR, Delta, specT, sigma, Ftype, Rx, vs, v1
       REAL period2, lnY, F_RV, F_NM, depthvs10, sigma_M, tau, NL, rkdepth
-      real vs30_class
 
       data period / 0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 0.2,
      1             0.25, 0.3,   0.4,  0.5, 0.75,  1.0,   1.5, 2.0,  3.0, 4.0, 

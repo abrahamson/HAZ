@@ -1813,9 +1813,17 @@ C     Model Number = 154
          maxaper = 4.0
       endif
 
-c     Bradley (2010) - Horizontal
+c     Bradley (2010) - Horizontal, estimated vs30
 C     Model Number = 160
       if (jcalc .eq. 160) then
+         anper = 23
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
+c     Bradley (2010) - Horizontal, measured vs30
+C     Model Number = 161
+      if (jcalc .eq. 161) then
          anper = 23
          minaper = 0.01
          maxaper = 10.0

@@ -3588,13 +3588,26 @@ c ******* Bradley (2010) *********
 C     Bradley (2010) - NZ-Specific Psuedo-Spectral Acceleration Ground
 C         Motion Prediction Equation Based on Foreign Models
 C     University of Canterbury Research Report 2010-03
+C     Bradley 2010 - Horizontal, estimated Vs30
 C     Model Number = 160
       if ( jcalc .eq. 160 ) then
+         vs30_class = 0
          call Bradley_2010 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
      2                     vs, dipavgd, Depthtop, Ftype, 
-     3                     depthvs10, hwflag, Rx )
-         attenname1 = 'Bradley-2010, Hor'
+     3                     depthvs10, vs30_class, hwflag, Rx )
+         attenname1 = 'Bradley-2010-Hor, Estimated Vs30'
+       endif
+
+C     Bradley 2010 - Horizontal, measured Vs30
+C     Model Number = 161
+      if ( jcalc .eq. 161 ) then
+         vs30_class = 1
+         call Bradley_2010 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx )
+         attenname1 = 'Bradley-2010-Hor, Measured Vs30'
        endif
 
 c ******* McVerry et al. (2006) Crustal Events, Horizontal *********
