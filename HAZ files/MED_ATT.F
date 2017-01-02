@@ -134,8 +134,6 @@ c-----------------------------------------------------------------------------
 c     Lin 2009 Doctoral thesis          
 C     Model Number = 315                                        
       if ( jcalc .eq. 315) then    
-c      write(*,*) 'specT = ', specT
-
          call  Lin2009                                        
      1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
          attenname1 = 'Lin 2009 Doctoral thesis, Crustal, VS30'  
@@ -144,8 +142,6 @@ c-----------------------------------------------------------------------------
 c     TG09221 2012 project          
 C     Model Number = 441                                        
       if ( jcalc .eq. 441) then    
-c      write(*,*) 'specT = ', specT
-
          call  TG09221_2012                                        
      1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
          attenname1 = 'TG09221 Report 2012/06, Crustal, VS30'   
@@ -567,10 +563,9 @@ C     defined for the fault in the data file (i.e., Depthtop).
       endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal
+C     Chiou and Youngs 2013 - Horizontal, estimated Vs30
 C     Model Number = 2797
       if ( jcalc .eq. 2797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -582,10 +577,9 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal
+C     Chiou and Youngs 2013 - Horizontal, measured Vs30
 C     Model Number = 2798
       if ( jcalc .eq. 2798 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -597,11 +591,10 @@ c     Current model set for measured Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment, estimated Vs30
 C      Note: Only valid for the Following magnitude Range: 6<M<6.9
 C     Model Number = 2799
       if ( jcalc .eq. 2799 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -613,11 +606,10 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment, measured Vs30
 C      Note: Only valid for the Following magnitude Range: 6<M<6.9
 C     Model Number = 2800
       if ( jcalc .eq. 2800 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -629,11 +621,10 @@ c     Current model set for measured Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
-C      Note: Only valid for the Following magnitude : 6<M<6.9
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment, estimated Vs30
+C      Note: Only valid for the Following magnitude: M=7.9
 C     Model Number = 2801
       if ( jcalc .eq. 2801 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -645,11 +636,10 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment, measured Vs30
 C      Note: Only valid for the Following magnitude: M=7.9
 C     Model Number = 2802
       if ( jcalc .eq. 2802 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -911,10 +901,9 @@ C     Divide Vertical by Horizontal to get V/H Ratio
       endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Vertical 
+C     Chiou and Youngs 2013 - Vertical, estimated Vs30 
 C     Model Number = 4797
       if ( jcalc .eq. 4797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -924,10 +913,9 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          attenname1 = 'CY_NGAWest2_2013-Ver,Estimated Vs30m'
        endif
 
-C     Chiou and Youngs 2013 - Vertical 
+C     Chiou and Youngs 2013 - Vertical, measured Vs30 
 C     Model Number = 4798
       if ( jcalc .eq. 4798 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -937,10 +925,9 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          attenname1 = 'CY_NGAWest2_2013-Ver,Measured Vs30m'
        endif
 
-C     V/H Model
+C     V/H Model, estimated Vs30
 C     Model Number = 6797
       if ( jcalc .eq. 6797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -959,10 +946,9 @@ C     Divide vertical by horizontal to get V/H Ratio.
          lnY = lnY - lnYH + 6.89    
        endif
 
-C     V/H Model
+C     V/H Model, measured Vs30
 C     Model Number = 6798
       if ( jcalc .eq. 6798 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -1018,7 +1004,7 @@ C     Divide vertical by horizontal to get V/H Ratio.
          lnY = lnY - lnYH + 6.89    
          attenname1 = 'BC_NGAWest2_2013-V/H,Calif'
        endif
-C     Bozorgnia and Campbell 2013 - Implied Vertical/Horizontal Ratio, California
+C     Bozorgnia and Campbell 2013 - Implied Vertical/Horizontal Ratio, Japan
 C     Model Number = 6837
       if ( jcalc .eq. 6837 ) then
          regionflag = 1

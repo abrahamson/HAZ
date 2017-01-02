@@ -9,7 +9,7 @@ C     deterministic spectra.
       include 'pfrisk.h'
       
       integer jcalc, anper
-      real minaper, maxaper, specT
+      real minaper, maxaper
 
 c     Set number of attenuation spectral periods to -99 for 
 c     checking of valid jcalc values. 
@@ -748,7 +748,7 @@ C     Model Number = 040
 
 C     Idriss (1991), Horizontal, Soft-soil, PGA
 C     Model Number = 041
-      if ( jcalc .eq. 41 .and. specT .eq. 0.0 ) then
+      if ( jcalc .eq. 41 ) then
          anper = 1
          minaper = 0.0
          maxaper = 0.0
@@ -756,7 +756,7 @@ C     Model Number = 041
 
 c     Idriss 1997 Horizontal, soft-soil, PGA
 C     Model Number = 042
-      if ( jcalc .eq. 42 .and. specT .eq. 0.0 ) then
+      if ( jcalc .eq. 42 ) then
          anper = 1
          minaper = 0.0
          maxaper = 0.0

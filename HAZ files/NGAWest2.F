@@ -974,6 +974,11 @@ C            150 < Vs30m < 1500 m/s
 C            0 < Z25 < 10 km
 C            0 < Zhyp < 20 km
 C            15 < Dip < 90 
+C            Region Flag:
+C               0 = California 
+C               1 = Japan
+C               2 = China
+C               3 = Italy
 C        Report provides formulation for estimating recommended
 C           parameters when they are not defined (e.g., Z25 given Vs30m).
 C           See Chapter 06 of the report. 
