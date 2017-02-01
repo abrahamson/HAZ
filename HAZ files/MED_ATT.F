@@ -793,7 +793,2283 @@ C     Model Number = 2927
          attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ItalyJapan, Basin'
        endif
 
+C ******* Implementation of Al-Atik and Youngs 2014 NGA West2 Epistemic Model.
+C ******* Low branch models. (jcalc values in the 5000s).
 
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Note: GMPE is not programmed for Aftershock cases.
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Global, Mainshock, Estimated Vs30m
+
+C     Model Number = 5787
+      if ( jcalc .eq. 5787 ) then
+         regionflag = 0
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-EstVs, LowEps'
+         
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Taiwan, Mainshock, Estimated Vs30m
+C     Model Number = 5788
+      if ( jcalc .eq. 5788 ) then
+         regionflag = 1
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-EstVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, China, Mainshock, Estimated Vs30m
+C     Model Number = 5789
+      if ( jcalc .eq. 5789 ) then
+         regionflag = 2
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-EstVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Japan, Mainshock, Estimated Vs30m
+C     Model Number = 5790
+      if ( jcalc .eq. 5790 ) then
+         regionflag = 3
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-EstVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Global, Mainshock, Measured Vs30m
+C     Model Number = 5791
+      if ( jcalc .eq. 5791 ) then
+         regionflag = 0
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-MesVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Taiwan, Mainshock, Measured Vs30m
+C     Model Number = 5792
+      if ( jcalc .eq. 5792 ) then
+         regionflag = 1
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-MesVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, China, Mainshock, Measured Vs30m
+C     Model Number = 5793
+      if ( jcalc .eq. 5793 ) then
+         regionflag = 2
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-MesVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Japan, Mainshock, Measured Vs30m
+C     Model Number = 5794
+      if ( jcalc .eq. 5794 ) then
+         regionflag = 3
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-MesVs, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal
+C     Model Number = 5797
+      if ( jcalc .eq. 5797 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 0
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor,Estimated Vs30m, LowEps'
+C     Compute the low bramch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal
+C     Model Number = 5798
+      if ( jcalc .eq. 5798 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 0
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor,Measured Vs30m, LowEps'       
+C     Compute the low bramch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C      Note: Only valid for the Following magnitude Range: 6<M<6.9
+C     Model Number = 5799
+      if ( jcalc .eq. 5799 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 1
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Estimated Vs30m, LowEps'
+C     Compute the low bramch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C      Note: Only valid for the Following magnitude Range: 6<M<6.9
+C     Model Number = 5800
+      if ( jcalc .eq. 5800 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 1
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Measured Vs30m, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C      Note: Only valid for the Following magnitude : 6<M<6.9
+C     Model Number = 5801
+      if ( jcalc .eq. 5801 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 2
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Wenchuan,Estimated Vs30m, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C      Note: Only valid for the Following magnitude: M=7.9
+C     Model Number = 5802
+      if ( jcalc .eq. 5802 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 2
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Wenchaun,Measured Vs30m, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, California
+C     Model Number = 5836
+      if ( jcalc .eq. 5836 ) then
+         regionflag = 0
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Calif, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, Japan
+C     Model Number = 5837
+      if ( jcalc .eq. 5837 ) then
+         regionflag = 1
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Japan, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, China
+C     Model Number = 5838
+      if ( jcalc .eq. 5838 ) then
+         regionflag = 2
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,China, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, Italy
+C     Model Number = 5839
+      if ( jcalc .eq. 5839 ) then
+         regionflag = 3
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Italy, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+
+c ******* Idriss Model *********
+C     Idriss 2013 - Horizontal
+C     Model Number = 5910
+      if ( jcalc .eq. 5910 ) then
+         if (vs .ge. 450.0) then
+            call I_NGAWest2_2013 ( mag, rupDist, ftype, vs, specT,
+     1                     period2, lnY, sigma, iflag )
+            attenname1 = 'Idriss_NGAWest2_2013_Hor, LowEps'
+         elseif (vs .gt. 1200) then
+            call I_NGAWest2_2013 ( mag, rupDist, ftype, 1200.0, specT,
+     1                     period2, lnY, sigma, iflag )
+            attenname1 = 'Idriss_NGAWest2_2013_Hor, LowEps'
+         else
+            write (*,*) 'Idriss NGA West 2 GMPE not defined'
+            write (*,*) 'for Vs<450m/s.'
+            stop 99
+         endif
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Global Adjustments, No Basin Adjustments
+C     Model Number = 5922
+      if ( jcalc .eq. 5922 ) then
+         regionflag = 0
+         basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag,
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3Global, No Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model China-Turkey Adjustments, No Basin Adjustment
+C     Model Number = 5923
+      if ( jcalc .eq. 5923 ) then
+         regionflag = 1
+         basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag,
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ChinaTurkey, No Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Italy-Japan Adjustments, No Basin Adjustment
+C     Model Number = 5924
+      if ( jcalc .eq. 5924 ) then
+         regionflag = 2
+         Basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, Basinflag,
+     1               phi, tau  )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ItalyJapan, No Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Global Adjustments, Basin Adjustments
+C     Model Number = 5925
+      if ( jcalc .eq. 5925 ) then
+         regionflag = 0
+         basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag, 
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3Global, Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model China-Turkey Adjustments, Basin Adjustment
+C     Model Number = 5926
+      if ( jcalc .eq. 5926 ) then
+         regionflag = 1
+         basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag, 
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ChinaTurkey, Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Italy-Japan Adjustments, Basin Adjustment
+C     Model Number = 5927
+      if ( jcalc .eq. 5927 ) then
+         regionflag = 2
+         Basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, Basinflag, 
+     1               phi, tau  )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ItalyJapan, Basin, LowEps'
+C     Compute the low branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*0.083
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY - 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY - 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+
+C ******* High branch models. (jcalc values in the 7000s).
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Note: GMPE is not programmed for Aftershock cases.
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Global, Mainshock, Estimated Vs30m
+
+C     Model Number = 7787
+      if ( jcalc .eq. 7787 ) then
+         regionflag = 0
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-EstVs, HighEps'
+         
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Taiwan, Mainshock, Estimated Vs30m
+C     Model Number = 7788
+      if ( jcalc .eq. 7788 ) then
+         regionflag = 1
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-EstVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, China, Mainshock, Estimated Vs30m
+C     Model Number = 7789
+      if ( jcalc .eq. 7789 ) then
+         regionflag = 2
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-EstVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Japan, Mainshock, Estimated Vs30m
+C     Model Number = 7790
+      if ( jcalc .eq. 7790 ) then
+         regionflag = 3
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 0
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-EstVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Global, Mainshock, Measured Vs30m
+C     Model Number = 7791
+      if ( jcalc .eq. 7791 ) then
+         regionflag = 0
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Glob-MS-MesVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Taiwan, Mainshock, Measured Vs30m
+C     Model Number = 7792
+      if ( jcalc .eq. 7792 ) then
+         regionflag = 1
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Taiw-MS-MesVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, China, Mainshock, Measured Vs30m
+C     Model Number = 7793
+      if ( jcalc .eq. 7793 ) then
+         regionflag = 2
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-China-MS-MesVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Abrahamson, Silva, and Kamai Model *********
+C     Abrahamson, Silva, and Kamai 2013 - Horizontal, Japan, Mainshock, Measured Vs30m
+C     Model Number = 7794
+      if ( jcalc .eq. 7794 ) then
+         regionflag = 3
+         msasflag = 0
+C     Depth to the top of the fault is set equal to the first depth
+C     defined for the fault in the data file (i.e., Depthtop). 
+         vs30_Class = 1
+         call ASK_NGAWest2_2013 ( mag, dipavgd, ftype, Rupwidth, rupDist, jbdist,
+     1            vs, hwflag, lnY, sigma, specT, period2, depthtop, iflag, 
+     2            vs30_class, depthvs10, Rx, Ry0, regionflag, msasflag, phi, tau ) 
+         attenname1 = 'ASK_NGAWest2_2013-Hor-Japan-MS-MesVs, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+      endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal
+C     Model Number = 7797
+      if ( jcalc .eq. 7797 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 0
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor,Estimated Vs30m, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal
+C     Model Number = 7798
+      if ( jcalc .eq. 7798 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 0
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor,Measured Vs30m, HighEps'       
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C      Note: Only valid for the Following magnitude Range: 6<M<6.9
+C     Model Number = 7799
+      if ( jcalc .eq. 7799 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 1
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Estimated Vs30m, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C      Note: Only valid for the Following magnitude Range: 6<M<6.9
+C     Model Number = 7800
+      if ( jcalc .eq. 7800 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 1
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Jap/Ity,Measured Vs30m, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C      Note: Only valid for the Following magnitude : 6<M<6.9
+C     Model Number = 7801
+      if ( jcalc .eq. 7801 ) then
+c     Current model set for estimated Vs30 values (only impacts sigma)
+         vs30_class = 0
+         regionflag = 2
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Wenchuan,Estimated Vs30m, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Chiou and Youngs Model *********
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C      Note: Only valid for the Following magnitude: M=7.9
+C     Model Number = 7802
+      if ( jcalc .eq. 7802 ) then
+c     Current model set for measured Vs30 values (only impacts sigma)
+         vs30_class = 1
+         regionflag = 2
+         call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx, regionflag,
+     1                     phi, tau )
+         attenname1 = 'CY_NGAWest2_2013-Hor-Wenchaun,Measured Vs30m, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, California
+C     Model Number = 7836
+      if ( jcalc .eq. 7836 ) then
+         regionflag = 0
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Calif, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, Japan
+C     Model Number = 7837
+      if ( jcalc .eq. 7837 ) then
+         regionflag = 1
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Japan, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, China
+C     Model Number = 7838
+      if ( jcalc .eq. 7838 ) then
+         regionflag = 2
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,China, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Campbell and Bozorgnia Model *********
+C     Campbell and Bozorgnia 2013 - horizontal, Italy
+C     Model Number = 7839
+      if ( jcalc .eq. 7839 ) then
+         regionflag = 3
+         call CB_NGAWest2_2013 ( mag, rupdist, jbdist, ftype, specT,
+     1                    period2, lnY, sigma, iflag, vs, 
+     2                    depthTop, D25, dipavgd, depth, HWFlag, Rx, rupwidth, regionflag,
+     1                    phi, tau )
+         attenname1 = 'CB_NGAWest2_2013-Hor,Italy, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+
+c ******* Idriss Model *********
+C     Idriss 2013 - Horizontal
+C     Model Number = 7910
+      if ( jcalc .eq. 7910 ) then
+         if (vs .ge. 450.0) then
+            call I_NGAWest2_2013 ( mag, rupDist, ftype, vs, specT,
+     1                     period2, lnY, sigma, iflag )
+            attenname1 = 'Idriss_NGAWest2_2013_Hor, HighEps'
+         elseif (vs .gt. 1200) then
+            call I_NGAWest2_2013 ( mag, rupDist, ftype, 1200.0, specT,
+     1                     period2, lnY, sigma, iflag )
+            attenname1 = 'Idriss_NGAWest2_2013_Hor, HighEps'
+         else
+            write (*,*) 'Idriss NGA West 2 GMPE not defined'
+            write (*,*) 'for Vs<450m/s.'
+            stop 99
+         endif
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Global Adjustments, No Basin Adjustments
+C     Model Number = 7922
+      if ( jcalc .eq. 7922 ) then
+         regionflag = 0
+         basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag,
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3Global, No Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model China-Turkey Adjustments, No Basin Adjustment
+C     Model Number = 7923
+      if ( jcalc .eq. 7923 ) then
+         regionflag = 1
+         basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag,
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ChinaTurkey, No Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Italy-Japan Adjustments, No Basin Adjustment
+C     Model Number = 7924
+      if ( jcalc .eq. 7924 ) then
+         regionflag = 2
+         Basinflag = 0
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, Basinflag,
+     1               phi, tau  )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ItalyJapan, No Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Global Adjustments, Basin Adjustments
+C     Model Number = 7925
+      if ( jcalc .eq. 7925 ) then
+         regionflag = 0
+         basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag, 
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3Global, Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model China-Turkey Adjustments, Basin Adjustment
+C     Model Number = 7926
+      if ( jcalc .eq. 7926 ) then
+         regionflag = 1
+         basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, basinflag, 
+     1               phi, tau )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ChinaTurkey, Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
+c ******* Boore and Atkinson Model *********
+C     Boore, Stewart, Seyhan and Atkinson 2013 - horizontal
+C          DeltaC3 Model Italy-Japan Adjustments, Basin Adjustment
+C     Model Number = 7927
+      if ( jcalc .eq. 7927 ) then
+         regionflag = 2
+         Basinflag = 1
+         call BSSA_NGAWest2_2013 ( mag, jbdist, specT,
+     1               period2, lnY, sigma, iflag, vs, ftype, pga4nl, depthvs10, regionflag, Basinflag, 
+     1               phi, tau  )
+         attenname1 = 'BSSA_NGAWest2_2013_Hor, DC3ItalyJapan, Basin, HighEps'
+C     Compute the high branch epistemic adjustment for the median motions         
+         if (ftype .ge. 0.0) then
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*0.083
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT))
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT))
+               endif
+            endif
+         else
+            if (specT .le. 1.0) then
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.038)
+               endif
+            else
+               if (mag .lt. 7.0) then
+                  lnY = lnY + 1.645*(0.083 + 0.0171*alog(specT) + 0.038)
+               else
+                  lnY = lnY + 1.645*(0.056*(mag-7.0) + 0.083 + 0.0171*alog(specT) + 0.038)
+               endif
+            endif
+         endif
+
+       endif
 
 C **** NGA West2 Vertical Models *********
 c ******* Stewart, Seyhan, Boore, and Atkinson Model *********
