@@ -1,9 +1,7 @@
-c     magprob.f                             
-
-      subroutine magProb ( sourceType, mag, maxMag, minMag, magStep, beta, iFlt,            
-     1                     iFltWidth, pmag, nParam, nWidth,                                
-     2                     magRecur, mpdf_param, ExpMeanMo, CharMeanMo,
-     3                     Rup1_flag )
+                           
+      subroutine magProb ( sourceType, mag, maxMag, minMag, magStep, beta, 
+     1                     iFlt, iFltWidth, pmag, nParam, nWidth, magRecur, 
+     2                     mpdf_param, ExpMeanMo, CharMeanMo, Rup1_flag )
 
       implicit none
       include 'pfrisk.h'  
@@ -14,7 +12,7 @@ c     magprob.f
      1     minMag(MAX_FLT), magStep(MAX_FLT), magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH),
      2     pmag(MAXPARAM,MAX_WIDTH), mU, mL, magU, magL, mag1, mag2,           
      3     maxMagWA, mChar, zmL, zmU, zmagU, zmagL, meanMag, sigma, 
-     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5), magcut, betaAC 
+     4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), magcut, betaAC 
       real ExpMeanMo(MAXPARAM,MAX_WIDTH), CharMeanMo(MAXPARAM,MAX_WIDTH),
      1     magnorm, sumnorm, mUnorm, mLnorm, aknorm, pmagnorm(MAXPARAM,MAX_WIDTH),
      2     beta1, ak, deltaM1, deltaM2, p1, p2, pChar, d, pExp, c1, Btail,
@@ -31,15 +29,14 @@ c     set pmag for SourceType 7
 c     all other SourceTypes       
       else
     
-      rup1_flag = 0
-            
-c     Set magnitude range               
-      mU = mag + magStep(iFlt)/2.       
-      mL = mag - magStep(iFlt)/2.   
+      rup1_flag = 0   
 
 c     Compute the mag probability for each parameter variation                  
       do iWidth=1,nWidth(iFlt)          
-        do iParam=1,nParam(iFlt,iWidth)        
+        do iParam=1,nParam(iFlt,iWidth)
+c         Set magnitude range                     
+          mL = mag - magStep(iFlt)/2. 
+          mU = mag + magStep(iFlt)/2.    
           beta1 = beta(iFlt,iParam,iWidth) 
           if ( magRecur(iFlt,iParam,iWidth) .ne. 10 ) then 
             magU = maxMag(iFlt,iParam,iWidth)                
@@ -50,21 +47,25 @@ c     Compute the mag probability for each parameter variation
               magU = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
             endif
           endif
-
+          
 c         Lower magnitude equal to the minimum magnitude for each fault.		  
           magL = minMag(iFlt)        
           
 c         CHECK IF MAGNITUDE STEP EXCEEDS THE MAX MAG                                      
-          if ( mag .gt. magU ) then                              
+          if ( mL .gt. magU ) then                              
             pmag(iParam,iWidth) = 0.           
           else                                 
       
 c           WHICH MAG RECURRENCE RELATION?
 c           TRUNCATED EXPONENTIAL MODEL   
-            if ( magRecur(iFlt,iParam,iWidth) .eq. 1. ) then                      
+            if ( magRecur(iFlt,iParam,iWidth) .eq. 1. ) then 
+c             Reset mU to magU if necessary (when last mag is not a full step size)
+              if (mU .gt. magU) then
+                mU = magU
+              endif                     
               if (beta(iFlt,iParam,iWidth) .ne. 0.0) then
-              ak = 1. / (1. - exp(-beta(iFlt,iParam,iWidth)                            
-     1           *(magU - magL)) )      
+                ak = 1. / (1. - exp(-beta(iFlt,iParam,iWidth)                            
+     1          *(magU - magL)) )      
               else                               
                 write (*,'( 2x,''Error - b-value = 0.0'')')                                   
                 stop 99                               
@@ -82,10 +83,10 @@ c             set flag if this is part of the large eqk
               endif
 
 c           MAXIMUM MAGNITUDE MODEL       
-            elseif ( magRecur(iFlt,iParam,iWidth) .eq. 3. ) then                                                 
+            elseif ( magRecur(iFlt,iParam,iWidth) .eq. 3. ) then 
               meanMag = magU - mpdf_param(iFlt,iParam,iwidth,1)                          
               sigma = mpdf_param(iFlt,iParam,iwidth,2)    
-c           Check for Delta Function, i.e., Sigma=0
+c           Check for Delta Function, i.e., mLSigma=0
               if (sigma .eq. 0.0) then
                  if (meanMag .ge. mL .and. meanMag .lt. mU) then
 c            Set probability of Magnitude equal to 1.0 for this 
@@ -95,27 +96,34 @@ c            magnitude bin.
                     pmag(iParam,iWidth) = 0.0               
                  endif
               else
-                 zmL = (mL-meanMag)/sigma    
-                 zmU = (mU-meanMag)/sigma    
-                 zmagU=(magU-meanMag)/sigma  
-                 zmagL=(magL-meanMag)/sigma 
-                 if ( zmU .lt. -4. .or. zmu .gt. 4. ) then
-                   pmag(iParam,iWidth) = 0.
-                 else
-                   call NDTR3(zmL,pmL)        
-                   call NDTR3(zmU,pmU)        
-                   call NDTR3(zmagL,pmagL)           
-                   call NDTR3(zmagU,pmagU)        
-                   pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)
-                 endif                        
+c               Reset mU to magU if necessary (when last mag is not a full step size)
+                if (mU .gt. magU) then
+                  mU = magU
+                endif                                                  
+                zmL = (mL-meanMag)/sigma    
+                zmU = (mU-meanMag)/sigma    
+                zmagU=(magU-meanMag)/sigma  
+                zmagL=(magL-meanMag)/sigma 
+                if ( zmU .lt. -4. .or. zmu .gt. 4. ) then
+                  pmag(iParam,iWidth) = 0.
+                else
+                  call NDTR3(zmL,pmL)        
+                  call NDTR3(zmU,pmU)        
+                  call NDTR3(zmagL,pmagL)           
+                  call NDTR3(zmagU,pmagU)        
+                  pmag(iParam,iWidth) = (pmL - pmU)/(pmagL-pmagU)
+                endif                        
               endif      
 
 c             All ruptures are large mag ruptures for syn rup
               Rup1_flag = 1              
       
- 
 c           CHARACTERISTIC MODEL (Youngs and Coppersmith)                         
-            elseif (magRecur(iFlt,iParam,iWidth) .eq. 0. ) then                         
+            elseif (magRecur(iFlt,iParam,iWidth) .eq. 0. ) then 
+c             Reset mU to magU if necessary (when last mag is not a full step size)
+              if (mU .gt. magU) then
+                mU = magU
+              endif                          
               deltaM1 = mpdf_param(iFlt,iParam,iwidth,1)                                 
               deltaM2 = mpdf_param(iFlt,iParam,iwidth,2)
               mag1 = magU - deltaM1 - deltaM2    
@@ -155,7 +163,7 @@ c             NORMALIZE
      1         + beta1*exp(-beta1*(mag1-minMag(iFlt))) * deltaM1                
               pmag(iParam,iWidth) = pmag(iParam,iWidth) / ak   
 
-c             Set large rup falg for syn rupture
+c             Set large rup flag for syn rupture
               if ( mag .gt. mag2) then
                 Rup1_flag = 1
               else
@@ -184,10 +192,10 @@ c            magnitude bin.
                  zmU = (mU-meanMag)/sigma    
                  zmagU=(magU-meanMag)/sigma  
                  zmagL=(magL-meanMag)/sigma  
-                 call NDTR(zmL,pmL,d)        
-                 call NDTR(zmU,pmU,d)        
-                 call NDTR(zmagL,pmagL,d)           
-                 call NDTR(zmagU,pmagU,d)           
+                 call NDTR(zmL,reaL(pmL),d)        
+                 call NDTR(zmU,real(pmU),d)        
+                 call NDTR(zmagL,real(pmagL),d)           
+                 call NDTR(zmagU,real(pmagU),d)           
 
 c             COMPUTE PROBABILITY OF MAGNITUDE BETWEEN mL AND mU                
 c             FOR THE MAXIMUM MAGNITUDE MODEL.
@@ -316,6 +324,9 @@ c           WAACY Model
               else
                MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
               endif
+              if (MaxMagWA .gt. mpdf_param(iFlt,iParam,iwidth,6) ) then
+                MaxMagWA = mpdf_param(iFlt,iParam,iwidth,6)
+              endif
               Btail = mpdf_param(iFlt,iParam,iwidth,3)
               SigM = mpdf_param(iFlt,iParam,iwidth,1)
               Fract_Exp = mpdf_param(iFlt,iParam,iwidth,4)
@@ -332,7 +343,7 @@ c             Brute force calc of Pmag.  Fix this later to be faster.
               pMag(iParam,iWidth) = pMag1
 
             endif                                
-          endif     
+          endif
 
         enddo                               
       enddo  

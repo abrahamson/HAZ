@@ -6,7 +6,7 @@ PEER Verification, Set 2 Test 1
 1  1  					nProb, nAttenType
 0.0  8  0   				  period, max epsilon, dir flag
 1 
-0.18607
+0.187
 1      					  Number of GM Models for AttenType 1
 51 0.0 0.0 1.0 0.0 0    		  jcalc, const1, const2, wt, SigVaradd, mixflag (Sadigh rock)
 0  					psCorFlag  (0=no, 1=yes)
@@ -27,6 +27,7 @@ Set2Test1_Site1.out3
 Set2Test1_Site1.out4
 Set2Test1_Site1.out5
 Set2Test1_Site1.out6
+Set2Test1_Site1.out7
 
 
 

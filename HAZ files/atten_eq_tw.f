@@ -1,7 +1,4 @@
-!DEC$ FIXEDFORMLINESIZE:132
 C Empirical Attenuation Models 
-C Last Modified: 7/17/2015
-C with haz43b
 c ------------------------------------------------------------
 C *** New Lin et al. (2011) Taiwan crustal hangingwall model SOIL (jClac=316)************
 c ------------------------------------------------------------

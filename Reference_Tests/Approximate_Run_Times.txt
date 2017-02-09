@@ -1,0 +1,10 @@
+All tests were run on a personal mac laptop with specifications:
+
+Processor 2.2 GHz 
+Memory 16 GB 1600 MHz
+
+Approximate run times:
+
+RTest7		~30 seconds
+RTest9 		~1 second
+RTest10		~1 second

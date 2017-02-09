@@ -9,7 +9,6 @@
        real lnfd, lnfn, lnfp,ftype, width
        real slnDird, dlnDird, slnDirn, dlnDirn, slnDirp, dlnDirp 
        real X, Y, theta, mag, distrup, Rx, ruplength, pi
-       integer nper          
                              
        
 C***************************************************************************************************************************      
@@ -250,13 +249,12 @@ C     -- output parameters
       real lnDird, lnDirn, lnDirp 
 
 C     -- internal paramaters
-      real CDW,TCD,TMW,TAZ,fgeom,fd,fn,fp,RxW,D
+      real CDW,TCD,TMW,TAZ,fgeom,fd,fn,fp,RxW
       real C,C1,Cn,C1n,Cp,C1p
       real cav_ds(16),c1av_ds(16),cfn_ds(16),c1fn_ds(16),cfp_ds(16),c1fp_ds(16)
-      real period(16),pio2,Djeff
-      real z1, pi, dist2, npio2, tpio3
-      real strikeX, strikeY, astrike, dx, dy
-      integer nper, count1, count2, iflag, i, iCellRupStrike, iCellRupDip
+      real period(16),Djeff
+      real pi, npio2, tpio3
+      integer nper, count1, count2, iflag, i
   
                
 C     Apply directivity and fault normal/fault parallel effects to hazard.

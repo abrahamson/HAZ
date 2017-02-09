@@ -40,3 +40,12 @@ Test4a 		~40 seconds
 Test4b 		~40 seconds
 Test5a 		~10 seconds
 Test5b 		~10 seconds
+
+Set3
+Test1a		~5 seconds
+Test1b		~5 seconds
+Test2		~15 minutes
+Test3 (a)	~3 minutes
+Test3 (b1)	~28 minutes
+Test3 (b2)	~28 minutes
+Test3 (c)

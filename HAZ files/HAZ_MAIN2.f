@@ -8,8 +8,9 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
-      write (*,*) '*   Hazard Code: Version 45.2   *'
-      write (*,*) '*          July, 2016           *'
+      write (*,*) '*          Hazard Code          *'
+      write (*,*) '*        Release HAZ45.2        *'
+      write (*,*) '*      Tagged Jan 2, 2017       *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -40,7 +41,7 @@ c     Read Run File
      1               gmScale, dirFlag, nInten, testInten, lgTestInten, 
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
-     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, runflag, sigvaradd,
+     4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
      6               coefcountRrup, coefcountRjb, iMixture, version )
 
@@ -58,8 +59,8 @@ c     read fault File
      1     synchron, nsyn_Case, synjcalc, synmag, syndistRup, 
      2     syndistJB, synDistSeismo, synHypo, synftype, synhwflag, 
      3     synwt, RateType, iDepthModel, depthParam, nMaxmag2, segWt1, 
-     4     faultFlag, nDD, nFtype, ftype_wt, br_index, br_wt, 
-     5     segModelFlag, nSegModel, segModelWt1, runflag, syn_dip, 
+     4     faultFlag, nDD, nFtype, ftype_wt, 
+     5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version )             
      
@@ -78,29 +79,40 @@ c      Read site-specific site amplification
 c      Open Output1 file which will contain the individual hazard curves. 
        read (13,'( a80)',err=2102) file1
        open (11,file=file1,status='unknown')
+       write (11, *) '45.2 Haz45.2 Out1 file - individual hazard curves'
        
 c      Open Output2 file for Probability of Magnitude Density for each parameter combination.
        read (13,'( a80)',err=2104) file2
        open (17,file=file2,status='unknown')
+       write (17, *) '45.2 Haz45.2 Out2 file - magnitude recurrence curves for SSC fractile code'
        write (17,'(i15, 3x,''nFlt, nWidth'')') nFlt
        write (17,'( 20i5)') (nWidth(iFlt), iFlt=1,nFlt)
 
 c      Open Output3 file
        read (13,'( a80)',err=2106) file1
        open (12,file=file1,status='unknown')
-
+       write (12, *) '45.2 Haz45.2 Out3 file - mean hazard curves'
+       
 c      Open Output4 file
        read (13,'( a80)') file1
        open (14,file=file1,status='unknown')
+       write (14, *) '45.2 Haz45.2 Out4 file - deaggregation output'
        
 c      Open Output5 file which will contain the individual source hazard curves averaged over GMPEs.
        read (13,'( a80)',err=2105) file1
        open (27,file=file1,status='unknown')
+       write (27, *) '45.2 Haz45.2 Out5 file - SSC tornado output file'
        
 c      Open Output6 file which will contain the individual GMPE hazard curves over SSC models.
        read (13,'( a80)',err=2106) file1
        open (28,file=file1,status='unknown')
+       write (28, *) '45.2 Haz45.2 Out6 file - GMC tornado output file'
 
+c      Open Output7 file which will contain deaggregations for each source.
+       read (13,'( a80)',err=2107) file1
+       open (29,file=file1,status='unknown')
+       write (29, *) '45.2 Haz45.2 Out7 file - deaggregation by source'
+       
 c      Initialize Haz Arrays to zero
        call InitHaz ( Haz )
        call InitHaz ( magbar1 )
@@ -109,6 +121,7 @@ c      Initialize Haz Arrays to zero
 
 c      Initialize Mean Deagg values for this site
        call InitDeagg ( m_bar, d_bar, e_bar, Xcost_bar )
+       call InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar_s)
 
 C      Initialize temp hazard array for GM sensitivity
        call Init_tempHaz2 ( tempHaz2 )
@@ -125,10 +138,10 @@ c       Initialize p1_sum (check of the integration over all source pdfs)
 
 c       Initialize closest distance for each distance metric
         call InitMinDis (iFlt, nWidth(iFlt), MinRrup_temp, MinRjb_temp, MinSeismo_temp, SourceDist)
-
+ 
 c       Loop over alternative Fault Widths (epistemic)
 c       (This changes the geometry of the source)
-        do 860 iFltWidth=1,nWidth(iFlt)
+        do 860 iFltWidth=1,nWidth(iFlt)     
 
 C         Initialize temp hazard array for this source
           call Init_tempHaz ( tempHaz )
@@ -359,14 +372,14 @@ c               Loop over synchronous ruptures (aleatory)
      4                iAtten, iProb, jType, vs, synhypo(iflt,1), intflag, AR, syn_dip(iFlt,isyn),
      5                disthypo, depthvs10, depthvs15, D25, tau,
      6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
-     7                vs30_class, forearc, syn_Rx, phi,
+     7                vs30_class, forearc, syn_Rx(iFlt,isyn), phi,
      8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
 
 c                 Compute SRSS of median                
                   lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
                 endif
 
-C               Second call got GPE for different sigma model 
+C               Second call get GMPE for different sigma model 
                 if (sigflag .eq. 1) then
                   if (sourceType(iFlt) .ne. 7) then
                     call meanInten ( distRup, distJB, distSeismo,
@@ -438,14 +451,13 @@ c                Loop over hypocenter location down dip (aleatory)
 
 C                 Call to the rupture directivity Subroutine if applicable
                   if ( dirflag1 .eq. 1) then
-c       JWL 4/10/16 changes
                     call Directivity ( dirFlag(iProb), specT(iProb), DistRup, zTOR, 
      1                 x0, y0, z0, Rx, Ry, Ry0, mag, ftype(iFlt,iFtype), RupWidth, 
      2                 RupLen, dipavgd, HWflag, dirMed, dirSigma, fltgrid_x, 
-     3                 fltgrid_y, fltgrid_z, n1, n2, icellRupstrike, icellRupdip, 
-     4                 dip, fs, fd, dpp_flag, iLocX, iLocY)
+     3                 fltgrid_y, fltgrid_z, n1, n2, fs, fd, dpp_flag, 
+     4                 iLocX, iLocY)
      
-                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
+c                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
 
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed
@@ -539,7 +551,15 @@ c                    Add to mean deagg
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
                      d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
-                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost                    
+                     Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
+
+c                    Add to source deagg 
+                     wt1 = wt * gm_wt(iProb,jType,iAtten)
+                     m_bar_s(iFlt,iProb,jInten) = m_bar_s(iFlt,iProb,jInten) + mHaz*wt1*magTotal
+                     rrup_bar_s(iFlt,iProb,jInten) = rrup_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distRup
+                     rjb_bar_s(iFlt,iProb,jInten) = rjb_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distjb
+                     rx_bar_s(iFlt,iProb,jInten) = rx_bar_s(iFlt,iProb,jInten) + mHaz*wt1*Rx
+                     e_bar_s(iFlt,iProb,jInten) = e_bar_s(iFlt,iProb,jInten) + mHaz*wt1*epsilon1
 
 c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
@@ -549,7 +569,7 @@ c                    Save Marginal Hazard to temp array for fractile output
      1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
                      tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
-     1                        + tempHaz2(jType, jInten,iProb,iAtten)
+     1                        + tempHaz2(jType, jInten,iProb,iAtten)  
 
  500                continue
  510               continue
@@ -621,15 +641,18 @@ c      Write out the mean Haz
      6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 
 c      Write out the deagrregated hazard
-        call output_HazBins ( isite, sitex, sitey, testInten, nInten,
-     1       nProb, HazBins, jCalc, sigTrunc, csrflag,
-     1       nMagBins, nDistBins,
-     2       nEpsBins, magBins, distBins, epsBins,
-     3       attenName, period1, m_bar, d_bar, e_bar,
-     4       nAttenType, attenType, Xcost_bar, nXcostBins, XcostBins,
-     5       HazBinsX)
+       call output_HazBins ( isite, sitex, sitey, testInten, 
+     1       nInten, nProb, HazBins, jCalc, sigTrunc, csrflag,
+     2       nMagBins, nDistBins, nEpsBins, magBins, distBins, 
+     3       epsBins, attenName, period1, m_bar, d_bar, e_bar,
+     4       nAttenType, attenType, Xcost_bar, nXcostBins, 
+     5       XcostBins, HazBinsX)
      
-        call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
+       call output_sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
+     1           nFlt, Haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
+     2           rx_bar_s, e_bar_s, specT, nProb)
+     
+       call WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
  1000 continue
 
@@ -653,5 +676,7 @@ c      Write out the deagrregated hazard
       stop 99
  2106 write (*,'( 2x,''input file error: output file name'')')
       stop 99
-     
+ 2107 write (*,'( 2x,''input file error: output file name'')')
+      stop 99 
+      
       end

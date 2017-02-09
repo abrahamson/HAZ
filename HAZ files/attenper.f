@@ -9,7 +9,7 @@ C     deterministic spectra.
       include 'pfrisk.h'
       
       integer jcalc, anper
-      real minaper, maxaper, specT
+      real minaper, maxaper
 
 c     Set number of attenuation spectral periods to -99 for 
 c     checking of valid jcalc values. 
@@ -748,7 +748,7 @@ C     Model Number = 040
 
 C     Idriss (1991), Horizontal, Soft-soil, PGA
 C     Model Number = 041
-      if ( jcalc .eq. 41 .and. specT .eq. 0.0 ) then
+      if ( jcalc .eq. 41 ) then
          anper = 1
          minaper = 0.0
          maxaper = 0.0
@@ -756,7 +756,7 @@ C     Model Number = 041
 
 c     Idriss 1997 Horizontal, soft-soil, PGA
 C     Model Number = 042
-      if ( jcalc .eq. 42 .and. specT .eq. 0.0 ) then
+      if ( jcalc .eq. 42 ) then
          anper = 1
          minaper = 0.0
          maxaper = 0.0
@@ -1813,9 +1813,17 @@ C     Model Number = 154
          maxaper = 4.0
       endif
 
-c     Bradley (2010) - Horizontal
+c     Bradley (2010) - Horizontal, estimated vs30
 C     Model Number = 160
       if (jcalc .eq. 160) then
+         anper = 23
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
+c     Bradley (2010) - Horizontal, measured vs30
+C     Model Number = 161
+      if (jcalc .eq. 161) then
          anper = 23
          minaper = 0.01
          maxaper = 10.0
@@ -1840,6 +1848,26 @@ C     Model Number = 142, Site Class D
          minaper = 0.01
          maxaper = 3.0
       endif
+
+c     McVerry et al. (2006) - Subduction, Horizontal
+C     Model Number = 143, Site Class A/B
+      if (jcalc .eq. 143) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif
+C     Model Number = 144, Site Class C
+      if (jcalc .eq. 144) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif
+C     Model Number = 145, Site Class D
+      if (jcalc .eq. 145) then
+         anper = 14
+         minaper = 0.01
+         maxaper = 3.0
+      endif      
 
 c     Bindi et al. (2009) - Crustal, Horizontal
 C     Model Number = 95, Hor, Rock

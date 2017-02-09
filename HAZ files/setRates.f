@@ -13,7 +13,7 @@ c ------------------------------------------------------------------
      1     rate(MAXPARAM,MAX_WIDTH),charMeanMo(MAXPARAM,MAX_WIDTH),    
      1     expMeanMo(MAXPARAM,MAX_WIDTH),                             
      2     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
-     3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5)                                     
+     3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6)                                     
       real magStep(MAX_FLT)             
       real mU, mL, rigidity, momentRate1, momentRate2                 
       real c, beta1, t1, t2, t3, c1, deltaM1, deltaM2, deltaM3             
@@ -405,15 +405,15 @@ c -----------------------------------------------------------
       implicit none
       include 'pfrisk.h'                
 
-      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,5),                                     
+      real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6),                                     
      1       beta(MAX_FLT,MAXPARAM,MAX_WIDTH), 
      1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH)
       real minMag(MAX_FLT), Mmin
       real MaxMagWA, Btail, SigM, Fract_Exp, mChar, b_value, stepM
-      real*8 sum, moment
+      real*8 sum, moment, sum1, sum2
       real WA_PMag(10000)
       real cumProb(10000)
-      real mag
+      real mag, M1
       integer iMag, nMag, iFlt, iParam, iWidth, iMag1
       real pratio
       real faultArea, areaRatio, area_rup
@@ -424,6 +424,9 @@ c     Set WAACY model parameters (haz45 version)
         MaxMagWA =  mpdf_param(iFlt,iParam,iwidth,2)
       else
         MaxMagWA = maxMag(iFlt,iParam,iWidth) + mpdf_param(iFlt,iParam,iwidth,5)
+      endif
+      if (MaxMagWA .gt. mpdf_param(iFlt,iParam,iwidth,6) ) then
+        MaxMagWA = mpdf_param(iFlt,iParam,iwidth,6)
       endif
       Btail = mpdf_param(iFlt,iParam,iwidth,3)
       SigM = mpdf_param(iFlt,iParam,iwidth,1)
@@ -446,9 +449,46 @@ c     Adjust the moment release to account for the part of the rupture
 c     that is not modelled.
 
 c     First, Initialize moment sum
-      sum = 0.
+      sum1 = 0.
+      sum2 = 0.
+      M1 = mChar - 0.25
 
 c     Compute the moment * mag pdf for the part of the rupture this is modelled.
+c     this is separated into the moment in the exp part (sum1) and the moment
+c     in the char part (sum2)
+      do iMag=1,nMag
+        mag = Mmin + (iMag-0.5)*stepM
+        moment = 10.**(1.5*mag+16.05)
+
+c       Scale the moment from the eqk for the part that is released on the modelled fault
+c       Just use log(A)= M-4 for now
+        area_rup = 10.**(mag -4)
+        areaRatio = area_rup / faultArea
+        if (areaRatio .gt. 1. ) then
+          moment = moment / areaRatio
+        endif
+        if ( mag .LT. M1 ) then
+          sum1 = sum1 + moment*WA_Pmag(iMag)
+        else
+          sum2 = sum2 + moment*WA_Pmag(iMag)
+        endif
+      enddo
+
+c     Find the fraction of the moment in the exp part after the correction for 
+c     moment released in non-modelled ruptures
+      Fract_Exp = (Fract_Exp / (sum1 / (sum1 + sum2)) ) * Fract_Exp  
+
+c     Reset the value in the array so this this corrected fraction is 
+c     later used for the mag prob
+      mpdf_param(iFlt,iParam,iwidth,4)= Fract_Exp 
+
+c     Recompute the probabilities of magnitudes using WAACY 
+c     with the correction for rupture past the modelled fault      
+      call Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, Fract_Exp, 
+     1                     MaxMagWA, Mmin, WA_Pmag, stepM, nMag )
+
+c     Compute the moment * mag pdf for the part of the rupture this is modelled.
+      sum = 0.
       do iMag=1,nMag
         mag = Mmin + (iMag-0.5)*stepM
         moment = 10.**(1.5*mag+16.05)
@@ -467,8 +507,7 @@ c     Find the cumulative rate which will be used to scale the rate from M>0 to 
       cumProb(nMag) = WA_Pmag(nMag) 
       do iMag=nMag-1,1,-1
         cumProb(iMag) = cumProb(iMag+1) + WA_Pmag(iMag)
-      enddo
-      
+      enddo     
 
 c     Set the ratio of Prob for M>Mmin to M>0
 c     Note: cumProb(1) should be unity.

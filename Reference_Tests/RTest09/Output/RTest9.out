@@ -1,0 +1,186 @@
+Deterministic: Attenuation Curves (5 Hz), NGA West 2 Models - PGA               
+  ***** Input Parameters *****
+    Jcalc      =     2787
+    Constant1  =    0.000
+    Constant2  =    0.000
+    SigVarAdd  =    0.000
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.048
+    DepthVs15  =    0.300
+    DepthVs25  =    0.641
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau                           GMModel                                               SigmaModel
+     0.000   5.000     6.080     1.000     6.080     8.060     1.000     0.000  0.1696E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000     6.320     2.000     6.320     8.250     2.000     0.000  0.1640E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000     6.710     3.000     6.710     8.540     3.000     0.000  0.1553E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000     7.210     4.000     7.210     8.940     4.000     0.000  0.1451E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000     7.810     5.000     7.810     9.430     5.000     0.000  0.1341E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000     9.600     7.500     9.600    10.970     7.500     0.000  0.1077E+00  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8607E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    16.160    15.000    16.160    17.000    15.000     0.000  0.5732E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    20.880    20.000    20.880    21.540    20.000     0.000  0.4075E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    30.590    30.000    30.590    31.050    30.000     0.000  0.2374E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    50.360    50.000    50.360    50.640    50.000     0.000  0.1102E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000    75.240    75.000    75.240    75.430    75.000     0.000  0.5546E-02  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000   100.180   100.000   100.180   100.320   100.000     0.000  0.3224E-02  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000   150.120   150.000   150.120   150.210   150.000     0.000  0.1346E-02  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000   200.090   200.000   200.090   200.160   200.000     0.000  0.6523E-03  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000   300.060   300.000   300.060   300.110   300.000     0.000  0.1898E-03  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.000   5.000   500.040   500.000   500.040   500.060   500.000     0.000  0.2349E-04  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2922
+    Constant1  =    0.000
+    Constant2  =    0.000
+    SigVarAdd  =    0.000
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.300
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau                           GMModel                                               SigmaModel
+     0.000   5.000     6.080     1.000     6.080     8.060     1.000     0.000  0.1599E+00  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000     6.320     2.000     6.320     8.250     2.000     0.000  0.1490E+00  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000     6.710     3.000     6.710     8.540     3.000     0.000  0.1346E+00  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000     7.210     4.000     7.210     8.940     4.000     0.000  0.1198E+00  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000     7.810     5.000     7.810     9.430     5.000     0.000  0.1062E+00  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000     9.600     7.500     9.600    10.970     7.500     0.000  0.7956E-01  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6179E-01  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    16.160    15.000    16.160    17.000    15.000     0.000  0.4109E-01  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    20.880    20.000    20.880    21.540    20.000     0.000  0.2988E-01  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    30.590    30.000    30.590    31.050    30.000     0.000  0.1837E-01  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    50.360    50.000    50.360    50.640    50.000     0.000  0.9273E-02  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000    75.240    75.000    75.240    75.430    75.000     0.000  0.4987E-02  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000   100.180   100.000   100.180   100.320   100.000     0.000  0.3025E-02  0.7023  0.0000  0.0000  0.0000  0.5951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000   150.120   150.000   150.120   150.210   150.000     0.000  0.1327E-02  0.7318  0.0000  0.0000  0.0000  0.6296  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000   200.090   200.000   200.090   200.160   200.000     0.000  0.6570E-03  0.7596  0.0000  0.0000  0.0000  0.6616  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000   300.060   300.000   300.060   300.110   300.000     0.000  0.1921E-03  0.7889  0.0000  0.0000  0.0000  0.6951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.000   5.000   500.040   500.000   500.040   500.060   500.000     0.000  0.2243E-04  0.7889  0.0000  0.0000  0.0000  0.6951  0.3731    BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2836
+    Constant1  =    0.000
+    Constant2  =    0.000
+    SigVarAdd  =    0.000
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.300
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau                           GMModel                                               SigmaModel
+     0.000   5.000     6.080     1.000     6.080     8.060     1.000     0.000  0.1174E+00  0.7079  0.0000  0.0000  0.0000  0.6084  0.3619    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000     6.320     2.000     6.320     8.250     2.000     0.000  0.1143E+00  0.7081  0.0000  0.0000  0.0000  0.6085  0.3620    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000     6.710     3.000     6.710     8.540     3.000     0.000  0.1094E+00  0.7083  0.0000  0.0000  0.0000  0.6087  0.3621    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000     7.210     4.000     7.210     8.940     4.000     0.000  0.1035E+00  0.7086  0.0000  0.0000  0.0000  0.6089  0.3623    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000     7.810     5.000     7.810     9.430     5.000     0.000  0.9676E-01  0.7089  0.0000  0.0000  0.0000  0.6092  0.3625    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000     9.600     7.500     9.600    10.970     7.500     0.000  0.7964E-01  0.7097  0.0000  0.0000  0.0000  0.6098  0.3630    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6455E-01  0.7104  0.0000  0.0000  0.0000  0.6104  0.3634    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    16.160    15.000    16.160    17.000    15.000     0.000  0.4328E-01  0.7114  0.0000  0.0000  0.0000  0.6112  0.3641    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    20.880    20.000    20.880    21.540    20.000     0.000  0.3067E-01  0.7121  0.0000  0.0000  0.0000  0.6117  0.3645    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    30.590    30.000    30.590    31.050    30.000     0.000  0.1780E-01  0.7127  0.0000  0.0000  0.0000  0.6122  0.3649    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    50.360    50.000    50.360    50.640    50.000     0.000  0.8487E-02  0.7132  0.0000  0.0000  0.0000  0.6126  0.3652    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000    75.240    75.000    75.240    75.430    75.000     0.000  0.4623E-02  0.7134  0.0000  0.0000  0.0000  0.6128  0.3653    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000   100.180   100.000   100.180   100.320   100.000     0.000  0.2675E-02  0.7135  0.0000  0.0000  0.0000  0.6129  0.3654    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000   150.120   150.000   150.120   150.210   150.000     0.000  0.1096E-02  0.7136  0.0000  0.0000  0.0000  0.6130  0.3655    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000   200.090   200.000   200.090   200.160   200.000     0.000  0.5362E-03  0.7137  0.0000  0.0000  0.0000  0.6130  0.3655    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000   300.060   300.000   300.060   300.110   300.000     0.000  0.1663E-03  0.7137  0.0000  0.0000  0.0000  0.6130  0.3655    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.000   5.000   500.040   500.000   500.040   500.060   500.000     0.000  0.2532E-04  0.7137  0.0000  0.0000  0.0000  0.6130  0.3655    CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2797
+    Constant1  =    0.000
+    Constant2  =    0.000
+    SigVarAdd  =    0.000
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.300
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau                           GMModel                                               SigmaModel
+     0.000   5.000     6.080     1.000     6.080     8.060     1.000     0.000  0.1306E+00  0.7688  0.0000  0.0000  0.0000  0.6575  0.3984    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000     6.320     2.000     6.320     8.250     2.000     0.000  0.1262E+00  0.7688  0.0000  0.0000  0.0000  0.6576  0.3984    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000     6.710     3.000     6.710     8.540     3.000     0.000  0.1195E+00  0.7689  0.0000  0.0000  0.0000  0.6576  0.3984    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000     7.210     4.000     7.210     8.940     4.000     0.000  0.1117E+00  0.7690  0.0000  0.0000  0.0000  0.6576  0.3985    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000     7.810     5.000     7.810     9.430     5.000     0.000  0.1033E+00  0.7690  0.0000  0.0000  0.0000  0.6577  0.3986    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000     9.600     7.500     9.600    10.970     7.500     0.000  0.8301E-01  0.7693  0.0000  0.0000  0.0000  0.6579  0.3987    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6618E-01  0.7695  0.0000  0.0000  0.0000  0.6580  0.3989    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    16.160    15.000    16.160    17.000    15.000     0.000  0.4336E-01  0.7698  0.0000  0.0000  0.0000  0.6583  0.3992    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    20.880    20.000    20.880    21.540    20.000     0.000  0.3015E-01  0.7701  0.0000  0.0000  0.0000  0.6585  0.3994    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    30.590    30.000    30.590    31.050    30.000     0.000  0.1694E-01  0.7704  0.0000  0.0000  0.0000  0.6587  0.3996    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    50.360    50.000    50.360    50.640    50.000     0.000  0.7763E-02  0.7707  0.0000  0.0000  0.0000  0.6588  0.3998    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000    75.240    75.000    75.240    75.430    75.000     0.000  0.4046E-02  0.7708  0.0000  0.0000  0.0000  0.6589  0.3999    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000   100.180   100.000   100.180   100.320   100.000     0.000  0.2437E-02  0.7708  0.0000  0.0000  0.0000  0.6590  0.3999    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000   150.120   150.000   150.120   150.210   150.000     0.000  0.1038E-02  0.7709  0.0000  0.0000  0.0000  0.6590  0.4000    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000   200.090   200.000   200.090   200.160   200.000     0.000  0.4825E-03  0.7709  0.0000  0.0000  0.0000  0.6590  0.4000    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000   300.060   300.000   300.060   300.110   300.000     0.000  0.1149E-03  0.7709  0.0000  0.0000  0.0000  0.6590  0.4000    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.000   5.000   500.040   500.000   500.040   500.060   500.000     0.000  0.7577E-05  0.7709  0.0000  0.0000  0.0000  0.6590  0.4000    CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2910
+    Constant1  =    0.000
+    Constant2  =    0.000
+    SigVarAdd  =    0.000
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.300
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau                           GMModel                                               SigmaModel
+     0.000   5.000     6.080     1.000     6.080     8.060     1.000     0.000  0.1380E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000     6.320     2.000     6.320     8.250     2.000     0.000  0.1342E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000     6.710     3.000     6.710     8.540     3.000     0.000  0.1283E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000     7.210     4.000     7.210     8.940     4.000     0.000  0.1213E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000     7.810     5.000     7.810     9.430     5.000     0.000  0.1137E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000     9.600     7.500     9.600    10.970     7.500     0.000  0.9477E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7834E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    16.160    15.000    16.160    17.000    15.000     0.000  0.5458E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    20.880    20.000    20.880    21.540    20.000     0.000  0.3965E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    30.590    30.000    30.590    31.050    30.000     0.000  0.2329E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    50.360    50.000    50.360    50.640    50.000     0.000  0.1060E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000    75.240    75.000    75.240    75.430    75.000     0.000  0.5232E-02  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000   100.180   100.000   100.180   100.320   100.000     0.000  0.3043E-02  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000   150.120   150.000   150.120   150.210   150.000     0.000  0.1332E-02  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000   200.090   200.000   200.090   200.160   200.000     0.000  0.7039E-03  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000   300.060   300.000   300.060   300.110   300.000     0.000  0.2616E-03  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.000   5.000   500.040   500.000   500.040   500.060   500.000     0.000  0.6070E-04  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+ 

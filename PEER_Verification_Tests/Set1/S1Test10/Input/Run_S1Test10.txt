@@ -27,6 +27,7 @@ Set1Test10_Site1.out3
 Set1Test10_Site1.out4
 Set1Test10_Site1.out5
 Set1Test10_Site1.out6
+Set1Test10_Site1.out7
 -122.000  37.550     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
 Set1Test10_Site2.out1
 Set1Test10_Site2.out2
@@ -34,6 +35,7 @@ Set1Test10_Site2.out3
 Set1Test10_Site2.out4
 Set1Test10_Site2.out5
 Set1Test10_Site2.out6
+Set1Test10_Site2.out7
 -122.000  37.099     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
 Set1Test10_Site3.out1
 Set1Test10_Site3.out2
@@ -41,6 +43,7 @@ Set1Test10_Site3.out3
 Set1Test10_Site3.out4
 Set1Test10_Site3.out5
 Set1Test10_Site3.out6
+Set1Test10_Site3.out7
 -122.000  36.874     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
 Set1Test10_Site4.out1
 Set1Test10_Site4.out2
@@ -48,6 +51,7 @@ Set1Test10_Site4.out3
 Set1Test10_Site4.out4
 Set1Test10_Site4.out5
 Set1Test10_Site4.out6
+Set1Test10_Site4.out7
 
 
 

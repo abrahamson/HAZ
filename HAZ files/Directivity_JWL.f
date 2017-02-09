@@ -3,13 +3,13 @@ c -------------------------------------------------------------------
       subroutine DirJWL_V3Uni (specT, Rrup, Rx1, Ry, Ruplen, Mag, mech, 
      1        RupWidth, dip, HWFlag, medadj, sigadj )
 
-      real Rx, Ry, Ruplen, Mag, medadj, sigadj, mech, per, Rrup,
-     1     taperDist, taperMag, Cos2TheaAvg, Rymin, specT, RyRatio, RyRatioBar
+      implicit none
+
+      real Rx, Ry, Ruplen, Mag, medadj, sigadj, mech, Rrup,
+     1     taperDist, taperMag, specT, RyRatio
       real period (22), c8b(22), c8bT
       real c8rev(22), c8revT, c8org(22), c8orgT
-      real b0m, b1m, b2m, b3m, b4m, b5m, b6m, b1am, bMm, sigm
-      real b0s, b1s, b2s, b3s, b4s, b5s, b6s, b1as, bMs, sigs
-      real MDF, SDF, MDA, SDA
+      real MDF, SDF, SDA
 
       real b0_ssm, b1_ssm, b2_ssm, b3_ssm, bM_ssm
       real b0_sss, b1_sss, b2_sss, b3_sss, bM_sss
@@ -17,9 +17,11 @@ c -------------------------------------------------------------------
       real b0_rvm, b1_rvm, b2_rvm, b3_rvm, b4_rvm, b5_rvm, b6_rvm, b7_rvm, b8_rvm, bM_rvm
       real b0_rvs, b1_rvs, b2_rvs, b3_rvs, b4_rvs, b5_rvs, bM_rvs      
 
-      real RupWidth, dip, cos2phiAvg, RyRatioRV
-      real thick, RxThick, RyThick, RyminThick 
+      real RupWidth, dip, cos2phiAvg
       integer iflag, count1, count2, HWflag   
+      
+      integer nPer, i
+      real Rx1, period1, cos2thetaAvg, cosdip, sindip
 
       data period     /
      1              0.0000, 0.0100, 0.0200,  0.0300, 0.0500,
@@ -158,13 +160,13 @@ c -------------------------------------------------------------------
       subroutine DirJWL_V3Pre (specT, Rrup, Rx, Ry, Ruplen, Mag, mech, 
      1        RupWidth, dip, HWFlag, medadj, sigadj )
 
-      real Rx, Ry, Ruplen, Mag, medadj, sigadj, mech, per, Rrup,
-     1     taperDist, taperMag, Cos2TheaAvg, Rymin, specT, RyRatio, RyRatioBar
+      implicit none
+
+      real Rx, Ry, Ruplen, Mag, medadj, sigadj, mech, Rrup,
+     1     taperDist, taperMag, specT, RyRatio
       real period (22), c8b(22), c8bT
       real c8rev(22), c8revT, c8org(22), c8orgT
-      real b0m, b1m, b2m, b3m, b4m, b5m, b6m, b1am, bMm, sigm
-      real b0s, b1s, b2s, b3s, b4s, b5s, b6s, b1as, bMs, sigs
-      real MDF, SDF, MDA, SDA
+      real MDF, SDF, SDA
 
       real b0_ssm, b1_ssm, b2_ssm, b3_ssm, bM_ssm
       real b0_sss, b1_sss, b2_sss, b3_sss, bM_sss
@@ -172,9 +174,11 @@ c -------------------------------------------------------------------
       real b0_rvm, b1_rvm, b2_rvm, b3_rvm, b4_rvm, b5_rvm, b6_rvm, b7_rvm, b8_rvm, bM_rvm
       real b0_rvs, b1_rvs, b2_rvs, b3_rvs, b4_rvs, b5_rvs, bM_rvs      
 
-      real RupWidth, dip, cos2phiAvg, RyRatioRV
-      real thick, RxThick, RyThick, RyminThick 
-      integer iflag, count1, count2, HWflag   
+      real RupWidth, dip, cos2phiAvg
+      integer iflag, count1, count2, HWflag  
+
+      integer nPer, i 
+      real period1, cos2thetaAvg, cosdip, sindip
 
       data period     /
      1              0.0000, 0.0100, 0.0200,  0.0300, 0.0500,

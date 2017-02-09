@@ -1,0 +1,191 @@
+Deterministic: Spectra: NGA                                                     
+  ***** Input Parameters *****
+    Jcalc      =     2787
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.048
+    DepthVs15  =    0.400
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau              Per_Notes                     GMModel                     Sigma Model
+     0.010   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8607E-01  0.7916  0.0000  0.0000  0.0000  0.6370  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.020   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8814E-01  0.7940  0.0000  0.0000  0.0000  0.6400  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.030   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.9352E-01  0.8020  0.0000  0.0000  0.0000  0.6502  0.4696    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.050   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1105E+00  0.8099  0.0000  0.0000  0.0000  0.6641  0.4636    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.075   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1447E+00  0.8090  0.0000  0.0000  0.0000  0.6656  0.4599    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.100   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1728E+00  0.8143  0.0000  0.0000  0.0000  0.6714  0.4608    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.150   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1895E+00  0.8270  0.0000  0.0000  0.0000  0.6805  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.200   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1758E+00  0.8242  0.0000  0.0000  0.0000  0.6770  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.250   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1467E+00  0.8184  0.0000  0.0000  0.0000  0.6700  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.300   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1171E+00  0.8102  0.0000  0.0000  0.0000  0.6600  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.400   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8093E-01  0.7977  0.0000  0.0000  0.0000  0.6445  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6025E-01  0.7924  0.0000  0.0000  0.0000  0.6380  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     0.750   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2966E-01  0.7804  0.0000  0.0000  0.0000  0.6230  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     1.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1848E-01  0.7776  0.0000  0.0000  0.0000  0.6195  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     1.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.9817E-02  0.7693  0.0000  0.0000  0.0000  0.6090  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     2.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5983E-02  0.7641  0.0000  0.0000  0.0000  0.6025  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     3.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2463E-02  0.7575  0.0000  0.0000  0.0000  0.5940  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     4.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1309E-02  0.7454  0.0000  0.0000  0.0000  0.5785  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     5.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7824E-03  0.7369  0.0000  0.0000  0.0000  0.5675  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+     7.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.3033E-03  0.7185  0.0000  0.0000  0.0000  0.5435  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+    10.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1417E-03  0.7080  0.0000  0.0000  0.0000  0.5295  0.4700    Defined   ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                               ASK_NGAWest2_2013-Hor-Glob-MS-EstVs                                             
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2922
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.400
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau              Per_Notes                     GMModel                     Sigma Model
+     0.010   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6245E-01  0.7054  0.0000  0.0000  0.0000  0.5986  0.3733    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.020   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6319E-01  0.7106  0.0000  0.0000  0.0000  0.6020  0.3775    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.030   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6852E-01  0.7381  0.0000  0.0000  0.0000  0.6174  0.4044    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.050   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8922E-01  0.7930  0.0000  0.0000  0.0000  0.6427  0.4645    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.075   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1170E+00  0.7969  0.0000  0.0000  0.0000  0.6435  0.4701    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.100   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1326E+00  0.7701  0.0000  0.0000  0.0000  0.6343  0.4368    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.150   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1290E+00  0.7299  0.0000  0.0000  0.0000  0.6285  0.3710    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.200   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1078E+00  0.7050  0.0000  0.0000  0.0000  0.6250  0.3261    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.250   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8767E-01  0.6948  0.0000  0.0000  0.0000  0.6227  0.3082    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.300   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7141E-01  0.6857  0.0000  0.0000  0.0000  0.6184  0.2962    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.400   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5095E-01  0.6792  0.0000  0.0000  0.0000  0.6116  0.2953    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.3826E-01  0.6846  0.0000  0.0000  0.0000  0.6068  0.3168    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     0.750   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1992E-01  0.7020  0.0000  0.0000  0.0000  0.6016  0.3618    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     1.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1160E-01  0.7109  0.0000  0.0000  0.0000  0.5889  0.3983    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     1.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.4980E-02  0.7124  0.0000  0.0000  0.0000  0.5755  0.4199    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     2.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2721E-02  0.7163  0.0000  0.0000  0.0000  0.5723  0.4308    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     3.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1250E-02  0.7252  0.0000  0.0000  0.0000  0.5762  0.4403    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     4.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7663E-03  0.7283  0.0000  0.0000  0.0000  0.5758  0.4460    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     5.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5266E-03  0.7206  0.0000  0.0000  0.0000  0.5754  0.4337    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+     7.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2552E-03  0.6934  0.0000  0.0000  0.0000  0.5730  0.3905    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+    10.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1633E-03  0.6649  0.0000  0.0000  0.0000  0.5570  0.3631    Defined   BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                       BSSA_NGAWest2_2013_Hor, DC3Global, No Basin                                     
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2836
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.400
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau              Per_Notes                     GMModel                     Sigma Model
+     0.010   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6547E-01  0.7099  0.0000  0.0000  0.0000  0.6104  0.3624    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.020   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6746E-01  0.7168  0.0000  0.0000  0.0000  0.6143  0.3694    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.030   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7771E-01  0.7344  0.0000  0.0000  0.0000  0.6210  0.3919    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.050   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1020E+00  0.7749  0.0000  0.0000  0.0000  0.6405  0.4363    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.075   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1284E+00  0.7922  0.0000  0.0000  0.0000  0.6492  0.4539    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.100   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1375E+00  0.7769  0.0000  0.0000  0.0000  0.6477  0.4291    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.150   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1430E+00  0.7550  0.0000  0.0000  0.0000  0.6517  0.3812    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.200   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1270E+00  0.7386  0.0000  0.0000  0.0000  0.6565  0.3385    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.250   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1114E+00  0.7232  0.0000  0.0000  0.0000  0.6445  0.3280    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.300   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.9838E-01  0.7223  0.0000  0.0000  0.0000  0.6475  0.3200    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.400   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7160E-01  0.7125  0.0000  0.0000  0.0000  0.6415  0.3100    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5404E-01  0.7133  0.0000  0.0000  0.0000  0.6370  0.3210    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     0.750   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.3042E-01  0.7257  0.0000  0.0000  0.0000  0.6195  0.3780    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     1.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1847E-01  0.7304  0.0000  0.0000  0.0000  0.6035  0.4115    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     1.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7686E-02  0.7266  0.0000  0.0000  0.0000  0.5720  0.4480    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     2.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.4279E-02  0.7169  0.0000  0.0000  0.0000  0.5585  0.4495    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     3.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1766E-02  0.7180  0.0000  0.0000  0.0000  0.5525  0.4585    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     4.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1013E-02  0.7146  0.0000  0.0000  0.0000  0.5400  0.4680    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     5.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6501E-03  0.7108  0.0000  0.0000  0.0000  0.5265  0.4775    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+     7.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2271E-03  0.6945  0.0000  0.0000  0.0000  0.5015  0.4805    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+    10.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1339E-03  0.6681  0.0000  0.0000  0.0000  0.4920  0.4520    Defined   CB_NGAWest2_2013-Hor,Calif                                                        CB_NGAWest2_2013-Hor,Calif                                                      
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2797
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.400
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau              Per_Notes                     GMModel                     Sigma Model
+     0.010   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6618E-01  0.7695  0.0000  0.0000  0.0000  0.6580  0.3989    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.020   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6731E-01  0.7701  0.0000  0.0000  0.0000  0.6571  0.4017    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.030   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7708E-01  0.7816  0.0000  0.0000  0.0000  0.6683  0.4053    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.050   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1047E+00  0.7958  0.0000  0.0000  0.0000  0.6819  0.4104    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.075   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1377E+00  0.8061  0.0000  0.0000  0.0000  0.6915  0.4143    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.100   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1544E+00  0.8140  0.0000  0.0000  0.0000  0.6986  0.4177    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.150   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1612E+00  0.8257  0.0000  0.0000  0.0000  0.7087  0.4238    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.200   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1468E+00  0.8336  0.0000  0.0000  0.0000  0.7152  0.4283    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.250   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1248E+00  0.8390  0.0000  0.0000  0.0000  0.7193  0.4318    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.300   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1038E+00  0.8428  0.0000  0.0000  0.0000  0.7222  0.4346    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.400   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7202E-01  0.8483  0.0000  0.0000  0.0000  0.7262  0.4385    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5176E-01  0.8509  0.0000  0.0000  0.0000  0.7276  0.4412    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     0.750   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2606E-01  0.8348  0.0000  0.0000  0.0000  0.7059  0.4456    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     1.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1504E-01  0.8105  0.0000  0.0000  0.0000  0.6753  0.4483    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     1.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.6643E-02  0.7718  0.0000  0.0000  0.0000  0.6260  0.4514    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     2.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.3672E-02  0.7606  0.0000  0.0000  0.0000  0.6108  0.4532    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     3.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1531E-02  0.7550  0.0000  0.0000  0.0000  0.6020  0.4557    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     4.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7807E-03  0.7513  0.0000  0.0000  0.0000  0.5960  0.4574    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     5.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.4472E-03  0.7482  0.0000  0.0000  0.0000  0.5913  0.4584    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+     7.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1579E-03  0.7426  0.0000  0.0000  0.0000  0.5829  0.4601    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+    10.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7337E-04  0.7387  0.0000  0.0000  0.0000  0.5771  0.4612    Defined   CY_NGAWest2_2013-Hor,Estimated Vs30m                                              CY_NGAWest2_2013-Hor,Estimated Vs30m                                            
+ 
+  ***** Input Parameters *****
+    Jcalc      =     2910
+    Mag        =    5.000
+    Ftype      =     0.00
+    Dip        =   90.000
+    HWFlag     =        0
+    Vs30m      =  760.000
+     Vs30m -- > estimated
+    Hypodepth  =    8.000
+    Width      =    3.200
+    DepthVs10  =    0.041
+    DepthVs15  =    0.400
+    DepthVs25  =    0.607
+    Depthtop   =    6.000
+        Forearc Site
+  Period(s)   Mag    Rrup      Rjb      SeisDist HypoDist    Rx         Ry0          SA(g)         Sigma   Const1  Const2  SigAdd      Phi       Tau              Per_Notes                     GMModel                     Sigma Model
+     0.010   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7834E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.020   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8048E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.030   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.8833E-01  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.050   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1036E+00  0.7751  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.075   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1287E+00  0.7893  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.100   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1435E+00  0.7994  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.150   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1421E+00  0.8136  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.200   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1361E+00  0.8237  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.250   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1191E+00  0.8315  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.300   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1054E+00  0.8379  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.400   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7837E-01  0.8479  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5722E-01  0.8557  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     0.750   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.3136E-01  0.8699  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     1.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2132E-01  0.8800  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     1.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.9802E-02  0.8942  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     2.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.5623E-02  0.9043  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     3.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2505E-02  0.9185  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     4.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1252E-02  0.9185  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     5.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.7722E-03  0.9185  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+     7.500   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.2699E-03  0.9185  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+    10.000   5.000    11.660    10.000    11.660    12.810    10.000     0.000  0.1391E-03  0.9185  0.0000  0.0000  0.0000  0.0000  0.0000    Defined   Idriss_NGAWest2_2013_Hor                                                          Idriss_NGAWest2_2013_Hor                                                        
+ 

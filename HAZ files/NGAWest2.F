@@ -974,6 +974,11 @@ C            150 < Vs30m < 1500 m/s
 C            0 < Z25 < 10 km
 C            0 < Zhyp < 20 km
 C            15 < Dip < 90 
+C            Region Flag:
+C               0 = California 
+C               1 = Japan
+C               2 = China
+C               3 = Italy
 C        Report provides formulation for estimating recommended
 C           parameters when they are not defined (e.g., Z25 given Vs30m).
 C           See Chapter 06 of the report. 
@@ -2278,6 +2283,7 @@ c     1       max(0.0, 1.0-max(0.0,Rrup-40.0)/30.0) *
 c     1       min(max(0.0,M-5.5)/0.8, 1.0) * cDPP
 
 c Predicted median Sa on reference condition (Vs=1130 m/sec)
+        fd = 0.0
         psa_ref = r1+r2+r3+r4+hw+fd
 
 C     Set Phi1, Phi5, and Phi6 term for Japan is region is requested
@@ -2469,7 +2475,7 @@ c ----------------------------------------------------------------------
       real lnSa, SA1180, rjb, rRup, Rx, Ry0, dip, mag, vs30
       real HW_taper1, HW_taper2, HW_taper3, HW_taper4, HW_taper5
       real damp_dSA1180, sigAmp, fltWidth
-      real f1, f4, f5, f6, f7, f8, f9, f10, f11, fReg, f12, f13
+      real f1, f4, f5, f6, f7, f8, f10, f11, fReg, f12, f13
       real Ry1, ZTOR, Frv, Fn, SpecT
       real phiA, phiB, tauA, tauB, phi, tau
       integer vs30_class, hwflag, iflag, nPer, regionflag, msasflag
@@ -3087,11 +3093,15 @@ c     Compute between-event term, tau (eq. 7.2)
       endif
       tauB = tauA
 
-c     Compute phiB, within-event term with site amp variablity removed (eq. 7.7)
+c     Compute phiB, within-event term with site amp variability removed (eq. 7.7)
+c     with fix to model for small mag at long periods - limit sigAmp to be less than phiA
       sigAmp = 0.4
+      if (phiA .le. sigAmp) then
+        sigAmp = phiA*0.99
+      endif
       phiB = sqrt( phiA**2 - sigAmp**2)
       
-c     Compute parital derivative of alog(soil amp) w.r.t. alog(Sa1180) (eq. 7.10)
+c     Compute partial derivative of alog(soil amp) w.r.t. alog(Sa1180) (eq. 7.10)
       if ( vs30 .ge. vLinT) then
         dAmp_dSa1180 = 0.
       else
@@ -3106,7 +3116,7 @@ C     Compute tau, with non-linear effects (eq. 7.9)
       tau = tauB * (1. + dAmp_dSa1180)
       
 c     Compute median ground motion (eq. 1)
-      lnSa = f1 + f4 + f5 + f6 + f7 + f8 + f9 + f10 + f11 + freg 
+      lnSa = f1 + f4 + f5 + f6 + f7 + f8 + f10 + f11 + freg 
 
       return
       end

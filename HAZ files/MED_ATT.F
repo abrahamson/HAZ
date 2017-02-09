@@ -1,4 +1,3 @@
-c meanpga.f
 
       subroutine meanInten (rupdist, jbdist, seismodist, hwflag,
      1  mag, jcalc, specT, lnY, siga, ftype, attenName, period1, iAtten, iProb,
@@ -15,7 +14,7 @@ c meanpga.f
       character*80 attenName(4,MAX_ATTEN), attenname1, attenname0
       integer intflag(4,MAX_PROB), iflag, vs30_class, iBranch
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
-      integer coefcountRrup, coefcountRjb, iAtten, iProb, jType
+      integer coefcountRrup, coefcountRjb, iAtten, iProb, jType, region
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
       real magc, rupdistc, ftypec, lnYc, depthTop, phiSS
@@ -27,7 +26,7 @@ c meanpga.f
       real phi, tau, lnYH, sourceclass, sigmac, fth, frv, vs, sigma
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11), c1
       real depthTop1, s03vfs, s03sr, s03fr, soil, GB, GC, pga4nl
-      real sigmaH, phiH, tauH, sclass
+      real sigmaH, phiH, tauH, sclass, pgaref
       
 C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       lnY = 1.e30
@@ -76,6 +75,29 @@ c  *** Turkey adjusted NGA1 models
      3                     hwflag, Rx )
       endif
 
+C     Kale, Ö., Akkar, S., Ansari, A., & Hamzehloo, H. (2015). 
+C     -A Ground‐Motion Predictive Model for Iran and Turkey for Horizontal PGA, 
+C     PGV, and 5% Damped Response Spectrum: Investigation of Possible Regional Effects
+C     BSSA: Vol. 105, No.2A, pp. 963-980.
+C     Model Number = 2150
+      if ( jcalc .eq. 2150 ) then
+C     For Turkey
+        region = 0          
+
+         call KAAH_2015 ( mag, jbdist, specT,
+     1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
+         attenname1 = 'Kale et AL. (2015)_Hor_Turkey'
+       endif
+
+      if ( jcalc .eq. 3150 ) then
+C     For Iran
+        region = 1          
+
+         call KAAH_2015 ( mag, jbdist, specT,
+     1                    period2, lnY, sigma, iflag, vs, ftype, pgaref,region )
+         attenname1 = 'Kale et AL. (2015)_Hor_Iran'
+      endif
+
 c    Taiwan GMPEs
 
 
@@ -112,8 +134,6 @@ c-----------------------------------------------------------------------------
 c     Lin 2009 Doctoral thesis          
 C     Model Number = 315                                        
       if ( jcalc .eq. 315) then    
-c      write(*,*) 'specT = ', specT
-
          call  Lin2009                                        
      1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
          attenname1 = 'Lin 2009 Doctoral thesis, Crustal, VS30'  
@@ -122,8 +142,6 @@ c-----------------------------------------------------------------------------
 c     TG09221 2012 project          
 C     Model Number = 441                                        
       if ( jcalc .eq. 441) then    
-c      write(*,*) 'specT = ', specT
-
          call  TG09221_2012                                        
      1( mag, rupDist, specT, period2, lnY, sigma, vs, iflag, ftype)
          attenname1 = 'TG09221 Report 2012/06, Crustal, VS30'   
@@ -545,10 +563,9 @@ C     defined for the fault in the data file (i.e., Depthtop).
       endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal
+C     Chiou and Youngs 2013 - Horizontal, estimated Vs30
 C     Model Number = 2797
       if ( jcalc .eq. 2797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -560,10 +577,9 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal
+C     Chiou and Youngs 2013 - Horizontal, measured Vs30
 C     Model Number = 2798
       if ( jcalc .eq. 2798 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 0
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -575,11 +591,10 @@ c     Current model set for measured Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment, estimated Vs30
 C      Note: Only valid for the Following magnitude Range: 6<M<6.9
 C     Model Number = 2799
       if ( jcalc .eq. 2799 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -591,11 +606,10 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Japan and Italy Adjustment, measured Vs30
 C      Note: Only valid for the Following magnitude Range: 6<M<6.9
 C     Model Number = 2800
       if ( jcalc .eq. 2800 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 1
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -607,11 +621,10 @@ c     Current model set for measured Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
-C      Note: Only valid for the Following magnitude : 6<M<6.9
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment, estimated Vs30
+C      Note: Only valid for the Following magnitude: M=7.9
 C     Model Number = 2801
       if ( jcalc .eq. 2801 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -623,11 +636,10 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
        endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment
+C     Chiou and Youngs 2013 - Horizontal, Wenchaun Adjustment, measured Vs30
 C      Note: Only valid for the Following magnitude: M=7.9
 C     Model Number = 2802
       if ( jcalc .eq. 2802 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 2
          call CY_NGAWest2_2013 ( mag, rupDist, jbdist, specT,
@@ -889,10 +901,9 @@ C     Divide Vertical by Horizontal to get V/H Ratio
       endif
 
 c ******* Chiou and Youngs Model *********
-C     Chiou and Youngs 2013 - Vertical 
+C     Chiou and Youngs 2013 - Vertical, estimated Vs30 
 C     Model Number = 4797
       if ( jcalc .eq. 4797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -902,10 +913,9 @@ c     Current model set for estimated Vs30 values (only impacts sigma)
          attenname1 = 'CY_NGAWest2_2013-Ver,Estimated Vs30m'
        endif
 
-C     Chiou and Youngs 2013 - Vertical 
+C     Chiou and Youngs 2013 - Vertical, measured Vs30 
 C     Model Number = 4798
       if ( jcalc .eq. 4798 ) then
-c     Current model set for measured Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -915,10 +925,9 @@ c     Current model set for measured Vs30 values (only impacts sigma)
          attenname1 = 'CY_NGAWest2_2013-Ver,Measured Vs30m'
        endif
 
-C     V/H Model
+C     V/H Model, estimated Vs30
 C     Model Number = 6797
       if ( jcalc .eq. 6797 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 0
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -937,10 +946,9 @@ C     Divide vertical by horizontal to get V/H Ratio.
          lnY = lnY - lnYH + 6.89    
        endif
 
-C     V/H Model
+C     V/H Model, measured Vs30
 C     Model Number = 6798
       if ( jcalc .eq. 6798 ) then
-c     Current model set for estimated Vs30 values (only impacts sigma)
          vs30_class = 1
          regionflag = 0
          call CY_NGAWest2_2013_V ( mag, rupDist, jbdist, specT,
@@ -996,7 +1004,7 @@ C     Divide vertical by horizontal to get V/H Ratio.
          lnY = lnY - lnYH + 6.89    
          attenname1 = 'BC_NGAWest2_2013-V/H,Calif'
        endif
-C     Bozorgnia and Campbell 2013 - Implied Vertical/Horizontal Ratio, California
+C     Bozorgnia and Campbell 2013 - Implied Vertical/Horizontal Ratio, Japan
 C     Model Number = 6837
       if ( jcalc .eq. 6837 ) then
          regionflag = 1
@@ -3566,13 +3574,26 @@ c ******* Bradley (2010) *********
 C     Bradley (2010) - NZ-Specific Psuedo-Spectral Acceleration Ground
 C         Motion Prediction Equation Based on Foreign Models
 C     University of Canterbury Research Report 2010-03
+C     Bradley 2010 - Horizontal, estimated Vs30
 C     Model Number = 160
       if ( jcalc .eq. 160 ) then
+         vs30_class = 0
          call Bradley_2010 ( mag, rupDist, jbdist, specT,
      1                     period2, lnY, sigma, iflag, 
      2                     vs, dipavgd, Depthtop, Ftype, 
-     3                     depthvs10, hwflag, Rx )
-         attenname1 = 'Bradley-2010, Hor'
+     3                     depthvs10, vs30_class, hwflag, Rx )
+         attenname1 = 'Bradley-2010-Hor, Estimated Vs30'
+       endif
+
+C     Bradley 2010 - Horizontal, measured Vs30
+C     Model Number = 161
+      if ( jcalc .eq. 161 ) then
+         vs30_class = 1
+         call Bradley_2010 ( mag, rupDist, jbdist, specT,
+     1                     period2, lnY, sigma, iflag, 
+     2                     vs, dipavgd, Depthtop, Ftype, 
+     3                     depthvs10, vs30_class, hwflag, Rx )
+         attenname1 = 'Bradley-2010-Hor, Measured Vs30'
        endif
 
 c ******* McVerry et al. (2006) Crustal Events, Horizontal *********
@@ -3609,6 +3630,41 @@ C     Model Number = 142, Site Class D
          attenname1 = 'McVerryetal-Crustal-2006, Hor, Site D'
        endif
 
+c ******* McVerry et al. (2006) Subduction Events, Horizontal *********
+C     McVerry, G. H., J. X. Zhao, N.A. Abrahamson and P.G. Somerville (2006) 
+C        "New Zealand Acceleration Response Spectrum Attenuation 
+C         Reations for Crustal and Subduction Zone Earthquakes",
+C         Bulletin New Zealand Society for Earthquake Engineering, Vol. 39,
+C         No. 1, pp. 1 - 58. 
+C     Model Number = 143, Site Class A/B
+      if ( jcalc .eq. 143 ) then
+         Sc = 0.0
+         Sd = 0.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
+     
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site A/B'
+       endif
+C     Model Number = 144, Site Class C
+      if ( jcalc .eq. 144 ) then
+         Sc = 1.0
+         Sd = 0.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site C'
+       endif
+C     Model Number = 145, Site Class D
+      if ( jcalc .eq. 145 ) then
+         Sc = 0.0
+         Sd = 1.0
+         call McVerry_Subduction_2006 ( mag, rupDist, specT,
+     1                     period2, lnY, sigma, iflag, Ftype, 
+     3                     depthtop, dipavgd, rupwidth, depth, Sc, Sd )
+         attenname1 = 'McVerryetal-Subduction-2006, Hor, Site D'
+       endif
+      
 c ******* Bindi et al. (2009) Crustal Events, Horizontal *********
 C     Bindi, D., L. Luzi, M. Massa, and F. Pacor (2009). Horizontal and Vertical 
 C          ground motion prediction equaitons derived from the Italian
