@@ -6,6 +6,7 @@ import functools
 import glob
 import multiprocessing
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -139,13 +140,15 @@ def print_errors(name, errors):
 
 
 def iter_cases(path):
-    pattern = os.path.join(path, '*', '*')
-    for dirpath in sorted(glob.glob(pattern)):
-        if not os.path.isdir(dirpath):
-            continue
-        name = os.path.relpath(dirpath, path).replace(os.sep, '/')
-        # Skip long cases if not required
-        yield name
+    for root, dirnames, fnames in os.walk(path):
+        for fname in fnames:
+            if not re.match(r'Run_\S+\.txt', fname):
+                continue
+            _path = os.path.relpath(
+                os.path.join(root, '..'),
+                path
+            ).replace(os.sep, '/')
+            yield _path
 
 
 def run_haz(path, haz_bin):
