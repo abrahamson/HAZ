@@ -31,6 +31,10 @@ with:
 
     Perform and report tests for HAZ PSHA code.
 
+    positional arguments:
+      patterns              Only process test cases matching the pattern 
+                            (default: None)
+
     optional arguments:
       -h, --help            show this help message and exit
       -a, --all_cases       Perform all test cases, which might take many hours.

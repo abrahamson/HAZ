@@ -139,10 +139,12 @@ def print_errors(name, errors):
         raise NotImplementedError
 
 
-def iter_cases(path):
+def iter_cases(path, patterns):
     for root, dirnames, fnames in os.walk(path):
         for fname in fnames:
             if not re.match(r'Run_\S+\.txt', fname):
+                continue
+            if patterns and not any(re.search(p, fname) for p in patterns):
                 continue
             _path = os.path.relpath(
                 os.path.join(root, '..'),
@@ -246,27 +248,28 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--root_test', type=str,
                         default='../tests',
                         help='Root path used in testing; created if needed.')
+    parser.add_argument('patterns', default=None, nargs='*',
+                        help='Only process test cases matching the pattern')
     args = parser.parse_args()
 
     if args.cores == 1:
         # Single thread
         ok = True
-        for name in iter_cases(args.root_src):
+        for name in iter_cases(args.root_src, args.patterns):
             ok &= test_set(name, force=args.force, all_cases=args.all_cases,
                            root_src=args.root_src, root_test=args.root_test,
                            haz_bin=args.haz_bin, rtol=args.rtol)
     else:
         # Multi-threaded
         processes = min(max(1, args.cores), multiprocessing.cpu_count())
+
         with multiprocessing.Pool(processes) as pool:
             results = pool.map_async(
-                functools.partial(test_set,
-                                  force=args.force, all_cases=args.all_cases,
-                                  root_src=args.root_src,
-                                  root_test=args.root_test,
-                                  haz_bin=args.haz_bin, rtol=args.rtol),
-                iter_cases(args.root_src)
-            )
+                functools.partial(test_set, force=args.force,
+                                  all_cases=args.all_cases, root_src=args.root_src,
+                                  root_test=args.root_test, haz_bin=args.haz_bin,
+                                  rtol=args.rtol),
+                iter_cases(args.root_src, args.patterns))
             ok = all(results.get())
 
     sys.exit(0 if ok else 1)
