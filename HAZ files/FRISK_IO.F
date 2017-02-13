@@ -762,7 +762,7 @@ c       Write Results
 
         do iMagBin=1,nMagBins-1
           do iDistBin=1,nDistBins-1
-            write (nwr,'(2x,6f7.1,2x,30(e10.3,2x))') epsBins(1),
+            write (nwr,'(2x,2f7.3,2f7.2,2f7.1,2x,30(e10.3,2x))') epsBins(1),
      1             epsBins(nEpsBins),
      1             magBins(iMagBin),
      1             magBins(iMagBin+1),
@@ -779,7 +779,7 @@ c       Write Results
         do iEpsBin=1,nEpsBins-1
          do iMagBin=1,nMagBins-1
           do iDistBin=1,nDistBins-1
-           write (nwr,'(2x,6f7.1,2x,30(e10.3,2x))')epsBins(iEpsBin),
+           write (nwr,'(2x,2f7.3,2f7.2,2f7.1,2x,30(e10.3,2x))')epsBins(iEpsBin),
      1             epsBins(iEpsBin+1),
      1             magBins(iMagBin),
      1             magBins(iMagBin+1),
