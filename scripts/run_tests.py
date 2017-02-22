@@ -6,6 +6,7 @@ import functools
 import glob
 import multiprocessing
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -138,14 +139,18 @@ def print_errors(name, errors):
         raise NotImplementedError
 
 
-def iter_cases(path):
-    pattern = os.path.join(path, '*', '*')
-    for dirpath in sorted(glob.glob(pattern)):
-        if not os.path.isdir(dirpath):
-            continue
-        name = os.path.relpath(dirpath, path).replace(os.sep, '/')
-        # Skip long cases if not required
-        yield name
+def iter_cases(path, patterns):
+    for root, dirnames, fnames in os.walk(path):
+        for fname in fnames:
+            if not re.match(r'Run_\S+\.txt', fname):
+                continue
+            if patterns and not any(re.search(p, fname) for p in patterns):
+                continue
+            _path = os.path.relpath(
+                os.path.join(root, '..'),
+                path
+            ).replace(os.sep, '/')
+            yield _path
 
 
 def run_haz(path, haz_bin):
@@ -238,27 +243,33 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_src', type=str,
-                        default='../PEER Verification Tests/',
+                        default='../PEER_Verification_Tests/',
                         help='Root path of test cases')
     parser.add_argument('-t', '--root_test', type=str,
                         default='../tests',
                         help='Root path used in testing; created if needed.')
+    parser.add_argument('patterns', default=None, nargs='*',
+                        help='Only process test cases matching the pattern')
     args = parser.parse_args()
 
-    processes = min(max(1, args.cores), multiprocessing.cpu_count())
-    with multiprocessing.Pool(processes) as pool:
-        results = pool.map_async(
-            functools.partial(test_set,
-                              force=args.force, all_cases=args.all_cases,
-                              root_src=args.root_src, root_test=args.root_test,
-                              haz_bin=args.haz_bin, rtol=args.rtol),
-            iter_cases(args.root_src)
-        )
-        ok = all(results.get())
-    # Single thread
-    # ok = True
-    # for name in iter_cases(args.root_src):
-    #     ok &= test_set(name, force=args.force, all_cases=args.all_cases,
-    #              root_src=args.root_src, root_test=args.root_test,
-    #              haz_bin=args.haz_bin, rtol=args.rtol)
+    if args.cores == 1:
+        # Single thread
+        ok = True
+        for name in iter_cases(args.root_src, args.patterns):
+            ok &= test_set(name, force=args.force, all_cases=args.all_cases,
+                           root_src=args.root_src, root_test=args.root_test,
+                           haz_bin=args.haz_bin, rtol=args.rtol)
+    else:
+        # Multi-threaded
+        processes = min(max(1, args.cores), multiprocessing.cpu_count())
+
+        with multiprocessing.Pool(processes) as pool:
+            results = pool.map_async(
+                functools.partial(test_set, force=args.force,
+                                  all_cases=args.all_cases, root_src=args.root_src,
+                                  root_test=args.root_test, haz_bin=args.haz_bin,
+                                  rtol=args.rtol),
+                iter_cases(args.root_src, args.patterns))
+            ok = all(results.get())
+
     sys.exit(0 if ok else 1)
