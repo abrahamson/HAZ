@@ -77,7 +77,7 @@
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
-      elseif (version .eq. 45.2 ) then
+      elseif (version .eq. 45.2 .or. version .eq. 45.3 ) then
         call Rd_Fault_Data_45_2 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag, 
@@ -96,7 +96,7 @@
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
       else
-        write (*,'( 2x,''Incompatible fault file, use Haz45.2 or Haz45.1'')')
+        write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
       endif
       
