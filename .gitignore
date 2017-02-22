@@ -9,6 +9,7 @@ mrweprefs.r
 project.r
 absoft_run_env.sh
 release
+AWE_Preferences.f95
 
 # Ignore Mac OS X system files
 .DS_Store
