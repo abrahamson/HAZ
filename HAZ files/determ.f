@@ -128,6 +128,7 @@ C     Perform loop over distances for attenuation models.
                Ry0 = attenRy0(idist)
                iAtten = 1
                jType = 1
+               iProb = 1
 
                call meanInten ( distRup, distJB, distSeismo,
      1               hwflag, mag, jcalc1, specT(1,1),  
