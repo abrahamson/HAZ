@@ -591,7 +591,7 @@ c                Scale moment rate by reference thickness.
                  else
                    RateParamWt(iFlt,i,iWidth) = RateWt1(iRate) * bValueWt1(i_bValue) 
                  endif
-                 maxMagWt(iFlt,i,iWidth) = refMagWt1(iThick1,iRefMag)
+                 maxMagWt(iFlt,i,iWidth) = refMagWt1(iWidth,iRefMag)
 
 c                Set max mag
                  if (magRecur1(iRecur) .eq. 0 ) then
@@ -1328,7 +1328,7 @@ c                Scale moment rate by reference thickness.
                  else
                    RateParamWt(iFlt,i,iWidth) = RateWt1(iRate) * bValueWt1(i_bValue) 
                  endif
-                 maxMagWt(iFlt,i,iWidth) = refMagWt1(iThick1,iRefMag)
+                 maxMagWt(iFlt,i,iWidth) = refMagWt1(iWidth,iRefMag)
 
 c                Set max mag
                  if (magRecur1(iRecur) .eq. 0 ) then
