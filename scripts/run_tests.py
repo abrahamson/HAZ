@@ -17,8 +17,6 @@ import numpy as np
 import checksum
 import io_tools
 
-REF_CHECKSUMS = checksum.load_ref_checksums()
-
 
 def check_dictionary(actual, expected, rtol, atol):
     """Check each value in a dictionary.
@@ -206,6 +204,9 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
         ext = os.path.splitext(fname)[1]
         fname_expected = os.path.join(root_src, name, 'Output',
                                       os.path.basename(fname))
+        if not os.path.exists(fname_expected):
+            continue
+
         if ext == '.out3':
             expected = io_tools.read_out3(fname_expected)
             actual = io_tools.read_out3(fname)
