@@ -1,17 +1,30 @@
+
 import re
+from typing import Callable, Dict, List, Tuple, TypeVar
+
 import numpy as np
 
+T = TypeVar('T', dict, int, float, str)
 
-def fixed_split(line, pairs, keep_tail=False):
+def fixed_split(line: str,
+                pairs: List[Tuple[int, Callable]],
+                keep_tail: bool=False
+                ) -> List[T]:
     """Read a fixed width line of text.
 
-    Args:
-        line (str): text line to parse
-        pairs (list): list of tuples specifying the width and the string parser
-        keep_tail (bool): remove entries without values
+    Parameters
+    ----------
+    line : str
+        text line to parse
+    pairs : list[(int, func)]
+        list of tuples specifying the width and the string parser
+    keep_tail : bool
+        remove entries without values
 
-    Returns:
-        list: values read
+    Returns
+    -------
+    values : list
+        values read
     """
     line = line.rstrip()
 
@@ -27,13 +40,15 @@ def fixed_split(line, pairs, keep_tail=False):
         i += w
 
     if not keep_tail:
-        while values[-1] is None:
+        while values and values[-1] is None:
             values.pop()
 
-    return values
+    return tuple(values)
 
 
-def parse_blocks(lines, pattern):
+def parse_blocks(lines: List[str],
+                 pattern: str
+                 ) -> List[str]:
     """Separate lines into a series of blocks using an identifying pattern.
 
     Parameters
@@ -44,7 +59,8 @@ def parse_blocks(lines, pattern):
         Regex pattern used to identify the blocks.
     Returns
     -------
-    list[str]
+    blocks : list[str]
+        Parsed blocks
     """
     starts = [i for i, l in enumerate(lines)
               if re.search(pattern, l)]
@@ -53,16 +69,16 @@ def parse_blocks(lines, pattern):
     return blocks
 
 
-def parse_site_line(line):
+def parse_site_line(line: str) -> Dict[str, T]:
     """Parse the site line in out3 and out4 files.
 
     Parameters
     ----------
-    line: str
+    line : str
         Line of text
     Returns
     -------
-    dict
+    site : dict
         Site dictionary containing keys:
             id: int
                 identifier
@@ -80,7 +96,9 @@ def parse_site_line(line):
     return s
 
 
-def pop_lines(lines, count):
+def pop_lines(lines: List[str],
+              count: int
+              ) -> List[str]:
     """Pop a given number of lines from the start of a list.
 
     Parameters
@@ -92,7 +110,7 @@ def pop_lines(lines, count):
 
     Returns
     -------
-    list[str]
+    popped : list[str]
         Lines removed
     """
     popped = []
@@ -101,7 +119,10 @@ def pop_lines(lines, count):
     return popped
 
 
-def pop_until(lines, pattern, include_match=True):
+def pop_until(lines: List[str],
+              pattern: str,
+              include_match: bool=True
+              ) -> List[str]:
     """Pop lines from the start of a list until a regex pattern is found.
 
     Parameters
@@ -115,7 +136,7 @@ def pop_until(lines, pattern, include_match=True):
 
     Returns
     -------
-    list[str]
+    popped : list[str]
         Lines removed
     """
     popped = []
@@ -128,7 +149,7 @@ def pop_until(lines, pattern, include_match=True):
     return popped
 
 
-def read_out3(fname):
+def read_out3(fname: str) -> Dict[str, T]:
     """Read a HAZ out3 formatted text file.
 
     Parameters
@@ -138,7 +159,8 @@ def read_out3(fname):
 
     Returns
     -------
-    dict
+    site : dict
+        Dictionary containing site information
     """
     assert fname.endswith('.out3')
 
@@ -261,7 +283,7 @@ def test_read_out3():
             model[key], expected, err_msg='Key: %s' % key)
 
 
-def read_out4(fname):
+def read_out4(fname: str) -> Dict[str, T]:
     """Read a HAZ out4 formatted text file.
 
     Parameters
@@ -271,7 +293,8 @@ def read_out4(fname):
 
     Returns
     -------
-    dict
+    site : dict
+        Dictionary containing site information
     """
     assert fname.endswith('.out4')
 
@@ -364,3 +387,9 @@ def test_read_out4():
         for key, expected in zip(keys, test_bin):
             actual = site['bins'][idx][key]
             np.testing.assert_allclose(actual, expected)
+
+
+
+# def load_fractiles(fname):
+# def read_out4(fname: str) -> Dict[str, T]:
+
