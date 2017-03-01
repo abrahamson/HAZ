@@ -389,7 +389,47 @@ def test_read_out4():
             np.testing.assert_allclose(actual, expected)
 
 
+def read_fractiles(fname):
+    with open(fname) as fp:
+        lines = list(fp)
 
-# def load_fractiles(fname):
-# def read_out4(fname: str) -> Dict[str, T]:
+    period = float(lines.pop(0)[:12])
 
+    intensity = np.array(
+        fixed_split(lines.pop(0), 18 * [(12, float)]))
+
+    block = pop_until(lines, r'^\s+$', include_match=False)
+
+    values = [fixed_split(b, [(7, float)] + 17 * [(12, float)])
+              for b in block]
+
+    fractiles = np.array([v[0] for v in values])
+    hazard = np.array([v[1:] for v in values])
+
+    mean = np.array(
+        fixed_split(lines.pop(0)[7:], 17 * [(12, float)])
+    )
+    pop_until(lines, r'^-+$', include_match=False)
+    pop_lines(lines, 4)
+    hazard = float(lines.pop(0)[35:])
+    pop_lines(lines, 2)
+
+    summary = np.array(
+        [fixed_split(l, [(11, float)] + 5 * [(12, float)])
+         for l in lines],
+        dtype=np.dtype([
+            ('period', '<f8'),
+            ('5th', '<f8'),
+            ('10th', '<f8'),
+            ('50th', '<f8'),
+            ('90th', '<f8'),
+            ('95th', '<f8'),
+        ]),
+    )
+
+    # FIXME
+
+def test_read_fractiles():
+    fname = '../PEER_Verification_Tests/' \
+        'Set3/S3Test2/Fractiles/Output/Fract_Set3Test2_Site1.out'
+    # FIXME
