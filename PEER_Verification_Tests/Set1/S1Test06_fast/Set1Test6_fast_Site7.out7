@@ -1,0 +1,17 @@
+ 45.3 Haz45.3 Out7 file - deaggregation by source
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+ SITE 7 COORDINATES:  -121.886   38.113
+  iProb, specT:     1      0.0000
+   18  nAmp
+ AMP:                                          0.001     0.010     0.050     0.100     0.150     0.200     0.250     0.300     0.350     0.400     0.450     0.500     0.550     0.600     0.700     0.800     0.900     1.000
+  01_Set1Test6_fast             MBar            6.14      6.14      6.14      6.14      6.15      6.20      6.32      6.47       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test6_fast             RrupBar        10.22     10.22     10.22     10.22     10.21     10.14     10.03      9.97       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test6_fast             RjbBar          9.98      9.98      9.98      9.98      9.98      9.97      9.97      9.97       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test6_fast             RxBar          -9.97     -9.97     -9.97     -9.97     -9.97     -9.97     -9.97     -9.97       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test6_fast             EBar            0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+
+------------------
+

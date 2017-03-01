@@ -1,0 +1,17 @@
+ 45.3 Haz45.3 Out7 file - deaggregation by source
+
+
+-------------------------------------------------------------------------------------------------------------------
+
+ SITE 5 COORDINATES:  -122.000   37.910
+  iProb, specT:     1      0.0000
+   18  nAmp
+ AMP:                                          0.001     0.010     0.050     0.100     0.150     0.200     0.250     0.300     0.350     0.400     0.450     0.500     0.550     0.600     0.700     0.800     0.900     1.000
+  01_Set1Test5                  MBar            5.41      5.41      5.49      5.77      6.09      6.28      6.40      6.48       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test5                  RrupBar        19.20     19.20     17.19     13.84     12.50     11.48     10.69     10.03       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test5                  RjbBar         18.58     18.58     16.57     13.39     12.28     11.40     10.67     10.03       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test5                  RxBar           0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test5                  EBar            0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+
+------------------
+
