@@ -48,7 +48,7 @@ with:
                             case directory is empty. (default: False)
       -r RTOL, --rtol RTOL  Relative tolerance used for float comparisons.
                             (default: 0.002)
-      -s ROOT_SRC, --root_src ROOT_SRC
+      -s ROOT_REF, --root_ref ROOT_REF
                             Root path of test cases (default:
                             ../PEER_Verification_Tests/)
       -t ROOT_TEST, --root_test ROOT_TEST
@@ -90,3 +90,44 @@ By default, only the tests with fast calculation time are performed. All
 tests, can be run with the `-a` or `--all_tests` flag, such as:
 
     $> python run_tests.py -a -c 2 -b ../build/HAZ -r 0.005
+
+## Test Duration
+
+During the testing process, the time for running `HAZ` on a given input file is
+reported. If the test output is redirected to a file, the test duration can be
+extracted as follows:
+
+    $> python run_tests.py -a -c 2 -b ../build/HAZ -r 0.005 > test.log
+    $> cat haz_tests.log | sed -En 's/.*: (\S+) (\S+)$/\1\t\2/p' | sort
+
+    Set1/S1Test01           0:00:00.938700
+    Set1/S1Test02           0:00:33.722160
+    Set1/S1Test04           0:00:45.615901
+    Set1/S1Test05           1:15:58.920194
+    Set1/S1Test06           1:18:25.974351
+    Set1/S1Test07           1:18:23.266588
+    Set1/S1Test08a          0:00:33.947122
+    Set1/S1Test08b          0:00:35.287663
+    Set1/S1Test08c          0:00:34.911442
+    Set1/S1Test10           0:00:05.554910
+    Set1/S1Test11           0:00:24.390950
+    Set2/S2Test1            0:02:35.734937
+    Set2/S2Test2a           1:13:19.895491
+    Set2/S2Test2b           1:21:30.252216
+    Set2/S2Test2c           1:19:56.661891
+    Set2/S2Test2d           1:13:25.263971
+    Set2/S2Test3a           0:00:07.209199
+    Set2/S2Test3b           0:00:07.187167
+    Set2/S2Test3c           0:00:10.300279
+    Set2/S2Test3d           0:00:07.637015
+    Set2/S2Test4a           0:00:22.463504
+    Set2/S2Test4b           0:00:29.631422
+    Set2/S2Test5a           0:00:05.331427
+    Set2/S2Test5b           0:00:04.926723
+    Set3/S3Test1a           0:00:01.603328
+    Set3/S3Test1b           0:00:01.516753
+    Set3/S3Test2/Fractiles  0:07:55.357953
+    Set3/S3Test2/Hazard     0:08:17.658489
+
+The calculation time ranges from less than a second to almost to 90 minutes for
+this test computer.
