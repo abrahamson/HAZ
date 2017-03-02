@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import datetime
 import functools
 import glob
 import multiprocessing
+import pathlib
 import os
 import re
 import shutil
@@ -12,13 +14,15 @@ import subprocess
 import sys
 import time
 
+from typing import List
+
 import numpy as np
 
 import checksum
 import io_tools
 
 
-def check_dictionary(actual, expected, rtol, atol):
+def check_dictionary(actual, expected, rtol: float, atol: float):
     """Check each value in a dictionary.
 
     Parameters
@@ -137,37 +141,17 @@ def print_errors(name, errors):
         raise NotImplementedError
 
 
-def iter_cases(path, patterns):
-    for root, dirnames, fnames in os.walk(path):
-        for fname in fnames:
-            if not re.match(r'Run_\S+\.txt', fname):
-                continue
-            if patterns and not any(re.search(p, fname) for p in patterns):
-                continue
-            _path = os.path.relpath(
-                os.path.join(root, '..'),
-                path
-            ).replace(os.sep, '/')
-            yield _path
-
-
-def run_haz(path, haz_bin):
-    fname = glob.glob(os.path.join(path, 'Run_*'))[0]
-    print('Running HAZ on:', fname)
-    dirname, basename = os.path.split(fname)
-    haz_bin = os.path.abspath(haz_bin)
-    with open(os.devnull, 'w') as fp:
-        p = subprocess.Popen([haz_bin],
-                             stdout=fp,
-                             stdin=subprocess.PIPE,
-                             cwd=dirname)
-        # Process one file
-        p.communicate(bytes('0\n0\n%s\n' % basename, 'ascii'))
-        p.wait()
-
-
-def test_set(name, all_cases, force=True, haz_bin='HAZ',
-             root_src='', root_test='', rtol=1E-3):
+def iter_cases(path_src: str,
+               patterns: List[str],
+               all_cases: bool=False
+               ) -> pathlib.PurePath:
+    """Iterate over test cases.
+    """
+    # Excluded filenames
+    excluded = [
+        # FIXME: Currently calculation of fractiles is not supported
+        'Run_Fractiles.txt',
+    ]
     # These cases take a couple hours to run
     long_cases = [
         'Set1/S1Test05',
@@ -179,16 +163,51 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
         'Set2/S2Test2d',
     ]
 
-    # fixme check this
-    # if not REF_CHECKSUMS[name] == checksum.hash_directory(dirpath):
-    #     logging.critical('Reference case has changed!')
-    #     assert False
-    ok = True
-    path_test = os.path.join(root_test, name)
-    if not os.path.exists(path_test) or force:
-        if name in long_cases and not all_cases:
-            return True
+    pattern_run = r'^Run_\S+\.txt$'
 
+    for root, dirnames, fnames in os.walk(path_src):
+        for fname in fnames:
+            if fname in excluded:
+                continue
+            if not re.match(pattern_run, fname):
+                continue
+
+            if patterns and not any(re.search(p, root) for p in patterns):
+                continue
+
+            path = pathlib.Path(root).parent
+            # Check cases with long runtimes
+            if not all_cases and any(path.match(lc) for lc in long_cases):
+                continue
+
+            yield path
+
+
+def run_haz(path: pathlib.PurePath, haz_bin: str):
+    # Use the first Run_ filename
+    fpath = next(path.glob('Run_*.txt'))
+    print('Running HAZ on:', fpath)
+    haz_bin = os.path.abspath(haz_bin)
+    with open(os.devnull, 'w') as fp:
+        p = subprocess.Popen([haz_bin],
+                             stdout=fp,
+                             stdin=subprocess.PIPE,
+                             cwd=str(fpath.parent))
+        # Process one file
+        p.communicate(bytes('0\n0\n%s\n' % fpath.name, 'ascii'))
+        p.wait()
+
+
+def test_path(path_ref: pathlib.PurePath,
+             force: bool=True,
+             haz_bin: str='HAZ',
+             root_ref: str='',
+             root_test: str='',
+             rtol: float=1E-3) -> bool:
+
+    print(path_ref)
+    path_test = pathlib.Path(root_test, path_ref.relative_to(root_ref))
+    if not path_test.exists() or force:
         try:
             shutil.rmtree(path_test)
             # Wait for my slow computer :-/
@@ -196,23 +215,32 @@ def test_set(name, all_cases, force=True, haz_bin='HAZ',
         except FileNotFoundError:
             pass
 
-        shutil.copytree(os.path.join(root_src, name, 'Input'),
-                        path_test)
+        # Copy files over
+        shutil.copytree(path_ref.joinpath('Input'), path_test)
+        # Run HAZ and track the duration
+        start = datetime.datetime.now()
         run_haz(path_test, haz_bin)
+        time_diff = datetime.datetime.now() - start
 
-    for fname in glob.glob(os.path.join(path_test, '*')):
-        ext = os.path.splitext(fname)[1]
-        fname_expected = os.path.join(root_src, name, 'Output',
-                                      os.path.basename(fname))
-        if not os.path.exists(fname_expected):
+        print(
+            'Calculation time: {} {}'.format(
+                path_ref.relative_to(root_ref), time_diff)
+        )
+
+    ok = True
+    for fpath_test in path_test.iterdir():
+        ext = fpath_test.suffix
+        fpath_ref = path_ref.joinpath('Output', fpath_test.name)
+
+        if not fpath_ref.exists():
             continue
 
         if ext == '.out3':
-            expected = io_tools.read_out3(fname_expected)
-            actual = io_tools.read_out3(fname)
+            expected = io_tools.read_out3(str(fpath_ref))
+            actual = io_tools.read_out3(str(fpath_test))
         elif ext == '.out4':
-            expected = io_tools.read_out4(fname_expected)
-            actual = io_tools.read_out4(fname)
+            expected = io_tools.read_out4(str(fpath_ref))
+            actual = io_tools.read_out4(str(fpath_test))
         else:
             continue
 
@@ -243,7 +271,7 @@ if __name__ == '__main__':
                              'test case directory is empty.')
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
-    parser.add_argument('-s', '--root_src', type=str,
+    parser.add_argument('-s', '--root_ref', type=str,
                         default='../PEER_Verification_Tests/',
                         help='Root path of test cases')
     parser.add_argument('-t', '--root_test', type=str,
@@ -256,21 +284,21 @@ if __name__ == '__main__':
     if args.cores == 1:
         # Single thread
         ok = True
-        for name in iter_cases(args.root_src, args.patterns):
-            ok &= test_set(name, force=args.force, all_cases=args.all_cases,
-                           root_src=args.root_src, root_test=args.root_test,
-                           haz_bin=args.haz_bin, rtol=args.rtol)
+        for name in iter_cases(args.root_ref, args.patterns, args.all_cases):
+            ok &= test_path(name, force=args.force, root_ref=args.root_ref,
+                           root_test=args.root_test, haz_bin=args.haz_bin,
+                           rtol=args.rtol)
     else:
         # Multi-threaded
         processes = min(max(1, args.cores), multiprocessing.cpu_count())
 
         with multiprocessing.Pool(processes) as pool:
             results = pool.map_async(
-                functools.partial(test_set, force=args.force,
-                                  all_cases=args.all_cases, root_src=args.root_src,
-                                  root_test=args.root_test, haz_bin=args.haz_bin,
-                                  rtol=args.rtol),
-                iter_cases(args.root_src, args.patterns))
+                functools.partial(test_path, force=args.force,
+                                  root_ref=args.root_ref,
+                                  root_test=args.root_test,
+                                  haz_bin=args.haz_bin, rtol=args.rtol),
+                iter_cases(args.root_ref, args.patterns, args.all_cases))
             ok = all(results.get())
 
     sys.exit(0 if ok else 1)
