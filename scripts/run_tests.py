@@ -178,6 +178,7 @@ def iter_cases(path_src: str,
             path = pathlib.Path(root).parent
             # Check cases with long runtimes
             if not all_cases and any(path.match(lc) for lc in long_cases):
+                print('Skipping:', path)
                 continue
 
             yield path
