@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""Functions to run tests on reference cases."""
+
 import argparse
 import datetime
 import functools
-import glob
 import multiprocessing
 import pathlib
 import os
@@ -18,7 +19,6 @@ from typing import List
 
 import numpy as np
 
-import checksum
 import io_tools
 
 
@@ -32,9 +32,11 @@ def check_dictionary(actual, expected, rtol: float, atol: float):
     expected: dict
         Dictionary of expected (reference) values to be tested against.
     rtol: float
-        Relative tolerance of the float comparisons, see :func:`numpy.allclose`.
+        Relative tolerance of the float comparisons, see
+        :func:`numpy.allclose`.
     atol: float
-        Absolute tolerance of the float comparisons, see :func:`numpy.allclose`.
+        Absolute tolerance of the float comparisons, see
+        :func:`numpy.allclose`.
     Returns
     -------
     dict
@@ -68,9 +70,11 @@ def check_value(actual, expected, rtol, atol):
     expected: : str, int, float, dict, list, tuple
         Value to test against (reference). Type should match the acutal type.
     rtol: float
-        Relative tolerance of the float comparisons, see :func:`numpy.allclose`.
+        Relative tolerance of the float comparisons, see
+        :func:`numpy.allclose`.
     atol: float
-        Absolute tolerance of the float comparisons, see :func:`numpy.allclose`.
+        Absolute tolerance of the float comparisons, see
+        :func:`numpy.allclose`.
     Returns
     -------
     None or tuple(actual, expected):
@@ -141,12 +145,9 @@ def print_errors(name, errors):
         raise NotImplementedError
 
 
-def iter_cases(path_src: str,
-               patterns: List[str],
-               all_cases: bool=False
-               ) -> pathlib.PurePath:
-    """Iterate over test cases.
-    """
+def iter_cases(path_src: str, patterns: List[str],
+               all_cases: bool=False) -> pathlib.PurePath:
+    """Iterate over test cases."""
     # Excluded filenames
     excluded = [
         # FIXME: Currently calculation of fractiles is not supported
@@ -161,6 +162,11 @@ def iter_cases(path_src: str,
         'Set2/S2Test2b',
         'Set2/S2Test2c',
         'Set2/S2Test2d',
+        'Set3/S3Test2',
+        'Set3/S3Test2/Fractiles',
+        'Set3/S3Test2/Hazard',
+        'Set3/S3Test3/Approach b1',
+        'Set3/S3Test3/Approach b2',
     ]
 
     pattern_run = r'^Run_\S+\.txt$'
@@ -200,11 +206,11 @@ def run_haz(path: pathlib.PurePath, haz_bin: str):
 
 
 def test_path(path_ref: pathlib.PurePath,
-             force: bool=True,
-             haz_bin: str='HAZ',
-             root_ref: str='',
-             root_test: str='',
-             rtol: float=1E-3) -> bool:
+              force: bool=True,
+              haz_bin: str='HAZ',
+              root_ref: str='',
+              root_test: str='',
+              rtol: float=1E-3) -> bool:
 
     print(path_ref)
     path_test = pathlib.Path(root_test, path_ref.relative_to(root_ref))
@@ -249,9 +255,10 @@ def test_path(path_ref: pathlib.PurePath,
         errors = check_value(actual, expected, rtol, atol=1e-08)
         ok &= (not errors)
         if errors:
-            print('Errors in:', name)
-            print_errors('%s: ' % fname, errors)
+            print('Errors in: %s' % fpath_test)
+            print_errors('%s: ' % fpath_test, errors)
     return ok
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -259,17 +266,17 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument('-a', '--all_cases', action='store_true',
-                        help='Perform all test cases, ' +
-                             'which might take many hours.')
+                        help='Perform all test cases, '
+                        'which might take many hours.')
     parser.add_argument('-b', '--haz_bin', type=str,
                         default='../build/HAZ.exe',
-                        help='Name of HAZ binary. ' +
-                             'Path is required if not in PATH variable.')
+                        help='Name of HAZ binary. '
+                        'Path is required if not in PATH variable.')
     parser.add_argument('-c', '--cores', type=int, default=1,
                         help='Number of cores to use.')
     parser.add_argument('-f', '--force', action='store_true',
                         help='Force HAZ to rerun; otherwise it only runs if '
-                             'test case directory is empty.')
+                        'test case directory is empty.')
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_ref', type=str,
@@ -287,8 +294,8 @@ if __name__ == '__main__':
         ok = True
         for name in iter_cases(args.root_ref, args.patterns, args.all_cases):
             ok &= test_path(name, force=args.force, root_ref=args.root_ref,
-                           root_test=args.root_test, haz_bin=args.haz_bin,
-                           rtol=args.rtol)
+                            root_test=args.root_test, haz_bin=args.haz_bin,
+                            rtol=args.rtol)
     else:
         # Multi-threaded
         processes = min(max(1, args.cores), multiprocessing.cpu_count())
