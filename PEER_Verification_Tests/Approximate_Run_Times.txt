@@ -45,7 +45,10 @@ Set3
 Test1a		~5 seconds
 Test1b		~5 seconds
 Test2		~15 minutes
+Test2_fast	~5 minutes
 Test3 (a)	~3 minutes
 Test3 (b1)	~28 minutes
+Test3 (b1_fast) ~2 minutes
 Test3 (b2)	~28 minutes
+Test3 (b2_fast) ~2 minutes
 Test3 (c)
