@@ -258,13 +258,14 @@ c  --------------------------
 
       implicit none
       
-      character*10 name
+      character(len=*) :: name
       integer n, nMax
       
       if ( n .gt. nMax ) then
+        write (*,*)
         write (*,'( 2x,''Array Dimension Too Small'')')
         write (*,'( 2x,''Increase '',a10,''to '',i5)') name, n
-        pause
+        write (*,*)
         stop 99
       endif
       return
