@@ -865,18 +865,25 @@ c  -------------------------------------------------------------------
       end
 c  -------------------------------------------------------------------
 
-      subroutine output_Sourcedeagg ( isite, sitex, sitey, ati, nInten, 
-     1           nFlt, risk, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
-     2           rx_bar_s, e_bar_s, specT, nProb)
+      subroutine output_Sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
+     1           nFlt, haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
+     2           rx_bar_s, e_bar_s, rSeismo_bar_s, ry0_bar_s, mag_bar_s, 
+     3           ftype_bar_s, hypodepth_bar_s, dipavgd_bar_s, ztor_bar_s, 
+     4           thetasite_bar_s, rupwidth_bar_s, rHypo_bar_s, specT, nProb)
 
       implicit none
       include 'pfrisk.h'
 
       integer isite, nInten(MAX_PROB), iFlt, nFlt, iProb, J2, nProb, iInten, nwr
-      real siteX, siteY, ati(MAX_PROB, MAX_INTEN), specT(MAX_PROB) 
-      real*8 risk(MAX_INTEN,MAX_PROB,MAX_FLT), m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), 
+      real siteX, siteY, testInten(MAX_PROB, MAX_INTEN), specT(MAX_PROB) 
+      real*8 haz(MAX_INTEN,MAX_PROB,MAX_FLT), m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), 
      1       rrup_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
-     2       rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), e_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
+     2       rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), e_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
+     3       rSeismo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ry0_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     4       mag_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ftype_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), 
+     5       hypodepth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), dipavgd_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     6       ztor_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), thetasite_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), 
+     7       rupwidth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rHypo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
       character*80 fName(MAX_FLT)
 
       nwr = 29
@@ -889,20 +896,39 @@ c     Write Site Coordinates
 c       Write Test Intensities
          write (nwr,'( 2x,''iProb, specT: '',i5,2x,f10.4)') iProb, specT(iProb)
          write (nwr,'( i5,2x,''nAmp'')') nInten(iProb)
-         write(nwr,920) (ati(iProb,J2),J2=1,nInten(iProb))
+         write(nwr,920) (testInten(iProb,J2),J2=1,nInten(iProb))
 
 c        Write MBar, RrupBar, Rjbbar, Rxbar and EpsBar Results       
          do iFlt=1,nFlt
           write (nwr,'( 2x,a30,''MBar      '',30f10.2)') fName(iFlt), 
-     1          (m_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+     1          (m_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
           write (nwr,'( 2x,a30,''RrupBar   '',30f10.2)') fName(iFlt), 
-     1          (rrup_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+     1          (rrup_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
           write (nwr,'( 2x,a30,''RjbBar    '',30f10.2)') fName(iFlt), 
-     1          (rjb_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+     1          (rjb_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
           write (nwr,'( 2x,a30,''RxBar     '',30f10.2)') fName(iFlt), 
-     1          (rx_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+     1          (rx_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
           write (nwr,'( 2x,a30,''EBar      '',30f10.2)') fName(iFlt), 
-     1          (e_bar_s(iFlt,iProb,iInten)/risk(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+     1          (e_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+
+          write (nwr,'( 2x,a30,''rSeismoBar'',30f10.2)') fName(iFlt), 
+     1          (rSeismo_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''ry0Bar    '',30f10.2)') fName(iFlt), 
+     1          (ry0_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''rHypoBar  '',30f10.2)') fName(iFlt), 
+     1          (rHypo_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''DipAvgBar '',30f10.2)') fName(iFlt), 
+     1          (dipavgd_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''ZtorBar   '',30f10.2)') fName(iFlt), 
+     1          (Ztor_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''thetasiteBar '',1f7.2, 29f10.2)') fName(iFlt), 
+     1          (thetasite_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''RupWidthBar '',1f8.2,29f10.2)') fName(iFlt), 
+     1          (rupwidth_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+          write (nwr,'( 2x,a30,''HypoDepthBar '',1f7.2,29f10.2)') fName(iFlt), 
+     1          (hypodepth_bar_s(iFlt,iProb,iInten)/haz(iInten,iProb,iFlt),iInten=1,nInten(iProb))
+
+
          enddo
         write (nwr,'( /,''------------------'',/)')
         enddo

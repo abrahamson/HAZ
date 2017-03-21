@@ -288,14 +288,24 @@ c -------------------------------------------------------------
 
 c -------------------------------------------------------------
 
-      subroutine InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar_s )
+      subroutine InitDeagg2 ( m_bar_s, rrup_bar_s, rjb_bar_s, rx_bar_s, e_bar_s,
+     1                        rSeismo_bar_s, ry0_bar_s, mag_bar_s, ftype_bar_s,
+     2                        hypodepth_bar_s, dipavgd_bar_s, ztor_bar_s, 
+     3                        thetasite_bar_s, rupwidth_bar_s, rHypo_bar_s )
       
       implicit none
       include 'pfrisk.h'                                                       
 
-      real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
-      real*8 rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN)
-      real*8 e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+      real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
+     2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rSeismo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     3       ry0_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), mag_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), 
+     4       ftype_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), hypodepth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     5       dipavgd_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ztor_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     6       thetasite_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rupwidth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     7       rHypo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN) 
+      
+      
       integer iFlt, i, ii
 
       do iFlt=1,MAX_FLT
@@ -306,6 +316,16 @@ c -------------------------------------------------------------
             rjb_bar_s(iFlt,i,ii) = 0.
             rx_bar_s(iFlt,i,ii) = 0.
             e_bar_s(iFlt,i,ii) = 0.
+            rSeismo_bar_s(iFlt,i,ii) = 0.
+            ry0_bar_s(iFlt,i,ii) = 0.
+            mag_bar_s(iFlt,i,ii) = 0.
+            ftype_bar_s(iFlt,i,ii) = 0.
+            hypodepth_bar_s(iFlt,i,ii) = 0.
+            dipavgd_bar_s(iFlt,i,ii) = 0.
+            ztor_bar_s(iFlt,i,ii) = 0.
+            thetasite_bar_s(iFlt,i,ii) = 0.
+            rupwidth_bar_s(iFlt,i,ii) = 0.
+            rHypo_bar_s(iFlt,i,ii) = 0.
           enddo
         enddo
       enddo
