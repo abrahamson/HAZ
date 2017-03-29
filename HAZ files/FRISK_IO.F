@@ -612,30 +612,25 @@ c       Write MBar, DBar and EpsBar Results
       
 c  ------------------------------------------------------------------
 
-      subroutine output_hazBins ( isite, sitex, sitey, testInten,  
-     1           nInten, nProb, riskBins, jCalc, sigTrunc,csrflag,
-     2           nMagBins, nDistBins, nEpsBins, magBins, distBins, 
-     3           epsBins, attenName, period1, m_bar, d_bar, e_bar,
-     4           nAttenType, attenType, Xcost_bar, nXcostBins, 
-     5           XcostBins, RiskBinsX )
+      subroutine output_hazBins ( isite, sitex, sitey, testInten, nInten, 
+     1           nProb, riskBins, nMagBins, nDistBins, nEpsBins, magBins, 
+     2           distBins, epsBins, m_bar, d_bar, e_bar, Xcost_bar, 
+     3           nXcostBins, XcostBins, RiskBinsX )
 
       implicit none
       include 'pfrisk.h'
 
-      integer csrflag(MAX_PROB), attenType(MAX_FLT), nProb, i,
-     1        isite, nInten(MAX_PROB), jCalc(MAX_PROB,4,MAX_ATTEN), 
-     2        nMagBins, nDistBins, nEpsBins, nXcostBins, J2,
-     3        iEpsBin, iDistBin, iMagBin, iXcostBin, iInten,
-     4        iMagbins, iDistbins, iProb, nwr, nAttenType
-      real siteX, siteY, period1(4,MAX_PROB), sigTrunc(MAX_PROB), 
+      integer nProb, i, isite, nInten(MAX_PROB), nMagBins, nDistBins, 
+     1        nEpsBins, nXcostBins, J2, iEpsBin, iDistBin, iMagBin, 
+     2        iXcostBin, iInten, iMagbins, iDistbins, iProb, nwr
+      real siteX, siteY, testInten(MAX_PROB,MAX_INTEN), distBins(MAX_DIST), 
      1     riskBins(MAX_MAG,MAX_DIST,MAX_EPS,MAX_PROB,MAX_INTEN),
-     2     magBins(MAX_MAG), distBins(MAX_DIST), epsBins(MAX_EPS),
-     3     testInten(MAX_PROB,MAX_INTEN), XcostBins(MAX_Xcost),
-     4     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
-     5     RiskBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN)
+     2     epsBins(MAX_EPS), XcostBins(MAX_Xcost), magBins(MAX_MAG), 
+     3     outrisk(MAX_MAG,MAX_DIST,MAX_PROB,MAX_INTEN),
+     4     RiskBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN)
       real*8 sumX, sum, m_bar(MAX_PROB,MAX_INTEN), d_bar(MAX_PROB,MAX_INTEN),
      1     e_bar(MAX_PROB,MAX_INTEN), Xcost_bar(MAX_PROB,MAX_INTEN)
-      character*80 file1, attenName(4,MAX_PROB) 
+      character*80 file1 
 
       write (18,'(1x,a50)') '-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*'
       write (18,*)

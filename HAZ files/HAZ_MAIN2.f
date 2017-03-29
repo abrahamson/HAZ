@@ -538,23 +538,23 @@ c                    Compute Marginal Rate of Occurance
                      endif
 
 c                    Add marginal rate of exceed to total
-                     Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt* gm_wt(iProb,jType,iAtten)
+                     wt1 = wt * gm_wt(iProb,jType,iAtten)
+                     Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt1
                      
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) = 
-     1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt)
+     1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt1)
 
 c  Note: directivity deaggregation was removed from this version
+c                     should wt be modified to wt1?
 c                     HazBinsX(iXcost,iProb,jInten) = HazBinsX(iXcost,iProb,jInten) + dble(mHaz*wt)
      
 c                    Add to mean deagg 
-                     wt1 = wt * gm_wt(iProb,jType,iAtten)
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
                      d_bar(iProb,jInten) = d_bar(iProb,jInten) + mHaz*wt1*distRup
                      e_bar(iProb,jInten) = e_bar(iProb,jInten) + mHaz*wt1*epsilon1
                      Xcost_bar(iProb,jInten) = Xcost_bar(iProb,jInten) + mHaz*wt1*Xcost
 
 c                    Add to source deagg 
-                     wt1 = wt * gm_wt(iProb,jType,iAtten)
                      m_bar_s(iFlt,iProb,jInten) = m_bar_s(iFlt,iProb,jInten) + mHaz*wt1*magTotal
                      rrup_bar_s(iFlt,iProb,jInten) = rrup_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distRup
                      rjb_bar_s(iFlt,iProb,jInten) = rjb_bar_s(iFlt,iProb,jInten) + mHaz*wt1*distjb
@@ -565,11 +565,11 @@ c                    Save Marginal Hazard to temp array for fractile output
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
      1                        + tempHaz(iParam,jInten,iProb,iAtten,iFtype)
 
-                     tempHaz1(iParam,jInten,iProb,iFtype) = mHaz* gm_wt(iProb,jType,iAtten)
+                     tempHaz1(iParam,jInten,iProb,iFtype) = mHaz*gm_wt(iProb,jType,iAtten)
      1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
-                     tempHaz2(jType, jInten,iProb,iAtten) = mHaz*wt
-     1                        + tempHaz2(jType, jInten,iProb,iAtten)  
+                     tempHaz2(jType,jInten,iProb,iAtten) = mHaz*wt
+     1                        + tempHaz2(jType,jInten,iProb,iAtten)  
 
  500                continue
  510               continue
@@ -641,12 +641,10 @@ c      Write out the mean Haz
      6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 
 c      Write out the deagrregated hazard
-       call output_HazBins ( isite, sitex, sitey, testInten, 
-     1       nInten, nProb, HazBins, jCalc, sigTrunc, csrflag,
-     2       nMagBins, nDistBins, nEpsBins, magBins, distBins, 
-     3       epsBins, attenName, period1, m_bar, d_bar, e_bar,
-     4       nAttenType, attenType, Xcost_bar, nXcostBins, 
-     5       XcostBins, HazBinsX)
+       call output_HazBins ( isite, sitex, sitey, testInten, nInten, 
+     1       nProb, HazBins, nMagBins, nDistBins, nEpsBins, magBins, 
+     2       distBins, epsBins, m_bar, d_bar, e_bar, Xcost_bar, 
+     3       nXcostBins, XcostBins, HazBinsX )
      
        call output_sourcedeagg ( isite, sitex, sitey, testInten, nInten, 
      1           nFlt, Haz, fName, m_bar_s, rrup_bar_s, rjb_bar_s, 
