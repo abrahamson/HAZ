@@ -9138,7 +9138,8 @@ c     1         Intraslab
        SI = 0.0
       else
        write(*,*) 'McVerry Subduction only defined for ftype 0 and 1.'
-       pause
+       write(*,*)
+       stop 99
       endif
 
 c     Set the Centroid Depth

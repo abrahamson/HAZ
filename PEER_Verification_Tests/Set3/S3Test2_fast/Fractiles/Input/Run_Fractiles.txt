@@ -1,0 +1,9 @@
+5431                	iseed
+55000        		nSample
+1         		nPer
+1  1.E-4		nHazLevel, HazLevel					    	 
+Fract_Set3Test2_Site1.out
+1			Period
+Run_S3Test2_fast.txt
+Set3Test2_fast_Site1.out1
+
