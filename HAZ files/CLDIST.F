@@ -422,10 +422,11 @@ c -----------------------------
      1           insideFlag )
      
       implicit none
+      include 'pfrisk.h'
 
 c     declarations passed in      
       integer nSeg
-      real xSeg(1), ySeg(1), x0, y0
+      real xSeg(MAX_SEG), ySeg(MAX_SEG), x0, y0
 
 c     declarations passed out
       integer insideFlag      

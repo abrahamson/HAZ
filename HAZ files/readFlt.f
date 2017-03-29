@@ -28,7 +28,7 @@
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT), 
      2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), 
      3        fsys(MAX_FLT),
-     4        segModelFlag(MAX_FLT,100), nSegModel0(1) 
+     4        segModelFlag(MAX_FLT,100), nSegModel0(MAX_FLT) 
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
@@ -142,7 +142,7 @@ c  --------------------------------------------------------------------
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
       integer iflt, nSegModel, nMagRecur, nFtypeModels, 
      1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100), 
-     2        nSegModel0(1), ncountS7(MAX_FLT)
+     2        nSegModel0(MAX_FLT), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 
@@ -873,7 +873,7 @@ c ----------------------------
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM 
       integer iflt, nSegModel, nMagRecur, nFtypeModels, 
      1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100), 
-     2        nSegModel0(1), ncountS7(MAX_FLT)
+     2        nSegModel0(MAX_FLT), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN), 
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN), 

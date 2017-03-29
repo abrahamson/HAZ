@@ -276,9 +276,10 @@ c  --------------------------
       subroutine CheckWt ( x, n, fName, name )
 
       implicit none
+      include 'pfrisk.h'
       
       integer i, n
-      real x(1), sum
+      real x(MAXPARAM), sum
       character*20 name, fName
       
       sum = 0.
