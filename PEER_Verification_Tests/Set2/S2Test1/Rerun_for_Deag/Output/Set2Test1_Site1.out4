@@ -22,7 +22,7 @@
   M_bar                                        0.612E+01
   D_bar                                        0.222E+02
   Eps_bar                                      0.880E+00
-  XCosT_bar                                          NaN
+  XCosT_bar                                         -NaN
 
 ------------------
 
