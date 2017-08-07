@@ -5,6 +5,9 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       implicit none
       include 'pfrisk.h'
       include 'declare1.h' 
+
+      integer iSR_Flag(MAX_FLT)
+      real SR_rake(MAX_FLT,MAXPARAM), dip_top
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
@@ -62,7 +65,7 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7, version )             
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake )             
      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -169,10 +172,12 @@ c        Turn fault into a grid
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
      3               xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
-     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4,
+     6               dip_top )   
          endif
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
-     1      write (18,'( 2x,''fault area (km^2) = '',e12.3)') faultArea
+     1      write (18,'( 2x,''fault area (km^2) and dip_top '',e12.3,f5.1)') faultArea, 
+     2      dip_Top*180/3.1415926
 
 c        Set Sampling of Rupture Area and Rupture Width Distributions
          call S23_initRup ( sigArea, nRupArea, sigMaxArea, areaStep, iFlt)
@@ -194,7 +199,7 @@ c        Compute activity rate: N(Mmin)
            call S31_Set_Rates ( sourceType(iFlt), nParamVar, MagRecur, rate, beta, minMag,
      1         maxMag, iFlt, iFltWidth, faultArea, 
      2         RateParam, mpdf_param, magStep, RateType, 
-     1         charMeanMo, expMeanMo )
+     1         charMeanMo, expMeanMo, iSR_flag, SR_Rake, dip_top )
 
 c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          

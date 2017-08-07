@@ -135,7 +135,8 @@ c ---------------------------------------------------------------------
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, faultW, 
      3               step, fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
-     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )  
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4,
+     6               dip_top )  
 
       implicit none     
       include 'pfrisk.h'
@@ -158,7 +159,8 @@ c ---------------------------------------------------------------------
      3     fltGrid_x3(MAXFLT_DD,MAXFLT_AS), fltGrid_y3(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS),
      5     fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS)
-     
+      real sum, dip_top, dz2, dDD2
+
       real*8 dfaultArea   
 
 c     Find the widest part of the fault and set the number of grid points down dip
@@ -362,7 +364,18 @@ C     Compute the fault lengths for each cell relative to start of fault.
         enddo
       enddo
       
+c     St the fault area       
       faultArea = real(dfaultArea)
+      
+C     Set the dip at the top of the fault (top most cells)
+c     COmpute the average dip from the top two cells along strike
+      sum = 0.
+      do j=1,nx1
+        dz2 = (fltgrid_z(2,j) - fltgrid_z(1,j))**2
+        dDD2 = (fltgrid_x(2,j) - fltgrid_x(1,j))**2 + (fltgrid_y(2,j) - fltgrid_y(1,j))**2 
+        sum = sum + sqrt( dz2 + dDD2 )
+      enddo
+      dip_top = (sum / nx1) * 3.1415926/180.
       
       return
       end

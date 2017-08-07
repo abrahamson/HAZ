@@ -14,7 +14,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, version )
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake  )
 
       implicit none
       include 'pfrisk.h'
@@ -58,6 +58,10 @@
      1     depthParam(MAX_FLT,5), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), 
      2     sigArea(MAX_FLT), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH) 
       character*80 fName(MAX_FLT)
+
+      integer iSR_Flag(MAX_FLT)
+      real SR_rake(MAX_FLT,MAXPARAM)
+      
       
       if ( version .eq. 45.1 ) then
         call S29_Rd_Fault_Data_45_1 ( nFlt, fName, minMag, magStep, hxStep,
@@ -94,7 +98,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake )
       else
         write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
@@ -121,7 +125,7 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake )
 
       implicit none
       include 'pfrisk.h'
@@ -189,6 +193,12 @@ c  --------------------------------------------------------------------
      4     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7) 
       real mechS7(MAX_FLT,MAX_S7)
       character*80 fName(MAX_FLT), fName1
+
+      integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
+     1        iSR_Type
+      real SR_rake(MAX_FLT,MAXPARAM), SR_Rake0(MAXPARAM),
+     1     SR_Rake1(MAXPARAM), xx
+
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -371,7 +381,18 @@ c        Read weights for rate methods
 c        Read slip-rates
          read (10,*,err=3028) nSR
          if ( nSR .gt. 0 ) then
+           iSR_type = 0
            read (10,*,err=3029) (sr(k),k=1,nSR)
+
+c          Check if this is a vertical slip rate (indicated by SR(1)=-999)
+           if ( sr(1) .eq. -999. ) then
+             backspace (10)
+             read (10,*,err=3029) xx, (sr(k),k=1,nSR)
+             read (10,*,err=3058) (SR_rake0(k),k=1,nSR)
+             iSR_type = 1
+           endif
+
+c          Read the SR weights
            read (10,*,err=3030) (wt_sr(k),k=1,nSR)
            call S21_CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
          endif
@@ -411,6 +432,8 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             rateWt1(k) = wt_sr(k)*wt_srbranch              
             rateType1(k) = 1
             MoRDepth(k) = 1.0
+            iSR_flag1(k) = iSR_type
+            SR_rake1(k) = SR_rake0(k)
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
@@ -591,6 +614,13 @@ c                Scale moment rate by reference thickness.
                  else
                    RateParamWt(iFlt,i,iWidth) = RateWt1(iRate) * bValueWt1(i_bValue) 
                  endif
+
+c                set flags for vertical slip rate
+                 if (rateType1(iRate) .eq. 1) then
+                   iSR_flag(iFlt) = iSR_Flag1(iRate)
+                   SR_rake(iFlt,i) = SR_rake1(iRate)*3.1415926/180.
+                 endif
+
                  maxMagWt(iFlt,i,iWidth) = refMagWt1(iWidth,iRefMag)
 
 c                Set max mag
@@ -829,6 +859,9 @@ c     End loop over iFlt
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
  3057 write (*,'( 2x,''Flt file error: Ftype Aleatory wts'', 2i5)') iFlt0, iFLt2
+      write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
+      stop 99
+ 3058 write (*,'( 2x,''Flt file error: SR rakes for vertical SR'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
 
