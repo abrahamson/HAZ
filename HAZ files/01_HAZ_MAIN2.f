@@ -6,8 +6,9 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       include 'pfrisk.h'
       include 'declare1.h' 
 
-      integer iSR_Flag(MAX_FLT)
+      integer iSR_Flag(MAX_FLT), IST5_flag(MAX_FLT)
       real SR_rake(MAX_FLT,MAXPARAM), dip_top
+      
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
@@ -65,7 +66,8 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake )             
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake,
+     8     IST5_flag )             
      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -160,11 +162,11 @@ c        Set bottom of fault for standard faults (source type 1)
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)
-           call S20_ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
+          call S20_ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
      1           sourceType(iFlt), nDD(iFlt), siteX, siteY, fLat, fLong, fZ, 
      2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts, xFlt, yFlt, 
      3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
-
+     
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
            call S20_calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
@@ -173,7 +175,7 @@ c        Turn fault into a grid
      3               xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
      5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4,
-     6               dip_top )   
+     6               dip_top, iST5_flag(iFlt), faultWidth(iFlt,iFltWidth) )   
          endif
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
      1      write (18,'( 2x,''fault area (km^2) and dip_top '',e12.3,f5.1)') faultArea, 

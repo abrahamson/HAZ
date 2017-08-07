@@ -14,7 +14,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake  )
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake, IST5_flag  )
 
       implicit none
       include 'pfrisk.h'
@@ -59,7 +59,7 @@
      2     sigArea(MAX_FLT), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH) 
       character*80 fName(MAX_FLT)
 
-      integer iSR_Flag(MAX_FLT)
+      integer iSR_Flag(MAX_FLT), IST5_flag(MAX_FLT)
       real SR_rake(MAX_FLT,MAXPARAM)
       
       
@@ -98,7 +98,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag )
       else
         write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
@@ -125,7 +125,7 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag )
 
       implicit none
       include 'pfrisk.h'
@@ -195,7 +195,7 @@ c  --------------------------------------------------------------------
       character*80 fName(MAX_FLT), fName1
 
       integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
-     1        iSR_Type
+     1        iSR_Type, iST5_flag(MAX_FLT)
       real SR_rake(MAX_FLT,MAXPARAM), SR_Rake0(MAXPARAM),
      1     SR_Rake1(MAXPARAM), xx
 
@@ -252,6 +252,13 @@ c       Read name of this segment
 c       Read type of source (planar, areal, grid1, grid2, irregular)
         read(10,*,err=3010) sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
      1                 fltDirect(iFlt), synchron(iFlT)
+
+c       Set flag for source type 5 to allow limit on crustal thickness
+        iST5_flag(iFlt) = 0
+        if (sourceType(iFlt) .eq. -5 ) then
+          sourceType(iFlt) = 5
+          iST5_flag(iFlt) = 1
+        endif   
 
 c       Now read in the synchronous rupture case parameters if needed.
         if (synchron(iFlt) .gt. 0) then
@@ -482,7 +489,7 @@ c          Read in necessary parameters for bi-exponential distribution.
          enddo
 
 c        Read seismogenic thickness
-         if ( sourceType(iFlt) .lt. 5) then
+         if ( sourceType(iFlt) .lt. 5 .or. iST5_flag(iFlt) .eq. 1) then
            read (10,*,err=3042) nThick1
            call S21_CheckDim ( nThick1, MAX_WIDTH, 'MAX_WIDTH ' )
            read (10,*,err=3043) (faultThick1(i),i=1,nThick1)
