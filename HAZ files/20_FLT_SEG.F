@@ -159,7 +159,7 @@ c ---------------------------------------------------------------------
      3     fltGrid_x3(MAXFLT_DD,MAXFLT_AS), fltGrid_y3(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_z3(MAXFLT_DD,MAXFLT_AS), fltGrid_x4(MAXFLT_DD,MAXFLT_AS),
      5     fltGrid_y4(MAXFLT_DD,MAXFLT_AS), fltGrid_z4(MAXFLT_DD,MAXFLT_AS)
-      real sum, dip_top, dz2, dDD2
+      real sum, dip_top, dW, dip1
 
       real*8 dfaultArea   
 
@@ -371,11 +371,14 @@ C     Set the dip at the top of the fault (top most cells)
 c     COmpute the average dip from the top two cells along strike
       sum = 0.
       do j=1,nx1
-        dz2 = (fltgrid_z(2,j) - fltgrid_z(1,j))**2
-        dDD2 = (fltgrid_x(2,j) - fltgrid_x(1,j))**2 + (fltgrid_y(2,j) - fltgrid_y(1,j))**2 
-        sum = sum + sqrt( dz2 + dDD2 )
+        dz = (fltgrid_z(2,j) - fltgrid_z(1,j))
+        dW = sqrt( (fltgrid_x(2,j) - fltgrid_x(1,j))**2 
+     1              + (fltgrid_y(2,j) - fltgrid_y(1,j))**2 
+     2              + (fltgrid_z(2,j) - fltgrid_z(1,j))**2 )
+        dip1 = asin(dz/Dw)
+        sum = sum + dip1
       enddo
-      dip_top = (sum / nx1) * 3.1415926/180.
+      dip_top = (sum / nx1)
       
       return
       end

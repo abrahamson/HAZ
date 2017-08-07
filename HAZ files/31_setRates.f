@@ -70,6 +70,11 @@ c              This is a vertical slip rate, so check for devide by zero
 c              convert vertical slip rate to net slip rate               
                SR_vert = rateParam(iFlt,iParam,i)
                SR_net = (SR_vert /sin(dip_top)) / sin( SR_rake(iFlt,iParam) )
+               write (18,'( 2x,''convert vertical slip rate to net'')')
+               write (18,'( 2x,''SR_vert, dip, rake, sr_net'',4f10.3)')
+     1              SR_vert, dip_top*180./3.1415926, SR_rake(iFlt,iParam)*180./3.1415926,
+     2              SR_net
+     
                momentRate2 = SR_net * faultArea * rigidity * 1.0e9
 
               else
