@@ -6,6 +6,10 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       include 'pfrisk.h'
       include 'declare1.h' 
 
+      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT)
+      real logA_shal, logA_deep
+      integer iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max
+
       integer iSR_Flag(MAX_FLT), IST5_flag(MAX_FLT)
       real SR_rake(MAX_FLT,MAXPARAM), dip_top
       
@@ -67,7 +71,7 @@ c     read fault File
      5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake,
-     8     IST5_flag )             
+     8     IST5_flag, h_listric, dMag1_listric )             
      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -265,7 +269,9 @@ c------------end temporary code
      1                faultWidth(iFlt,iFltWidth), nLocYST1, yStep(iFlt), rupLen)
 
         call S28_nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
-     1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
+     1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS,
+     2                   h_listric(iFlt), logA_shal, logA_deep, fltGrid_z,
+     3                   iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max)
 
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
@@ -273,13 +279,12 @@ c           This is along strike for faults and epicentral distance for source z
 
             do 650 iLocX = 1, nLocX
 
-               call S28_nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
+              call S28_nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
      1                          faultWidth(iFlt,iFltWidth), yStep(iFlt), distDensity2, grid_x,
      2                          grid_y, x0, y0, nLocY, pLocX, r_horiz)
 
-                  if ( pLocX .eq. 0. ) then
-                    goto 650
-                  endif
+c              if probability of this location is zero, then skip
+              if ( pLocX .eq. 0. ) goto 650
 
 c            set the probabilities for the depths
              if ( iDepthFlag .eq. 0 ) then
@@ -302,7 +307,9 @@ c            Pass along fault grid locations for calculation of HW and Rx values
      3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3,
      4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb, dip, dipS7,
      5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
-     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
+     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0,
+     7             h_listric(iFlt), dMag1_listric(iFlt), 
+     9             logA_shal, logA_deep, iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max)
         
 c            Set minimum distances for output files.
              call S14_Set_MinDist (sourceType(iFlt), iFlt, iFltWidth, distRup, distJB, distSeismo, 

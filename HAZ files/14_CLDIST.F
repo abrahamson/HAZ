@@ -5,7 +5,9 @@
      3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3, 
      4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltgrid_Rrup, fltgrid_Rjb, dip, dipS7,
      5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
-     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
+     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0,
+     7             h_listric, dMag1_listric, logA_shal, logA_deep,
+     9             iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max)
            
 c     This subroutine computes the distance parameters for the GMPEs
 c     (e.g. Rjb, Rrup, ZTOR, Rx, Ry, Ry0)
@@ -27,6 +29,9 @@ c     declarations passed in
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
      8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG),
      9     distS7(MAX_FLT,MAX_S7), dipS7(MAX_FLT,MAX_S7)
+      real h_listric, dMag1_listric
+      real logA_shal, logA_deep
+      integer iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max
 
 c     declarations passed out
       integer HWFlag, n1, n2, icellRupstrike, icellRupdip  
@@ -35,7 +40,8 @@ c     declarations passed out
 
 c     declarations only used within subroutine
       integer i, j, celly, cellx
-      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy 
+      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy
+      real magUpper, magLower, h_dist, v_dist
       
 c     Initialize closest distance      
       distRup = 1.0e30
@@ -45,76 +51,78 @@ c     Initialize closest distance
       distepi = 1.0e30
       
 c     Set top_grid for sourceTypes 2/3 and 4 (different)
-        if (sourceType .eq. 2 .or. sourceType .eq. 3) then
-          top_grid = grid_top(iFlt,1)
-        else if (sourceType .eq. 4) then
-          top_grid = grid_top(iFlt,iLocX)
-        endif
+      if (sourceType .eq. 2 .or. sourceType .eq. 3) then
+        top_grid = grid_top(iFlt,1)
+      else if (sourceType .eq. 4) then
+        top_grid = grid_top(iFlt,iLocX)
+      endif
       
 c     Compute distances for areal sources      
-        if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
+      if ( sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
 
-c         Set hypoDepth for areal sources
-          hypoDepth = (iLocY-0.5)*ystep + top_grid
+c      Set hypoDepth for areal sources
+       hypoDepth = (iLocY-0.5)*ystep + top_grid
  
-c         Approximate correction for using point source with extended source model
-C         added limit on only shallow areal sources (Hypo>30.0km)
-          if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
-            hypo1=hypoDepth-rupWidth/2.   
-          if (hypo1 .lt. 0.0) hypo1=0.0
-          rupLength2 = rupLen/2.
-          if ( r_horiz .gt. rupLength2 ) then
-            r_horiz1 = r_horiz - 0.625*rupLength2*(1.-1./(1.5*(r_horiz/rupLength2)**(1.5)+1))
-          else
-            r_horiz1 = r_horiz/1.57
-          endif
-          else
-            r_horiz1 = r_horiz
-            hypo1 = hypoDepth         
-          endif
-          distJB = r_horiz1       
-          distRup = sqrt( r_horiz1**2 + hypo1**2 )                  
-          ZTOR = hypo1
-          if ( hypo1 .lt. seismoDepth) then
-            distSeismo = sqrt(distJB**2 + seismoDepth**2)
-          else
-            distSeismo = distRup
-          endif 
+c      Approximate correction for using point source with extended source model
+C      added limit on only shallow areal sources (Hypo>30.0km)
+       if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
+         hypo1=hypoDepth-rupWidth/2.   
+         if (hypo1 .lt. 0.0) hypo1=0.0
+         rupLength2 = rupLen/2.
+         if ( r_horiz .gt. rupLength2 ) then
+           r_horiz1 = r_horiz - 0.625*rupLength2*(1.-1./(1.5*(r_horiz/rupLength2)**(1.5)+1))
+         else
+           r_horiz1 = r_horiz/1.57
+         endif
+       else
+         r_horiz1 = r_horiz
+         hypo1 = hypoDepth         
+       endif
+       distJB = r_horiz1       
+       distRup = sqrt( r_horiz1**2 + hypo1**2 )                  
+       ZTOR = hypo1
+       if ( hypo1 .lt. seismoDepth) then
+         distSeismo = sqrt(distJB**2 + seismoDepth**2)
+       else
+         distSeismo = distRup
+       endif 
        
-c         Set other distance values equal to corresponding distance measures.
-          distepi = distJB
-          disthypo = distRup
-          Rx = distJB
-          Ry = 0.0
-          Ry0 = 0.0
-C         Set HWflag = 0 for areal or grid sources.
-          HWFlag = 0    
-          dipavgd = dip(iFlt,ifltWidth,1)
-          return
+c      Set other distance values equal to corresponding distance measures.
+       distepi = distJB
+       disthypo = distRup
+       Rx = distJB
+       Ry = 0.0
+       Ry0 = 0.0
+
+C      Set HWflag = 0 for areal or grid sources.
+       HWFlag = 0    
+       dipavgd = dip(iFlt,ifltWidth,1)
+       return
           
 c     Compute distances for SourceType 7
-        elseif (sourceType .eq. 7) then
-          distrup = distS7(iFlt,iMag)
-          distJB  = distS7(iFlt,iMag)
-          distseismo = distS7(iFlt,iMag)
-          dipavgd = dipS7(iFlt,iMag)
-          disthypo = distS7(iFlt,iMag)
-c         Fixed Parameters
-          ZTOR = 0.0
-          HWFlag = 0
-          hypoDepth = 8.0
-          Rx = distrup
+      elseif (sourceType .eq. 7) then
+        distrup = distS7(iFlt,iMag)
+        distJB  = distS7(iFlt,iMag)
+        distseismo = distS7(iFlt,iMag)
+        dipavgd = dipS7(iFlt,iMag)
+        disthypo = distS7(iFlt,iMag)
+
+c       Fixed Parameters
+        ZTOR = 0.0
+        HWFlag = 0
+        hypoDepth = 8.0
+        Rx = distrup
 
 c     Otherwise use fault sources (i.e., Sourcetype = 1, 5, or 6)
-        else 
+      else 
      
-c         n1 is the last cell that makes up the rupture plane down dip
-c         n2 is the last cell that makes up the rupture plane along strike       
-          n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
-          n2 = n2AS(iLocX)
+c       n1 is the last cell that makes up the rupture plane down dip
+c       n2 is the last cell that makes up the rupture plane along strike       
+        n1 = nfltgrid(1)-n1AS(iLocX)+iLocY
+        n2 = n2AS(iLocX)
           
-c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
-         if (sourceType .eq. 1 .or. sourceType .eq. 5 .or. sourceType .eq. 6) then       
+c       Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
+        if (sourceType .eq. 1 .or. sourceType .eq. 5 .or. sourceType .eq. 6) then       
            testy = ((n1-iLocY)+1.)/2.
            celly = int(iLocY+testy) 
            testx = ((n2-iLocX)+1.)/2.
@@ -136,48 +144,75 @@ c        Calculate hypoDepth (assumes hypocenter is in center of rupture plane)
              hypox = fltgrid_x(celly,cellx)
              hypoy = fltgrid_y(celly,cellx)                 
            endif
-         endif
+        endif
 
-c         Calculate Rx, Ry, Ry0, dipavgd, and HWFlag        
-c         Global Coordinate System 2 method
-          call S22_GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
+c       Calculate Rx, Ry, Ry0, dipavgd, and HWFlag        
+c       Global Coordinate System 2 method
+        call S22_GC2 (iLocX, iLocY, n2, n1, fltgrid_x1, fltgrid_y1, fltgrid_z1, 
      1              fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3,
      2              fltgrid_z3, fltgrid_x4, fltgrid_y4, fltgrid_z4, Rx, Ry, Ry0, 
-     3              HWFlag, dipavgd)        
+     3              HWFlag, dipavgd) 
 
-c         Calculate ZTOR
-          ZTOR = fltgrid_z1(iLocY,iLocX)             
+c       NAA, added for listric for source type 5  
+c       apply the Taiwan model for setting the aveerage dip for listric faults     
+        if (sourceType .eq. 5 .and. h_listric .gt. 0. ) then
+          magUpper = logA_shal + 4.0
+          magLower = logA_deep + 4.0
 
-c         Calculate Rrup and Rjb
-C         Keep track of the fault grid cell for the closest rupture distance
-C         for this rupture area since it is needed for the NGA directivity models.     
-     
-          do j=iLocX,n2
-            do i=iLocY,n1
-              if (distRup .gt. fltgrid_Rrup(i,j)) then
-                distRup = fltgrid_rRup(i,j)
-                icellRupstrike = j
-                icellRupdip = i
-              endif
+c         logArea1 is the log10 of the area of the rupture shallower than h_listic            
+c         logArea1 is the log10 of the area of the rupture deepter than h_listic            
+          if ( magUpper - MagLower .gt. dMag1_listric ) then
+c           compute dip of the shallow part
+            h_dist = sqrt( (fltgrid_x4(iDD_shal_max,iLocY) - fltgrid_x1(iDD_shal_min,iLocY))**2 +
+     1               (fltgrid_y4(iDD_shal_max,iLocY) - fltgrid_y1(iDD_shal_min,iLocY))**2 )
+            v_dist = abs( fltgrid_z4(iDD_shal_max,iLocY) - fltgrid_z1(iDD_shal_min,iLocY) )
+            dipavgd = atan2(v_dist,h_dist)*180/3.1415926
+c            write (*,'( 2x,''shallow'',f10.3)') dipavgd
+            
+          elseif ( magUpper - MagLower .lt. 0. ) then 
 
-              if (distJB .gt. fltgrid_Rjb(i,j)) then
-                distJB = fltgrid_Rjb(i,j)
-              endif
-
-C         Compute the DistSeismo value based on min depth being equal to seismoDepth parameter.
-              if (fltgrid_z(i,j) .gt. seismoDepth) then                 
-                if (distSeismo .gt. fltgrid_Rrup(i,j)) then
-                  distSeismo = fltgrid_Rrup(i,j)
-                endif
-              endif 
-            enddo
-          enddo
-
-C         Set the Epi and Hypo distances for faults.
-          distepi = sqrt(hypox**2.+hypoy**2.)
-          disthypo = sqrt(hypox**2.+hypoy**2.+hypoDepth**2.)
-      
+c           compute dip of the deep part
+            h_dist = sqrt( (fltgrid_x4(iDD_deep_max,iLocY) - fltgrid_x1(iDD_deep_min,iLocY))**2 +
+     1               (fltgrid_y4(iDD_deep_max,iLocY) - fltgrid_y1(iDD_deep_min,iLocY))**2 )
+            v_dist = abs( fltgrid_z4(iDD_deep_max,iLocY) - fltgrid_z1(iDD_deep_min,iLocY) )
+            dipavgd = atan2(v_dist,h_dist)*180/3.1415926
+c            write (*,'( 2x,''deep'',f10.3)') dipavgd
+          endif
         endif
+
+c       Calculate ZTOR
+        ZTOR = fltgrid_z1(iLocY,iLocX)             
+
+c       Calculate Rrup and Rjb
+C       Keep track of the fault grid cell for the closest rupture distance
+C       for this rupture area since it is needed for the NGA directivity models.     
+     
+        do j=iLocX,n2
+          do i=iLocY,n1
+            if (distRup .gt. fltgrid_Rrup(i,j)) then
+              distRup = fltgrid_rRup(i,j)
+              icellRupstrike = j
+              icellRupdip = i
+            endif
+
+            if (distJB .gt. fltgrid_Rjb(i,j)) then
+              distJB = fltgrid_Rjb(i,j)
+            endif
+
+C           Compute the DistSeismo value based on min depth being equal to seismoDepth parameter.
+            if (fltgrid_z(i,j) .gt. seismoDepth) then                 
+              if (distSeismo .gt. fltgrid_Rrup(i,j)) then
+                distSeismo = fltgrid_Rrup(i,j)
+              endif
+            endif 
+          enddo
+        enddo
+
+C       Set the Epi and Hypo distances for faults.
+        distepi = sqrt(hypox**2.+hypoy**2.)
+        disthypo = sqrt(hypox**2.+hypoy**2.+hypoDepth**2.)
+      
+      endif
 
       return
       end
