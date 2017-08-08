@@ -195,10 +195,11 @@ c  --------------------------------------------------------------------
       character*80 fName(MAX_FLT), fName1
 
       integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
-     1        iSR_Type, iST5_flag(MAX_FLT)
+     1        iSR_Type, iST5_flag(MAX_FLT), iSR_Fact
       real SR_rake(MAX_FLT,MAXPARAM), SR_Rake0(MAXPARAM),
-     1     SR_Rake1(MAXPARAM), xx
-
+     1     SR_Rake1(MAXPARAM), xx, SR_Fact(MAX_FLT,100,MAX_FLT)
+      real sr1(MAXPARAM), wt_sr1(MAXPARAM)
+      integer iSR, iSeg, jSR, ix
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -212,7 +213,13 @@ c     Input Fault Parameters
        read (10,*,err=3004) probAct0
 
 c      Read number of segmentation models for this fault system
+       iSR_Fact = 0
        read (10,*,err=3005) nSegModel
+       if (nSegModel .eq. -1 ) then
+         iSR_Fact = 1
+         backspace ( 10)
+         read (10,*,err=3005) ix, nSegModel
+       endif
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
 c      Read total number of fault segments
@@ -221,6 +228,20 @@ c      Read total number of fault segments
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
        enddo
+       
+c      If SR factors used, then read this extra line
+c      otherwise set to unity
+       if ( iSR_Fact .eq. 1 ) then
+         do i=1,nSegModel
+           read (10,*,err=3059) (SR_Fact(iFlt0,i,k),k=1,nFlt2)
+         enddo
+       else
+         do i=1,nSegModel
+          do k=1,nFlt2
+            SR_Fact(iFlt0,i,k)= 1.0
+          enddo
+         enddo
+       endif       
 
        do iflt2=1,nflt2
         iFlt = iFlt + 1
@@ -402,6 +423,24 @@ c          Check if this is a vertical slip rate (indicated by SR(1)=-999)
 c          Read the SR weights
            read (10,*,err=3030) (wt_sr(k),k=1,nSR)
            call S21_CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
+           
+c          Check if this fault is part of rupture sources with SR factors
+           if ( iSR_Fact .eq. 1 ) then
+             do iSeg=1,nSegModel
+              do iSR=1,nSR
+               jSR = iSR + (iSeg-1)*nSR
+               sr1(jSR) = sr(iSR)*SR_Fact(iFlt0,iSeg,iFlt2)
+               wt_sr1(jSR) = wt_SR(iSR)*segWt(iFlt0,iSeg)
+               SR_rake0(jSR) = SR_rake0(iSR)
+              enddo
+             enddo
+             nSR = nSR*nSegModel
+             do iSR=1,nSR
+               sr(iSR) = sr1(iSR)
+               wt_SR(iSR) = wt_SR1(iSR)
+             enddo
+           endif  
+         
          endif
 
 c        Read recurrence intervals
@@ -441,6 +480,7 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             MoRDepth(k) = 1.0
             iSR_flag1(k) = iSR_type
             SR_rake1(k) = SR_rake0(k)
+            write (*,'( i5,2f10.3)') k, SR_rake1(k), sr(k)
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
@@ -871,6 +911,9 @@ c     End loop over iFlt
  3058 write (*,'( 2x,''Flt file error: SR rakes for vertical SR'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
       stop 99
+ 3059  write (*,'( 2x,''Flt file error: SR factors for seg model'', i5)') i
+       write (*,'( 2x,''From fault: '',a80)') fName1
+       stop 99
 
       end
 
