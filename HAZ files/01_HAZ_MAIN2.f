@@ -52,7 +52,6 @@ c     Read Run File
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
      6               coefcountRrup, coefcountRjb, iMixture, version )
-      pause 'end of rd input'          
 
 c     read fault File
       call S29_Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
@@ -73,7 +72,6 @@ c     read fault File
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
      7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake,
      8     IST5_flag, h_listric, dMag1_listric )   
-      pause 'end of rd fault'          
      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
