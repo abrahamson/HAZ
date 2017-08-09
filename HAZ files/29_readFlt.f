@@ -1,3 +1,4 @@
+
       subroutine S29_Rd_Fault_Data ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag, 
@@ -14,8 +15,8 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake, IST5_flag,
-     8     h_listric, dMag1_listric )
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake, 
+     8     IST5_flag, h_listric, dMag1_listric )
 
       implicit none
       include 'pfrisk.h'
@@ -64,8 +65,7 @@
       real SR_rake(MAX_FLT,MAXPARAM)
 
       real h_listric(MAX_FLT), dMag1_listric(MAX_FLT)
-      
-      
+            
       if ( version .eq. 45.1 ) then
         call S29_Rd_Fault_Data_45_1 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
@@ -107,7 +107,8 @@ c          Set flags for no listric for 45.1
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag,
+     8     h_listric, dMag1_listric )
       else
         write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
@@ -202,8 +203,8 @@ c  --------------------------------------------------------------------
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
      4     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7) 
       real mechS7(MAX_FLT,MAX_S7)
-      character*80 fName(MAX_FLT), fName1
-      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT)
+      character*80 fName(MAX_FLT), fName1, dummy
+      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT), x1, x2
 
       integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
      1        iSR_Type, iST5_flag(MAX_FLT), iSR_Fact
@@ -212,6 +213,8 @@ c  --------------------------------------------------------------------
       real sr1(MAXPARAM), wt_sr1(MAXPARAM)
       integer iSR, iSeg, jSR, ix
 
+      pause 'test 1'
+      
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
       read (10,*,err=3002) NFLT
@@ -354,14 +357,13 @@ c        Check for grid source (w/ depth)
 
 c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
-c          NAA change for listric faults          
+c          NAA change for listric faults   
            read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt), h_listric(iFlt), dMag1_listric(iFlt)  
    
            call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
            do ipt=1,nfp(iFlt)
               read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), 
      1             fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
-
           enddo
          endif
 
