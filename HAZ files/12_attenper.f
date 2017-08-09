@@ -2122,6 +2122,228 @@ C     Model Number = 9011, Hor
          maxaper = 2.0
       endif
 
+C ***** EPRI Update (2013) GMPE Models *****
+C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201301
+      if (jcalc .eq. 201301) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201302
+      if (jcalc .eq. 201302) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201303
+      if (jcalc .eq. 201303) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201304
+      if (jcalc .eq. 201304) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201305
+      if (jcalc .eq. 201305) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201306
+      if (jcalc .eq. 201306) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201307
+      if (jcalc .eq. 201307) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201308
+      if (jcalc .eq. 201308) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201309
+      if (jcalc .eq. 201309) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201310
+      if (jcalc .eq. 201310) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201311
+      if (jcalc .eq. 201311) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201312
+      if (jcalc .eq. 201312) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201313
+      if (jcalc .eq. 201313) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201314
+      if (jcalc .eq. 201314) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C     Model Number = 201315
+      if (jcalc .eq. 201315) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C ***** EPRI Update (2013) GMPE Models *****
+C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201321
+      if (jcalc .eq. 201321) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201322
+      if (jcalc .eq. 201322) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201323
+      if (jcalc .eq. 201323) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201324
+      if (jcalc .eq. 201324) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201325
+      if (jcalc .eq. 201325) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201326
+      if (jcalc .eq. 201326) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201327
+      if (jcalc .eq. 201327) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201328
+      if (jcalc .eq. 201328) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201329
+      if (jcalc .eq. 201329) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201330
+      if (jcalc .eq. 201330) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201331
+      if (jcalc .eq. 201331) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201332
+      if (jcalc .eq. 201332) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
+C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201333
+      if (jcalc .eq. 201333) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201334
+      if (jcalc .eq. 201334) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C     Model Number = 201335
+      if (jcalc .eq. 201335) then
+         anper = 8
+         minaper = 0.01
+         maxaper = 2.0
+      endif
+
 
 
 
