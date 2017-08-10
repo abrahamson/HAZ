@@ -6248,6 +6248,20 @@ C         11,000 < jcalc < 12,000
          attenname1 = 'SWUS Common Function Model-Rjb'
       endif
 
+C     SWUS Common Functional Form as a function of Rrup - for DCPP
+C         12,000 < jcalc < 13,000
+      if ( jcalc .gt. 12000 .and. jcalc .lt. 13000 ) then
+         coefcountrrup = jcalc - 12000
+         if (coefcountrrup .lt. 0) then
+            write (*,*) 'Incorrect jcalc for SWUS Common Functional Model Rrup!!!'
+            write (*,*) 'Check input file.'
+            Stop 99
+         endif
+         call S02_SWUS_CFRrup_DCPP ( mag, RupDist, jbDist, depthtop, ftype, dipavgd, RupWidth, Rx, HWFlag, 
+     1           specT, lnY, sigma, iflag, cfcoefrrup, coefcountrrup, phi, tau )
+         attenname1 = 'SWUS DCPP Common Function Model-Rrup'
+      endif
+
 
 C ******* PEER NGA-West2 Attenuation Models with Additional Mag Scaling Uncertainty ****
 C ******* For use with Zones 1, 2, and 3  with path term accounted for *****

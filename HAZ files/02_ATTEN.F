@@ -12775,7 +12775,117 @@ C     Convert ground motion to units of gals in natural log units.
 
       return
       end 
-                        
+
+
+c----------------------------------------------------------------------                
+C     SWUS DCPP Common Functional Model as a function of Rrup distance. 
+C     Coefficients are passed from input file and are only applicable for
+C     the spectral period specified in the input file. 
+
+      Subroutine S02_SWUS_CFRrup_DCPP ( m, Rrup, Rjb, ztor, ftype, dip, Width, Rx, HWFlag, 
+     1                   specT, lnY, sigma, iflag, cfcoefrrup, coefcountRrup, phi, tau )
+
+      include 'pfrisk.h'
+      
+      REAL a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10
+      real cfcoefRrup(MAX_Atten,11)
+      REAL M, specT, sigma, Rrup, Ztor, lnY, termmag, ftype
+      real Rjb, dip, Width, Rx, HWFactor, phi, tau
+      integer iflag, coefcountRrup, HWFlag, count1, count2, nper
+      real coefMech(22), period(22), period1, coefMechT
+      
+      data period / 0.0, 0.01, 0.02, 0.03, 0.05, 0.075, 0.1, 0.15, 0.20, 0.25, 0.30, 
+     1              0.4, 0.5, 0.75, 1.00, 1.5, 2.0, 4.0, 4.0, 5.0, 7.50, 10.0 /   
+      data coefMech / -0.132, -0.132, -0.132, -0.132, -0.132, -0.132, -0.132, -0.132, -0.122, -0.113, -0.104, 
+     1              -0.095, -0.095, -0.086, -0.077, -0.068, -0.058, -0.039, -0.02, 0.00, 0.00, 0.00 /  
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 22
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1    = period(1)
+         coefMechT  = coefMech(1)
+         goto 1011
+      else
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),coefMech(count1),coefMech(count2),
+     +             specT,coefMechT,iflag)
+
+ 1011 continue
+
+C     Set the Coefficients.
+      a0 = cfcoefRrup(coefcountRrup,1)   
+      a1 = cfcoefRrup(coefcountRrup,2)   
+      a2 = cfcoefRrup(coefcountRrup,3)   
+      a3 = cfcoefRrup(coefcountRrup,4)   
+      a4 = cfcoefRrup(coefcountRrup,5)   
+      a5 = cfcoefRrup(coefcountRrup,6)   
+      a6 = cfcoefRrup(coefcountRrup,7)   
+      a7 = cfcoefRrup(coefcountRrup,8)   
+      a8 = cfcoefRrup(coefcountRrup,9)   
+      a9 = cfcoefRrup(coefcountRrup,10)
+      a10 = cfcoefRrup(coefcountRrup,11)   
+
+C     Compute the ground motion.
+C     First compute magnitude scaling.
+      if (m .lt. 5.5) then
+         termmag = a1*(5.5-6.5) + a2*(m-5.5)
+      elseif (m .ge. 6.5) then
+         termmag = a3*(m-6.5) 
+      else
+         termmag = a1*(m-6.5)       
+      endif
+
+C     Compute the Hanging Wall term if needed. 
+      if (HWFlag .eq. 1) then
+         call S02_SWUS_HWModel (M, Rrup, Rjb, Rx, Dip, Width, a10, ztor, specT, HWfactor)
+      else 
+         HWFactor = 0.0      
+      endif
+
+C     Now for DCPP apply mechanism adjustments
+C     Reverse Fault (ftype=1)
+      if (ftype .eq. 1.0) then
+         termmech = a9*a9
+C     Normal Fault (ftype=-1)
+      elseif (ftype .eq. -1.0) then
+         termmech = coefMechT
+C     Strike-slip Fault (ftype=0)
+      else
+         termmech = 0.0
+      endif
+
+c      if (ftype .eq. -1.0) then
+c         termmech = CoefmechT
+c      else
+c         termmech = 0.0
+c      endif
+
+      lnY = a0 - a7*a7*Rrup + a8*a8*Ztor + (a4 + a5*(m-5.0))*alog(sqrt(Rrup*Rrup+a6*a6)) + 
+     1       termmag + HWFactor + termmech
+
+C     Fixed assigned sigma values.
+      phi = 0.54
+      tau = 0.36
+      sigma = 0.65
+
+C     Convert ground motion to units of gals in natural log units. 
+      lnY = lnY + 6.89
+      iflag = 0
+
+      return
+      end 
+                                                                        
 c----------------------------------------------------------------------                
       subroutine S02_SWUS_HWModel ( m, Rrup, Rjb, Rx, Dip, Width, a10, ztor, specT, HWFactor )
 
