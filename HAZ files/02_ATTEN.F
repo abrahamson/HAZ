@@ -12781,6 +12781,7 @@ c----------------------------------------------------------------------
 C     SWUS DCPP Common Functional Model as a function of Rrup distance. 
 C     Coefficients are passed from input file and are only applicable for
 C     the spectral period specified in the input file. 
+C     This version includes the fault mechanism term consistent for DCPP.
 
       Subroutine S02_SWUS_CFRrup_DCPP ( m, Rrup, Rjb, ztor, ftype, dip, Width, Rx, HWFlag, 
      1                   specT, lnY, sigma, iflag, cfcoefrrup, coefcountRrup, phi, tau )
