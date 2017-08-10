@@ -1,4 +1,4 @@
- 45.2 Haz45.2 Out2 file - magnitude recurrence curves for SSC fractile code
+ 45.3 Haz45.3 Out2 file - magnitude recurrence curves for SSC fractile code
               1   nFlt, nWidth
     1
   1.000000
@@ -21,8 +21,8 @@
    1   1   5.675  0.1090E-02
    1   1   5.725  0.9824E-03
    1   1   5.775  0.8857E-03
-   1   1   5.825  0.7986E-03
-   1   1   5.875  0.7200E-03
+   1   1   5.825  0.7985E-03
+   1   1   5.875  0.7199E-03
    1   1   5.925  0.6491E-03
    1   1   5.975  0.5852E-03
    1   1   6.025  0.5276E-03

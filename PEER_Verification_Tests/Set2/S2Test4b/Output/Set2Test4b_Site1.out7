@@ -1,4 +1,4 @@
- 45.2 Haz45.2 Out7 file - deaggregation by source
+ 45.3 Haz45.3 Out7 file - deaggregation by source
 
 
 -------------------------------------------------------------------------------------------------------------------
@@ -12,6 +12,14 @@
   01_Set2Test4b                 RjbBar          1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set2Test4b                 RxBar          -1.00     -1.00     -1.00     -1.00     -1.00     -1.00     -1.00     -1.00     -1.00     -1.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set2Test4b                 EBar            0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 rSeismoBar     10.05     10.05     10.05     10.05     10.05      6.84      4.71      3.12      2.03      1.29      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 ry0Bar          0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 rHypoBar       13.98     13.98     13.98     13.98     13.98     10.84      8.78      7.24      6.17      5.37      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 DipAvgBar      90.00     90.00     90.00     90.00     90.00     90.00     90.00     90.00     90.00     90.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 ZtorBar         9.96      9.96      9.96      9.96      9.96      6.72      4.55      2.88      1.68      0.74      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 thetasiteBar    0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 RupWidthBar     7.08      7.08      7.08      7.08      7.08      7.08      7.08      7.08      7.08      7.08      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test4b                 HypoDepthBar   13.51     13.51     13.51     13.51     13.51     10.27      8.10      6.43      5.23      4.29      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
 
 ------------------
 

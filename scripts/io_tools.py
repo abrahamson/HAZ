@@ -1,17 +1,30 @@
+
 import re
+from typing import Callable, Dict, List, Tuple, TypeVar
+
 import numpy as np
 
+T = TypeVar('T', dict, int, float, str)
 
-def fixed_split(line, pairs, keep_tail=False):
+def fixed_split(line: str,
+                pairs: List[Tuple[int, Callable]],
+                keep_tail: bool=False
+                ) -> List[T]:
     """Read a fixed width line of text.
 
-    Args:
-        line (str): text line to parse
-        pairs (list): list of tuples specifying the width and the string parser
-        keep_tail (bool): remove entries without values
+    Parameters
+    ----------
+    line : str
+        text line to parse
+    pairs : list[(int, func)]
+        list of tuples specifying the width and the string parser
+    keep_tail : bool
+        remove entries without values
 
-    Returns:
-        list: values read
+    Returns
+    -------
+    values : list
+        values read
     """
     line = line.rstrip()
 
@@ -27,13 +40,15 @@ def fixed_split(line, pairs, keep_tail=False):
         i += w
 
     if not keep_tail:
-        while values[-1] is None:
+        while values and values[-1] is None:
             values.pop()
 
-    return values
+    return tuple(values)
 
 
-def parse_blocks(lines, pattern):
+def parse_blocks(lines: List[str],
+                 pattern: str
+                 ) -> List[str]:
     """Separate lines into a series of blocks using an identifying pattern.
 
     Parameters
@@ -44,7 +59,8 @@ def parse_blocks(lines, pattern):
         Regex pattern used to identify the blocks.
     Returns
     -------
-    list[str]
+    blocks : list[str]
+        Parsed blocks
     """
     starts = [i for i, l in enumerate(lines)
               if re.search(pattern, l)]
@@ -53,16 +69,16 @@ def parse_blocks(lines, pattern):
     return blocks
 
 
-def parse_site_line(line):
+def parse_site_line(line: str) -> Dict[str, T]:
     """Parse the site line in out3 and out4 files.
 
     Parameters
     ----------
-    line: str
+    line : str
         Line of text
     Returns
     -------
-    dict
+    site : dict
         Site dictionary containing keys:
             id: int
                 identifier
@@ -80,7 +96,9 @@ def parse_site_line(line):
     return s
 
 
-def pop_lines(lines, count):
+def pop_lines(lines: List[str],
+              count: int
+              ) -> List[str]:
     """Pop a given number of lines from the start of a list.
 
     Parameters
@@ -92,7 +110,7 @@ def pop_lines(lines, count):
 
     Returns
     -------
-    list[str]
+    popped : list[str]
         Lines removed
     """
     popped = []
@@ -101,7 +119,10 @@ def pop_lines(lines, count):
     return popped
 
 
-def pop_until(lines, pattern, include_match=True):
+def pop_until(lines: List[str],
+              pattern: str,
+              include_match: bool=True
+              ) -> List[str]:
     """Pop lines from the start of a list until a regex pattern is found.
 
     Parameters
@@ -115,7 +136,7 @@ def pop_until(lines, pattern, include_match=True):
 
     Returns
     -------
-    list[str]
+    popped : list[str]
         Lines removed
     """
     popped = []
@@ -128,7 +149,7 @@ def pop_until(lines, pattern, include_match=True):
     return popped
 
 
-def read_out3(fname):
+def read_out3(fname: str) -> Dict[str, T]:
     """Read a HAZ out3 formatted text file.
 
     Parameters
@@ -138,11 +159,14 @@ def read_out3(fname):
 
     Returns
     -------
-    dict
+    site : dict
+        Dictionary containing site information
     """
     assert fname.endswith('.out3')
 
     with open(fname) as fp:
+        # Skip header line
+        next(fp)
         lines = list(fp)
 
     parts = lines.pop(0).split()
@@ -190,7 +214,7 @@ def read_out3(fname):
 
 def test_read_out3():
     """Test reading of a HAZ out3 formatted text file."""
-    site = read_out3('../PEER Verification Tests/' +
+    site = read_out3('../PEER_Verification_Tests/' +
                      'Set2/S2Test1/Output/Set2Test1_Site1.out3')
 
     np.testing.assert_allclose(site['lat'], 0.000)
@@ -200,17 +224,17 @@ def test_read_out3():
 
     # Test the faults
     expected_faults = [
-        ('01_AreaSource', 1.000, 1.000, 0.7, [
+        ('01_AreaSource', 1.000, 1.000, 5.0, [
             0.3944E-01, 0.2283E-01, 0.3926E-02, 0.1337E-02, 0.6207E-03,
             0.3293E-03, 0.1888E-03, 0.1142E-03, 0.7184E-04, 0.4663E-04,
             0.3105E-04, 0.2114E-04, 0.1466E-04, 0.1034E-04, 0.5371E-05,
             0.2928E-05, 0.1662E-05, 0.9771E-06]),
-        ('01_FaultB', 1.000, 1.000, 50.0, [
+        ('02_FaultB', 1.000, 1.000, 50.0, [
             0.1221E-01, 0.1018E-01, 0.2854E-02, 0.5060E-03, 0.8081E-04,
             0.1412E-04, 0.2798E-05, 0.6268E-06, 0.1569E-06, 0.4335E-07,
             0.1308E-07, 0.4272E-08, 0.1498E-08, 0.5611E-09, 0.9376E-10,
             0.1926E-10, 0.4726E-11, 0.1350E-11]),
-        ('01_FaultC', 1.000, 1.000, 25.0, [
+        ('03_FaultC', 1.000, 1.000, 25.0, [
             0.5912E-02, 0.5858E-02, 0.3982E-02, 0.2153E-02, 0.1052E-02,
             0.4863E-03, 0.2224E-03, 0.1030E-03, 0.4876E-04, 0.2371E-04,
             0.1185E-04, 0.6082E-05, 0.3204E-05, 0.1730E-05, 0.5397E-06,
@@ -221,9 +245,11 @@ def test_read_out3():
         for key, expected in zip(keys, ef):
             actual = model['faults'][i][key]
             if isinstance(expected, (str, int)):
-                np.testing.assert_equal(actual, expected)
+                np.testing.assert_equal(
+                    actual, expected, err_msg='Key: %s' % key)
             else:
-                np.testing.assert_allclose(actual, expected)
+                np.testing.assert_allclose(
+                    actual, expected, err_msg='Key: %s' % key)
 
     # Test the total probabilities
     test_values = [
@@ -253,10 +279,11 @@ def test_read_out3():
           0.216E+01, 0.224E+01, 0.240E+01, 0.254E+01, 0.269E+01, 0.282E+01]),
     ]
     for key, expected in test_values:
-        np.testing.assert_allclose(model[key], expected)
+        np.testing.assert_allclose(
+            model[key], expected, err_msg='Key: %s' % key)
 
 
-def read_out4(fname):
+def read_out4(fname: str) -> Dict[str, T]:
     """Read a HAZ out4 formatted text file.
 
     Parameters
@@ -266,11 +293,14 @@ def read_out4(fname):
 
     Returns
     -------
-    dict
+    site : dict
+        Dictionary containing site information
     """
     assert fname.endswith('.out4')
 
     with open(fname) as fp:
+        # Skip header line
+        next(fp)
         lines = list(fp)
 
     pop_until(lines, '^ SITE', include_match=False)
@@ -308,7 +338,7 @@ def read_out4(fname):
 
 def test_read_out4():
     """Test reading of a HAZ out4 formatted text file."""
-    site = read_out4('../PEER Verification Tests/' +
+    site = read_out4('../PEER_Verification_Tests/' +
                      'Set2/S2Test1/Output/Set2Test1_Site1.out4')
 
     np.testing.assert_allclose(site['lat'], 0.000)
@@ -357,3 +387,49 @@ def test_read_out4():
         for key, expected in zip(keys, test_bin):
             actual = site['bins'][idx][key]
             np.testing.assert_allclose(actual, expected)
+
+
+def read_fractiles(fname):
+    with open(fname) as fp:
+        lines = list(fp)
+
+    period = float(lines.pop(0)[:12])
+
+    intensity = np.array(
+        fixed_split(lines.pop(0), 18 * [(12, float)]))
+
+    block = pop_until(lines, r'^\s+$', include_match=False)
+
+    values = [fixed_split(b, [(7, float)] + 17 * [(12, float)])
+              for b in block]
+
+    fractiles = np.array([v[0] for v in values])
+    hazard = np.array([v[1:] for v in values])
+
+    mean = np.array(
+        fixed_split(lines.pop(0)[7:], 17 * [(12, float)])
+    )
+    pop_until(lines, r'^-+$', include_match=False)
+    pop_lines(lines, 4)
+    hazard = float(lines.pop(0)[35:])
+    pop_lines(lines, 2)
+
+    summary = np.array(
+        [fixed_split(l, [(11, float)] + 5 * [(12, float)])
+         for l in lines],
+        dtype=np.dtype([
+            ('period', '<f8'),
+            ('5th', '<f8'),
+            ('10th', '<f8'),
+            ('50th', '<f8'),
+            ('90th', '<f8'),
+            ('95th', '<f8'),
+        ]),
+    )
+
+    # FIXME
+
+def test_read_fractiles():
+    fname = '../PEER_Verification_Tests/' \
+        'Set3/S3Test2/Fractiles/Output/Fract_Set3Test2_Site1.out'
+    # FIXME

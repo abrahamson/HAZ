@@ -1,4 +1,4 @@
- 45.2 Haz45.2 Out7 file - deaggregation by source
+ 45.3 Haz45.3 Out7 file - deaggregation by source
 
 
 -------------------------------------------------------------------------------------------------------------------
@@ -12,6 +12,14 @@
   01_Set2Test3a                 RjbBar         15.35     15.35     15.35     15.35     12.63      9.55      7.65      6.34      5.35      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set2Test3a                 RxBar           1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set2Test3a                 EBar            0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 rSeismoBar     15.43     15.43     15.43     15.43     12.72      9.66      7.79      6.49      5.53      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 ry0Bar         15.35     15.35     15.35     15.35     12.63      9.55      7.65      6.34      5.35      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 rHypoBar       48.16     48.16     48.16     48.16     45.47     42.44     40.58     39.29     38.32      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 DipAvgBar      44.98     44.98     44.98     44.98     44.98     44.98     44.98     44.98     44.98      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 ZtorBar         1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      1.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 thetasiteBar    0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 RupWidthBar    15.56     15.56     15.56     15.56     15.56     15.56     15.56     15.56     15.56      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set2Test3a                 HypoDepthBar    6.50      6.50      6.50      6.50      6.50      6.50      6.50      6.50      6.50      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
 
 ------------------
 

@@ -1,4 +1,4 @@
- 45.2 Haz45.2 Out7 file - deaggregation by source
+ 45.3 Haz45.3 Out7 file - deaggregation by source
 
 
 -------------------------------------------------------------------------------------------------------------------
@@ -12,6 +12,14 @@
   01_Set1Test7_fast             RjbBar         15.91     15.91     14.76     13.47     12.58     11.60     10.87      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set1Test7_fast             RxBar           0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
   01_Set1Test7_fast             EBar            0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             rSeismoBar     16.27     16.27     15.10     13.66     12.71     11.68     10.89      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             ry0Bar         15.91     15.91     14.76     13.47     12.58     11.60     10.87      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             rHypoBar       23.38     23.38     22.70     22.64     22.62     22.38     22.59      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             DipAvgBar      90.00     90.00     90.00     90.00     90.00     90.00     90.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             ZtorBar         2.66      2.66      2.41      1.73      1.32      0.94      0.47      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             thetasiteBar    0.00      0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             RupWidthBar     6.63      6.63      7.09      8.38      9.25     10.00     10.96      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test7_fast             HypoDepthBar    6.00      6.00      5.97      5.94      5.97      5.97      5.98      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
 
 ------------------
 

@@ -1,4 +1,4 @@
- 45.2 Haz45.2 Out7 file - deaggregation by source
+ 45.3 Haz45.3 Out7 file - deaggregation by source
 
 
 -------------------------------------------------------------------------------------------------------------------
@@ -12,16 +12,40 @@
   01_AreaSource                 RjbBar         13.66
   01_AreaSource                 RxBar          13.66
   01_AreaSource                 EBar            0.76
+  01_AreaSource                 rSeismoBar     16.01
+  01_AreaSource                 ry0Bar          0.00
+  01_AreaSource                 rHypoBar       16.01
+  01_AreaSource                 DipAvgBar      90.00
+  01_AreaSource                 ZtorBar         7.28
+  01_AreaSource                 thetasiteBar    0.00
+  01_AreaSource                 RupWidthBar     4.36
+  01_AreaSource                 HypoDepthBar    7.28
   02_FaultB                     MBar            6.74
   02_FaultB                     RrupBar        50.13
   02_FaultB                     RjbBar         50.12
   02_FaultB                     RxBar         -50.00
   02_FaultB                     EBar            2.55
+  02_FaultB                     rSeismoBar     50.13
+  02_FaultB                     ry0Bar          0.93
+  02_FaultB                     rHypoBar       51.37
+  02_FaultB                     DipAvgBar      90.00
+  02_FaultB                     ZtorBar         0.18
+  02_FaultB                     thetasiteBar    0.00
+  02_FaultB                     RupWidthBar    11.63
+  02_FaultB                     HypoDepthBar    6.00
   03_FaultC                     MBar            6.42
   03_FaultC                     RrupBar        25.16
   03_FaultC                     RjbBar         25.12
   03_FaultC                     RxBar         -25.00
   03_FaultC                     EBar            0.89
+  03_FaultC                     rSeismoBar     25.16
+  03_FaultC                     ry0Bar          0.74
+  03_FaultC                     rHypoBar       26.58
+  03_FaultC                     DipAvgBar      90.00
+  03_FaultC                     ZtorBar         0.60
+  03_FaultC                     thetasiteBar    0.00
+  03_FaultC                     RupWidthBar    10.74
+  03_FaultC                     HypoDepthBar    5.98
 
 ------------------
 
