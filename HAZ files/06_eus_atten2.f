@@ -3328,3 +3328,2193 @@ c     Compute the ground motions adjustment factor.
       end                                                                                                                                                   
 
      
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster01-Low: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C1Low ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -4.848, -4.848, -2.088, -4.659, -6.172, -9.963, -17.78, -25.86 /
+      Data C2 / 1.621, 1.621, 1.266, 1.645, 2.026, 2.924, 4.751, 6.414 /
+      Data C3 / -0.09426, -0.09426, -0.07828, -0.09066, -0.1225, -0.1829, -0.2995, -0.3878 /
+      Data C4 / -1.801, -1.801, -2.145, -1.635, -1.804, -1.783, -1.752, -1.271 /
+      Data C5 / 0.1038, 0.1038, 0.1427, 0.08719, 0.1179, 0.1187, 0.1182, 0.06127 /
+      Data C6 / -2.658, -2.658, -2.327, -2.496, -2.993, -3.206, -3.106, -2.64 /
+      Data C7 / 0.2127, 0.2127, 0.1083, 0.1976, 0.2776, 0.3074, 0.2928, 0.2503 /
+      Data C8 / -2.531, -2.531, -2.188, -1.75, -2.138, -2.374, -2.226, -2.372 /
+      Data C9 / 0.1731, 0.1731, 0.06719, 0.03638, 0.1328, 0.1777, 0.1522, 0.1943 /
+      Data C10 / -0.0009935, -0.0009935, -0.001056, -0.002131, -0.000478, -0.00006192, -0.0002885, 0.0007184 /
+      Data C11 / -0.00001544, -0.00001544, 0.0000762, 0.0001211, -0.0001307, -0.000144, -0.00004353, -0.0001961 /
+      Data C12 / 1.737, 1.737, 2.378, 1.679, 1.829, 1.904, 2.028, 1.743 /
+      Data C13 / 0.04032, 0.04032, -0.03753, 0.0453, 0.01974, 0.009728, -0.006279, 0.01898 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 130, 130, 130, 130, 130, 130, 130, 130 /
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster01-Low, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster01-Low, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigM5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster01-Med: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C1Med ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / -3.319, -3.319, -2.235, -3.135, -4.677, -8.615, -16.93, -24.33 /
+      Data C2 / 1.268, 1.268, 1.212, 1.306, 1.557, 2.453, 4.368, 6.022 /
+      Data C3 / -0.06382, -0.06382, -0.05816, -0.06238, -0.07678, -0.1346, -0.2544, -0.3514 /
+      Data C4 / -1.892, -1.892, -1.88, -1.754, -1.658, -1.551, -1.378, -1.258 /
+      Data C5 / 0.1107, 0.1107, 0.1037, 0.09942, 0.09415, 0.08433, 0.06594, 0.05294 /
+      Data C6 / -2.389, -2.389, -2.384, -2.139, -1.985, -1.859, -1.62, -1.385 /
+      Data C7 / 0.1557, 0.1557, 0.1443, 0.1316, 0.1268, 0.1176, 0.09272, 0.06748 /
+      Data C8 / -2.497, -2.497, -2.642, -2.4, -2.071, -1.877, -1.642, -1.433 /
+      Data C9 / 0.1647, 0.1647, 0.1607, 0.1523, 0.1347, 0.1184, 0.0951, 0.07481 /
+      Data C10 / -0.0009028, -0.0009028, -0.0008213, -0.001312, -0.001459, -0.001222, -0.0009006, -0.0006909 /
+      Data C11 / 0.00002638, 0.00002638, 0.0000274, 0.00002413, 0.00002092, 0.00001907, 0.00001591, 0.00001218 /
+      Data C12 / 1.781, 1.781, 1.845, 1.783, 1.753, 1.749, 1.754, 1.714 /
+      Data C13 / 0.03712, 0.03712, 0.03645, 0.03298, 0.02906, 0.02812, 0.02622, 0.02746 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 130, 130, 130, 130, 130, 130, 130, 130 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster01-Med, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster01-Med, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster01-High: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C1High ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+
+      Data C1 / -1.741, -1.741, -2.065, -1.502, -3.787, -8.305, -17.05, -22.98 /
+      Data C2 / 0.9078, 0.9078, 1.094, 0.947, 1.183, 2.132, 4.106, 5.659 /
+      Data C3 / -0.03331, -0.03331, -0.03549, -0.03383, -0.03079, -0.08381, -0.2037, -0.315 /
+      Data C4 / -1.995, -1.995, -1.67, -1.901, -1.343, -1.005, -0.6753, -1.192 /
+      Data C5 / 0.1193, 0.1193, 0.07244, 0.1158, 0.04361, -0.0003668, -0.03943, 0.03643 /
+      Data C6 / -2.112, -2.112, -2.404, -1.758, -1.148, -0.8359, -0.4802, -0.1836 /
+      Data C7 / 0.09747, 0.09747, 0.175, 0.06194, 0.002991, -0.0211, -0.05237, -0.1069 /
+      Data C8 / -2.468, -2.468, -3.118, -3.063, -1.912, -1.206, -0.8714, -0.4637 /
+      Data C9 / 0.157, 0.157, 0.2572, 0.2703, 0.1223, 0.03171, 0.008667, -0.04932 /
+      Data C10 / -0.0007989, -0.0007989, -0.0005394, -0.0004617, -0.002657, -0.002793, -0.001954, -0.002172 /
+      Data C11 / 0.00006614, 0.00006614, -0.00002835, -0.00007789, 0.0002064, 0.0002469, 0.000145, 0.0002316 /
+      Data C12 / 1.841, 1.841, 1.356, 1.923, 1.333, 0.8951, 0.6201, 1.575 /
+      Data C13 / 0.03107, 0.03107, 0.1037, 0.01455, 0.0931, 0.1573, 0.1938, 0.0529 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 130, 130, 130, 130, 130, 130, 130, 130 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster01-High, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster01-High, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+    
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster02-Low: Mid-Continent, Functional Model2, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C2Low ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / 9.375, 9.375, 8.657, -4.012, -24.31, -20.56, -34.54, -40.21 /
+      Data C2 / -3.378, -3.378, -2.236, 2.86, 10.7, 7.546, 13.34, 14.72 /
+      Data C3 / 0.6098, 0.6098, 0.4056, -0.3493, -1.393, -0.8576, -1.674, -1.802 /
+      Data C4 / -0.03561, -0.03561, -0.02389, 0.01202, 0.05803, 0.02973, 0.06694, 0.07154 /
+      Data C5 / -3.081, -3.081, -3.485, -2.979, -2.23, -1.942, -1.97, -1.712 /
+      Data C6 / 0.2714, 0.2714, 0.3281, 0.2882, 0.1765, 0.1713, 0.1351, 0.09196 /
+      Data C7 / 0.2179, 0.2179, 0.1994, 0.2132, 0.1822, 0.1637, 0.2772, 0.2523 /
+      Data C8 / -0.008817, -0.008817, -0.008201, -0.006515, -0.005683, -0.004415, -0.002111, -0.002285 /
+      Data C9 / 0.0008775, 0.0008775, 0.0007111, 0.0006072, 0.0005755, 0.0004946, 0.0003024, 0.0003816 /
+      Data C10 / -0.0002916, -0.0002916, -0.0002179, -0.0002223, -0.0001698, -0.000057, -0.0001211, -0.0001491 /
+      Data C11 / 2.025, 2.025, 1.096, 0.6107, -0.4214, -1.526, 0.1708, 0.8019 /
+      Data C12 / 0.09247, 0.09247, 0.3018, 0.3378, 0.5205, 0.6114, 0.3537, 0.2328 /
+      Data C13 / 0.1355, 0.1355, 0.2184, 0.07885, -0.1417, -0.2739, -0.1513, -0.1221 /
+      Data C14 / 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster02-Low, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster02-Low, MidC, Hor'                      
+
+      CC = exp(c11T + c12T*min(M,c14T) + c13T*max((M-c14T),0.0))
+      RR = dist + CC
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*M**2.0 + c4T*M**3.0 + 
+     1     (c5T + c6T*min(M,c14T) +  c7T*max((M-c14T),0.0))*alog(RR) + 
+     1     (c8T + c9T*min(M,c14T) + c10T*max((M-c14T),0.0))*RR    
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster02-Med: Mid-Continent, Functional Model2, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C2Med ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -3.738, -3.738, -3.297, -1.548, -11.82, -15.27, -20.3, -26.51 /
+      Data C2 / 2.318, 2.318, 2.551, 1.581, 5.062, 5.412, 6.868, 8.708 /
+      Data C3 / -0.2634, -0.2634, -0.3267, -0.1876, -0.5837, -0.5534, -0.7453, -0.9685 /
+      Data C4 / 0.008203, 0.008203, 0.01261, 0.006226, 0.02059, 0.01602, 0.02524, 0.0356 /
+      Data C5 / -2.925, -2.925, -2.951, -2.905, -2.424, -2.246, -2.53, -2.496 /
+      Data C6 / 0.3044, 0.3044, 0.3136, 0.3141, 0.2343, 0.2193, 0.2623, 0.2609 /
+      Data C7 / 0.206, 0.206, 0.2043, 0.1875, 0.1604, 0.147, 0.1747, 0.155 /
+      Data C8 / -0.005209, -0.005209, -0.005333, -0.004107, -0.003891, -0.003463, -0.002268, -0.001852 /
+      Data C9 / 0.0002607, 0.0002607, 0.0002453, 0.0002144, 0.0002842, 0.0003825, 0.000357, 0.0003285 /
+      Data C10 / -0.00004905, -0.00004905, -0.00004371, -0.00004316, -0.00006888, -0.00009736, -0.000095, -0.00009018 /
+      Data C11 / 0.005719, 0.005719, 0.06974, 0.3146, -0.2284, -1.516, -1.321, -1.083 /
+      Data C12 / 0.3629, 0.3629, 0.3513, 0.3066, 0.4259, 0.6191, 0.5725, 0.5213 /
+      Data C13 / -0.07923, -0.07923, -0.0464, -0.06699, -0.1991, -0.2994, -0.2209, -0.212 /
+      Data C14 / 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster02-Med, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster02-Med, MidC, Hor'                      
+
+      CC = exp(c11T + c12T*min(M,c14T) + c13T*max((M-c14T),0.0))
+      RR = dist + CC
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*M**2.0 + c4T*M**3.0 + 
+     1     (c5T + c6T*min(M,c14T) +  c7T*max((M-c14T),0.0))*alog(RR) + 
+     1     (c8T + c9T*min(M,c14T) + c10T*max((M-c14T),0.0))*RR    
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+        
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster02-High: Mid-Continent, Functional Model2, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C2High ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -7.709, -7.709, 0.3463, -7.616, -22.82, -13.7, -4.622, -6.92 /
+      Data C2 / 3.787, 3.787, 0.2886, 4.28, 10.95, 5.552, 0.01532, 0.01103 /
+      Data C3 / -0.5, -0.5, 0.004643, -0.6293, -1.625, -0.7189, 0.1854, 0.2609 /
+      Data C4 / 0.0217, 0.0217, -0.001578, 0.03088, 0.08046, 0.03353, -0.01315, -0.01948 /
+      Data C5 / -2.693, -2.693, -2.5, -2.651, -2.544, -2.614, -3.128, -3.291 /
+      Data C6 / 0.3243, 0.3243, 0.3002, 0.3058, 0.2771, 0.2899, 0.3995, 0.4352 /
+      Data C7 / 0.1614, 0.1614, 0.1519, 0.1674, 0.1768, 0.09939, 0.05889, 0.05389 /
+      Data C8 / -0.003865, -0.003865, -0.004288, -0.003348, -0.002797, -0.002955, -0.003016, -0.002403 /
+      Data C9 / -0.00002854, -0.00002854, 0.00002666, 0.00006314, 0.00008068, 0.000295, 0.0004848, 0.0004176 /
+      Data C10 / 0.0001343, 0.0001343, 0.0001158, 0.00004686, -0.0000288, -0.00005291, -0.00005643, -0.00006663 /
+      Data C11 / -3.671, -3.671, -0.668, -0.4119, -0.1841, -1.3, -2.07, -1.904 /
+      Data C12 / 0.8593, 0.8593, 0.2715, 0.3345, 0.363, 0.5627, 0.6302, 0.5819 /
+      Data C13 / -0.3748, -0.3748, -0.3441, -0.3332, -0.5366, -0.2887, -0.1715, -0.1641 /
+      Data C14 / 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8, 5.8 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster02-High, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster02-High, MidC, Hor'                      
+
+      CC = exp(c11T + c12T*min(M,c14T) + c13T*max((M-c14T),0.0))
+      RR = dist + CC
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*M**2.0 + c4T*M**3.0 + 
+     1     (c5T + c6T*min(M,c14T) +  c7T*max((M-c14T),0.0))*alog(RR) + 
+     1     (c8T + c9T*min(M,c14T) + c10T*max((M-c14T),0.0))*RR    
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster03-Low: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C3Low ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -3.387, -3.387, -2.462, -4.478, -7.819, -12.56, -20.1, -23.41 /
+      Data C2 / 1.892, 1.892, 1.837, 2.011, 2.732, 3.837, 5.511, 5.931 /
+      Data C3 / -0.1469, -0.1469, -0.1377, -0.1461, -0.1941, -0.2678, -0.3759, -0.3897 /
+      Data C4 / -2.544, -2.544, -2.45, -2.074, -1.898, -1.844, -1.865, -1.996 /
+      Data C5 / 0.1571, 0.1571, 0.1345, 0.1276, 0.1171, 0.1165, 0.1269, 0.1511 /
+      Data C6 / 0.3513, 0.3513, 0.3929, 0.4439, 0.3467, 0.3279, 0.3541, 0.3506 /
+      Data C7 / -0.0488, -0.0488, -0.06395, -0.04426, -0.02948, -0.02606, -0.02821, -0.02736 /
+      Data C8 / -2.695, -2.695, -3.581, -2.023, -1.137, -0.8706, -0.8142, -0.8959 /
+      Data C9 / 0.2068, 0.2068, 0.232, 0.1365, 0.07169, 0.04971, 0.04863, 0.0667 /
+      Data C10 / -0.001827, -0.001827, -0.0009334, -0.003142, -0.003267, -0.002626, -0.001796, -0.00139 /
+      Data C11 / 0.00005335, 0.00005335, 0.00003054, 0.00005509, 0.00005484, 0.00005281, 0.00004872, 0.00003937 /
+      Data C12 / 3.038, 3.038, 2.92, 2.973, 2.97, 2.955, 2.912, 2.847 /
+      Data C13 / -0.1709, -0.1709, -0.1392, -0.1729, -0.1822, -0.1846, -0.1788, -0.1698 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 140, 140, 140, 140, 140, 140, 140, 140 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster03-Low, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster03-Low, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster03-Med: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C3Med ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -2.27, -2.27, -1.35, -3.44, -6.752, -11.5, -19.01, -22.22 /
+      Data C2 / 1.679, 1.679, 1.624, 1.818, 2.532, 3.635, 5.311, 5.726 /
+      Data C3 / -0.1277, -0.1277, -0.1184, -0.1282, -0.1758, -0.2495, -0.3578, -0.372 /
+      Data C4 / -2.649, -2.649, -2.554, -2.176, -2.015, -1.961, -1.982, -2.133 /
+      Data C5 / 0.1655, 0.1655, 0.1425, 0.1357, 0.1269, 0.1264, 0.1366, 0.1624 /
+      Data C6 / -0.04737, -0.04737, -0.007665, 0.1136, 0.06214, 0.04284, 0.027, 0.03288 /
+      Data C7 / -0.009272, -0.009272, -0.02411, -0.01666, -0.003979, -0.0004893, 0.0008474, -0.0004211 /
+      Data C8 / -2.61, -2.61, -3.471, -1.999, -1.122, -0.8568, -0.8034, -0.8856 /
+      Data C9 / 0.1876, 0.1876, 0.2084, 0.1279, 0.06538, 0.04361, 0.04278, 0.06077 /
+      Data C10 / -0.001255, -0.001255, -0.0004193, -0.002493, -0.002706, -0.002063, -0.001216, -0.0007902 /
+      Data C11 / 0.00003347, 0.00003347, 0.00002056, 0.00002176, 0.00002053, 0.000018, 0.00001282, 0.000004342 /
+      Data C12 / 3.049, 3.049, 2.934, 2.98, 2.979, 2.965, 2.921, 2.859 /
+      Data C13 / -0.1689, -0.1689, -0.1382, -0.1694, -0.1778, -0.1801, -0.1738, -0.1638 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 140, 140, 140, 140, 140, 140, 140, 140 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster03-Med, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster03-Med, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c -----------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster03-High: Mid-Continent, Functional Model1&3, Horizontal ***
+C -----------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C3High ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                
+      real lnY, m, dist, period1, RR, R1, R2, R3
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, c8T, c9T, C10T
+      real c11T, c12T, c13T, c14T, c15T
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), c8(MAXPER), c9(MAXPER), c10(MAXPER)
+      real c11(MAXPER), c12(MAXPER), c13(MAXPER), c14(MAXPER), c15(MAXPER)
+      real period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data Period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+      Data C1 / -1.152, -1.152, -0.2207, -2.407, -5.689, -10.43, -17.92, -21.03 /
+      Data C2 / 1.466, 1.466, 1.409, 1.627, 2.332, 3.435, 5.11, 5.522 /
+      Data C3 / -0.1084, -0.1084, -0.09901, -0.1104, -0.1575, -0.2312, -0.3396, -0.3542 /
+      Data C4 / -2.755, -2.755, -2.661, -2.276, -2.131, -2.078, -2.1, -2.271 /
+      Data C5 / 0.1739, 0.1739, 0.151, 0.1435, 0.1365, 0.1362, 0.1465, 0.1738 /
+      Data C6 / -0.4456, -0.4456, -0.4064, -0.2181, -0.226, -0.2418, -0.2985, -0.285 /
+      Data C7 / 0.03018, 0.03018, 0.01547, 0.01117, 0.02205, 0.02506, 0.02971, 0.02658 /
+      Data C8 / -2.525, -2.525, -3.362, -1.974, -1.107, -0.8422, -0.7946, -0.8754 /
+      Data C9 / 0.1684, 0.1684, 0.1852, 0.1192, 0.05907, 0.03742, 0.0372, 0.05484 /
+      Data C10 / -0.0006815, -0.0006815, 0.0001003, -0.001846, -0.002142, -0.001503, -0.0006309, -0.0001901 /
+      Data C11 / 0.00001348, 0.00001348, 0.000009821, -0.00001132, -0.00001408, -0.00001647, -0.00002377, -0.00003068 /
+      Data C12 / 3.059, 3.059, 2.95, 2.984, 2.984, 2.972, 2.931, 2.87 /
+      Data C13 / -0.167, -0.167, -0.1377, -0.1656, -0.1734, -0.1756, -0.1693, -0.1583 /
+      Data C14 / 70, 70, 70, 70, 70, 70, 70, 70 /
+      Data C15 / 140, 140, 140, 140, 140, 140, 140, 140 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         c8T     = c8(1)
+         c9T     = c9(1)
+         c10T     = c10(1)
+         c11T     = c11(1)
+         c12T     = c12(1)
+         c13T     = c13(1)
+         c14T     = c14(1)
+         c15T     = c15(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster03-High, Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),c8(count1),c8(count2),
+     +             specT,c8T,iflag)
+      call S24_interp (period(count1),period(count2),c9(count1),c9(count2),
+     +             specT,c9T,iflag)
+      call S24_interp (period(count1),period(count2),c10(count1),c10(count2),
+     +             specT,c10T,iflag)
+      call S24_interp (period(count1),period(count2),c11(count1),c11(count2),
+     +             specT,c11T,iflag)
+      call S24_interp (period(count1),period(count2),c12(count1),c12(count2),
+     +             specT,c12T,iflag)
+      call S24_interp (period(count1),period(count2),c13(count1),c13(count2),
+     +             specT,c13T,iflag)
+      call S24_interp (period(count1),period(count2),c14(count1),c14(count2),
+     +             specT,c14T,iflag)
+      call S24_interp (period(count1),period(count2),c15(count1),c15(count2),
+     +             specT,c15T,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster03-High, MidC, Hor'                      
+
+      RR = sqrt(dist*dist + (exp(c12T+c13T*M))**2.0 )
+      R1 = min(alog(RR),alog(C14T))
+      R2 = max( min(alog(RR/C14T),alog(c15T/c14T)),0.0)
+      R3 = max(alog(RR/c15T),0.0)
+
+C     Compute median ground motions
+      lnY = c1T + c2T*M + c3T*m**2.0 + (c4T+c5T*M)*R1 + (c6T+c7T*M)*R2 + (c8T+c9T*M)*R3 + (c10T+c11T*M)*RR
+      
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+
+c ---------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-Low (Rift): Mid-Continent, Functional Model4, Horizontal ***
+C ---------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4RLow ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / -0.2099, -0.2099, 0.4771, 0.4391, 0.3459, 0.1753, -0.7732, -1.657 /
+      Data C2 / 0.6754, 0.6754, 0.6754, 0.6754, 0.6743, 0.6744, 0.6782, 0.6843 /
+      Data C3 / -0.6303, -0.6303, -0.6303, -0.6303, -0.6251, -0.6103, -0.6406, -0.6616 /
+      Data C4 / 0.08405, 0.08405, 0.08405, 0.08405, 0.08303, 0.083, 0.08261, 0.08232 /
+      Data C5 / -0.005586, -0.005586, -0.005586, -0.005586, -0.005461, -0.005159, -0.004133, -0.002758 /
+      Data C6 / -0.3669, -0.3669, -0.3669, -0.3669, -0.3867, -0.4668, -0.6525, -0.8382 /
+      Data C7 / -0.01757, -0.01757, -0.01757, -0.01757, -0.01793, -0.06973, -0.1198, -0.1574 /
+      Data h / 5.711, 5.711, 5.711, 5.711, 5.662, 5.657, 5.658, 5.595 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-Low (Rift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-Low-Rift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+        
+
+
+c ---------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-Med (Rift): Mid-Continent, Functional Model4, Horizontal ***
+C ---------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4RMed ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / 0.239, 0.239, 0.926, 0.888, 0.793, 0.622, -0.307, -1.132 /
+      Data C2 / 0.805, 0.805, 0.805, 0.805, 0.805, 0.805, 0.805, 0.805 /
+      Data C3 / -0.679, -0.679, -0.679, -0.679, -0.679, -0.664, -0.696, -0.728 /
+      Data C4 / 0.0861, 0.0861, 0.0861, 0.0861, 0.0861, 0.0861, 0.0861, 0.0861 /
+      Data C5 / -0.00498, -0.00498, -0.00498, -0.00498, -0.00498, -0.00468, -0.00362, -0.00221 /
+      Data C6 / -0.477, -0.477, -0.477, -0.477, -0.477, -0.557, -0.755, -0.946 /
+      Data C7 / 0, 0, 0, 0, 0, -0.0518, -0.102, -0.14 /
+      Data h / 6, 6, 6, 6, 6, 6, 6, 6 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-Med (Rift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-Med-Rift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+ 
+c ---------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-High (Rift): Mid-Continent, Functional Model4, Horizontal ***
+C ---------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4RHigh ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / 0.6912, 0.6912, 1.378, 1.34, 1.244, 1.073, 0.1632, -0.6014 /
+      Data C2 / 0.9348, 0.9348, 0.9348, 0.9348, 0.9359, 0.9358, 0.932, 0.9259 /
+      Data C3 / -0.7286, -0.7286, -0.7286, -0.7286, -0.734, -0.7188, -0.7525, -0.796 /
+      Data C4 / 0.0881, 0.0881, 0.0881, 0.0881, 0.08912, 0.08915, 0.08956, 0.08983 /
+      Data C5 / -0.004375, -0.004375, -0.004375, -0.004375, -0.0045, -0.004201, -0.003107, -0.001662 /
+      Data C6 / -0.587, -0.587, -0.587, -0.587, -0.5671, -0.647, -0.8574, -1.054 /
+      Data C7 / 0.01757, 0.01757, 0.01757, 0.01757, 0.01793, -0.03387, -0.08425, -0.1226 /
+      Data h / 6.275, 6.275, 6.275, 6.275, 6.319, 6.324, 6.322, 6.38 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-High (Rift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-High-Rift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+        
+ 
+c ------------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-Low (NonRift): Mid-Continent, Functional Model4, Horizontal ***
+C ------------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4NRLow ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / -0.03467, -0.03467, 0.6464, 0.6183, 0.5269, 0.4, -0.6087, -1.46 /
+      Data C2 / 0.6775, 0.6775, 0.6775, 0.6775, 0.6762, 0.6763, 0.6801, 0.6861 /
+      Data C3 / -0.6782, -0.6782, -0.6783, -0.6782, -0.673, -0.6731, -0.6826, -0.6866 /
+      Data C4 / 0.06322, 0.06322, 0.06322, 0.06322, 0.06224, 0.06222, 0.06181, 0.06156 /
+      Data C5 / -0.006614, -0.006614, -0.006614, -0.006614, -0.006489, -0.005858, -0.004492, -0.003727 /
+      Data C6 / -0.1914, -0.1914, -0.1914, -0.1914, -0.2113, -0.3334, -0.557, -0.5948 /
+      Data C7 / -0.01757, -0.01757, -0.01757, -0.01757, -0.01793, -0.06973, -0.1198, -0.1574 /
+      Data h / 5.71, 5.71, 5.711, 5.71, 5.664, 5.665, 5.66, 5.591 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-Low (NonRift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-Low-NonRift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+        
+c ------------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-Med (NonRift): Mid-Continent, Functional Model4, Horizontal ***
+C ------------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4NRMed ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / 0.418, 0.418, 1.099, 1.071, 0.978, 0.851, -0.139, -0.932 /
+      Data C2 / 0.808, 0.808, 0.808, 0.808, 0.808, 0.808, 0.808, 0.808 /
+      Data C3 / -0.728, -0.728, -0.728, -0.728, -0.728, -0.728, -0.739, -0.754 /
+      Data C4 / 0.0651, 0.0651, 0.0651, 0.0651, 0.0651, 0.0651, 0.0651, 0.0651 /
+      Data C5 / -0.00601, -0.00601, -0.00601, -0.00601, -0.00601, -0.00538, -0.00398, -0.00318 /
+      Data C6 / -0.301, -0.301, -0.301, -0.301, -0.301, -0.423, -0.659, -0.702 /
+      Data C7 / 0, 0, 0, 0, 0, -0.0518, -0.102, -0.14 /
+      Data h / 6, 6, 6, 6, 6, 6, 6, 6 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-Med (NonRift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-Med-NonRift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+c ------------------------------------------------------------------------------------------------
+C *** EPRI Update (2013) Cluster04-High (NonRift): Mid-Continent, Functional Model4, Horizontal ***
+C ------------------------------------------------------------------------------------------------
+                                                                               
+      subroutine S06_EPRI13C4NRHigh ( m, dist, lnY, specT,                      
+     1                  attenName, period1,iflag, sig )                                    
+                                                                                                                                                                
+      real lnY, m, dist, period1, r1, m1, m2, d, d1
+      real specT, c1T, c2T, c3T, c4T, c5T, c6T, c7T, hT
+      integer nper, count1, count2, iflag
+      real sigM5T, sigM6T, sigM7T, sig
+      character*80 attenName                                                    
+                                                                                
+      parameter (MAXPER=8)                                                      
+      real c1(MAXPER), c2(MAXPER), c3(MAXPER), c4(MAXPER), c5(MAXPER)         
+      real c6(MAXPER), c7(MAXPER), h(MAXPER), period(MAXPER)
+      real sigM5(MAXPER), sigM6(MAXPER), sigM7(MAXPER)
+
+      Data period / 0.0, 0.01, 0.04, 0.1, 0.2, 0.4, 1.0, 2.0 /
+
+      Data C1 / 0.8738, 0.8738, 1.555, 1.527, 1.433, 1.306, 0.3346, -0.398 /
+      Data C2 / 0.9387, 0.9387, 0.9387, 0.9387, 0.9399, 0.9398, 0.936, 0.93 /
+      Data C3 / -0.7786, -0.7786, -0.7786, -0.7786, -0.784, -0.784, -0.7965, -0.8229 /
+      Data C4 / 0.06695, 0.06695, 0.06695, 0.06695, 0.06793, 0.06795, 0.06837, 0.06861 /
+      Data C5 / -0.005406, -0.005406, -0.005406, -0.005406, -0.005531, -0.004903, -0.003468, -0.002633 /
+      Data C6 / -0.4105, -0.4105, -0.4105, -0.4105, -0.3906, -0.5125, -0.7609, -0.809 /
+      Data C7 / 0.01757, 0.01757, 0.01757, 0.01757, 0.01793, -0.03387, -0.08425, -0.1226 /
+      Data h / 6.276, 6.276, 6.276, 6.276, 6.318, 6.318, 6.321, 6.384 /
+
+      Data sigM5 / 0.68, 0.68, 0.74, 0.74, 0.72, 0.72, 0.75, 0.78 /
+      Data sigM6 / 0.63, 0.63, 0.69, 0.69, 0.68, 0.69, 0.74, 0.78 /
+      Data sigM7 / 0.60, 0.60, 0.67, 0.67, 0.66, 0.67, 0.73, 0.77 /
+
+C Find the requested spectral period and corresponding coefficients
+      nPer = 8
+
+C First check for the PGA case (i.e., specT=0.0) 
+      if (specT .eq. 0.0) then
+         period1 = period(1)
+         c1T     = c1(1)
+         c2T     = c2(1)
+         c3T     = c3(1)
+         c4T     = c4(1)
+         c5T     = c5(1)
+         c6T     = c6(1)
+         c7T     = c7(1)
+         hT      = h(1)
+         sigM5T   = sigM5(1)
+         sigM6T   = sigM6(1)
+         sigM7T   = sigM7(1)
+         goto 1011
+      elseif (specT .ne. 0.0) then
+C Now loop over the spectral period range of the attenuation relationship.
+         do i=2,nper-1
+            if (specT .ge. period(i) .and. specT .le. period(i+1) ) then
+               count1 = i
+               count2 = i+1
+               goto 1020 
+            endif
+         enddo
+      endif
+        
+      write (*,*) 
+      write (*,*) 'EPRI Update (2013) Cluster04-High (NonRift), Mid-C, Horizontal'
+      write (*,*) 'is not defined for a spectral period of: '
+      write (*,'(a10,f10.5)') ' Period = ',specT
+      write (*,*) 'This spectral period is outside the defined'
+      write (*,*) 'period range in the code or beyond the range'
+      write (*,*) 'of spectral periods for interpolation.'
+      write (*,*) 'Please check the input file.'
+      write (*,*) 
+      stop 99
+
+C Interpolate the coefficients for the requested spectral period.
+ 1020 call S24_interp (period(count1),period(count2),c1(count1),c1(count2),
+     +             specT,c1T,iflag)
+      call S24_interp (period(count1),period(count2),c2(count1),c2(count2),
+     +             specT,c2T,iflag)
+      call S24_interp (period(count1),period(count2),c3(count1),c3(count2),
+     +             specT,c3T,iflag)
+      call S24_interp (period(count1),period(count2),c4(count1),c4(count2),
+     +             specT,c4T,iflag)
+      call S24_interp (period(count1),period(count2),c5(count1),c5(count2),
+     +             specT,c5T,iflag)
+      call S24_interp (period(count1),period(count2),c6(count1),c6(count2),
+     +             specT,c6T,iflag)
+      call S24_interp (period(count1),period(count2),c7(count1),c7(count2),
+     +             specT,c7T,iflag)
+      call S24_interp (period(count1),period(count2),h(count1),h(count2),
+     +             specT,hT,iflag)
+      call S24_interp (period(count1),period(count2),sigM5(count1),sigM5(count2),
+     +             specT,sigM5T,iflag)
+      call S24_interp (period(count1),period(count2),sigM6(count1),sigM6(count2),
+     +             specT,sigM6T,iflag)
+      call S24_interp (period(count1),period(count2),sigM7(count1),sigM7(count2),
+     +             specT,sigM7T,iflag)
+ 1011 period1 = specT                                                                                                              
+                                                                                
+c     Set atten name                                                            
+      attenName = 'EPRI Update(2013), Cluster04-High-NonRift, MidC, Hor'                      
+      r1 = 50.0
+      m1 = 6.4
+      m2 = 8.5
+
+      d = sqrt (dist*dist + hT*hT )
+      d1 = sqrt (r1*r1 + hT*hT )
+
+      if (dist .lt. r1) then
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d)+ c4T*(M-m1)*alog(d) + c5T*dist + c7T*(m2-M)**2.0
+      else
+          lnY = c1T + c2T*(M-m1) + c3T*alog(d1)+ c4T*(M-m1)*alog(d) + c5T*dist + c6T*(alog(d)-alog(d1)) + c7T*(m2-M)**2.0
+      endif
+
+C     Compute the Sigma value.
+      if (m .le. 5.0) then
+         sig = sigm5T
+      elseif (m .ge. 7.0) then
+         sig = sigM7T
+      elseif (m .gt. 5.0 .and. m .lt. 6.0) then
+         sig = sigM5T + (sigM6T - sigM5T)*(m-5.0)/(6.0-5.0)
+      elseif (m .ge. 6.0 .and. m .lt. 7.0) then
+         sig = sigM6T + (sigM7T - sigM6T)*(m-6.0)/(7.0-6.0)
+      endif
+
+c     Convert to spectral acceleration in gal                                   
+      lnY = lnY + 6.89                                                          
+                                                                                
+      return                                                                    
+      end                                                                       
+
+                                      
+     
