@@ -226,7 +226,6 @@ c     Read bins for de-aggregating the hazard
       stop 99
  2007 write (*,'( 2x,''input file error: jcalc line for iProb, jAttenType, and iAtten='')') 
       write (*,'( 3i5)') i,j,k
-      write (*,*) jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), sigvaradd(i,j,k), iMixture(i,j,k)
       stop 99
  2008 write (*,'( 2x,''input file error: common form coeff for iProb, jAttenType, and iAtten='',3i5)') i,j,k 
       stop 99
