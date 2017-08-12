@@ -256,7 +256,6 @@ c          Now read in the magnitude, distance and weigths for each synchronous 
      4                 syn_dip(iFlt,isyn), syn_zTOR(iFlt,isyn), 
      5                 syn_RupWidth(iFlt,isyn), syn_RX(iFlt,isyn), syn_Ry0(iFlt,isyn),
      5                 synwt(iFlt,isyn)
-
            enddo
         endif
 
