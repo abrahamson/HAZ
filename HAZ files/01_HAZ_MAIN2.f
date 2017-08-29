@@ -368,16 +368,20 @@ c               Later, this will be an input
 c               Loop over synchronous ruptures (aleatory)          
                 do 549 isyn=1,nSyn_Case(iFlt)
                  if (synchron(iFlt) .gt. 0 .and. rup1_flag .eq. 1) then
+C                   Check to see if same Attenuation model (i.e. -999) is used for synchron rupture
+C                   of if different model is defined based on input in fault file. 
+                    if (synjcalc(iFlt) .ne. -999) then
+                       jcalc1 = synjcalc(iFlt)
+                    endif
                   call S11_meanInten ( synDistRup(iFlt,isyn), syndistJB(iFlt,isyn), 
      1                syndistSeismo(iFlt,isyn),
-     2                synhwflag(iFlt,isyn), synmag(iFlt,isyn), synjcalc(iFlt), specT(iProb),  
+     2                synhwflag(iFlt,isyn), synmag(iFlt,isyn), jcalc1, specT(iProb),  
      3                lgIntenS, temp, synftype(iFlt,isyn), attenName, period1, 
      4                iAtten, iProb, jType, vs, synhypo(iflt,1), intflag, AR, syn_dip(iFlt,isyn),
      5                disthypo, depthvs10, depthvs15, D25, tau,
      6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
      7                vs30_class, forearc, syn_Rx(iFlt,isyn), phi,
      8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
-
 c                 Compute SRSS of median                
                   lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
                 endif
