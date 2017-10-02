@@ -209,11 +209,9 @@ c  --------------------------------------------------------------------
       integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
      1        iSR_Type, iST5_flag(MAX_FLT), iSR_Fact
       real SR_rake(MAX_FLT,MAXPARAM), SR_Rake0(MAXPARAM),
-     1     SR_Rake1(MAXPARAM), xx, SR_Fact(MAX_FLT,100,MAX_FLT)
+     1     SR_Rake1(MAXPARAM), xx, SR_Fact(MAX_FLT,MAX_SEG,MAX_FLT)
       real sr1(MAXPARAM), wt_sr1(MAXPARAM)
       integer iSR, iSeg, jSR, ix
-
-      pause 'test 1'
       
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -440,20 +438,14 @@ c          Read the SR weights
            call S21_CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
            
 c          Check if this fault is part of rupture sources with SR factors
-           if ( iSR_Fact .eq. 1 ) then
+c          If so, then reset the total weight for this segment to include SR factor
+           if ( iSR_Fact .eq. 1 ) then            
+             sum = 0.
              do iSeg=1,nSegModel
-              do iSR=1,nSR
-               jSR = iSR + (iSeg-1)*nSR
-               sr1(jSR) = sr(iSR)*SR_Fact(iFlt0,iSeg,iFlt2)
-               wt_sr1(jSR) = wt_SR(iSR)*segWt(iFlt0,iSeg)
-               SR_rake0(jSR) = SR_rake0(iSR)
-              enddo
+               sum = sum + segWt(iFlt0,iSeg) * SR_Fact(iFlt0,iSeg,iFlt2)
+     1               * faultFlag(iFlt0,iSeg,iFlt2)
              enddo
-             nSR = nSR*nSegModel
-             do iSR=1,nSR
-               sr(iSR) = sr1(iSR)
-               wt_SR(iSR) = wt_SR1(iSR)
-             enddo
+             segWt1(iFlt) = sum
            endif  
          
          endif
@@ -495,7 +487,6 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             MoRDepth(k) = 1.0
             iSR_flag1(k) = iSR_type
             SR_rake1(k) = SR_rake0(k)
-            write (*,'( i5,2f10.3)') k, SR_rake1(k), sr(k)
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
@@ -664,6 +655,8 @@ c                Scale moment rate by reference thickness.
                  else
                     rateParam(iFlt,i,iWidth) = rateParam1(iRate)
                  endif
+c                 write (*,'( 3i5,f10.4)') iFlt,iWidth, i, rateParam(iFlt,i,iWidth) 
+                 write (18,'( 3i5,f10.4)') iFlt,iWidth, i, rateParam(iFlt,i,iWidth) 
 
                  rateType(iFlt,i,iWidth) = rateType1(iRate)
                  if ( rateType1(iRate) .eq. 2 ) then
