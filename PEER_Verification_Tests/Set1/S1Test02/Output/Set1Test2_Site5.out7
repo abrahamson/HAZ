@@ -7,11 +7,19 @@
   iProb, specT:     1      0.0000
    18  nAmp
  AMP:                                          0.001     0.010     0.050     0.100     0.150     0.200     0.250     0.300     0.350     0.400     0.450     0.500     0.550     0.600     0.700     0.800     0.900     1.000
-  01_Set1Test2                  MBar            6.00      6.00      6.00      6.00      6.00      6.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
-  01_Set1Test2                  RrupBar        15.72     15.72     15.72     15.72     12.94     10.86       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
-  01_Set1Test2                  RjbBar         15.46     15.46     15.46     15.46     12.63     10.58       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
-  01_Set1Test2                  RxBar           0.00      0.00      0.00      0.00      0.00      0.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
-  01_Set1Test2                  EBar            0.00      0.00      0.00      0.00      0.00      0.00       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN
+  01_Set1Test2                  MBar            6.00      6.00      6.00      6.00      6.00      6.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  RrupBar        15.72     15.72     15.72     15.72     12.94     10.86      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  RjbBar         15.46     15.46     15.46     15.46     12.63     10.58      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  RxBar           0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  EBar            0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  rSeismoBar     15.72     15.72     15.72     15.72     12.94     10.86      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  ry0Bar         15.46     15.46     15.46     15.46     12.63     10.58      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  rHypoBar       23.35     23.35     23.35     23.35     20.61     18.54      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  DipAvgBar      90.00     90.00     90.00     90.00     90.00     90.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  ZtorBar         2.45      2.45      2.45      2.45      2.39      2.04      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  thetasiteBar    0.00      0.00      0.00      0.00      0.00      0.00      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  RupWidthBar     7.08      7.08      7.08      7.08      7.08      7.08      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
+  01_Set1Test2                  HypoDepthBar    6.00      6.00      6.00      6.00      5.94      5.59      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN      -NaN
 
 ------------------
 

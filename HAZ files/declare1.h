@@ -10,7 +10,12 @@ c    Declarations for Main file
      2       Xcost_bar(MAX_PROB,MAX_INTEN)
       real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
      1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
-     2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+     2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rSeismo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     3       ry0_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), mag_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     4       ftype_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), hypodepth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     5       dipavgd_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ztor_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     6       thetasite_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rupwidth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     7       rHypo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
      1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT),
@@ -68,7 +73,7 @@ c    Declarations for Main file
      4     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), sigfix1
       real MagRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), xStep(MAX_FLT),
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), wt2(MAXPARAM),
-     2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), epsilon1, 
+     2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), epsilon1,
      3     yStep(MAX_FLT), pMag(MAXPARAM,MAX_WIDTH), xcost, fd,
      4     wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), vs, vrup
       real rout(MAXPARAM,MAX_WIDTH), period1(4,MAX_PROB), D25,
