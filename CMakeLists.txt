@@ -27,7 +27,7 @@ if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
 
   # Flags required for source formatting
-  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic -fcheck=all")
+  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic")
   # Static compliation
   if (STATIC)
       message("--> Static build.")
@@ -47,7 +47,7 @@ message ("--> CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
 message ("--> CMAKE_Fortran_FLAGS: " ${CMAKE_Fortran_FLAGS})
 
 # build executables
-file (GLOB SOURCES HAZ\ files/*.f HAZ\ files/*.F)
+file (GLOB SOURCES source/*.f)
 set (TARGET "HAZ")
 
 add_executable (${TARGET} ${SOURCES})

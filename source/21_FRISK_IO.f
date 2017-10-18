@@ -265,7 +265,7 @@ c  --------------------------
 
       implicit none
       
-      character(len=*) name
+      character(len=*) :: name
       integer n, nMax
       
       if ( n .gt. nMax ) then

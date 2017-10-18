@@ -280,10 +280,10 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_ref', type=str,
-                        default='../PEER_Verification_Tests/',
+                        default='../tests/',
                         help='Root path of test cases')
     parser.add_argument('-t', '--root_test', type=str,
-                        default='../tests',
+                        default='../_temp',
                         help='Root path used in testing; created if needed.')
     parser.add_argument('patterns', default=None, nargs='*',
                         help='Only process test cases matching the pattern')

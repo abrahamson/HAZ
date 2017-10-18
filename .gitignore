@@ -33,4 +33,4 @@ Status API Training Shop Blog About
 
 # Build and testing directories
 build/
-tests/
+_temp/
