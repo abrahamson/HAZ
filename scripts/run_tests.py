@@ -277,7 +277,7 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--force', action='store_true',
                         help='Force HAZ to rerun; otherwise it only runs if '
                         'test case directory is empty.')
-    parser.add_argument('-r', '--rtol', type=float, default=2E-3,
+    parser.add_argument('-r', '--rtol', type=float, default=0.005,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_ref', type=str,
                         default='../tests/',
