@@ -15,6 +15,7 @@
       integer intflag(4,MAX_PROB), iflag, vs30_class, iBranch
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType, region
+      integer iREgion
 
       real sc, sd, se, D25, RupWidth, Sa, Ss, Sr, Q0, SCa, SCb, SCc, SCd, SCe
       real magc, rupdistc, ftypec, lnYc, depthTop, phiSS
@@ -26,14 +27,14 @@
       real phi, tau, lnYH, sourceclass, sigmac, fth, frv, vs, sigma
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11), c1
       real depthTop1, s03vfs, s03sr, s03fr, soil, GB, GC, pga4nl
-      real sigmaH, phiH, tauH, sclass, pgaref, sjb
+      real sigmaH, phiH, tauH, sclass, pgaref
       
 C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       lnY = 1.e30
       tau = 0.0
       phi = 0.0
-      iflag = 0      
-       
+      iflag = 0     
+              
 c  *** Turkey adjusted NGA1 models
       if (jcalc .eq. 9501 ) then
           call S08_AS_NGA_2008TR ( mag, dipavgd, fType, RupWidth, rupDist, jbdist,
@@ -5179,6 +5180,70 @@ C     Model Number = 370
      1            sigma, specT, period2, iflag ) 
          attenname1 = 'Atkinson&Macias, Cascadia, NEHRP B/C'      
       endif
+
+C     Base Case Model, Variable DeltaC1 Adjustment - Central Values, Reg. Sigma
+C     Model Number = 381
+      if ( jcalc .eq. 381 ) then
+         call S05_BCHydroSub_V4a ( mag, ftype, rupDist, vs, lnY, 
+     1            sigma, specT, period2, iflag, foreArc, depthTop, disthypo, deltaC1 ) 
+         attenname1 = 'BCHydro2018_v17, central model'  
+      endif
+
+C     Base Case Model, Variable DeltaC1 Adjustment - Central Values, Reg. Sigma
+C     Model Number = 382
+      if ( jcalc .eq. 382 ) then
+c        Determine the DeltaC1 value based on recommended adjusted model and spectral period. 
+C        Period dependent model for interface events and constant for intraslab
+     
+         call S05_BCHydroSub_V4b ( mag, ftype, rupDist, vs, lnY, 
+     1            sigma, specT, period2, iflag, foreArc, depthTop, disthypo, deltaC1 ) 
+         attenname1 = 'BCHydro2018_v17, high scaled-backbone model'  
+      endif
+
+C     Base Case Model, Variable DeltaC1 Adjustment - Central Values, Reg. Sigma
+C     Model Number = 383
+      if ( jcalc .eq. 383 ) then
+c        Determine the DeltaC1 value based on recommended adjusted model and spectral period. 
+C        Period dependent model for interface events and constant for intraslab
+     
+         call S05_BCHydroSub_V4c ( mag, ftype, rupDist, vs, lnY, 
+     1            sigma, specT, period2, iflag, foreArc, depthTop, disthypo, deltaC1 ) 
+         attenname1 = 'BCHydro2018_v17, high scaled-backbone model'  
+      endif
+
+C     bch 2018 global
+C     Model Number = 384
+      if ( jcalc .eq. 384 ) then
+c        Determine the DeltaC1 value based on recommended adjusted model and spectral period. 
+C        Period dependent model for interface events and constant for intraslab
+       call S05_BCHydroSub_global ( mag, ftype, rupDist, vs, lnY, 
+     1            sigma, specT, period2, iflag, foreArc, depthTop, disthypo, deltaC1 ) 
+         attenname1 = 'BCHydro2018_global'  
+      endif
+
+C     bch 2018 south am
+C     Model Number = 385
+      if ( jcalc .eq. 385 ) then
+         call S05_BCHydroSub_southAm ( mag, ftype, rupDist, vs, lnY, 
+     1            sigma, specT, period2, iflag, foreArc, depthTop, disthypo, deltaC1 ) 
+         attenname1 = 'BCHydro2018_SouthAm (not smoothed)'  
+      endif
+
+c --------------------------------
+ 
+C     NGA-SUB ABrahamson & Gulerce (2019) - draft 
+C     Model Numbers = 391 - 397 (depending on region) 
+      if ( jcalc .ge. 391 .and. jcalc .le. 397 ) then
+       deltac1 = 0.
+       iRegion = jcalc - 390
+      
+       call S05_NGASUB_GA2019 ( mag, fType, rupDist, vs, lnY, 
+     1           sigma, specT, period1, iflag, forearc, depth, disthypo, deltac1,
+     3           iRegion, D25 )
+
+         attenname1 = 'Abr-Gul(2019)_NGASUB_draft'  
+      endif
+
       
 C ******  CEUS Models *********
 C
@@ -6248,20 +6313,6 @@ C         11,000 < jcalc < 12,000
          attenname1 = 'SWUS Common Function Model-Rjb'
       endif
 
-C     SWUS Common Functional Form as a function of Rrup - for DCPP
-C         12,000 < jcalc < 13,000
-      if ( jcalc .gt. 12000 .and. jcalc .lt. 13000 ) then
-         coefcountrrup = jcalc - 12000
-         if (coefcountrrup .lt. 0) then
-            write (*,*) 'Incorrect jcalc for SWUS Common Functional Model Rrup!!!'
-            write (*,*) 'Check input file.'
-            Stop 99
-         endif
-         call S02_SWUS_CFRrup_DCPP ( mag, RupDist, jbDist, depthtop, ftype, dipavgd, RupWidth, Rx, HWFlag, 
-     1           specT, lnY, sigma, iflag, cfcoefrrup, coefcountrrup, phi, tau )
-         attenname1 = 'SWUS DCPP Common Function Model-Rrup'
-      endif
-
 
 C ******* PEER NGA-West2 Attenuation Models with Additional Mag Scaling Uncertainty ****
 C ******* For use with Zones 1, 2, and 3  with path term accounted for *****
@@ -7174,408 +7225,24 @@ C        set dummy value for median (this is used only for sigma)
          stop 99
        endif
 
+c ***** Montalva et al. (2017) Subduction Model-Interplate *****
+c     Montalva et al. (2017) - Horizontal, Subduction-Interplate
+C     Model Number = 3001
+      if ( jcalc .eq. 3001 ) then
+          call S02_Montalva2017 ( mag, fType, rupdist, vs, lnY, sigma, specT, 
+     1                    period2, iflag, foreArc, depth, disthypo) 
 
+            attenname1 = 'Montalva et al. (2017), Hor-Subduction'
+        
+      endif	  
 
-
-C********************************************************************
-C ***** EPRI Updated (2013) GMPE Models *****
-C    Nomeclature is as follows:
-C      Number 1-4 = "2013" EPRI Update 2013 Mid Continent Models
-C      Number 5-6 = Median model cases
-C                     "01" = Cluster01-Low,  Functional Model 1&3
-C                     "02" = Cluster01-Med,  Functional Model 1&3
-C                     "03" = Cluster01-High, Functional Model 1&3
-C                     "04" = Cluster02-Low,  Functional Model 2
-C                     "05" = Cluster02-Med,  Functional Model 2
-C                     "06" = Cluster02-High, Functional Model 2
-C                     "07" = Cluster03-Low,  Functional Model 1&3
-C                     "08" = Cluster03-Med,  Functional Model 1&3
-C                     "09" = Cluster03-High, Functional Model 1&3
-C                     "10" = Cluster04-Low (Rift),  Functional Model 4
-C                     "11" = Cluster04-Med (Rift),  Functional Model 4
-C                     "12" = Cluster04-High (Rift), Functional Model 4
-C                     "13" = Cluster04-Low (NonRift),  Functional Model 4
-C                     "14" = Cluster04-Med (NonRift),  Functional Model 4
-C                     "15" = Cluster04-High (NonRift), Functional Model 4
-C********************************************************************
-C
-
-C *** Cluster 01-Low, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201301
-      if (jcalc .eq. 201301) then
-         call S06_EPRI13C1Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-Low,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 01-Med, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201302
-      if (jcalc .eq. 201302) then
-         call S06_EPRI13C1Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-Med,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 01-High, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201303
-      if (jcalc .eq. 201303) then
-         call S06_EPRI13C1High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-High,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 02-Low, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201304
-      if (jcalc .eq. 201304) then
-         call S06_EPRI13C2Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-Low,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 02-Med, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201305
-      if (jcalc .eq. 201305) then
-         call S06_EPRI13C2Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-Med,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 02-High, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201306
-      if (jcalc .eq. 201306) then
-         call S06_EPRI13C2High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-High,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 03-Low, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201307
-      if (jcalc .eq. 201307) then
-         call S06_EPRI13C3Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-Low,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 03-Med, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201308
-      if (jcalc .eq. 201308) then
-         call S06_EPRI13C3Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-Med,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 03-High, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201309
-      if (jcalc .eq. 201309) then
-         call S06_EPRI13C3High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-High,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 04-Low (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201310
-      if (jcalc .eq. 201310) then
-         call S06_EPRI13C4RLow ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Low-Rift,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 04-Med (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201311
-      if (jcalc .eq. 201311) then
-         call S06_EPRI13C4RMed ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Med-Rift,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 04-High (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201312
-      if (jcalc .eq. 201312) then
-         call S06_EPRI13C4RHigh ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-High-Rift,MidC, Hor, HardRock'
-      endif 
-
-
-C *** Cluster 04-Low (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201313
-      if (jcalc .eq. 201313) then
-         call S06_EPRI13C4NRLow ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Low-NonRift,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 04-Med (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201314
-      if (jcalc .eq. 201314) then
-         call S06_EPRI13C4NRMed ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Med-NonRift,MidC, Hor, HardRock'
-      endif 
-
-C *** Cluster 04-High (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock *** 
-C     Model Number = 201315
-      if (jcalc .eq. 201315) then
-         call S06_EPRI13C4NRHigh ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-High-NonRift,MidC, Hor, HardRock'
-      endif 
-
-C********************************************************************
-C ***** EPRI Updated (2013) GMPE Models *****
-C    Nomeclature is as follows:
-C      Number 1-4 = "2013" EPRI Update 2013 Mid Continent Models
-C      Number 5-6 = Median model cases with distance dependent sigma model
-C                     "21" = Cluster01-Low,  Functional Model 1&3
-C                     "22" = Cluster01-Med,  Functional Model 1&3
-C                     "23" = Cluster01-High, Functional Model 1&3
-C                     "24" = Cluster02-Low,  Functional Model 2
-C                     "25" = Cluster02-Med,  Functional Model 2
-C                     "26" = Cluster02-High, Functional Model 2
-C                     "27" = Cluster03-Low,  Functional Model 1&3
-C                     "28" = Cluster03-Med,  Functional Model 1&3
-C                     "29" = Cluster03-High, Functional Model 1&3
-C                     "30" = Cluster04-Low (Rift),  Functional Model 4
-C                     "31" = Cluster04-Med (Rift),  Functional Model 4
-C                     "32" = Cluster04-High (Rift), Functional Model 4
-C                     "33" = Cluster04-Low (NonRift),  Functional Model 4
-C                     "34" = Cluster04-Med (NonRift),  Functional Model 4
-C                     "35" = Cluster04-High (NonRift), Functional Model 4
-C********************************************************************
-C
-
-C *** Cluster 01-Low, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201321
-      if (jcalc .eq. 201321) then
-         call S06_EPRI13C1Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-Low,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 01-Med, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201322
-      if (jcalc .eq. 201322) then
-         call S06_EPRI13C1Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-Med,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 01-High, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201323
-      if (jcalc .eq. 201323) then
-         call S06_EPRI13C1High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster01-High,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 02-Low, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201324
-      if (jcalc .eq. 201324) then
-         call S06_EPRI13C2Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-Low,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 02-Med, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201325
-      if (jcalc .eq. 201325) then
-         call S06_EPRI13C2Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-Med,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 02-High, Mid-Continent: Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201326
-      if (jcalc .eq. 201326) then
-         call S06_EPRI13C2High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster02-High,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 03-Low, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201327
-      if (jcalc .eq. 201327) then
-         call S06_EPRI13C3Low ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-Low,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 03-Med, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201328
-      if (jcalc .eq. 201328) then
-         call S06_EPRI13C3Med ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-Med,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 03-High, Mid-Continent: Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201329
-      if (jcalc .eq. 201329) then
-         call S06_EPRI13C3High ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster03-High,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 04-Low (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201330
-      if (jcalc .eq. 201330) then
-         call S06_EPRI13C4RLow ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Low-Rift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 04-Med (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201331
-      if (jcalc .eq. 201331) then
-         call S06_EPRI13C4RMed ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Med-Rift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 04-High (Rift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201332
-      if (jcalc .eq. 201332) then
-         call S06_EPRI13C4RHigh ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-High-Rift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-
-C *** Cluster 04-Low (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201333
-      if (jcalc .eq. 201333) then
-         call S06_EPRI13C4NRLow ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Low-NonRift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 04-Med (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201334
-      if (jcalc .eq. 201334) then
-         call S06_EPRI13C4NRMed ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-Med-NonRift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-
-C *** Cluster 04-High (NonRift), Mid-Continent: Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma model *** 
-C     Model Number = 201335
-      if (jcalc .eq. 201335) then
-         call S06_EPRI13C4NRHigh ( mag, jbdist, lnY, specT,                             
-     1                  attenName1, period2, iflag, sigma )  
-         attenname1 = 'EPRI(2013),Cluster04-High-NonRift,MidC, Hor, HardRock, Rjb Sigma model'
-C     Adjust the Rjb distance sigma model
-         if (jbdist .le. 10.0) then
-            sigma = sqrt (sigma*sigma + 0.16*0.16)
-         elseif (jbdist .lt. 20.0) then
-            sjb = 0.16*(1.0 - alog(jbdist/10.0)/alog(20.0/10.0))                   
-            sigma = sqrt(sigma*sigma + sjb*sjb)
-         endif
-      endif 
-      
 
 c     Check for valid jcalc
       if ( lnY .gt. 1.0e10 ) then
          write (*,'( 2x,''invalid jcalc:'',i7,3f10.4,e12.4,f12.4)') jcalc, mag, 
      1      rupDist, ftype, lnY, sigma
-         stop 99
+         write (*,'( 2x,''in subroutine medAtten'')')
+         stop 98
       endif
 
       attenName(jType,iAtten) = attenname1

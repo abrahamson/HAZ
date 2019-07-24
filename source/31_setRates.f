@@ -2,7 +2,8 @@ c ------------------------------------------------------------------
 
       subroutine S31_Set_Rates ( sourceType, nParamVar, magRecur, rate, beta, minMag,           
      1           maxMag, iFlt, iWidth, faultArea, 
-     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
+     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo,
+     2           iSR_flag, SR_Rake, dip_top )                                                      
 
       implicit none
       include 'pfrisk.h'                       
@@ -29,6 +30,9 @@ c ------------------------------------------------------------------
       real c2, c3, c4, bM2, bM1, scale1, faultArea, x, deltamac
       real meanMoRelease1, meanMoRelease2, meanMoRelease3, fix_step
 
+      integer iSR_Flag(MAX_FLT)
+      real SR_rake(MAX_FLT,MAXPARAM), dip_top, SR_vert, SR_net
+
 c     No rate calculation needed for SourceType 7
       if (sourceType .eq. 7) then
         goto 100
@@ -50,10 +54,36 @@ c     No rate calculation needed for SourceType 7
 c         Is this a slip-rate or moment rate?
           if (RateType(iFlt,iParam,i) .eq. 1 .or. RateType(iFlt,iParam,i) .eq. 4) then
 
+c           Is this slip rate?
             if ( RateType(iFlt,iParam,i) .eq. 1 ) then
-              momentRate2 = rateParam(iFlt,iParam,i)*faultArea * rigidity * 1.0e9
-c              write (80,'( 3i5,2e12.4)') iflt, i, iParam,faultArea, rateParam(iFlt,iParam,i)
+c             THis is a slip rate
+c             Check if this is a vertical slip rate or net slip rate
+              if ( iSR_Flag(iFlt) .eq. 1 ) then
+c              This is a vertical slip rate, so check for devide by zero               
+               if ( dip_top .eq. 0 .or. SR_rake(iFlt,iParam) .eq. 0. ) then
+                 write (*,'( 2x,''Error: cannot compute net slip rate from vertical slip rate'')')
+                 write (*,'( 2x,''Dip ='',f10.2, 5x,''rake ='',f10.2)') dip_top, 
+     1             SR_rake(iFlt,iParam)
+                 stop 99
+               endif
+
+c              convert vertical slip rate to net slip rate               
+               SR_vert = rateParam(iFlt,iParam,i)
+               SR_net = (SR_vert /sin(dip_top)) / sin( SR_rake(iFlt,iParam) )
+               write (18,'( 2x,''convert vertical slip rate to net'')')
+               write (18,'( 2x,''iFlt, iParam, iWidth, SR_vert, dip, rake, sr_net'',3i5,4f10.3)')
+     1              iFlt, iParam, iWidth, SR_vert, dip_top*180./3.1415926, SR_rake(iFlt,iParam)*180./3.1415926,
+     2              SR_net
+     
+               momentRate2 = SR_net * faultArea * rigidity * 1.0e9
+
+              else
+c              This is a net slip rate
+               momentRate2 = rateParam(iFlt,iParam,i)*faultArea * rigidity * 1.0e9
+              endif
+
             else
+c             This is a moment rate
               momentRate2 = rateParam(iFlt,iParam,i)
             endif          
 

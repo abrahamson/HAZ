@@ -5,6 +5,14 @@ c     Probabilisitic Seismic Hazard Program (PSHA)
       implicit none
       include 'pfrisk.h'
       include 'declare1.h' 
+
+      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT)
+      real logA_shal, logA_deep
+      integer iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max
+
+      integer iSR_Flag(MAX_FLT), IST5_flag(MAX_FLT)
+      real SR_rake(MAX_FLT,MAXPARAM), dip_top
+      
    
 c     Write Program information to the screen.
       write (*,*) '*********************************'
@@ -62,7 +70,10 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,  
-     7     DistS7, DipS7, mechS7, ncountS7, version )             
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake,
+     8     IST5_flag, h_listric, dMag1_listric )   
+     
+      write (*,'( i5)') nFlt
      
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite    
@@ -131,7 +142,8 @@ C      Initialize temp hazard array for GM sensitivity
         
 c      Sum Over Number of sources 
        do 900 iFlt = 1, nFlt
-        write (*,'(2x,''Site = '',i4,'', '',''iFlt ='',4i5)') iSite, iFlt, nFlt, sourceType(iFlt), ibnum
+        write (*,'(2x,''Site = '',i4,'', '',''iFlt ='',4i5)') 
+     1        iSite, iFlt, nFlt, sourceType(iFlt), ibnum
 
 c       Write fault width weights to output2 file
         write (17,'( 20f10.6)') (faultWidthWt(iFlt,iWidth),iWidth=1,nWidth(iFlt))
@@ -157,11 +169,11 @@ c        Set bottom of fault for standard faults (source type 1)
           endif
 
 c        Convert Long, Lat to x,y in km and put into new array (1-D)
-           call S20_ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
+          call S20_ConvertCoordinates2 (nfp(iFlt), iFlt, iCoor, grid_n(iFlt), 
      1           sourceType(iFlt), nDD(iFlt), siteX, siteY, fLat, fLong, fZ, 
      2           grid_lat, grid_long, grid_dlat, grid_dlong, nPts, xFlt, yFlt, 
      3           zFlt, grid_x, grid_y, grid_dx, grid_dy, x0, y0, z0) 
-
+     
 c        Turn fault into a grid 
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6 ) then
            call S20_calcFltGrid ( xFlt, yFlt, zFlt, nfp(iFlt), nDD(iFlt), fltGrid_x, fltGrid_y,
@@ -169,10 +181,13 @@ c        Turn fault into a grid
      2               fltGrid_Rrup, fltGrid_Rjb, faultArea, faultLen, aveWidth, 
      3               xStep(iFlt), fltGrid_fLen, fltGrid_x1, fltGrid_y1, 
      4               fltGrid_z1, fltGrid_x2, fltGrid_y2, fltGrid_z2, fltGrid_x3, 
-     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4 )   
+     5               fltGrid_y3, fltGrid_z3, fltGrid_x4, fltGrid_y4, fltGrid_z4,
+     6               dip_top, iST5_flag(iFlt), faultWidth(iFlt,iFltWidth) )   
+     
          endif
          if ( sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 5 ) 
-     1      write (18,'( 2x,''fault area (km^2) = '',e12.3)') faultArea
+     1      write (18,'( 2x,''fault area (km^2) and dip_top '',e12.3,f5.1)') faultArea, 
+     2      dip_Top*180/3.1415926
 
 c        Set Sampling of Rupture Area and Rupture Width Distributions
          call S23_initRup ( sigArea, nRupArea, sigMaxArea, areaStep, iFlt)
@@ -194,7 +209,7 @@ c        Compute activity rate: N(Mmin)
            call S31_Set_Rates ( sourceType(iFlt), nParamVar, MagRecur, rate, beta, minMag,
      1         maxMag, iFlt, iFltWidth, faultArea, 
      2         RateParam, mpdf_param, magStep, RateType, 
-     1         charMeanMo, expMeanMo )
+     1         charMeanMo, expMeanMo, iSR_flag, SR_Rake, dip_top )
 
 c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          
@@ -210,7 +225,7 @@ c        Set nMag(iFlt) = ncount for Source Type 7 case
              mag = magS7(iFlt,iMag)
            endif
            magTotal = mag
-
+           
 c         Set the magnitude bin for deagregating
           call S23_SetBin ( nMagBins, magBins, mag, iMagBin )
 
@@ -231,7 +246,7 @@ c         as a check of the programs progress.
               write (*,'( 2x,2I10,f10.3)') iMag, ncountS7(iFlt), mag                          
             endif
           endif
-          
+                    
 c         Intergrate Over Rupture Area for this mag (aleatory)
           do 750 iArea = 1, nRupArea(iFlt)
 
@@ -258,21 +273,23 @@ c------------end temporary code
      1                faultWidth(iFlt,iFltWidth), nLocYST1, yStep(iFlt), rupLen)
 
         call S28_nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
-     1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
+     1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS,
+     2                   h_listric(iFlt), logA_shal, logA_deep, fltGrid_z,
+     3                   iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max)
 
 c           Integrate Over Rupture Location - along strike (aleatory)
 c           This is along strike for faults and epicentral distance for source zones
             iDepthFlag = 0
-
+            
             do 650 iLocX = 1, nLocX
 
-               call S28_nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
+              call S28_nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
      1                          faultWidth(iFlt,iFltWidth), yStep(iFlt), distDensity2, grid_x,
      2                          grid_y, x0, y0, nLocY, pLocX, r_horiz)
+     
 
-                  if ( pLocX .eq. 0. ) then
-                    goto 650
-                  endif
+c              if probability of this location is zero, then skip
+              if ( pLocX .eq. 0. ) goto 650
 
 c            set the probabilities for the depths
              if ( iDepthFlag .eq. 0 ) then
@@ -287,6 +304,9 @@ c            set the probabilities for the depths
 c            Integrate Over Rupture Location - Down Dip (aleatory)
              do 600 iLocY = 1, nLocY
 
+c             write (*,'( 10i5)') iSite, iFlt, iFltWidth, iMag, iArea, iWidth, iLocX, iLocy
+c             if ( iLocX .eq. 1 .and. iLocY .eq. 1 ) pause
+
 c            Find the Closest Distances for this rupture
 c            Pass along fault grid locations for calculation of HW and Rx values within CalcDist subroutine.     
              call S14_CalcDist (sourceType(iFlt), pscorflag, nFltGrid, n1AS, iLocX, iLocY, n2AS,
@@ -295,8 +315,11 @@ c            Pass along fault grid locations for calculation of HW and Rx values
      3             fltgrid_x2, fltgrid_y2, fltgrid_z2, fltgrid_x3, fltgrid_y3, fltgrid_z3,
      4             fltgrid_x4, fltgrid_y4, fltgrid_z4, fltGrid_Rrup, fltGrid_Rjb, dip, dipS7,
      5             distS7, HWFlag, n1, n2, icellRupstrike, icellRupdip, hypoDepth, distJB, 
-     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0)
-        
+     6             distRup, ZTOR, distSeismo, distepi, disthypo, dipavgd, Rx, Ry, Ry0,
+     7             h_listric(iFlt), dMag1_listric(iFlt), 
+     9             logA_shal, logA_deep, iDD_shal_min, iDD_shal_max, iDD_deep_min, iDD_deep_max)
+     
+             
 c            Set minimum distances for output files.
              call S14_Set_MinDist (sourceType(iFlt), iFlt, iFltWidth, distRup, distJB, distSeismo, 
      1                         SourceDist, MinRrup_temp, MinRjb_temp, MinSeismo_temp)
@@ -368,20 +391,16 @@ c               Later, this will be an input
 c               Loop over synchronous ruptures (aleatory)          
                 do 549 isyn=1,nSyn_Case(iFlt)
                  if (synchron(iFlt) .gt. 0 .and. rup1_flag .eq. 1) then
-C                   Check to see if same Attenuation model (i.e. -999) is used for synchron rupture
-C                   of if different model is defined based on input in fault file. 
-                    if (synjcalc(iFlt) .ne. -999) then
-                       jcalc1 = synjcalc(iFlt)
-                    endif
                   call S11_meanInten ( synDistRup(iFlt,isyn), syndistJB(iFlt,isyn), 
      1                syndistSeismo(iFlt,isyn),
-     2                synhwflag(iFlt,isyn), synmag(iFlt,isyn), jcalc1, specT(iProb),  
+     2                synhwflag(iFlt,isyn), synmag(iFlt,isyn), synjcalc(iFlt), specT(iProb),  
      3                lgIntenS, temp, synftype(iFlt,isyn), attenName, period1, 
      4                iAtten, iProb, jType, vs, synhypo(iflt,1), intflag, AR, syn_dip(iFlt,isyn),
      5                disthypo, depthvs10, depthvs15, D25, tau,
      6                syn_zTOR(iFlt,isyn), theta_site, syn_RupWidth(iFlt,isyn), 
      7                vs30_class, forearc, syn_Rx(iFlt,isyn), phi,
      8                cfcoefrrup, cfcoefrjb, syn_Ry0(iFlt,isyn) )
+
 c                 Compute SRSS of median                
                   lgInten = 0.5* alog( exp(lgInten)**2 + exp(lgIntenS)**2 )
                 endif
@@ -464,8 +483,6 @@ C                 Call to the rupture directivity Subroutine if applicable
      3                 fltgrid_y, fltgrid_z, n1, n2, fs, fd, dpp_flag, 
      4                 iLocX, iLocY)
      
-c                       write (44,'( 6f8.2 )') mag, RupLen, fs, fd, dirMed, dirSigma
-
 c                   Add directivity to median and sigma
                     lgInten = lgInten0 + dirMed
                     if ( dirSigma .lt. 0. ) then
@@ -523,6 +540,12 @@ c                    Set weights and probabilities for SourceType 7
                         p1 = 1.0
                         wt = 1.0
                      endif
+
+c              if ( jInten .eq. 1 ) write (71,'( 3i5,2f10.2,2f8.3,9f10.6 )') 
+c     1            iFlt,iLocX, iLocy, mag, distRup, lgInten, sigmaY,
+c     1    pMag(iParam,iFltWidth), pArea, pWidth, pLocX, pLocY(iLocY)
+c     1                    , phypoX, phypoZ, probSyn, synwt(iFlt,isyn) 
+
                     
 c                    Sum up probability (w/o ground motion) as a check
                      if ( iAtten .eq. 1 .and. iProb .eq. 1 .and. jInten .eq. 1) then

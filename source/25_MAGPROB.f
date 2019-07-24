@@ -369,7 +369,6 @@ C------WAACY subroutine S25_for Magnitude Prob Values --------------
       real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer nStep, i
       real temp1, temp2, oneMinusAlpha, x2, x3, x4
-      real mbe2temp
 
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -389,12 +388,10 @@ c      call S27_NDTR(x,PHI1)
       temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) 
       temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
       Mo_bar_exp1 = temp1/temp2
-      
-C     Perform Multistep to prevent numerical overflow
-      mbe2temp =  exp( betaTail*M2 ) *
+
+      Mo_bar_exp2 = betaTail * 10**16.05 * exp( betaTail*M2 ) *
      1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
      2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
-      Mo_bar_exp2 = betaTail * 10**16.05 * mbe2temp
       Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
 
       d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )
@@ -446,7 +443,6 @@ C------WAACY subroutine S25_for Magnitude Prob Values Used for Rates -----------
       real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer i, nMag
       real*8  temp1, temp2
-      real mbe2temp
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
 
@@ -469,11 +465,9 @@ c     1              ( 1.-exp(-beta*M1)) * (-beta+3.45)
       temp2 = ( 1.-exp(-beta*M1))*(-beta+3.45)
       Mo_bar_exp1 = temp1/temp2
 
-C     Perform Multistep to prevent numerical overflow
-      mbe2temp =  exp( betaTail*M2 ) *
+      Mo_bar_exp2 = betaTail * 10**(16.05) * exp( betaTail*M2 ) *
      1              ( exp(( -betaTail+3.45)*Mmax) - exp(( -betaTail+3.45)*M2) ) /
      2            ( ( 1. - exp(-betaTail*(Mmax-M2)) ) * ( -betaTail + 3.45 ) )
-      Mo_bar_exp2 = betaTail * 10**(16.05) * mbe2temp
       Mo_bar_Char = 10.**(1.5*MChar+16.05) * (2.63*(sigM-0.2) + 1.19) 
 
       d1 = Mo_bar_exp1 / ( exp( -beta*Mmin) - exp(-beta*M1) )

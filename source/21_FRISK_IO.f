@@ -25,7 +25,7 @@
       real gmScale(MAX_PROB,4,MAX_ATTEN), gm_wt(MAX_PROB,4,MAX_ATTEN), 
      1     sigvaradd(MAX_PROB,4,MAX_ATTEN), cfcoefrrup(MAX_Atten,11), 
      2     cfcoefrjb(MAX_Atten,11), checkattenwt, version
-      character*80 filein, title, file1, filelog 
+      character*80 filein, title, file1, filelog , dummy
 
 c     Set Data file units
       nwr = 11
@@ -146,7 +146,7 @@ C           Check for either fixed sigma or different sigma model (i.e., jCalc<0
      1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)
               write (18,'(i6,3x,f8.4,2x,f8.4,1x,f9.5,f11.4,2x,i6,4x,i6,6x,f8.4)')
      1              jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
-     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)  
+     1              sigvaradd(i,j,k), iMixture(i,j,k), sCalc(i,j,k), sigfix(i,j,k)   
             else
               write (18,'(i6,3x,f8.4,2x,f8.4,2x,f9.5,f11.4,2x,i6)') jCalc(i,j,k), gm1, gm2, gm_wt(i,j,k), 
      1              sigvaradd(i,j,k), iMixture(i,j,k)
@@ -156,22 +156,15 @@ C     Check for Common Functional Form with Rrup Distance (10000<jcalc<11000) se
             if (abs(jcalc(i,j,k)) .gt. 10000 .and. abs(jcalc(i,j,k)) .lt. 11000) then
                 coefcountrrup = abs(jcalc(i,j,k)) - 10000
                 read (13,*,err=2008) (cfcoefrrup(coefcountrrup,jj),jj=1,11)
-                write (18,'(a16,2xi8,11(2x,f12.6))') 
+                write (18,'(a16,2xi8,10(2x,f12.6))') 
      1             'CF(RRup) Coefs: ', coefcountrrup,(cfcoefrrup(coefcountrrup,jj),jj=1,11)
             endif
 C     Check for Common Functional Form with RJB Distance (11000<jcalc<12000) selected and if so read in coefficients.
             if (abs(jcalc(i,j,k)) .gt. 11000 .and. abs(jcalc(i,j,k)) .lt. 12000) then
                 coefcountrjb = abs(jcalc(i,j,k)) - 11000
                 read (13,*,err=2008) (cfcoefrjb(coefcountrjb,jj),jj=1,11)
-                write (18,'(a16,2x,i8,11(2x,f12.6))') 
+                write (18,'(a16,2x,i8,10(2x,f12.6))') 
      1              'CF(RJB) Coefs:  ', coefcountrjb, (cfcoefrrup(coefcountrjb,jj),jj=1,11)
-            endif
-C     Check for DCPP Common Functional Form with Rrup Distance (12000<jcalc<13000) selected and if so read in coefficients.
-            if (abs(jcalc(i,j,k)) .gt. 12000 .and. abs(jcalc(i,j,k)) .lt. 13000) then
-                coefcountrrup = abs(jcalc(i,j,k)) - 12000
-                read (13,*,err=2008) (cfcoefrrup(coefcountrrup,jj),jj=1,11)
-                write (18,'(a16,2x,i8,11(2x,f12.6))')
-     1              'CF(RRup) Coefs: ', coefcountrrup,(cfcoefrrup(coefcountrrup,jj),jj=1,11)
             endif
 
             gmScale(i,j,k) = gm1 + gm2
@@ -185,7 +178,7 @@ C     Check that attenuation model weights sum to unity.
              write (*,*) 'iAttenType = ', j
              write (*,*) 'Total Weights = ', checkattenwt
              write (*,*) 'Check input run file.'
-             stop 99
+             goto 4000
           endif
         enddo
       enddo
@@ -213,50 +206,55 @@ c     Read bins for de-aggregating the hazard
 
       return
  2001 write (*,'( 2x,''input file error: minlat, maxlat line'')') 
-      stop 99
+      goto 4000
  2002 write (*,'( 2x,''input file error: maxdist line'')') 
-      stop 99
+      goto 4000
  2003 write (*,'( 2x,''input file error: nProb, nAttenType'')') 
-      stop 99
+      goto 4000
  2004 write (*,'( 2x,''input file error: spectral period line, iProb='',i5)') i 
-      stop 99
+      goto 4000
  2005 write (*,'( 2x,''input file error: Nz & Zvalues line, iProb='', i5)') i 
-      stop 99
+      goto 4000
  2006 write (*,'( 2x,''input file error: Natten line for iProb and jAttenType='',2i5)') i, j 
-      stop 99
+      goto 4000
  2007 write (*,'( 2x,''input file error: jcalc line for iProb, jAttenType, and iAtten='')') 
       write (*,'( 3i5)') i,j,k
-      stop 99
+      goto 4000
  2008 write (*,'( 2x,''input file error: common form coeff for iProb, jAttenType, and iAtten='',3i5)') i,j,k 
-      stop 99
+      goto 4000
  2009 write (*,'( 2x,''input file error: pscorflag'')') 
-      stop 99
+      goto 4000
  2010 write (*,'( 2x,''input file error: deagg nMagbins'')') 
-      stop 99
+      goto 4000
  2011 write (*,'( 2x,''input file error: deagg magbins'')') 
-      stop 99
+      goto 4000
  2012 write (*,'( 2x,''input file error: deagg nDistbins'')') 
-      stop 99
+      goto 4000
  2013 write (*,'( 2x,''input file error: deagg distbins'')') 
-      stop 99
+      goto 4000
  2014 write (*,'( 2x,''input file error: deagg nEpsbins'')') 
-      stop 99
+      goto 4000
  2015 write (*,'( 2x,''input file error: deagg epsbins'')') 
-      stop 99
+      goto 4000
  2016 write (*,'( 2x,''input file error: deagg nXcosTbins'')') 
-      stop 99
+      goto 4000
  2017 write (*,'( 2x,''input file error: deagg xcosT bins'')') 
-      stop 99
+      goto 4000
  2018 write (*,'( 2x,''input file error: soil amp flag'')') 
-      stop 99
+      goto 4000
  2020 write (*,'( 2x,''input file error: fault file version number'')') 
-      stop 99
+      goto 4000
  2100 write (*,'( 2x,''run file does not exist'')')
       write (*,'( 2x,a80)') file1
-      stop 99
+      goto 4000
  2101 write (*,'( 2x,''fault file does not exist'')')
       write (*,'( 2x,a80)') filein
+      goto 4000
+ 4000 backspace (13)
+      read (13,'( a80)') dummy
+      write (*,'( a80)') dummy
       stop 99
+            
 
       end
 

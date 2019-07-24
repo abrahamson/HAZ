@@ -1,3 +1,4 @@
+
       subroutine S29_Rd_Fault_Data ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
      2     magRecur, magRecurWt, faultWidth, faultWidthWt, maxMag, 
@@ -14,7 +15,8 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7, version )
+     7     DistS7, DipS7, mechS7, ncountS7, version, iSR_flag, SR_Rake, 
+     8     IST5_flag, h_listric, dMag1_listric )
 
       implicit none
       include 'pfrisk.h'
@@ -58,7 +60,12 @@
      1     depthParam(MAX_FLT,5), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), 
      2     sigArea(MAX_FLT), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH) 
       character*80 fName(MAX_FLT)
-      
+
+      integer iSR_Flag(MAX_FLT), IST5_flag(MAX_FLT), iFlt
+      real SR_rake(MAX_FLT,MAXPARAM)
+
+      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT)
+            
       if ( version .eq. 45.1 ) then
         call S29_Rd_Fault_Data_45_1 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
@@ -77,6 +84,12 @@
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
      7     DistS7, DipS7, mechS7, ncountS7 )
+
+c          Set flags for no listric for 45.1     
+           do iFlt=1,nFlt
+            h_listric(iFlt) = 0.
+           enddo
+
       elseif (version .eq. 45.2 .or. version .eq. 45.3 ) then
         call S29_Rd_Fault_Data_45_2 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta, 
@@ -94,7 +107,8 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag,
+     8     h_listric, dMag1_listric )
       else
         write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
@@ -121,7 +135,8 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt, 
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip, 
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7, 
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, iSR_flag, SR_rake, IST5_flag,
+     8     h_listric, dMag1_listric )
 
       implicit none
       include 'pfrisk.h'
@@ -188,8 +203,16 @@ c  --------------------------------------------------------------------
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
      4     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7) 
       real mechS7(MAX_FLT,MAX_S7)
-      character*80 fName(MAX_FLT), fName1
+      character*80 fName(MAX_FLT), fName1, dummy
+      real h_listric(MAX_FLT), dMag1_listric(MAX_FLT), x1, x2
 
+      integer iSR_Flag(MAX_FLT), iSR_Flag1(MAXPARAM), 
+     1        iSR_Type, iST5_flag(MAX_FLT), iSR_Fact
+      real SR_rake(MAX_FLT,MAXPARAM), SR_Rake0(MAXPARAM),
+     1     SR_Rake1(MAXPARAM), xx, SR_Fact(MAX_FLT,MAX_SEG,MAX_FLT)
+      real sr1(MAXPARAM), wt_sr1(MAXPARAM)
+      integer iSR, iSeg, jSR, ix
+      
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
       read (10,*,err=3002) NFLT
@@ -202,7 +225,13 @@ c     Input Fault Parameters
        read (10,*,err=3004) probAct0
 
 c      Read number of segmentation models for this fault system
+       iSR_Fact = 0
        read (10,*,err=3005) nSegModel
+       if (nSegModel .eq. -1 ) then
+         iSR_Fact = 1
+         backspace ( 10)
+         read (10,*,err=3005) ix, nSegModel
+       endif
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
 c      Read total number of fault segments
@@ -211,6 +240,20 @@ c      Read total number of fault segments
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
        enddo
+       
+c      If SR factors used, then read this extra line
+c      otherwise set to unity
+       if ( iSR_Fact .eq. 1 ) then
+         do i=1,nSegModel
+           read (10,*,err=3059) (SR_Fact(iFlt0,i,k),k=1,nFlt2)
+         enddo
+       else
+         do i=1,nSegModel
+          do k=1,nFlt2
+            SR_Fact(iFlt0,i,k)= 1.0
+          enddo
+         enddo
+       endif       
 
        do iflt2=1,nflt2
         iFlt = iFlt + 1
@@ -243,6 +286,22 @@ c       Read type of source (planar, areal, grid1, grid2, irregular)
         read(10,*,err=3010) sourceType(iFlt),attenType(iFlt),sampleStep(iFlt),
      1                 fltDirect(iFlt), synchron(iFlT)
 
+c       Check for error in sample step (it can't be zero for areal zones)
+        if (sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 ) then
+          if ( sampleStep(iFlt) .eq. 0. ) then
+            write (*,'( 2x,''Error, zero sample step for areal source'')')
+            write (*,'( 2x,a80)') fName(iFlt)
+            stop 99
+          endif
+        endif         
+
+c       Set flag for source type 5 to allow limit on crustal thickness
+        iST5_flag(iFlt) = 0
+        if (sourceType(iFlt) .eq. -5 ) then
+          sourceType(iFlt) = 5
+          iST5_flag(iFlt) = 1
+        endif   
+
 c       Now read in the synchronous rupture case parameters if needed.
         if (synchron(iFlt) .gt. 0) then
            read (10,*,err=3011) nsyn_Case(iFlt), synjcalc(iFlt)
@@ -256,6 +315,7 @@ c          Now read in the magnitude, distance and weigths for each synchronous 
      4                 syn_dip(iFlt,isyn), syn_zTOR(iFlt,isyn), 
      5                 syn_RupWidth(iFlt,isyn), syn_RX(iFlt,isyn), syn_Ry0(iFlt,isyn),
      5                 synwt(iFlt,isyn)
+
            enddo
         endif
 
@@ -304,12 +364,13 @@ c        Check for grid source (w/ depth)
 
 c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
-           read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt)  
+c          NAA change for listric faults   
+           read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt), h_listric(iFlt), dMag1_listric(iFlt)  
    
            call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
            do ipt=1,nfp(iFlt)
-              read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
-
+              read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), 
+     1             fZ(iflt,k,ipt), k=1,nDownDip(iFlt) ) 
           enddo
          endif
 
@@ -370,9 +431,32 @@ c        Read weights for rate methods
 c        Read slip-rates
          read (10,*,err=3028) nSR
          if ( nSR .gt. 0 ) then
+           iSR_type = 0
            read (10,*,err=3029) (sr(k),k=1,nSR)
+
+c          Check if this is a vertical slip rate (indicated by SR(1)=-999)
+           if ( sr(1) .eq. -999. ) then
+             backspace (10)
+             read (10,*,err=3029) xx, (sr(k),k=1,nSR)
+             read (10,*,err=3058) (SR_rake0(k),k=1,nSR)
+             iSR_type = 1
+           endif
+
+c          Read the SR weights
            read (10,*,err=3030) (wt_sr(k),k=1,nSR)
            call S21_CheckWt (wt_sr, nSR, fName(iFlt), 'Slip Rates          ')
+           
+c          Check if this fault is part of rupture sources with SR factors
+c          If so, then reset the total weight for this segment to include SR factor
+           if ( iSR_Fact .eq. 1 ) then            
+             sum = 0.
+             do iSeg=1,nSegModel
+               sum = sum + segWt(iFlt0,iSeg) * SR_Fact(iFlt0,iSeg,iFlt2)
+     1               * faultFlag(iFlt0,iSeg,iFlt2)
+             enddo
+             segWt1(iFlt) = sum
+           endif  
+         
          endif
 
 c        Read recurrence intervals
@@ -410,6 +494,8 @@ c        Set MoRDepth=1.0 or the inverse for latter scaling of MoRates
             rateWt1(k) = wt_sr(k)*wt_srbranch              
             rateType1(k) = 1
             MoRDepth(k) = 1.0
+            iSR_flag1(k) = iSR_type
+            SR_rake1(k) = SR_rake0(k)
          enddo
          do k=1,nActRate
             rateParam1(k+nSR) = actRate(k)
@@ -458,7 +544,7 @@ c          Read in necessary parameters for bi-exponential distribution.
          enddo
 
 c        Read seismogenic thickness
-         if ( sourceType(iFlt) .lt. 5) then
+         if ( sourceType(iFlt) .lt. 5 .or. iST5_flag(iFlt) .eq. 1) then
            read (10,*,err=3042) nThick1
            call S21_CheckDim ( nThick1, MAX_WIDTH, 'MAX_WIDTH ' )
            read (10,*,err=3043) (faultThick1(i),i=1,nThick1)
@@ -578,6 +664,8 @@ c                Scale moment rate by reference thickness.
                  else
                     rateParam(iFlt,i,iWidth) = rateParam1(iRate)
                  endif
+c                 write (*,'( 3i5,f10.4)') iFlt,iWidth, i, rateParam(iFlt,i,iWidth) 
+                 write (18,'( 3i5,f10.4)') iFlt,iWidth, i, rateParam(iFlt,i,iWidth) 
 
                  rateType(iFlt,i,iWidth) = rateType1(iRate)
                  if ( rateType1(iRate) .eq. 2 ) then
@@ -590,6 +678,13 @@ c                Scale moment rate by reference thickness.
                  else
                    RateParamWt(iFlt,i,iWidth) = RateWt1(iRate) * bValueWt1(i_bValue) 
                  endif
+
+c                set flags for vertical slip rate
+                 if (rateType1(iRate) .eq. 1) then
+                   iSR_flag(iFlt) = iSR_Flag1(iRate)
+                   SR_rake(iFlt,i) = SR_rake1(iRate)*3.1415926/180.
+                 endif
+
                  maxMagWt(iFlt,i,iWidth) = refMagWt1(iWidth,iRefMag)
 
 c                Set max mag
@@ -667,169 +762,181 @@ c     End loop over iFlt
       
       return
  3001 write (*,'( 2x,''Flt file error:  iCorr'')')
-      stop 99
+      goto 4000
  3002 write (*,'( 2x,''Flt file error:  nFlt'')')
-      stop 99
+      goto 4000
  3003 write (*,'( 2x,''Flt file error:  flt sys name'')')
-      stop 99
+      goto 4000
  3004 write (*,'( 2x,''Flt file error:  prob Act'')')
-      stop 99
+      goto 4000
  3005 write (*,'( 2x,''Flt file error:  nSegModel'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3006 write (*,'( 2x,''Flt file error:  Seg wts'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3007 write (*,'( 2x,''Flt file error:  number of segments'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3008  write (*,'( 2x,''Flt file error: seg flags for seg model'', i5)') i
        write (*,'( 2x,''From fault: '',a80)') fName1
-       stop 99
+       goto 4000
  3009 write (*,'( 2x,''Flt file error: seg name for seg model '', i5)') i
       write (*,'( 2x,''From fault: '',a80)') fName1
-      stop 99
+      goto 4000
  3010 write (*,'( 2x,''Flt file error: source type line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3011 write (*,'( 2x,''Flt file error: nSynRup line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3012 write (*,'( 2x,''Flt file error: syn Rup param line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3013 write (*,'( 2x,''Flt file error: Aleatory seg wt '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3014 write (*,'( 2x,''Flt file error: dip and top '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3015 write (*,'( 2x,''Flt file error: number flt point '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3016 write (*,'( 2x,''Flt file error: long lat values '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3017 write (*,'( 2x,''Flt file error: nDowndip, nFP '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3018 write (*,'( 2x,''Flt file error: long lat values '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3019 write (*,'( 2x,''Flt file error: nDip '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3020 write (*,'( 2x,''Flt file error: delta Dip '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3021 write (*,'( 2x,''Flt file error: Dip wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3022 write (*,'( 2x,''Flt file error: n b-value '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3023 write (*,'( 2x,''Flt file error: delta b-value '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3024 write (*,'( 2x,''Flt file error: b-value wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3025 write (*,'( 2x,''Flt file error: nActRate'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3026 write (*,'( 2x,''Flt file error: b, activity, wt'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3027 write (*,'( 2x,''Flt file error: wts for activity rate approach'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3028 write (*,'( 2x,''Flt file error: number Slip rates '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3029 write (*,'( 2x,''Flt file error: slip rates '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3030 write (*,'( 2x,''Flt file error: slip-rate wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3031 write (*,'( 2x,''Flt file error: number Rec Intervals '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3032 write (*,'( 2x,''Flt file error: Rec Intervals '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3033 write (*,'( 2x,''Flt file error: Rec Interval wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3034 write (*,'( 2x,''Flt file error: Number Moment rate'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3035 write (*,'( 2x,''Flt file error: Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3036 write (*,'( 2x,''Flt file error: depths for Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3037 write (*,'( 2x,''Flt file error: wts for Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3038 write (*,'( 2x,''Flt file error: number mag pdf'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3039 write (*,'( 2x,''Flt file error: mag pdf flag'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3040 write (*,'( 2x,''Flt file error: mag pdf wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3041 write (*,'( 2x,''Flt file error: param for mag pdf'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3042 write (*,'( 2x,''Flt file error: number crustal thickness '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3043 write (*,'( 2x,''Flt file error: crustal thicknesses '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3044 write (*,'( 2x,''Flt file error: crustal thickness wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3045 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3047 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3047 write (*,'( 2x,''Flt file error: number Ref Mag'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3048 write (*,'( 2x,''Flt file error: number Ref Mag'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3048 write (*,'( 2x,''Flt file error: Ref mags'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3049 write (*,'( 2x,''Flt file error: Ref mags'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3049 write (*,'( 2x,''Flt file error: Ref mag wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3050 write (*,'( 2x,''Flt file error: Ref mag wts'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3050 write (*,'( 2x,''Flt file error: INTEG STEP'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3051 write (*,'( 2x,''Flt file error: coeff A(M) model'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3052 write (*,'( 2x,''Flt file error: coeff W(M) model'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3053 write (*,'( 2x,''Flt file error: number Ftype models'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3054 write (*,'( 2x,''Flt file error: Ftype mode wt'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3055 write (*,'( 2x,''Flt file error: number Ftype'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3056 write (*,'( 2x,''Flt file error: Ftypes'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3057 write (*,'( 2x,''Flt file error: Ftype Aleatory wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
+      goto 4000
+ 3058 write (*,'( 2x,''Flt file error: SR rakes for vertical SR'', 2i5)') iFlt0, iFLt2
+      write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
+      goto 4000
+ 3059  write (*,'( 2x,''Flt file error: SR factors for seg model'', i5)') i
+       write (*,'( 2x,''From fault: '',a80)') fName1
+       goto 4000
+       
+ 4000 backspace (13)
+      read (10,'( a80)') dummy
+      write (*,'( a80)') dummy
       stop 99
+       
 
       end
 
@@ -918,7 +1025,7 @@ c ----------------------------
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7), 
      4     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7) 
       real mechS7(MAX_FLT,MAX_S7)
-      character*80 fName(MAX_FLT), fName1
+      character*80 fName(MAX_FLT), fName1, dummy
 
 c     Input Fault Parameters
       read (10,*,err=3001) iCoor
@@ -1404,171 +1511,176 @@ c     End loop over iFlt
       
       return
  3001 write (*,'( 2x,''Flt file error:  iCorr'')')
-      stop 99
+      goto 4000
  3002 write (*,'( 2x,''Flt file error:  nFlt'')')
-      stop 99
+      goto 4000
  3003 write (*,'( 2x,''Flt file error:  flt sys name'')')
-      stop 99
+      goto 4000
  3004 write (*,'( 2x,''Flt file error:  prob Act'')')
-      stop 99
+      goto 4000
  3005 write (*,'( 2x,''Flt file error:  nSegModel'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3006 write (*,'( 2x,''Flt file error:  Seg wts'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3007 write (*,'( 2x,''Flt file error:  number of segments'')')
       write (*,'( 2x,''fault sys: '',a80)') fName1
-      stop 99
+      goto 4000
  3008  write (*,'( 2x,''Flt file error: seg flags for seg model'', i5)') i
        write (*,'( 2x,''From fault: '',a80)') fName1
-       stop 99
+       goto 4000
  3009 write (*,'( 2x,''Flt file error: seg name for seg model '', i5)') i
       write (*,'( 2x,''From fault: '',a80)') fName1
-      stop 99
+      goto 4000
  3010 write (*,'( 2x,''Flt file error: source type line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3011 write (*,'( 2x,''Flt file error: nSynRup line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3012 write (*,'( 2x,''Flt file error: syn Rup param line '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3013 write (*,'( 2x,''Flt file error: Aleatory seg wt '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3014 write (*,'( 2x,''Flt file error: dip and top '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3015 write (*,'( 2x,''Flt file error: number flt point '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3016 write (*,'( 2x,''Flt file error: long lat values '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3017 write (*,'( 2x,''Flt file error: nDowndip, nFP '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3018 write (*,'( 2x,''Flt file error: long lat values '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3019 write (*,'( 2x,''Flt file error: nDip '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3020 write (*,'( 2x,''Flt file error: delta Dip '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3021 write (*,'( 2x,''Flt file error: Dip wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3022 write (*,'( 2x,''Flt file error: n b-value '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3023 write (*,'( 2x,''Flt file error: delta b-value '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3024 write (*,'( 2x,''Flt file error: b-value wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3025 write (*,'( 2x,''Flt file error: nActRate'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3026 write (*,'( 2x,''Flt file error: b, activity, wt'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3027 write (*,'( 2x,''Flt file error: wts for activity rate approach'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3028 write (*,'( 2x,''Flt file error: number Slip rates '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3029 write (*,'( 2x,''Flt file error: slip rates '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3030 write (*,'( 2x,''Flt file error: slip-rate wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3031 write (*,'( 2x,''Flt file error: number Rec Intervals '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3032 write (*,'( 2x,''Flt file error: Rec Intervals '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3033 write (*,'( 2x,''Flt file error: Rec Interval wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3034 write (*,'( 2x,''Flt file error: Number Moment rate'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3035 write (*,'( 2x,''Flt file error: Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3036 write (*,'( 2x,''Flt file error: depths for Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3037 write (*,'( 2x,''Flt file error: wts for Moment rates'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3038 write (*,'( 2x,''Flt file error: number mag pdf'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3039 write (*,'( 2x,''Flt file error: mag pdf flag'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3040 write (*,'( 2x,''Flt file error: mag pdf wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3041 write (*,'( 2x,''Flt file error: param for mag pdf'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3042 write (*,'( 2x,''Flt file error: number crustal thickness '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3043 write (*,'( 2x,''Flt file error: crustal thicknesses '', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3044 write (*,'( 2x,''Flt file error: crustal thickness wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3045 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99 
+      goto 4000 
  3046 write (*,'( 2x,''Flt file error: iOverRideMag'', 2i5)') iFlt0, iFlt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99       
- 3047 write (*,'( 2x,''Flt file error: depth pdf and param'', 2i5)') iFlt0, iFLt2
+      goto 4000       
+ 3047 write (*,'( 2x,''Flt file error: number Ref Mag'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3048 write (*,'( 2x,''Flt file error: number Ref Mag'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3048 write (*,'( 2x,''Flt file error: Ref mags'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3049 write (*,'( 2x,''Flt file error: Ref mags'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3049 write (*,'( 2x,''Flt file error: Ref mag wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
- 3050 write (*,'( 2x,''Flt file error: Ref mag wts'', 2i5)') iFlt0, iFLt2
+      goto 4000
+ 3050 write (*,'( 2x,''Flt file error: INTEG STEP'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3051 write (*,'( 2x,''Flt file error: coeff A(M) model'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3052 write (*,'( 2x,''Flt file error: coeff W(M) model'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3053 write (*,'( 2x,''Flt file error: number Ftype models'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3054 write (*,'( 2x,''Flt file error: Ftype mode wt'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3055 write (*,'( 2x,''Flt file error: number Ftype'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3056 write (*,'( 2x,''Flt file error: Ftypes'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
-      stop 99
+      goto 4000
  3057 write (*,'( 2x,''Flt file error: Ftype Aleatory wts'', 2i5)') iFlt0, iFLt2
       write (*,'( 2x,''From fault segment: '',a80)') fName(iFlt)
+      goto 4000
+      
+ 4000 backspace (13)
+      read (10,'( a80)') dummy
+      write (*,'( a80)') dummy
       stop 99
 
       end

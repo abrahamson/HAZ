@@ -14,8 +14,8 @@ c     declarations passed out
 c     declarations only used within subroutine
       integer iLocY     
       real meanDepth, z1, z2, z3, depth1, sigma, depth0,
-     1     depth2, z_half, p1, p2, zstep, d, sum
-      
+     1     depth2, z_half, p1, p2, zstep, d, sum, depth3
+           
 c     Compute depth probabilities for areal sources (point sources)
       if (sourceType .eq. 2 .or. sourceType .eq. 3 .or. sourceType .eq. 4 ) then
         if (iDepthModel .eq. 0 ) then
@@ -29,17 +29,30 @@ c         Triangle model
           z1 = depthParam(iFlt,1)
           z2 = depthParam(iFlt,2)
           z3 = depthParam(iFlt,3)
+          zStep = yStep * sin(dip*3.1415926/180.)
+            
           do iLocY=1,nLocY
-            depth1 = top + yStep*(iLocy-1) + yStep/2.              
-            if ( depth1 .lt. z1 ) then
+            depth1 = top + zStep*(iLocy-1)  
+            depth2 = depth1 + zStep   
+            depth3 = (depth1 + depth2) / 2. 
+
+            if ( depth2 .lt. z1) then
               pLocY(iLocY) = 0.
-            elseif ( depth1 .lt. z2 ) then
-              pLocY(iLocY) = (depth1-z1)/(z2-z1)
-            elseif ( depth1 .lt. z3 ) then
-              pLocY(iLocY) = 1. - (depth1-z2)/(z3-z2)
-            elseif ( depth1 .ge. z3 ) then
+            elseif ( depth1 .lt. z1 .and. depth2 .le. z2 ) then
+              pLocY(iLocY) = 0.5* (depth2-z1) * depth2/(z2-z1)
+            elseif ( depth1 .lt. z2 .and. depth2 .le. z2 ) then
+              pLocY(iLocY) = (depth3-z1)/(z2-z1) * zStep
+            elseif ( depth1 .lt. z2 .and. depth2 .le. z3 ) then
+              pLocY(iLocY) =0.5*(depth1+z2)/(z2-z1) * (z2-depth1)
+     1             + 0.5*(depth2+z2)/(z3-z2) * (depth2-z2)
+            elseif ( depth1 .lt. z3 .and. depth2 .le. z3 ) then
+              pLocY(iLocY) = (1.-(depth3-z2)/(z3-z2)) * zStep
+            elseif ( depth1 .lt. z3 .and. depth2 .gt. z3 ) then
+              pLocY(iLocY) = 0.5*(z3-depth1) * (z3-depth1)/(z3-z2)
+            else
               pLocY(iLocY) = 0.
-            endif
+            endif      
+            pLocY(iLocY) = pLocY(iLocY) / (z3-z1)
           enddo
 
         elseif (iDepthModel .eq. 1 ) then
@@ -89,24 +102,36 @@ c         Uniform distribution
 c         Triangle distribution (using the hypocenter at the center of the rupture)
           z_half = rupWidth * sin(dip*3.1415926/180.) / 2.
 
+          z1 = depthParam(iFlt,1) 
+          z2 = depthParam(iFlt,2) 
+          z3 = depthParam(iFlt,3) 
+
+          zStep = yStep * sin(dip*3.1415926/180.)
+            
           do iLocY=1,nLocY
-            z1 = depthParam(iFlt,1) 
-            z2 = depthParam(iFlt,2) 
-            z3 = depthParam(iFlt,3) 
-            zStep = yStep * sin(dip*3.1415926/180.)
+            depth1 = top + zStep*(iLocy-1)  
+            depth2 = depth1 + zStep   
+            depth3 = (depth1 + depth2) / 2. 
 
-            depth1 = top + zStep*(iLocy-1) + z_half              
-            if ( depth1 .lt. z1 ) then
+            if ( depth2 .lt. z1) then
               pLocY(iLocY) = 0.
-            elseif ( depth1 .lt. z2 ) then
-              pLocY(iLocY) = (depth1-z1)/(z2-z1)
-            elseif ( depth1 .lt. z3 ) then
-              pLocY(iLocY) = 1. - (depth1-z2)/(z3-z2)
-            elseif ( depth1 .ge. z3 ) then
+            elseif ( depth1 .lt. z1 .and. depth2 .le. z2 ) then
+              pLocY(iLocY) = 0.5* (depth2-z1) * depth2/(z2-z1)
+            elseif ( depth1 .lt. z2 .and. depth2 .le. z2 ) then
+              pLocY(iLocY) = (depth3-z1)/(z2-z1) * zStep
+            elseif ( depth1 .lt. z2 .and. depth2 .le. z3 ) then
+              pLocY(iLocY) =0.5*(depth1+z2)/(z2-z1) * (z2-depth1)
+     1             + 0.5*(depth2+z2)/(z3-z2) * (depth2-z2)
+            elseif ( depth1 .lt. z3 .and. depth2 .le. z3 ) then
+              pLocY(iLocY) = (1.-(depth3-z2)/(z3-z2)) * zStep
+            elseif ( depth1 .lt. z3 .and. depth2 .gt. z3 ) then
+              pLocY(iLocY) = 0.5*(z3-depth1) * (z3-depth1)/(z3-z2)
+            else
               pLocY(iLocY) = 0.
-            endif
-
+            endif      
+            pLocY(iLocY) = pLocY(iLocY) / (z3-z1)
           enddo
+
         endif
        endif
 
