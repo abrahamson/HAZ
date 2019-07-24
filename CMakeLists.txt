@@ -27,7 +27,7 @@ if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
 
   # Flags required for source formatting
-  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic")
+  set (CMAKE_Fortran_FLAGS "-ffixed-line-length-132 -fno-automatic -std=legacy")
   # Static compliation
   if (STATIC)
       message("--> Static build.")
