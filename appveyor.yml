@@ -24,7 +24,7 @@ environment:
       FC: C:/msys64/mingw64/bin/gfortran.exe
 
 build_script:
-    - mkdir build tests
+    - mkdir build
     - cd build
     - cmake.exe -G "MSYS Makefiles" -DCMAKE_MAKE_PROGRAM=C:/msys64/usr/bin/make.exe -DCMAKE_Fortran_COMPILER=%FC% -DSTATIC=ON ..
     - C:\\msys64\\usr\\bin\\make.exe
