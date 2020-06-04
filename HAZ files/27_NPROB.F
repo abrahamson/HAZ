@@ -1,5 +1,6 @@
                                                                                                                                                       
-      subroutine S27_NDTR( X, P, D)                                                 
+      subroutine S27_NDTR( X, P, D)
+C          Reference: Abramowitz and Stegan equation 26.2.17                                                 
 C          X IS NO. OF STANDARDIZED NORMAL DEVIATES.                            
 C          P IS COMP. CUMULATIVE VALUE (OUTPUT).                                
 C          D IS DENSITY VALUE (OUTPUT).
