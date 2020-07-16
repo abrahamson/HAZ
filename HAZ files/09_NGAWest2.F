@@ -167,7 +167,7 @@ C.....Set the mechanism term.....................
 C     Strike-slip and normal events --> SOF = 0
 C     Reverse and oblique events     --> SOF = 1
 C     Otherwise assume SOF = 0
-      if (ftype .eq. 1.0) then
+      if (ftype .eq. 1.0 .or. ftype .eq. 0.5) then
          SOF = 1.0
       else
          SOF = 0.0
