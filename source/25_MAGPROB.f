@@ -319,6 +319,10 @@ C             Now normalize BC Hydro Model by total
 
 c           WAACY Model
             elseif ( magRecur(iFlt,iParam,iWidth) .eq. 10. ) then  
+c             Reset mU to magU if necessary (when last mag is not a full step size)
+              if (mU .gt. magU) then
+                mU = magU
+              endif         
               if ( mpdf_param(iFlt,iParam,iwidth,5) .eq. 0. ) then
                MaxMagWA =  mpdf_param(iFlt,iParam,iwidth,2)
               else

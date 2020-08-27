@@ -167,11 +167,16 @@ C.....Set the mechanism term.....................
 C     Strike-slip and normal events --> SOF = 0
 C     Reverse and oblique events     --> SOF = 1
 C     Otherwise assume SOF = 0
-      if (ftype .eq. 1.0) then
+      if (ftype .eq. 1.0 .or. ftype .eq. 0.5) then
          SOF = 1.0
       else
          SOF = 0.0
       endif
+
+c     Per Idriss 2014, if VS30 > 1200 m/s, VS30 = 1200 m/s
+      if (Vs30 .gt. 1200) then
+         Vs30 = 1200
+      endif   
 
       if (m .lt. 6.75) then
          lnY = a1mlt675T + a2mlt675T*m + a3mlt675T*(8.5 - m)**2.0 - (b1mlt675T+b2mlt675T*m) * alog(Rrup+10.0) +
