@@ -1,8 +1,8 @@
 c ------------------------------------------------------------------  
 
       subroutine S31_Set_Rates ( sourceType, nParamVar, magRecur, rate, beta, minMag,           
-     1           maxMag, iFlt, iWidth, faultArea, 
-     1           RateParam, mpdf_param, magStep, RateType, charMeanMo, expMeanMo )                           
+     1           maxMag, iFlt, iWidth, faultArea, coeff_area, RateParam, mpdf_param, magStep, 
+     2           RateType, charMeanMo, expMeanMo )                           
 
       implicit none
       include 'pfrisk.h'                       
@@ -11,7 +11,7 @@ c ------------------------------------------------------------------
      1     beta(MAX_FLT,MAXPARAM,MAX_WIDTH),                                    
      1     minMag(MAX_FLT), maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH),                 
      1     rate(MAXPARAM,MAX_WIDTH),charMeanMo(MAXPARAM,MAX_WIDTH),    
-     1     expMeanMo(MAXPARAM,MAX_WIDTH),                             
+     1     expMeanMo(MAXPARAM,MAX_WIDTH), coeff_area(2,MAX_FLT),                            
      2     RateParam(MAX_FLT,MAXPARAM,MAX_WIDTH),                                
      3     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6)                                     
       real magStep(MAX_FLT)             
@@ -217,7 +217,8 @@ c            Use a fixed mag step of 0.01 for getting the moment balance
 
 c     WAACY Model             
           elseif (magRecur(iFlt,iParam,i) .eq. 10 ) then  
-             call S31_calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minMag, iFlt, iParam, iwidth, faultArea, pRatio )  
+             call S31_calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minMag, iFlt, iParam, iwidth, 
+     1                                 faultArea, coeff_area, pRatio )  
              rate_M_gt_0 = momentRate2/sum
  
 c            Set the rate for M> Mmin (scale the rate for M>0 by pRatio,
@@ -400,14 +401,14 @@ c........does not work with BC Hydro Alternative Characteristic Model
 c -----------------------------------------------------------
 
       subroutine S31_calc_sum_waacy ( sum, mpdf_param, maxMag, beta, minmag,
-     1          iFlt, iParam, iwidth, faultArea, pRatio)  
+     1          iFlt, iParam, iwidth, faultArea, coeff_area, pRatio)  
 
       implicit none
       include 'pfrisk.h'                
 
       real  mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6),                                     
      1       beta(MAX_FLT,MAXPARAM,MAX_WIDTH), 
-     1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH)
+     1       maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coeff_area(2,MAX_FLT)
       real minMag(MAX_FLT), Mmin
       real MaxMagWA, Btail, SigM, Fract_Exp, mChar, b_value, stepM
       real*8 sum, moment, sum1, sum2
@@ -461,8 +462,7 @@ c     in the char part (sum2)
         moment = 10.**(1.5*mag+16.05)
 
 c       Scale the moment from the eqk for the part that is released on the modelled fault
-c       Just use log(A)= M-4 for now
-        area_rup = 10.**(mag -4)
+        area_rup = 10.**(coeff_area(1,iflt)+coeff_area(2,iflt)*mag)
         areaRatio = area_rup / faultArea
         if (areaRatio .gt. 1. ) then
           moment = moment / areaRatio
@@ -494,8 +494,7 @@ c     Compute the moment * mag pdf for the part of the rupture this is modelled.
         moment = 10.**(1.5*mag+16.05)
 
 c       Scale the moment from the eqk for the part that is released on the modelled fault
-c       Just use log(A)= M-4 for now
-        area_rup = 10.**(mag -4)
+        area_rup = 10.**(coeff_area(1,iflt)+coeff_area(2,iflt)*mag)
         areaRatio = area_rup / faultArea
         if (areaRatio .gt. 1. ) then
           moment = moment / areaRatio

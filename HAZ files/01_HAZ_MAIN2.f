@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*          April, 2017          *'
+      write (*,*) '*         October, 2020         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -192,9 +192,8 @@ c        Compute horizontal distance density function for areal sources (polygon
           
 c        Compute activity rate: N(Mmin)
            call S31_Set_Rates ( sourceType(iFlt), nParamVar, MagRecur, rate, beta, minMag,
-     1         maxMag, iFlt, iFltWidth, faultArea, 
-     2         RateParam, mpdf_param, magStep, RateType, 
-     1         charMeanMo, expMeanMo )
+     1         maxMag, iFlt, iFltWidth, faultArea, coeff_area, RateParam, mpdf_param, magStep, 
+     2         RateType, charMeanMo, expMeanMo )
 
 c        Intergrate Over Magnitude (from minMag to maxMag) (Aleatory)
          
