@@ -338,9 +338,10 @@ c -------------------------------------------------------------------
       subroutine S14_Get_plane_dist (x, y, z, x0, y0, z0, insideFlag, dist)
       
       implicit none
+      include 'pfrisk.h'
       
 c     declarations passed in      
-      real x(5), y(5), z(5), x0, y0, z0
+      real x(MAX_SEG), y(MAX_SEG), z(MAX_SEG), x0, y0, z0
       
 c     declarations passed out  
       integer insideFlag
@@ -699,10 +700,11 @@ c -------------------------------------------------------------------
      1           x0, y0, z0, dip0, dist, xclp, yclp, zclp )
 
       implicit none
+      include 'pfrisk.h'
       
       integer i, i1, nSeg, insideFlag, iSeg
-      real xRup(4,1), yRup(4,1), zRup(4,1), x(4), y(4), z(4), xSeg(5), 
-     1     ySeg(5), dist, dip0, x0, y0, z0, dist1, pi, dip, theta, 
+      real xRup(4,1), yRup(4,1), zRup(4,1), x(4), y(4), z(4), xSeg(MAX_SEG), 
+     1     ySeg(MAX_SEG), dist, dip0, x0, y0, z0, dist1, pi, dip, theta, 
      2     theta1, sin1, cos1, tan1, d1, d2, xclp, yclp, zclp, xclp2, 
      3     yclp2, zclp2
 

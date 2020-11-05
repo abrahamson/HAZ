@@ -7166,7 +7166,7 @@ C     Model Number = 13012
       if ( jcalc .eq. 13012 ) then
          attenname1 = 'SWUS phiSS_Global_R50 HIgh'
          iBranch = 3
-         call S32_SWUS_PHISS_Global_R50 ( phiSS, iflag, iBranch ) 
+         call S32_SWUS_PHISS_Global_R50 ( mag, specT, phiSS, iflag, iBranch ) 
 
 C        set dummy value for median (this is used only for sigma)
          lnY = 1.0e10
