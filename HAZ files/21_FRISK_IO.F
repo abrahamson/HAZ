@@ -5,7 +5,7 @@
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefrrup, cfcoefrjb, 
-     6               coefcountrrup, coefcountRjb, iMixture, version )
+     6               coefcountrrup, coefcountRjb, iMixture, version, starttime )
 
       implicit none
       include 'pfrisk.h'
@@ -17,6 +17,7 @@
      4        nAtten(MAX_PROB,4), soilAmpFlag, charcount
       integer coefcountrrup, coefcountrjb,
      1        iMixture(MAX_PROB,4,MAX_ATTEN)
+      integer*4 starttime(3)
       real testInten(MAX_PROB,MAX_INTEN), distmax, minlat, maxlat, 
      1     minlong, maxlong, lgTestInten(MAX_PROB,MAX_INTEN), 
      2     distBins(MAX_DIST), epsBins(MAX_EPS), XcostBins(MAX_Xcost),
@@ -210,6 +211,8 @@ c     Read bins for de-aggregating the hazard
       read (13,*,err=2017) (XcostBins(k),k=1,nXcostBins)
 
       read (13,*,err=2018) soilAmpFlag
+
+      call itime(starttime)
 
       return
  2001 write (*,'( 2x,''input file error: minlat, maxlat line'')') 
@@ -665,6 +668,10 @@ c     Write number of bins and bin values.
       write (18,'(20f10.3)') (epsBins(i),i=1,nepsbins)
       write (18,'(i5,5x,a25)') nXcostbins,'Number of Xcos(T) Bins  '
       write (18,'(20f10.3)') (xCostBins(i),i=1,nxCostbins)
+      
+      write (18,*)
+      write (18,'(1x,a50)') '--------------------------------------------------'
+      write (18,*)
 
 c     Write Site Coordinates
       write(NWR,910) iSite, siteX, siteY

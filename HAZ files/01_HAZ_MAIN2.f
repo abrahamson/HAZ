@@ -43,7 +43,7 @@ c     Read Run File
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
      5               sCalc, sigfix, bnumflag, cfcoefRrup, cfcoefRjb, 
-     6               coefcountRrup, coefcountRjb, iMixture, version )
+     6               coefcountRrup, coefcountRjb, iMixture, version, starttime )
 
 c     read fault File
       call S29_Rd_Fault_Data ( nFlt, fName, minMag, magStep, xStep,
@@ -674,6 +674,14 @@ c      Write out the deagrregated hazard
 
  2000 continue
       close (77)
+
+      call itime(endtime)
+      write (18, 5500 ) starttime
+      write (18, 5501 ) endtime
+ 5500 format (  'Start time ', 
+     &         i2.2, ':', i2.2, ':', i2.2 )
+ 5501 format (  'End time ', 
+     &         i2.2, ':', i2.2, ':', i2.2 )
 
       write (*,'( 2x,''Normal termination'')')
       stop
