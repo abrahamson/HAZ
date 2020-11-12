@@ -640,6 +640,7 @@ c        Write temp Haz array to file
 
 c       Write p1_sum as a check
         write (*,'( 2x,'' Site = '',i5,2x,'' iFlt = '',i5,'' p1sum ='',f10.5, i5)') iSite, iflt, p1_sum, nFLt
+        pdfsum(iFlt) = p1_sum
 
  900   continue
 
@@ -652,7 +653,7 @@ c      Write out the mean Haz
      1       nFlt, nProb, Haz, fName, jCalc, sigTrunc, csrflag,
      2       attenName, period1, probAct, nWidth, m_bar, d_bar, e_bar,
      3       HazBins, nMagBins, nDistBins, nEpsBins, magBins, distBins,
-     4       epsBins, al_segWt, MinRrup, nAttenType, attenType,
+     4       epsBins, al_segWt, MinRrup, nAttenType, attenType, pdfsum,
      5       segwt1, dirflag, tapflag,intflag, fsys, SourceDist,
      6       mMagout, hwflagout, ftype, vs, nMaxmag2, mmagoutWt, specT)
 

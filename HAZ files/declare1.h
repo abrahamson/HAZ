@@ -48,7 +48,7 @@ c    Declarations for Main file
      1     fltGrid_y(MAXFLT_DD,MAXFLT_AS), fltGrid_z(MAXFLT_DD,MAXFLT_AS),
      2     fltGrid_fLen(MAXFLT_DD,MAXFLT_AS), fltGrid_w(MAXFLT_DD,MAXFLT_AS),
      3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), dipavgd
+     4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), dipavgd, pdfsum(MAX_FLT)
       real Rx, Ry, Ry0, lgInten0, pLocY(MAXFLT_AS),
      1     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
      2     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,

@@ -426,7 +426,6 @@ c  -------------------------------------------------------------------
 
       nwr = 28
 
-      write (*,'( i5)') nProb
       do iProb=1,nProb
         do jType=1,nattenType
            do iAtten = 1,nAtten(iProb,jType)
@@ -446,14 +445,14 @@ c  -------------------------------------------------------------------
      2           attenName, period1, probAct, nWidth, 
      4           m_bar, d_bar, e_bar, riskBins, nMagBins, nDistBins,
      5           nEpsBins, magBins, distBins, epsBins,
-     6           al_segWt, MinRrup, nAttenType, attenType, segWt1,
+     6           al_segWt, MinRrup, nAttenType, attenType, pdfsum, segWt1,
      7           dirflag,tapflag, intflag, fsys, SourceDist, mMagout,
      8           hwflagout, ftype, vs, nmaxmag2, mMagoutwt, specT)
 
       implicit none
       include 'pfrisk.h'
 
-      real siteX, siteY, ati(MAX_PROB, MAX_INTEN) 
+      real siteX, siteY, ati(MAX_PROB, MAX_INTEN), pdfsum(MAX_FLT) 
       real*8 risk(MAX_INTEN,MAX_PROB,MAX_FLT)
       real al_segWt(MAX_FLT), segWt1(MAX_FLT), magbins(MAX_MAG), distbins(MAX_DIST), 
      1     epsBins(MAX_EPS)
@@ -514,10 +513,10 @@ c     a total number of fault listings in the output file.
       write (18,*) 
       write (18,'(i8,10x,''Number of faults'')') nFlt
       write (18,*)
-      write (18,'(a50)') 'Fault Name                  nFlt System Number'
+      write (18,'(a50)') 'Fault Name                     nFlt  nSys  p1sum '
       write (18,'(1x,a50)') '--------------------------------------------------'
       do ii=1,nFlt
-         write (18,'(a30,i5,i5)') fname(ii), ii, fsys(ii)
+         write (18,'(a30,i5,i5,4x,f7.5)') fname(ii), ii, fsys(ii), pdfsum(ii)
       enddo
 
 c     Write Site Coordinates
