@@ -1,8 +1,8 @@
        subroutine S28_RupDims (sourceType, rupWidth, aveWidth, rupArea, faultLen,
      1                     faultWidth, nLocYST1, ystep, rupLen)
-       
+
        implicit none
-       
+
 c      declarations passed in
        integer sourceType
        real aveWidth, rupArea, faultLen, faultWidth, ystep
@@ -13,10 +13,10 @@ c      declarations passed in and out
 c      declarations passed out
        integer nLocYST1
        real rupLen
-       
+
 c           Check that rupture width doesn't exceed fault width and rupture area doesn't
 c           exceed fault area. Set rupture length
-            if (sourceType .eq. 1 ) then                     
+            if (sourceType .eq. 1 ) then
               if (rupWidth .gt. aveWidth ) then
                 rupWidth = aveWidth
               endif
@@ -33,16 +33,16 @@ c           exceed fault area. Set rupture length
             elseif (sourceType .eq. 7) then
               rupWidth = 12.0
             elseif (sourceType .eq. 4 ) then
-              if (rupWidth .gt. faultWidth) then                                        
-                 rupWidth = faultWidth                                                          
-              endif                                                                     
+              if (rupWidth .gt. faultWidth) then
+                 rupWidth = faultWidth
+              endif
               rupLen = rupArea / rupWidth
-              
-c           Otherwise source is area  
+
+c           Otherwise source is area
             else
-              if (rupWidth .gt. faultWidth) then                                        
-                rupWidth = faultWidth                                                          
-              endif                                                                     
+              if (rupWidth .gt. faultWidth) then
+                rupWidth = faultWidth
+              endif
               rupLen = rupArea / rupWidth
             endif
 
@@ -53,7 +53,7 @@ c           Otherwise source is area
 c ----------------------------------------------------------------------
        subroutine S28_nLocXcells (sourceType, nLocXAS, grid_n, nfltgrid, fltgrid_w,
      1                        rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
-     
+
        implicit none
        include 'pfrisk.h'
 
@@ -86,7 +86,7 @@ c         less than RupWidth
           countnLocX = 0
           do 1234 in2m=1,nfltgrid(2)
              colarea = 0.0
-          
+
 C            Check for case in which total area is less than RupArea.
              if (in2m .gt. 1 .and. countnLocX .eq. 0) then
                 goto 1233
@@ -146,7 +146,7 @@ c ----------------------------------------------------------------------
        subroutine S28_nLocYcells (iLocX, n1AS, sourceType, nLocX, distDensity, xStep,
      1                        faultWidth, ystep, distDensity2, grid_x, grid_y, x0, y0,
      2                        nLocY, pLocX, r_horiz)
-     
+
        implicit none
        include 'pfrisk.h'
 
@@ -163,18 +163,22 @@ c      declarations passed out
                 nLocY = n1AS(iLocX)
                 pLocX = 1./nLocX
               elseif ( sourceType .eq. 2 .or. sourceType .eq. 3 ) then
-                pLocX = distDensity(iLocX)               
+                pLocX = distDensity(iLocX)
                 if ( pLocX .ne. 0. ) then
-                  r_horiz = xStep * (iLocX-0.5)                
+                  r_horiz = xStep * (iLocX-0.5)
                   nLocY = nint(faultWidth / yStep)
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
                     if (nLocY.eq.0) then
                       nLocY = 1
                     endif
-                endif             
+                endif
               elseif ( sourceType .eq. 4 ) then
                 pLocX = distDensity2(iLocX)
                 r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
                 nLocY = nint(faultWidth / yStep)
+c               adjust yStep to fit evenly into faultWidth if necessary
+                yStep = faultWidth / nLocY
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
@@ -185,4 +189,3 @@ c      declarations passed out
 
        return
        end
-
