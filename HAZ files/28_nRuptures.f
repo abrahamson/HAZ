@@ -145,13 +145,13 @@ C                     get the correct rupture width.
 c ----------------------------------------------------------------------
        subroutine S28_nLocYcells (iLocX, n1AS, sourceType, nLocX, distDensity, xStep,
      1                        faultWidth, ystep, distDensity2, grid_x, grid_y, x0, y0,
-     2                        nLocY, pLocX, r_horiz)
+     2                        nLocY, pLocX, r_horiz, VarYstepFlag)
 
        implicit none
        include 'pfrisk.h'
 
 c      declarations passed in
-       integer iLocX, n1AS(MAXFLT_AS), sourceType, nLocX
+       integer iLocX, n1AS(MAXFLT_AS), sourceType, nLocX, VarYstepFlag
        real distDensity(MAX_DIST1), xStep, faultWidth, ystep, distDensity2(MAX_GRID),
      1      grid_x(MAX_GRID), grid_y(MAX_GRID), x0, y0
 
@@ -166,22 +166,52 @@ c      declarations passed out
                 pLocX = distDensity(iLocX)
                 if ( pLocX .ne. 0. ) then
                   r_horiz = xStep * (iLocX-0.5)
+c                 variable depth discretization
+                  if (VarYstepFlag .eq. 1) then
+                    if (r_horiz .lt. 10.) then
+                      yStep = 1.0
+                    else if (r_horiz .lt. 25.) then
+                      yStep = 2.0
+                    else if (r_horiz .lt. 60.) then
+                      yStep = 3.0
+                    else if (r_horiz .lt. 150.) then
+                      yStep = 4.0
+                    else
+                      yStep = 5.0
+                    endif
+                  endif
                   nLocY = nint(faultWidth / yStep)
 c                 adjust yStep to fit evenly into faultWidth if necessary
                   yStep = faultWidth / nLocY
-                    if (nLocY.eq.0) then
-                      nLocY = 1
-                    endif
-                endif
-              elseif ( sourceType .eq. 4 ) then
-                pLocX = distDensity2(iLocX)
-                r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
-                nLocY = nint(faultWidth / yStep)
-c               adjust yStep to fit evenly into faultWidth if necessary
-                yStep = faultWidth / nLocY
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
+                endif
+              elseif ( sourceType .eq. 4 ) then
+                pLocX = distDensity2(iLocX)
+                if ( pLocX .ne. 0. ) then
+                  r_horiz = sqrt( (grid_x(iLocX)-x0)**2 + (grid_y(iLocX)-y0)**2 )
+c                 variable depth discretization
+                  if (VarYstepFlag .eq. 1) then
+                    if (r_horiz .lt. 10.) then
+                      yStep = 1.0
+                    else if (r_horiz .lt. 25.) then
+                      yStep = 2.0
+                    else if (r_horiz .lt. 60.) then
+                      yStep = 3.0
+                    else if (r_horiz .lt. 150.) then
+                      yStep = 4.0
+                    else
+                      yStep = 5.0
+                    endif
+                  endif
+                  nLocY = nint(faultWidth / yStep)
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
+                  if (nLocY.eq.0) then
+                    nLocY = 1
+                  endif
+                endif
               elseif (sourceType .eq. 7) then
                 nLocY = 1
                 pLocX = 1.0

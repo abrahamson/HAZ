@@ -14,7 +14,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7, version )
+     7     DistS7, DipS7, mechS7, ncountS7, version, VarYstepFlag )
 
       implicit none
       include 'pfrisk.h'
@@ -27,7 +27,7 @@
       integer nRupArea(MAX_FLT), nRupWidth(MAX_FLT), ncountS7(MAX_FLT),
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT),
      2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT),
-     3        fsys(MAX_FLT),
+     3        fsys(MAX_FLT), VarYstepFlag(MAX_FLT),
      4        segModelFlag(MAX_FLT,100), nSegModel0(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
@@ -94,7 +94,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, VarYstepFlag )
       else
         write (*,'( 2x,''Incompatible fault file, use Haz45.3, Haz45.2, or Haz45.1'')')
         stop 99
@@ -121,7 +121,7 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7 )
+     7     DistS7, DipS7, mechS7, ncountS7, VarYstepFlag )
 
       implicit none
       include 'pfrisk.h'
@@ -136,7 +136,7 @@ c  --------------------------------------------------------------------
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT)
-      integer nFtype1(MAX_FLT),
+      integer nFtype1(MAX_FLT), VarYstepFlag(iFlt),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip,
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM
@@ -510,6 +510,14 @@ C         Check that Hxstep = Hystep
             write (*,*) 'These values must be equal or errors can occur!'
             write (*,*) 'Check input fault file.'
             stop 99
+          endif
+        endif
+
+c       Set flag for variable Ystep discretization (only sourceType 2, 3, and 4)
+        VarYstepFlag(iFlt) = 0
+        if (sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 .or. sourceType(iFlt) .eq. 4) then
+          if (hystep(iFlt) .lt. 0.) then
+            VarYstepFlag(iFlt) = 1
           endif
         endif
 
