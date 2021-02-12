@@ -145,13 +145,13 @@ C                     get the correct rupture width.
 c ----------------------------------------------------------------------
        subroutine S28_nLocYcells (iLocX, n1AS, sourceType, nLocX, distDensity, xStep,
      1                        faultWidth, ystep, distDensity2, grid_x, grid_y, x0, y0,
-     2                        nLocY, pLocX, r_horiz, VarYstepFlag)
+     2                        nLocY, pLocX, r_horiz, VarXstepFlag, VarYstepFlag)
 
        implicit none
        include 'pfrisk.h'
 
 c      declarations passed in
-       integer iLocX, n1AS(MAXFLT_AS), sourceType, nLocX, VarYstepFlag
+       integer iLocX, n1AS(MAXFLT_AS), sourceType, nLocX, VarXstepFlag, VarYstepFlag
        real distDensity(MAX_DIST1), xStep, faultWidth, ystep, distDensity2(MAX_GRID),
      1      grid_x(MAX_GRID), grid_y(MAX_GRID), x0, y0
 
@@ -162,10 +162,55 @@ c      declarations passed out
               if (sourceType .eq. 1 .or. sourceType .eq. 5 .or. sourceType .eq. 6) then
                 nLocY = n1AS(iLocX)
                 pLocX = 1./nLocX
-              elseif ( sourceType .eq. 2 .or. sourceType .eq. 3 ) then
+              elseif ( sourceType .eq. 2) then
                 pLocX = distDensity(iLocX)
                 if ( pLocX .ne. 0. ) then
                   r_horiz = xStep * (iLocX-0.5)
+c                 variable depth discretization
+                  if (VarYstepFlag .eq. 1) then
+                    if (r_horiz .lt. 10.) then
+                      yStep = 1.0
+                    else if (r_horiz .lt. 25.) then
+                      yStep = 2.0
+                    else if (r_horiz .lt. 60.) then
+                      yStep = 3.0
+                    else if (r_horiz .lt. 150.) then
+                      yStep = 4.0
+                    else
+                      yStep = 5.0
+                    endif
+                  endif
+                  nLocY = nint(faultWidth / yStep)
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
+                  if (nLocY.eq.0) then
+                    nLocY = 1
+                  endif
+                endif
+              elseif ( sourceType .eq. 3 ) then
+                pLocX = distDensity(iLocX)
+                if ( pLocX .ne. 0. ) then
+c                 variable horizontal discretization
+                  if (VarXstepFlag .eq. 1) then
+                    if (iLocX .lt. 11) then
+                      xStep = 1
+                      r_horiz = xStep * (iLocX-0.5)
+                    else if (iLocX .lt. 19) then
+                      xStep = 2
+                      r_horiz = 10. + xStep * (iLocX-10.5)
+                    else if (iLocX .lt. 30) then
+                      xStep = 3
+                      r_horiz = 26. + xStep * (iLocX-18.5)
+                    else if (iLocX .lt. 53) then
+                      xStep = 4
+                      r_horiz = 59. + xStep * (iLocX-29.5)
+                    else
+                      xStep = 5
+                      r_horiz = 151. + xStep * (iLocX-52.5)
+                    endif
+                  else
+                    r_horiz = xStep * (iLocX-0.5)
+                  endif
 c                 variable depth discretization
                   if (VarYstepFlag .eq. 1) then
                     if (r_horiz .lt. 10.) then

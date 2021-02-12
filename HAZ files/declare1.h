@@ -31,7 +31,7 @@ c    Declarations for Main file
      2        nInten(MAX_PROB), nfp(MAX_FLT), nMag(MAX_FLT), jcalc1,
      3        jcalc(MAX_PROB,4,MAX_ATTEN), nAtten(MAX_PROB,4), nSite,
      4        iMag, iflt, nRupArea(MAX_FLT), nRupWidth(MAX_FLT), nWidth(MAX_FLT)
-      integer scalc(MAX_PROB,4,MAX_ATTEN), scalc1,
+      integer scalc(MAX_PROB,4,MAX_ATTEN), scalc1, VarXstepFlag(MAX_FLT),
      1        iWidth, iArea, hwflagout(MAX_FLT), sourceType(MAX_FLT),
      2        attenType(MAX_FLT), iParam, nParamVar(MAX_FLT,MAX_WIDTH),
      3        iMagBin, iDistBin, iEpsBin, nMagBins, nDistBins, nEpsBins,

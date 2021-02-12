@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*         October, 2020         *'
+      write (*,*) '*        February, 2021         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -62,7 +62,7 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt,
      5     segModelFlag, nSegModel, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7, version, VarYstepFlag )
+     7     DistS7, DipS7, mechS7, ncountS7, version, VarXstepFlag, VarYstepFlag )
 
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite
@@ -185,7 +185,7 @@ c        Compute horizontal distance density function for areal sources (polygon
          elseif ( sourceType(iFlt) .eq. 3 ) then
            call S14_CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,
-     2             x0, y0, sampleStep(iFlt))
+     2             x0, y0, sampleStep(iFlt), VarXstepFlag(iFlt))
          elseif ( sourceType(iFlt) .eq. 4 ) then
            call S14_CalcDistDensity2 ( iFlt, grid_a, grid_n, distDensity2 )
          endif
@@ -259,7 +259,8 @@ c           This is along strike for faults and epicentral distance for source z
 
                call S28_nLocYcells (iLocX, n1AS, sourceType(iFlt), nLocX, distDensity, xStep(iFlt),
      1                          faultWidth(iFlt,iFltWidth), yStep(iFlt), distDensity2, grid_x,
-     2                          grid_y, x0, y0, nLocY, pLocX, r_horiz, VarYstepFlag(iFlt))
+     2                          grid_y, x0, y0, nLocY, pLocX, r_horiz, VarXstepFlag(iFlt),
+     3                          VarYstepFlag(iFlt))
 
                   if ( pLocX .eq. 0. ) then
                     goto 650
