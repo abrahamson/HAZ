@@ -181,11 +181,11 @@ c                 variable depth discretization
                     endif
                   endif
                   nLocY = nint(faultWidth / yStep)
-c                 adjust yStep to fit evenly into faultWidth if necessary
-                  yStep = faultWidth / nLocY
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
                 endif
               elseif ( sourceType .eq. 3 ) then
                 pLocX = distDensity(iLocX)
@@ -226,11 +226,11 @@ c                 variable depth discretization
                     endif
                   endif
                   nLocY = nint(faultWidth / yStep)
-c                 adjust yStep to fit evenly into faultWidth if necessary
-                  yStep = faultWidth / nLocY
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
                 endif
               elseif ( sourceType .eq. 4 ) then
                 pLocX = distDensity2(iLocX)
@@ -251,11 +251,11 @@ c                 variable depth discretization
                     endif
                   endif
                   nLocY = nint(faultWidth / yStep)
-c                 adjust yStep to fit evenly into faultWidth if necessary
-                  yStep = faultWidth / nLocY
                   if (nLocY.eq.0) then
                     nLocY = 1
                   endif
+c                 adjust yStep to fit evenly into faultWidth if necessary
+                  yStep = faultWidth / nLocY
                 endif
               elseif (sourceType .eq. 7) then
                 nLocY = 1

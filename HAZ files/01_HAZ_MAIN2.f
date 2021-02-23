@@ -277,6 +277,12 @@ c            set the probabilities for the depths
                if (sourceType(iFlt) .eq. 2 .and. VarYstepFlag(iFlt) .eq. 0) then
                  iDepthFlag = 1
                endif
+               if (sourceType(iFlt) .eq. 3 .and. VarYstepFlag(iFlt) .eq. 0) then
+                 iDepthFlag = 1
+               endif
+               if (sourceType(iFlt) .eq. 4 .and. VarYstepFlag(iFlt) .eq. 0) then
+                 iDepthFlag = 1
+               endif
              endif
 
 c            Integrate Over Rupture Location - Down Dip (aleatory)
