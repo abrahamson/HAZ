@@ -532,9 +532,9 @@ C         Check that Hxstep = Hystep
           endif
         endif
 
-c       Set flag for variable Xstep discretization (only sourceType 3)
+c       Set flag for variable Xstep discretization (only sourceType 2, 3)
         VarXstepFlag(iFlt) = 0
-        if (sourceType(iFlt) .eq. 3) then
+        if (sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3) then
           if (hxstep(iFlt) .lt. 0.) then
             VarXstepFlag(iFlt) = 1
           endif

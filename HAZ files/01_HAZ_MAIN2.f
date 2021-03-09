@@ -181,7 +181,7 @@ c        Set Sampling of Rupture Area and Rupture Width Distributions
 c        Compute horizontal distance density function for areal sources (polygons or gridded seismicity)
          if ( sourceType(iFlt) .eq. 2 ) then
            call S14_CalcDistDensity (nPts, xFlt, yFlt, distDensity,
-     1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt))
+     1         xStep(iFlt), nLocXAS, x0, y0, sampleStep(iFlt), VarXstepFlag(iFlt))
          elseif ( sourceType(iFlt) .eq. 3 ) then
            call S14_CalcDistDensity1 ( iFlt, grid_a, grid_x, grid_y, grid_dx,
      1             grid_dy, grid_n, distDensity, xStep(iFlt), nLocXAS,

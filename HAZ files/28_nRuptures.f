@@ -165,7 +165,27 @@ c      declarations passed out
               elseif ( sourceType .eq. 2) then
                 pLocX = distDensity(iLocX)
                 if ( pLocX .ne. 0. ) then
-                  r_horiz = xStep * (iLocX-0.5)
+c                 variable horizontal discretization
+                  if (VarXstepFlag .eq. 1) then
+                    if (iLocX .lt. 11) then
+                      xStep = 1
+                      r_horiz = xStep * (iLocX-0.5)
+                    else if (iLocX .lt. 19) then
+                      xStep = 2
+                      r_horiz = 10. + xStep * (iLocX-10.5)
+                    else if (iLocX .lt. 30) then
+                      xStep = 3
+                      r_horiz = 26. + xStep * (iLocX-18.5)
+                    else if (iLocX .lt. 53) then
+                      xStep = 4
+                      r_horiz = 59. + xStep * (iLocX-29.5)
+                    else
+                      xStep = 5
+                      r_horiz = 151. + xStep * (iLocX-52.5)
+                    endif
+                  else
+                    r_horiz = xStep * (iLocX-0.5)
+                  endif                
 c                 variable depth discretization
                   if (VarYstepFlag .eq. 1) then
                     if (r_horiz .lt. 10.) then

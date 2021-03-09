@@ -547,12 +547,13 @@ c     Compute distance from point to plane
 c --------------------------------------------------------------------
 
       subroutine S14_CalcDistDensity (nPts, xFlt2, yFlt2, distDensity,
-     1                            dr, nr, x0, y0, step)
+     1                            dr, nr, x0, y0, step, VarXstepFlag)
 
       implicit none
       include 'pfrisk.h'
 
       integer i, ix, iy, nx, ny, nPts, nr, insideFlag, iBin, iz, iBinMax
+      integer VarXstepFlag
       real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), maxdist
       real xFlt(MAX_SEG), yFlt(MAX_SEG), xMin, xMax, yMin, yMax, sum
       real distDensity(MAX_DIST1), dr, step, x, y, x0, y0, horDist
@@ -595,7 +596,27 @@ c     Loop over bounding rectangle to estimate density function
           call S14_Inside_OutSide ( nPts-1, xFlt, yFlt, x, y, insideFlag)
           if ( insideFlag .eq. 1 ) then
              horDist = sqrt( (x-x0)**2 + (y-y0)**2 )
-             iBin = int( horDist / dr ) + 1
+c            variable horizontal discretization
+             if (VarXstepFlag .eq. 1) then
+               if (horDist .lt. 10.) then
+                 dr = 1
+                 iBin = int(horDist/dr) + 1
+               else if (horDist .lt. 26.) then
+                 dr = 2
+                 iBin = int((horDist-10.)/dr) + 11
+               else if (horDist .lt. 59.) then
+                 dr = 3
+                 iBin = int((horDist-26.)/dr) + 19
+               else if (horDist .lt. 151.) then
+                 dr = 4
+                 iBin = int((horDist-59.)/dr) + 30
+               else
+                 dr = 5
+                 iBin = int((horDist-151.)/dr) + 53
+               endif
+             else
+               iBin = int( horDist / dr ) + 1
+             endif
              call S21_CheckDim ( iBin, MAX_DIST1, 'MAX_DIST1  ' )
 
 C     Reset Max and Min distances if needed
