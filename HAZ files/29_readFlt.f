@@ -530,6 +530,13 @@ C         Check that Hxstep = Hystep
             write (*,*) 'Check input fault file.'
             stop 99
           endif
+c         check that hxstep and hystep are positive
+          if (hxstep(iFlt) .lt. 0 .or. hystep(iFlt) .lt. 0) then
+            write (*,*) 'Hxstep and Hystep must be positive for fault sources'
+            write (*,*) 'Check input fault file for fault: '
+            write (*,*) fname1
+            stop 99
+          endif
         endif
 
 c       Set flag for variable Xstep discretization (only sourceType 2, 3)
