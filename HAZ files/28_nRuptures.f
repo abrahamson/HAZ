@@ -1,11 +1,11 @@
        subroutine S28_RupDims (sourceType, rupWidth, aveWidth, rupArea, faultLen,
-     1                     faultWidth, nLocYST1, ystep, rupLen)
+     1                     faultWidth, dip, nLocYST1, ystep, rupLen)
 
        implicit none
 
 c      declarations passed in
        integer sourceType
-       real aveWidth, rupArea, faultLen, faultWidth, ystep
+       real aveWidth, rupArea, faultLen, faultWidth, ystep, dip
 
 c      declarations passed in and out
        real rupWidth
@@ -13,6 +13,9 @@ c      declarations passed in and out
 c      declarations passed out
        integer nLocYST1
        real rupLen
+
+c      declarations only used within subroutine
+       real availddwidth
 
 c           Check that rupture width doesn't exceed fault width and rupture area doesn't
 c           exceed fault area. Set rupture length
@@ -32,16 +35,12 @@ c           exceed fault area. Set rupture length
               endif
             elseif (sourceType .eq. 7) then
               rupWidth = 12.0
-            elseif (sourceType .eq. 4 ) then
-              if (rupWidth .gt. faultWidth) then
-                 rupWidth = faultWidth
-              endif
-              rupLen = rupArea / rupWidth
 
 c           Otherwise source is area
             else
-              if (rupWidth .gt. faultWidth) then
-                rupWidth = faultWidth
+              availddwidth = faultwidth/sin(abs(dip)*3.1415926/180.)
+              if (rupWidth .gt. availddwidth) then
+                rupWidth = availddwidth
               endif
               rupLen = rupArea / rupWidth
             endif
@@ -185,7 +184,7 @@ c                 variable horizontal discretization
                     endif
                   else
                     r_horiz = xStep * (iLocX-0.5)
-                  endif                
+                  endif
 c                 variable depth discretization
                   if (VarYstepFlag .eq. 1) then
                     if (r_horiz .lt. 10.) then

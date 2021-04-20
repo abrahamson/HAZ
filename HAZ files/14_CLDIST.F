@@ -35,7 +35,7 @@ c     declarations passed out
 
 c     declarations only used within subroutine
       integer i, j, celly, cellx
-      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy
+      real top_grid, hypo1, rupLength2, r_horiz1, testy, testx, hypox, hypoy, rupz
 
 c     Initialize closest distance
       distRup = 1.0e30
@@ -60,7 +60,8 @@ c         Set hypoDepth for areal sources
 c         Approximate correction for using point source with extended source model
 C         added limit on only shallow areal sources (Hypo>30.0km)
           if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
-            hypo1=hypoDepth-rupWidth/2.
+            rupz = sin(abs(dip(iFlt,iFltWidth,1)*3.1415926/180.))*rupWidth
+            hypo1=hypoDepth-rupz/2.
           if (hypo1 .lt. 0.0) hypo1=0.0
           rupLength2 = rupLen/2.
           if ( r_horiz .gt. rupLength2 ) then

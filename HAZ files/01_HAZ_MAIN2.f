@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*        February, 2021         *'
+      write (*,*) '*          April, 2021          *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -246,7 +246,8 @@ c           Compute Rupture Width and Probability of Rupture Width
      1           widthStep, sigMaxWidth, rupWidth, pWidth, iFlt, iWidth)
 
         call S28_RupDims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen,
-     1                faultWidth(iFlt,iFltWidth), nLocYST1, yStep(iFlt), rupLen)
+     1                faultWidth(iFlt,iFltWidth), dip(iFlt,iFltWidth,1), nLocYST1,
+     2                yStep(iFlt), rupLen)
 
         call S28_nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
      1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
