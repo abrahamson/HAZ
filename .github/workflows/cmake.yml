@@ -81,7 +81,7 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    needs: [check-matrix, build]
+    needs: [matrix, build]
     env:
       PYTHON_VERSION: 3.8
     defaults:
