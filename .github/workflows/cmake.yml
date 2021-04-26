@@ -65,6 +65,7 @@ jobs:
             ${{ runner.os }}-          
 
       - name: Create Test Environment
+        shell: bash
         run: |
           ls -la
           python -m pip install --upgrade pip
