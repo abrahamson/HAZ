@@ -31,6 +31,9 @@ install_manifest.txt
 CTestTestfile.cmake
 Status API Training Shop Blog About
 
+# Vim tags
+tags
+
 # Build and testing directories
 build/
-tests/
+working/

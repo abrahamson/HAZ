@@ -155,18 +155,18 @@ def iter_cases(path_src: str, patterns: List[str],
     ]
     # These cases take a couple hours to run
     long_cases = [
-        'Set1/S1Test05',
-        'Set1/S1Test06',
-        'Set1/S1Test07',
-        'Set2/S2Test2a',
-        'Set2/S2Test2b',
-        'Set2/S2Test2c',
-        'Set2/S2Test2d',
-        'Set3/S3Test2',
-        'Set3/S3Test2/Fractiles',
-        'Set3/S3Test2/Hazard',
-        'Set3/S3Test3/Approach b1',
-        'Set3/S3Test3/Approach b2',
+        'set-1/S1Test05',
+        'set-1/S1Test06',
+        'set-1/S1Test07',
+        'set-2/S2Test2a',
+        'set-2/S2Test2b',
+        'set-2/S2Test2c',
+        'set-2/S2Test2d',
+        'set-3/S3Test2',
+        'set-3/S3Test2/Fractiles',
+        'set-3/S3Test2/Hazard',
+        'set-3/S3Test3/Approach b1',
+        'set-3/S3Test3/Approach b2',
     ]
 
     pattern_run = r'^Run_\S+\.txt$'
@@ -280,10 +280,10 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--rtol', type=float, default=2E-3,
                         help='Relative tolerance used for float comparisons.')
     parser.add_argument('-s', '--root_ref', type=str,
-                        default='../PEER_Verification_Tests/',
+                        default='../tests/',
                         help='Root path of test cases')
     parser.add_argument('-t', '--root_test', type=str,
-                        default='../tests',
+                        default='../working',
                         help='Root path used in testing; created if needed.')
     parser.add_argument('patterns', default=None, nargs='*',
                         help='Only process test cases matching the pattern')
