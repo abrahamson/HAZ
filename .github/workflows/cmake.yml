@@ -45,7 +45,7 @@ jobs:
       PYTHON_VERSION: 3.8
     defaults:
       run:
-        working-directory: scripts
+        working-directory: ${{github.workspace}}/scripts
         
     steps:
       - name: Set up Python ${{ env.PYTHON_VERSION }}
