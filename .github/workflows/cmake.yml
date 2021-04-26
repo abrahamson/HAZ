@@ -85,10 +85,9 @@ jobs:
       - name: Download a HAZ artifact
         uses: actions/download-artifact@v2
         with:
-          name: HAZ
+          name: ${{github.workspace}}/scripts/HAZ
 
       - name: Perform Tests
         run: |
-          ls $GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE/build
+          ls
           python run_tests.py --cores 2 --haz_bin HAZ --rtol 0.005 set-1 set-2
