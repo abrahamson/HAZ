@@ -36,7 +36,17 @@ jobs:
       working-directory: ${{github.workspace}}/build
       shell: bash
       # Execute the build.  You can specify a specific target with "--target <NAME>"
-      run: cmake --build . --config $BUILD_TYPE -- -j2
+      run: |
+        cmake --build . --config $BUILD_TYPE -- -j2
+        ls -la 
+      
+    - name: Upload HAZ artifact
+      working-directory: ${{github.workspace}}/build
+      uses: actions/upload-artifact@v2
+      with:
+        name: HAZ
+        path: HAZ
+        retention-days: 5
 
   test:
     needs: build
@@ -72,9 +82,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install wheel
           pip install -r requirements.txt
+          
+      - name: Download a HAZ artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: HAZ
 
       - name: Perform Tests
         run: |
           ls $GITHUB_WORKSPACE
           ls $GITHUB_WORKSPACE/build
-          python run_tests.py --cores 2 --haz_bin $GITHUB_WORKSPACE/build/HAZ --rtol 0.005 set-1 set-2
+          python run_tests.py --cores 2 --haz_bin HAZ --rtol 0.005 set-1 set-2
