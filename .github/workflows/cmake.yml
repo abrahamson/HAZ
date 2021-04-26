@@ -90,7 +90,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        case: ${{fromJson(needs.matrix.outputs.matrix)}}
+        case: ${{ fromJson(needs.matrix.outputs.matrix) }}
         
     steps:
       - uses: actions/checkout@v2
