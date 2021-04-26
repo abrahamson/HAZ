@@ -52,7 +52,7 @@ jobs:
   find-cases:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-cases.outputs.cases }}
+      cases: ${{ steps.set-cases.outputs.cases }}
     steps:
       - uses: actions/checkout@v2
 
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: find-cases
     steps:
-      - name: Check matrix definition
+      - name: Check located test cases
         run: |
           cases='${{ needs.find-cases.outputs.cases }}'
           echo $cases
