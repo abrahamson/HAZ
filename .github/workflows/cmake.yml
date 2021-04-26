@@ -41,11 +41,10 @@ jobs:
         ls -la 
       
     - name: Upload HAZ artifact
-      working-directory: ${{github.workspace}}/build
       uses: actions/upload-artifact@v2
       with:
         name: HAZ
-        path: HAZ
+        path: ${{github.workspace}}/build/HAZ
         retention-days: 5
 
   test:
