@@ -46,15 +46,33 @@ jobs:
         name: HAZ
         path: ${{github.workspace}}/build/HAZ
         retention-days: 5
-
-  test:
+        
+  find_test_cases:
+    runs-on: ubuntu-latest
     needs: build
+    outputs:
+      cases: ${{ steps.find-cases.outputs.cases }}
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: find-cases
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      run: |
+        echo "::set-output name=cases::$(ls -d peer/set-1/* peer-set-2/*)"
+        
+    
+  test:
+    needs: find_test_cases
     runs-on: ubuntu-latest
     env:
       PYTHON_VERSION: 3.8
     defaults:
       run:
         working-directory: ${{github.workspace}}/scripts
+    strategy:
+      matrix:
+        case: ${{ needs..find_test_cases.outputs.cases }}
         
     steps:
       - uses: actions/checkout@v2
@@ -93,4 +111,4 @@ jobs:
           # Permissions reset on downloading artifact
           chmod +x HAZ
           ls -lha
-          python run_tests.py --cores 2 --haz_bin ./HAZ --rtol 0.005 set-1 set-2
+          python run_tests.py --cores 2 --haz_bin ./HAZ --rtol 0.005 ${{case}}
