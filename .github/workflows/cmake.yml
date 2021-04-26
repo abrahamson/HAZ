@@ -91,4 +91,5 @@ jobs:
       - name: Perform Tests
         run: |
           chmod +x HAZ
+          ls -lha
           python run_tests.py --cores 2 --haz_bin HAZ --rtol 0.005 set-1 set-2
