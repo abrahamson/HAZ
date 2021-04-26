@@ -73,7 +73,7 @@ jobs:
         working-directory: ${{github.workspace}}/scripts
     strategy:
       matrix:
-        case: ${{ fromJson(needs.find_test_cases.outputs.cases) }}
+        case: ${{fromJson(needs.find_test_cases.outputs.cases)}}
         
     steps:
       - uses: actions/checkout@v2
