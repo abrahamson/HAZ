@@ -75,4 +75,6 @@ jobs:
 
       - name: Perform Tests
         run: |
-          python run_tests.py --cores 2 --haz_bin $GITHUB_WORKSPACE/build/build/HAZ --rtol 0.005 set-1 set-2
+          ls $GITHUB_WORKSPACE
+          ls $GITHUB_WORKSPACE/build
+          python run_tests.py --cores 2 --haz_bin $GITHUB_WORKSPACE/build/HAZ --rtol 0.005 set-1 set-2
