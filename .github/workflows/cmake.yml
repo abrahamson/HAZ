@@ -85,7 +85,8 @@ jobs:
       - name: Download a HAZ artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{github.workspace}}/scripts/HAZ
+          name: HAZ
+          path: ${{github.workspace}}/scripts/HAZ
 
       - name: Perform Tests
         run: |
