@@ -51,7 +51,6 @@ jobs:
   #  - https://stackoverflow.com/questions/65056670
   matrix:
     runs-on: ubuntu-latest
-    needs: build
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -82,7 +81,7 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    needs: check-matrix
+    needs: [check-matrix, build]
     env:
       PYTHON_VERSION: 3.8
     defaults:
