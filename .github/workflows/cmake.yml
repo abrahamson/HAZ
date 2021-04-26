@@ -58,9 +58,8 @@ jobs:
     - name: find-cases
       shell: bash
       working-directory: ${{github.workspace}}/tests
-      run: |
-        echo "::set-output name=cases::$(ls -d peer/set-1/* peer/set-2/* | jq -cnR '[inputs | select(length>0)]')"
-        
+      # List the folders to create test cases
+      run: echo "::set-output name=cases::$(ls -d peer/set-1/* peer/set-2/* | jq -cnR '[inputs | select(length>0)]')"        
     
   test:
     needs: find_test_cases
@@ -72,7 +71,7 @@ jobs:
         working-directory: ${{github.workspace}}/scripts
     strategy:
       matrix:
-        case: ${{ needs.find_test_cases.outputs.cases }}
+        case: ${{ fromJson(needs.find_test_cases.outputs.cases) }}
         
     steps:
       - uses: actions/checkout@v2
