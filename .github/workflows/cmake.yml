@@ -125,4 +125,4 @@ jobs:
           # Permissions reset on downloading artifact
           chmod +x HAZ
           ls -lha
-          python run_tests.py --cores 2 --haz_bin ./HAZ --rtol 0.005 ${{ matrix.case }}
+          python run_tests.py --haz_bin ./HAZ --rtol 0.005 ${{ matrix.case }}
