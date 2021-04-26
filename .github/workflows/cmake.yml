@@ -73,7 +73,6 @@ jobs:
           cases='${{ needs.find-cases.outputs.cases }}'
           echo $cases
           echo $cases | jq .
-          echo $cases | json2yaml
   
   test:
     runs-on: ubuntu-latest
