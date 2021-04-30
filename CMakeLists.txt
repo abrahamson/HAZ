@@ -1,7 +1,7 @@
 # Adapted from: https://cmake.org/Wiki/CMakeForFortranExample
 # CMake project file for HAZ
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.12)
 project (HAZ)
 enable_language (Fortran)
 
@@ -34,7 +34,7 @@ if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
       set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -static")
   endif (STATIC)
   # Optimization flags
-  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
+  set (CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3") # -ffpe-trap=invalid,zero,overflow,underflow,denormal -ffpe-summary=none")
   set (CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
   # ifort (untested)
@@ -47,7 +47,7 @@ message ("--> CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
 message ("--> CMAKE_Fortran_FLAGS: " ${CMAKE_Fortran_FLAGS})
 
 # build executables
-file (GLOB SOURCES HAZ\ files/*.f HAZ\ files/*.F)
+file (GLOB SOURCES src/*.f)
 set (TARGET "HAZ")
 
 add_executable (${TARGET} ${SOURCES})
