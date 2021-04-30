@@ -119,7 +119,7 @@ Set1Test10
 1.0			  wts for mag recur model
 0.0 0.0 0.0     	  mpdf1, mpdf2, mpdf3 
 1             		Number of fault widths
-0.00001            	  fault widths
+0.05            	  fault widths
 1.0          		  wts for fault widths 
 0  0.0  0.0  0.0	Depth pdf model (0=uniform) and params
 1             		Number of max mags (fault width 1)
