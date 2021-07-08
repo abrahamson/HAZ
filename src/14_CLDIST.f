@@ -706,10 +706,13 @@ c            variable horizontal discretization
       enddo
 
 c     Normalize density function
-      do iBin=1,max_dist1
-        distDensity(iBin) = distDensity(iBin) / sum
-        if ( distDensity(iBin) .ne. 0 ) nr = iBin
-      enddo
+      if (sum .ne. 0) then
+        do iBin=1,max_dist1
+          distDensity(iBin) = distDensity(iBin) / sum
+          if ( distDensity(iBin) .ne. 0 ) nr = iBin
+        enddo
+      endif
+      
       return
       end
 
