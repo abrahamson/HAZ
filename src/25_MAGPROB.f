@@ -368,12 +368,13 @@ C------WAACY subroutine S25_for Magnitude Prob Values --------------
       real mChar, sigM, b_value, btail, Mmax, F
       real M1, M2
       real Mmin, ML, MU, WA_Pmag
-      real pdf1, PHI_15, PHI1, x, step1, mag1
+      real pdf1, step1, mag1
       real beta, betaTail, c1, c2, c3, d1, d2, alpha, t1
       real Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer nStep, i
       real temp1, temp2, oneMinusAlpha, x2, x3, x4
       real mbe2temp
+      real*8 phi1, phi2
 
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -383,11 +384,9 @@ c     Calculate WAACY terms
       M2 = mChar + 1.5*sigM
       t1 = sqrt(2*3.1415926)
       c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
-      x = -0.25 / sigM
-      phi1 = 0.159
-c      call S27_NDTR(x,PHI1)
-      PHI_15 = 0.933
-      c2 = 1./ ( 1.-PHI1-(1.-PHI_15) )
+      call S27_NDTR3((-0.25/sigM), phi1)
+      call S27_NDTR3(1.5, phi2)
+      c2 = 1./(phi1-(phi2))
       c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
 
       temp1 =  beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. )
@@ -450,12 +449,12 @@ C------WAACY subroutine S25_for Magnitude Prob Values Used for Rates -----------
       real mChar, sigM, b_value, btail, Mmax, F
       real M1, M2, d
       real Mmin, stepM, WA_Pmag(1)
-      real pdf1(10000), PHI_15, PHI1, x, mag1
+      real pdf1(10000), mag1
       real*8  beta, betaTail, c1, c2, c3, t1
       real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2
       real*8  Mo_bar_exp1, Mo_bar_exp2, Mo_bar_char
       integer i, nMag
-      real*8  temp1, temp2
+      real*8  temp1, temp2, phi1, phi2
       real mbe2temp
       betaTail = bTail * alog(10.)
       beta = b_value * alog(10.)
@@ -465,11 +464,9 @@ c     Calculate WAACY terms
       M2 = mChar + 1.5*sigM
       t1 = sqrt(2*3.1415926)
       c1 = (1./ (t1*sigM)) * exp( -((1.5*sigM)**2) / (2*sigM**2) )
-      x = -0.25 / sigM
-      call S27_NDTR(x,PHI1,d)
-      phi1 = 1-phi1
-      PHI_15 = 0.933
-      c2 = 1./ ( PHI_15-phi1)
+      call S27_NDTR3((-0.25/sigM), phi1)
+      call S27_NDTR3(1.5, phi2)
+      c2 = 1./(phi1-(phi2))
       c3 = (1. - exp(-betaTail*(Mmax-M2)) ) / betaTail
 
 c      Mo_bar_exp1 = beta * 10.**(16.05) * ( exp((-beta+3.45)*M1)-1. ) /
