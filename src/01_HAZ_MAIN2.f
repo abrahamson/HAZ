@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*          April, 2021          *'
+      write (*,*) '*         October, 2021         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -29,6 +29,11 @@ c     Write Program information to the screen.
          read (*,'(a80)') filebmode
          open (77,file=filebmode,status='old')
       endif
+
+c     initial read flag for GMPE Tables
+      do i=1,17
+        iflagRead(i) = 0
+      enddo
 
 c     Start loop over number of batch mode runs
       do 2000 ibnum=1,bnum
