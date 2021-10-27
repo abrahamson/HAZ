@@ -2,6 +2,16 @@ c  ***** PEER NGAEast Models (2018) **********
 
 c ---------------------------------------------------------------------
 c ** Goulet et al., 2018 (PEER Report 2018/08) **
+c    Central and Eastern North America Ground-Motion Characterization
+c    NGA-East Final Report
+c
+c    Applicable Range:
+c    M 4.0 - 8.2
+c    Rrup < 1500 km
+c
+c    Reference Site Conditions:
+c    VS30 = 3000 m/s, kappa = 0.006 s
+c    
 c    Appendix H (17 median models)
 c ---------------------------------------------------------------------
       subroutine S34_NGAEast_Med ( m, Rrup, specT, imod, period2, lnY, iflag )
@@ -51,6 +61,27 @@ c     read in the NGA-East Tables
           close (404)
         enddo
         iflagRead(imod) = 1
+      endif
+
+c     m or Rrup is outside range defined by ground motion model
+      if (m .lt. 4. .or. m .gt. 8.2) then
+        write (*,*)
+        write (*,*) 'The NGA-East ground motion models'
+        write (*,*) '(Goulet et al., 2018) are not defined'
+        write (*,*) 'for a magnitude less than 4 or greater than 8.2 '
+        write (*,'(a27,f10.5,a11)') 'The specific magnitude of: ', m, 'is invalid.'
+        write (*,*) 'Please check the input file.'
+        write (*,*)
+        stop 99
+      elseif (Rrup .gt. 1500.) then
+        write (*,*)
+        write (*,*) 'The NGA-East ground motion models'
+        write (*,*) '(Goulet et al., 2018) are not defined'
+        write (*,*) 'for Rrup greater than 1500 km'
+        write (*,'(a22,f10.5,a14)') 'The specific Rrup of: ', Rrup, 'km is invalid.'
+        write (*,*) 'Please check the input file.'
+        write (*,*)
+        stop 99
       endif
 
 c     Check for PGA, PGV

@@ -114,5 +114,11 @@ c    Declarations for Main file
      3     distS7(MAX_FLT,MAX_S7), DipS7(MAX_FLT,MAX_S7),
      4     mechS7(MAX_FLT,MAX_S7), version
 
+     integer iflagRead(17), nsc, MAX_FREQ, i
+     parameter (MAX_FREQ=25)
+     real table_m(MAX_EAST), table_r(MAX_EAST), table_lnSA(17,MAX_FREQ,MAX_EAST)
+
+     common/GMTable/ iflagRead, table_m, table_r, table_lnSA, nsc
+
       character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2,
      1             sigmaName(4,MAX_PROB), filebmode
