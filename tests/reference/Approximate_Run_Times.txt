@@ -8,3 +8,4 @@ Approximate run times:
 RTest7		~30 seconds
 RTest9 		~1 second
 RTest10		~1 second
+RTest11		~2.5 minutes
