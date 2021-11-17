@@ -47,3 +47,9 @@ jobs:
       run: cmake --build build --verbose --parallel 1
       if: failure()
 
+    - name: upload artifacts
+      uses: 'actions/upload-artifact@v2'
+      with:
+        name: HAZ.exe ${{ matrix.arch }}
+        path: ${{ github.workspace }}
+
