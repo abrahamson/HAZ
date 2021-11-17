@@ -1,0 +1,55 @@
+name: build-windows-binaries
+
+on: [push, pull_request]
+
+env:
+  CMAKE_GENERATOR: Ninja
+
+jobs:
+  mingw-build:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include: [
+          { msystem: MINGW64, arch: x86_64 },
+          { msystem: MINGW32, arch: i686   }
+        ]
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup MinGW native environment
+      uses: msys2/setup-msys2@v2
+      if: contains(matrix.msystem, 'MINGW')
+      with:
+        msystem: ${{ matrix.msystem }}
+        update: false
+        install: >-
+          git
+          mingw-w64-${{ matrix.arch }}-gcc
+          mingw-w64-${{ matrix.arch }}-gcc-fortran
+          mingw-w64-${{ matrix.arch }}-cmake
+          mingw-w64-${{ matrix.arch }}-ninja
+
+    - run: >-
+        cmake
+        -B build
+        -DCMAKE_BUILD_TYPE=Release
+        -DSTATIC=ON
+
+    - name: cmake build
+      run: cmake --build build --parallel
+
+    - name: catch build fail
+      run: cmake --build build --verbose --parallel 1
+      if: failure()
+
+    - name: upload artifacts
+      uses: 'actions/upload-artifact@v2'
+      with:
+        name: HAZ.exe ${{ matrix.arch }}
+        path: ${{ github.workspace }}/build/HAZ.exe
+
