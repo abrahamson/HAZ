@@ -29,6 +29,7 @@ jobs:
           mingw-w64-${{ matrix.arch }}-gcc
           mingw-w64-${{ matrix.arch }}-gcc-fortran
           mingw-w64-${{ matrix.arch }}-cmake
+          mingw-w64-${{ matrix.arch }}-make
 
     - run: >-
         cmake
