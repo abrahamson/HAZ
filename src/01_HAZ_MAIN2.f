@@ -677,7 +677,7 @@ c           Set the weight for this set of parameters (epistemic)
  850     MinRrup(iFlt) = MinRrup_temp
 
 c        Write temp Haz array to file
-         call S21_WriteTempHaz ( PCflag, tempHaz, PC_D, nPC, nParamVar, nInten, 
+         call S21_WriteTempHaz ( PCflag, tempHaz, PC_D, nPC, nParamVar, nInten,
      1                nProb, nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
          call S21_WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb,
@@ -691,9 +691,8 @@ c       Write p1_sum as a check
 
  900   continue
 
-c      close outfiles 1 and 2 for this site
-       close (11)
-       close (17)
+       close (11) !out1
+       close (17) !out2
 
 c      Write out the mean Haz
        call S21_output_TotalHaz ( isite, sitex, sitey, testInten, nInten,
@@ -718,6 +717,9 @@ c      Write out the deagrregated hazard
 
        call S21_WriteTempHaz2 ( tempHaz2, nInten, nProb, nAtten, nattenType )
 
+       close (27) !out5
+       close (28) !out6
+
  1000 continue
 
  2000 continue
@@ -730,6 +732,8 @@ c      Write out the deagrregated hazard
      &         i2.2, ':', i2.2, ':', i2.2 )
  5501 format (  'End time ',
      &         i2.2, ':', i2.2, ':', i2.2 )
+
+      close (18) !log file
 
       write (*,'( 2x,''Normal termination'')')
       stop
