@@ -7,7 +7,7 @@ c    Declarations for Main file
      4       tempHaz2(4,MAX_INTEN,MAX_PROB,MAX_ATTEN), p1
       real*8 mHaz, pxceed3, d_bar(MAX_PROB,MAX_INTEN),
      1       m_bar(MAX_PROB,MAX_INTEN), e_bar(MAX_PROB,MAX_INTEN),
-     2       Xcost_bar(MAX_PROB,MAX_INTEN)
+     2       Xcost_bar(MAX_PROB,MAX_INTEN), PC_D(7,MAXPARAM,MAX_INTEN,MAX_PROB,MAX_FTYPE)
       real*8 m_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rrup_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
      1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
      2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rSeismo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
@@ -20,7 +20,8 @@ c    Declarations for Main file
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
      1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT),
      2        n1AS(MAXFLT_AS), n2AS(MAXFLT_AS), icellRupStrike, icellRupDip,
-     3        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag
+     3        bnum, bnumflag, coefcountRrup, coefcountRjb, rup1_flag,
+     4        PCflag(MAX_PROB), nPC, iPC
       integer dirFlag1, iMixture(MAX_PROB,4,MAX_ATTEN), ibnum, nProb,
      1        nRefPer, nRefGM, nRefMag, nLocXAS, nLocYST1, nLocX,
      2        iDepthFlag, iLocX, nLocY, iLocY, n1, n2, iFtype, iProb,
@@ -52,7 +53,8 @@ c    Declarations for Main file
       real Rx, Ry, Ry0, lgInten0, pLocY(MAXFLT_AS),
      1     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
      2     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
-     3     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn
+     3     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn,
+     4     sigma_mu, rate1, PC_Coef(7,MAX_INTEN)
       real dirMed, dirSigma, fs, pHypoX, pHypoZ, temp, sigma0, AR,
      1     siteX, siteY, testInten(MAX_PROB, MAX_INTEN), lgInten,
      2     fLong(MAX_FLT, MAX_DD, MAX_SEG), fLat(MAX_FLT, MAX_DD, MAX_SEG),

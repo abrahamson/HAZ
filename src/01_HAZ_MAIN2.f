@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*         October, 2021         *'
+      write (*,*) '*         November, 2021        *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -43,7 +43,7 @@ c     Start loop over number of batch mode runs
 
 c     Read Run File
       call S21_RdInput ( nProb, nAttenType, nAtten, jcalc, specT, sigTrunc,
-     1               gmScale, dirFlag, nInten, testInten, lgTestInten,
+     1               gmScale, dirFlag, PCflag, nInten, testInten, lgTestInten,
      2               psCorFlag, minlat, maxlat, minlong, maxlong, distmax,
      3               nMagBins, magBins, nDistBins, distBins, nepsBins, epsBins,
      4               nXcostBins, xcostBins, soilAmpFlag, gm_wt, sigvaradd,
@@ -429,6 +429,13 @@ c               Check that sigma is not less than zero (0.0001)
 c               Reset SigmaTotal variable
                 sigmaTotal = sigmaY
 
+c               For the PC method, get the epistemic uncertainty in the median gm for this scenario
+                if (PCflag(iProb) .eq. 1) then
+                  call S09_get_sigma_mu (distRup, mag, HWflag, ftype(iFlt,iFtype),
+     1                                   specT(iProb), iProb, jType, sigma_mu)
+                endif
+
+
 c               Set values for use with directivity
                 lgInten0 = lgInten
                 sigma0 = sigmaTotal
@@ -487,16 +494,25 @@ c                   Add directivity to median and sigma
 c                  Loop over test ground motion values
                    do 510 jInten = 1, nInten(iProb)
 
-c                   Compute Probability of exceeding test
-                    if ( iMixture(iProb,jType,iAtten)  .eq. 0 ) then
-                      pRock = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
+c                    Check for PC method, calculate the PC coefficients for this scenario and z value
+                     if (PCflag(iProb) .eq. 1) then
+                       call S09_calc_PC_coeff_fullCorr (nPC, lgInten, sigma_mu, lgTestInten(iProb,jInten),
+     1                     sigmaTotal, jInten, sigTrunc(iProb), iMixture(iProb,jType,iAtten), PC_Coef)
+                       pRock = PC_Coef(1,jInten)
+                     else
 
-                    else
-                      sigma1 = sigmaTotal*0.8
-                      sigma2 = sigmaTotal*1.2
-                      pRock = 0.5 * pxceed3 (lgInten, lgTestInten, sigma1, iProb,jInten,sigTrunc(iProb))
+c                     Traditional method (not PC method)
+c                     Check for mixture model distribution, compute Probability of exceeding test
+                      if ( iMixture(iProb,jType,iAtten)  .eq. 0 ) then
+                        pRock = pxceed3 (lgInten, lgTestInten, sigmaTotal, iProb,jInten,sigTrunc(iProb))
+                      else
+                       sigma1 = sigmaTotal*0.8
+                       sigma2 = sigmaTotal*1.2
+                       pRock = 0.5 * pxceed3 (lgInten, lgTestInten, sigma1, iProb,jInten,sigTrunc(iProb))
      1                        +0.5 * pxceed3 (lgInten, lgTestInten, sigma2, iProb,jInten,sigTrunc(iProb))
-                    endif
+                      endif
+
+                     endif
 
 c                   Compute number of standard deviations (epsilon) to reach test level
                     if (sigmatotal .le. 0.0001) then
@@ -586,14 +602,37 @@ c                    Add to source deagg
                      ftype_bar_s(iFlt,iProb,jInten) = ftype_bar_s(iFlt,iProb,jInten) + mHaz*wt1*ftype(iFlt,iFtype)
 
 c                    Save Marginal Hazard to temp array for fractile output
+c                    This is for the total hazard fractiles
                      tempHaz(iParam,jInten,iProb,iAtten,iFtype) = mHaz
      1                        + tempHaz(iParam,jInten,iProb,iAtten,iFtype)
 
+c                    This is for the SSC hazard fractiles
                      tempHaz1(iParam,jInten,iProb,iFtype) = mHaz*gm_wt(iProb,jType,iAtten)
      1                        + tempHaz1(iParam,jInten,iProb,iFtype)
 
+c                    This is for the GMC hazard fractiles
                      tempHaz2(jType,jInten,iProb,iAtten) = mHaz*wt
      1                        + tempHaz2(jType,jInten,iProb,iAtten)
+
+c                    PC method terms
+                     if (PCflag(iProb) .eq. 1) then
+
+c                     This is for the total hazard fractiles
+c                     Compute Rate of occurance of this scenario
+                      if (sourcetype(iFlt) .ne. 7) then
+                        rate1 = rate(iParam,iFltWidth) * p1 * probAct(iFlt)
+                      elseif (sourcetype(iFlt) .eq. 7) then
+                        rate1 = rateS7(iFlt,iMag) * p1 * probAct(iFlt)
+                      endif
+
+c                     Sum up the weighted PC coeff for each PC Coeff
+                      do iPC = 1,nPC
+                        PC_D(iPC,iParam,jInten,iProb,iFtype) =
+     1                      PC_D(iPC,iParam,jInten,iProb,iFtype)
+     2                      + PC_coef(iPC,jInten)* rate1
+                      enddo
+                     endif
+
 
  500                continue
  510               continue
@@ -638,8 +677,8 @@ c           Set the weight for this set of parameters (epistemic)
  850     MinRrup(iFlt) = MinRrup_temp
 
 c        Write temp Haz array to file
-         call S21_WriteTempHaz ( tempHaz, nParamVar, nInten, nProb,
-     1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
+         call S21_WriteTempHaz ( PCflag, tempHaz, PC_D, nPC, nParamVar, nInten, 
+     1                nProb, nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )
 
          call S21_WriteTempHaz1 ( tempHaz1, nParamVar, nInten, nProb,
      1        nAtten, iFlt, attenType(iFlt), nFtype, iFltWidth, nWidth )

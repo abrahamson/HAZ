@@ -3125,3 +3125,83 @@ c     Compute median ground motion (eq. 1)
 
       return
       end
+
+c     ------------------------------------------------------
+
+      subroutine S09_get_sigma_mu ( distRup, mag, HWFlag, ftype,
+     1                 specT, iProb, jType, sigma_mu )
+      implicit none
+      real distRup, mag, ftype, specT, sigma_mu
+      integer HWFlag, iPRob, jType
+
+      sigma_mu = 0.3
+
+      return
+      end
+
+c     ------------------------------------------------------
+
+      subroutine S09_calc_PC_coeff_fullCorr (nPC, mu, sigma_mu, z, sigma,
+     1           jInten, sigTrunc, iMixture, PC_Coef)
+
+      implicit none
+      include 'pfrisk.h'
+
+      integer iMixture, jInten, nPC
+      real t1, t2, t3, a, b, c, C0, C1, C2, C3, C4, C5, C6, mu, sigma,
+     1     sigma_mu, z, PC_Coef(7,MAX_INTEN), sigTrunc, sigmaSq, b2,
+     2     b3, b4, a2, t4, t5, t42, sqrt_pi, sigmaTotal, sigma1, sigma2,
+     3     alpha
+      real*8 pxceed4
+
+      sigmaSq = sigma**2
+      sqrt_pi = 1.7725
+      a = -sigma_mu**2 / (2.*sigmaSq) - 0.5
+
+      t1 = sigma_mu / (2.*sigma*sqrt_pi)
+      t3 = z - mu
+
+      b = t3 * sigma_mu / sigmaSq
+      c = -(t3**2) /  (2.*sigmaSq)
+      t2 = exp(c - (b*b) / (4.*a ) )
+      b2 = b*b
+      b4 = b2*b2
+      a2 = a*a
+      t4 = (1.+2*a)
+      t42 = t4*t4
+      alpha = t1*t2
+
+      C1 = alpha / sqrt( -a )
+      C2 = 0.5 * alpha * b/( 2.*((-a)**(1.5)) )
+      C3 = (1/6.) * alpha * (-2*a*t4 + b2 ) / (4.*((-a)**(2.5)) )
+      C4 = (1./24.) * alpha * (-b * (6.*a*t4 - b2 )) / (8.*((-a)**(3.5)) )
+      C5 = (1./120.) * alpha * (12.*a2 * t42 - 12.*a*t4*b2+ b4 ) / (16.*((-a)**(4.5)))
+      C6 = (1./720.) * alpha * ( b * (60.*a2*t42 -20.*a*t4*b2 + b4 ))
+     1         / (32.*((-a)**(5.5)) )
+
+c     compute the i=0 term (cond prob of exceeding GM using combined aleatory & epistemic
+c     NAA: This is probably not working for the mixture model for the other PC terms
+c     Need to think about it
+      sigmaTotal = sqrt( sigma**2 + sigma_mu**2 )
+      if ( iMixture  .eq. 0 ) then
+        C0 = pxceed4 (mu, z, sigmaTotal,sigTrunc)
+      else
+        sigma1 = sqrt( (sigma*0.8)**2 + sigma_mu**2 )
+        sigma2 = sqrt( (sigma*1.2)**2 + sigma_mu**2 )
+        C0 = 0.5 * pxceed4 (mu, z, sigma1,sigTrunc)
+     1      +0.5 * pxceed4 (mu, z, sigma2,sigTrunc)
+      endif
+
+      nPC = 7
+      PC_Coef(1,jInten) = C0
+      PC_Coef(2,jInten) = C1
+      PC_Coef(3,jInten) = C2
+      PC_Coef(4,jInten) = C3
+      PC_Coef(5,jInten) = C4
+      PC_Coef(6,jInten) = C5
+      PC_Coef(7,jInten) = C6
+
+      return
+      end
+
+c     ------------------------------------------------------
