@@ -1,0 +1,9 @@
+5431                	iseed
+50000        		nSample
+1         		nPer
+1  1.E-3			nHazLevel, HazLevel
+FractSt.out
+1			iPer
+Run_RTest8St.txt
+RTest8St_Site1.out1
+

@@ -1,0 +1,343 @@
+Source_RTest8.txt
+45.3					version of fault file
+36.5 39.5 -123.5 -120.5  		min max lat long 
+250. 					maxdist
+Reference Test 8
+3  1  					nProb, nAttenType
+0.02  8  0  0   				  period, max epsilon, dir flag, PCflag
+18 
+0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
+100     					  Number of GM Models for AttenType 1
+2787 -1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_1
+2787 -1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_2
+2787 -1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_3
+2787 -1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_4
+2787 -1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_5
+2787 -1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_6
+2787 -1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_7
+2787 -1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_8
+2787 -1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_9
+2787 -1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_10
+2787 -1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_11
+2787 -1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_12
+2787 -1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_13
+2787 -0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_14
+2787 -0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_15
+2787 -0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_16
+2787 -0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_17
+2787 -0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_18
+2787 -0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_19
+2787 -0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_20
+2787 -0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_21
+2787 -0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_22
+2787 -0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_23
+2787 -0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_24
+2787 -0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_25
+2787 -0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_26
+2787 -0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_27
+2787 -0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_28
+2787 -0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_29
+2787 -0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_30
+2787 -0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_31
+2787 -0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_32
+2787 -0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_33
+2787 -0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_34
+2787 -0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_35
+2787 -0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_36
+2787 -0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_37
+2787 -0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_38
+2787 -0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_39
+2787 -0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_40
+2787 -0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_41
+2787 -0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_42
+2787 -0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_43
+2787 -0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_44
+2787 -0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_45
+2787 -0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_46
+2787 -0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_47
+2787 -0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_48
+2787 -0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_49
+2787 -0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_50
+2787  0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_51
+2787  0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_52
+2787  0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_53
+2787  0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_54
+2787  0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_55
+2787  0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_56
+2787  0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_57
+2787  0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_58
+2787  0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_59
+2787  0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_60
+2787  0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_61
+2787  0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_62
+2787  0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_63
+2787  0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_64
+2787  0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_65
+2787  0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_66
+2787  0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_67
+2787  0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_68
+2787  0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_69
+2787  0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_70
+2787  0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_71
+2787  0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_72
+2787  0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_73
+2787  0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_74
+2787  0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_75
+2787  0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_76
+2787  0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_77
+2787  0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_78
+2787  0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_79
+2787  0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_80
+2787  0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_81
+2787  0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_82
+2787  0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_83
+2787  0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_84
+2787  0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_85
+2787  0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_86
+2787  0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_87
+2787  1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_88
+2787  1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_89
+2787  1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_90
+2787  1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_91
+2787  1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_92
+2787  1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_93
+2787  1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_94
+2787  1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_95
+2787  1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_96
+2787  1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_97
+2787  1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_98
+2787  1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_99
+2787  1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_100
+0.20  8  0  0   				  period, max epsilon, dir flag, PCflag
+18 
+0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
+100      					  Number of GM Models for AttenType 1
+2787 -1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_1
+2787 -1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_2
+2787 -1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_3
+2787 -1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_4
+2787 -1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_5
+2787 -1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_6
+2787 -1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_7
+2787 -1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_8
+2787 -1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_9
+2787 -1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_10
+2787 -1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_11
+2787 -1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_12
+2787 -1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_13
+2787 -0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_14
+2787 -0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_15
+2787 -0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_16
+2787 -0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_17
+2787 -0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_18
+2787 -0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_19
+2787 -0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_20
+2787 -0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_21
+2787 -0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_22
+2787 -0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_23
+2787 -0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_24
+2787 -0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_25
+2787 -0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_26
+2787 -0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_27
+2787 -0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_28
+2787 -0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_29
+2787 -0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_30
+2787 -0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_31
+2787 -0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_32
+2787 -0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_33
+2787 -0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_34
+2787 -0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_35
+2787 -0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_36
+2787 -0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_37
+2787 -0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_38
+2787 -0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_39
+2787 -0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_40
+2787 -0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_41
+2787 -0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_42
+2787 -0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_43
+2787 -0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_44
+2787 -0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_45
+2787 -0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_46
+2787 -0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_47
+2787 -0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_48
+2787 -0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_49
+2787 -0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_50
+2787  0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_51
+2787  0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_52
+2787  0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_53
+2787  0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_54
+2787  0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_55
+2787  0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_56
+2787  0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_57
+2787  0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_58
+2787  0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_59
+2787  0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_60
+2787  0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_61
+2787  0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_62
+2787  0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_63
+2787  0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_64
+2787  0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_65
+2787  0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_66
+2787  0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_67
+2787  0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_68
+2787  0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_69
+2787  0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_70
+2787  0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_71
+2787  0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_72
+2787  0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_73
+2787  0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_74
+2787  0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_75
+2787  0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_76
+2787  0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_77
+2787  0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_78
+2787  0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_79
+2787  0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_80
+2787  0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_81
+2787  0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_82
+2787  0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_83
+2787  0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_84
+2787  0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_85
+2787  0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_86
+2787  0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_87
+2787  1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_88
+2787  1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_89
+2787  1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_90
+2787  1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_91
+2787  1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_92
+2787  1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_93
+2787  1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_94
+2787  1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_95
+2787  1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_96
+2787  1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_97
+2787  1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_98
+2787  1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_99
+2787  1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_100
+2.00  8  0  0   				  period, max epsilon, dir flag, PCflag
+18 
+0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
+100      					  Number of GM Models for AttenType 1
+2787 -1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_1
+2787 -1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_2
+2787 -1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_3
+2787 -1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_4
+2787 -1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_5
+2787 -1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_6
+2787 -1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_7
+2787 -1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_8
+2787 -1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_9
+2787 -1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_10
+2787 -1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_11
+2787 -1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_12
+2787 -1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_13
+2787 -0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_14
+2787 -0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_15
+2787 -0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_16
+2787 -0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_17
+2787 -0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_18
+2787 -0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_19
+2787 -0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_20
+2787 -0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_21
+2787 -0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_22
+2787 -0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_23
+2787 -0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_24
+2787 -0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_25
+2787 -0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_26
+2787 -0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_27
+2787 -0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_28
+2787 -0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_29
+2787 -0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_30
+2787 -0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_31
+2787 -0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_32
+2787 -0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_33
+2787 -0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_34
+2787 -0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_35
+2787 -0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_36
+2787 -0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_37
+2787 -0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_38
+2787 -0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_39
+2787 -0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_40
+2787 -0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_41
+2787 -0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_42
+2787 -0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_43
+2787 -0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_44
+2787 -0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_45
+2787 -0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_46
+2787 -0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_47
+2787 -0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_48
+2787 -0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_49
+2787 -0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_50
+2787  0.0135 0.0 3.586871E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_51
+2787  0.0405 0.0 3.557935E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_52
+2787  0.0675 0.0 3.500761E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_53
+2787  0.0945 0.0 3.416717E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_54
+2787  0.1215 0.0 3.307790E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_55
+2787  0.1485 0.0 3.176501E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_56
+2787  0.1755 0.0 3.025814E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_57
+2787  0.2025 0.0 2.859024E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_58
+2787  0.2295 0.0 2.679634E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_59
+2787  0.2565 0.0 2.491239E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_60
+2787  0.2835 0.0 2.297405E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_61
+2787  0.3105 0.0 2.101561E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_62
+2787  0.3375 0.0 1.906903E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_63
+2787  0.3645 0.0 1.716316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_64
+2787  0.3915 0.0 1.532316E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_65
+2787  0.4185 0.0 1.357005E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_66
+2787  0.4455 0.0 1.192057E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_67
+2787  0.4725 0.0 1.038711E-2 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_68
+2787  0.4995 0.0 8.977894E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_69
+2787  0.5265 0.0 7.697267E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_70
+2787  0.5535 0.0 6.546073E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_71
+2787  0.5805 0.0 5.522140E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_72
+2787  0.6075 0.0 4.620789E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_73
+2787  0.6345 0.0 3.835368E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_74
+2787  0.6615 0.0 3.157768E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_75
+2787  0.6885 0.0 2.578906E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_76
+2787  0.7155 0.0 2.089167E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_77
+2787  0.7425 0.0 1.678777E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_78
+2787  0.7695 0.0 1.338120E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_79
+2787  0.7965 0.0 1.057984E-3 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_80
+2787  0.8235 0.0 8.297469E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_81
+2787  0.8505 0.0 6.454971E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_82
+2787  0.8775 0.0 4.981099E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_83
+2787  0.9045 0.0 3.812749E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_84
+2787  0.9315 0.0 2.894900E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_85
+2787  0.9585 0.0 2.180274E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_86
+2787  0.9855 0.0 1.628811E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_87
+2787  1.0125 0.0 1.207015E-4 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_88
+2787  1.0395 0.0 8.872313E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_89
+2787  1.0665 0.0 6.469091E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_90
+2787  1.0935 0.0 4.678771E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_91
+2787  1.1205 0.0 3.356624E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_92
+2787  1.1475 0.0 2.388667E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_93
+2787  1.1745 0.0 1.686129E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_94
+2787  1.2015 0.0 1.180615E-5 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_95
+2787  1.2285 0.0 8.199889E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_96
+2787  1.2555 0.0 5.649238E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_97
+2787  1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_98
+2787  1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_99
+2787  1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_100
+0  					psCorFlag  (0=no, 1=yes)
+5					Number of deag mag values
+4.75  5.75  6.25  6.75  7.0	  	  deag mag values
+6					Number of deag dist values
+0.0  10.0  20.0  50.0  100.0  250.0     deag dist values  
+6 					Number of deag eps values
+-10.  -2.  0.  1.  2.  10.		  deag eps values
+4					Number of deag dir values
+0.0 0.10 0.40 2.0		  	  deag dir values
+0  					soil amp
+1     					nSites
+-122.000  38.000     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+RTest8St_Site1.out1
+RTest8St_Site1.out2
+RTest8St_Site1.out3
+RTest8St_Site1.out4
+RTest8St_Site1.out5
+RTest8St_Site1.out6
+RTest8St_Site1.out7
+
+
+
+
+
+
