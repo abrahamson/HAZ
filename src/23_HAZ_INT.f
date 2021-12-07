@@ -113,8 +113,8 @@ c --------------------------------------------------------------
 
       implicit none
 
-      real sigma(1), step, sigmaMax
-      integer nValue(1), iFlt
+      real sigma(*), step, sigmaMax
+      integer nValue(*), iFlt
 
 c     For Small Sigma, only one rupture length is needed
       IF ( sigma(iFlt) .LE. 0.02 ) nValue(iFlt) = 1
@@ -134,7 +134,7 @@ c --------------------------------------------------------------
       implicit none
 
       integer nBins, iBin, i
-      real bins(1), x
+      real bins(*), x
 
       ibin = 0
 
@@ -168,7 +168,7 @@ c --------------------------------------------------------------
       implicit none
 
       integer nBins, iBin, i
-      real bins(1), x
+      real bins(*), x
 
       ibin = 0
 

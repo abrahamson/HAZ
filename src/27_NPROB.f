@@ -144,7 +144,7 @@ c ------------------------------------------------------------------
       include 'pfrisk.h'
 
       integer sourceType, iFlt, idim
-      real mag, coef(2,MAX_FLT), sigma(1), rupDim, prob, nSigma,
+      real mag, coef(2,MAX_FLT), sigma(*), rupDim, prob, nSigma,
      1     nSigma_plus, nSigma_minus, F0, F1, F2, D, step, sigmaMax
 
       if (sourceType .eq. 7) then
@@ -153,7 +153,7 @@ c ------------------------------------------------------------------
         nSigma = -sigmaMax + (idim-0.5)*step
         nSigma_plus = (nSigma + step/2.)
         nSigma_minus = (nSigma - step/2.)
-        rupDim = 10.**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))
+        rupDim = 10.0**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))
 
 c       Compute probability that (log) rupture dimension is between
 c       dim_log_minus and dim_log_plus

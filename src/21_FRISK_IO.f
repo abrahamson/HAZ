@@ -291,7 +291,7 @@ c  --------------------------
       include 'pfrisk.h'
 
       integer i, n
-      real x(MAXPARAM), sum
+      real x(*), sum
       character*20 name, fName
 
       sum = 0.

@@ -448,7 +448,7 @@ C------WAACY subroutine S25_for Magnitude Prob Values Used for Rates -----------
       implicit none
       real mChar, sigM, b_value, btail, Mmax, F
       real M1, M2, d
-      real Mmin, stepM, WA_Pmag(1)
+      real Mmin, stepM, WA_Pmag(*)
       real pdf1(10000), mag1
       real*8  beta, betaTail, c1, c2, c3, t1
       real*8 d1, d2, alpha, a1, a2, alpha1, sum1, sum2

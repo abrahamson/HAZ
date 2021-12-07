@@ -1,10 +1,11 @@
 c    Declarations for Main file
 
-      real*8 Haz(MAX_INTEN,MAX_PROB,MAX_FLT), p1_sum, wt,
+      real*8 Haz(MAX_INTEN,MAX_PROB,MAX_FLT), p1_sum, wt, wt1,
      1       magbar1(MAX_INTEN,MAX_PROB,MAX_FLT), prock,
      2       tempHaz(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_ATTEN,MAX_FTYPE),
      3       tempHaz1(MAXPARAM,MAX_INTEN,MAX_PROB,MAX_FTYPE),
      4       tempHaz2(4,MAX_INTEN,MAX_PROB,MAX_ATTEN), p1
+      real*8 wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE)
       real*8 mHaz, pxceed3, d_bar(MAX_PROB,MAX_INTEN),
      1       m_bar(MAX_PROB,MAX_INTEN), e_bar(MAX_PROB,MAX_INTEN),
      2       Xcost_bar(MAX_PROB,MAX_INTEN), PC_D(7,MAXPARAM,MAX_INTEN,MAX_PROB,MAX_FTYPE)
@@ -12,10 +13,10 @@ c    Declarations for Main file
      1       rjb_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN), rx_bar_s(MAX_FLT,MAX_PROB,MAX_INTEN),
      2       e_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rSeismo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
      3       ry0_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), mag_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
-     4       ftype_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), hypodepth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
-     5       dipavgd_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ztor_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
-     6       thetasite_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rupwidth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
-     7       rHypo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+     4       ftype_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), hypodepth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
+      real*8 dipavgd_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), ztor_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     1       thetasite_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN), rupwidth_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN),
+     2       rHypo_bar_s(MAX_FLT, MAX_PROB,MAX_INTEN)
 
       integer faultFlag(MAX_FLT,100,MAX_FLT), nDD(MAX_FLT), nfltGrid(2),
      1        segModelFlag(MAX_FLT,100), nSegModel(MAX_FLT),
@@ -51,7 +52,7 @@ c    Declarations for Main file
      3     fltGrid_a(MAXFLT_DD,MAXFLT_AS), fltGrid_Rrup(MAXFLT_DD,MAXFLT_AS),
      4     fltGrid_RJB(MAXFLT_DD,MAXFLT_AS), dipavgd, pdfsum(MAX_FLT)
       real Rx, Ry, Ry0, lgInten0, pLocY(MAXFLT_AS),
-     1     sigmaTotal, sigma1, sigma2, wt1, phi, tau, distDensity2(MAX_GRID),
+     1     sigmaTotal, sigma1, sigma2, phi, tau, distDensity2(MAX_GRID),
      2     segModelWt1(MAX_FLT,100), distmax, grid_dx, grid_dy, faultArea,
      3     faultLen, pLocX, hypoDepth, ZTOR, t1, aveWidth, probSyn,
      4     sigma_mu, rate1, PC_Coef(7,MAX_INTEN)
@@ -79,7 +80,7 @@ c    Declarations for Main file
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), wt2(MAXPARAM),
      2     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), epsilon1,
      3     yStep(MAX_FLT), pMag(MAXPARAM,MAX_WIDTH), xcost, fd,
-     4     wtout(MAX_FLT,MAXPARAM,MAX_WIDTH,MAX_FTYPE), vs, vrup
+     4     vs, vrup
       real rout(MAXPARAM,MAX_WIDTH), period1(4,MAX_PROB), D25,
      1     MinRrup(MAX_FLT), xCostBins(MAX_Xcost), r_horiz, MinSeismo_temp,
      2     HazBinsX(MAX_Xcost,MAX_PROB,MAX_INTEN), rupArea, minlat,
@@ -122,5 +123,5 @@ c    Declarations for Main file
 
       common/GMTable/ iflagRead, table_m, table_r, table_lnSA, nsc
 
-      character*80 fName(MAX_FLT), attenName(4,MAX_PROB), file1, file2,
-     1             sigmaName(4,MAX_PROB), filebmode
+      character*80 fName(MAX_FLT), attenName(4,MAX_ATTEN), file1, file2,
+     1             sigmaName(4,MAX_ATTEN), filebmode

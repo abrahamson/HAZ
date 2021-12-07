@@ -342,7 +342,7 @@ c -------------------------------------------------------------------
       include 'pfrisk.h'
 
 c     declarations passed in
-      real x(MAX_SEG), y(MAX_SEG), z(MAX_SEG), x0, y0, z0
+      real x(*), y(*), z(*), x0, y0, z0
 
 c     declarations passed out
       integer insideFlag
@@ -428,7 +428,7 @@ c -----------------------------
 
 c     declarations passed in
       integer nSeg
-      real xSeg(MAX_SEG), ySeg(MAX_SEG), x0, y0
+      real xSeg(*), ySeg(*), x0, y0
 
 c     declarations passed out
       integer insideFlag
@@ -712,7 +712,7 @@ c     Normalize density function
           if ( distDensity(iBin) .ne. 0 ) nr = iBin
         enddo
       endif
-      
+
       return
       end
 

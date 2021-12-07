@@ -572,11 +572,11 @@ c                    Add marginal rate of exceed to total
                      Haz(jInten,iProb,iFlt) = Haz(jInten,iProb,iFlt) + mHaz*wt1
 
                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) =
-     1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + dble(mHaz*wt1)
+     1                      HazBins(iMagBin,iDistBin,iEpsBin,iProb,jInten) + real(mHaz*wt1)
 
 c  Note: directivity deaggregation was removed from this version
 c                     should wt be modified to wt1?
-c                     HazBinsX(iXcost,iProb,jInten) = HazBinsX(iXcost,iProb,jInten) + dble(mHaz*wt)
+c                     HazBinsX(iXcost,iProb,jInten) = HazBinsX(iXcost,iProb,jInten) + real(mHaz*wt)
 
 c                    Add to mean deagg
                      m_bar(iProb,jInten) = m_bar(iProb,jInten) + mHaz*wt1*magTotal
