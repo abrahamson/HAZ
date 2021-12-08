@@ -8,65 +8,65 @@ Reference Test 11, NGA-East
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1
--7001 0.0 0.0 0.0737 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East1, Comp SS Sigma CENA Cen
--7002 0.0 0.0 0.0994 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East2, Comp SS Sigma CENA Cen
--7003 0.0 0.0 0.0892 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East3, Comp SS Sigma CENA Cen
--7004 0.0 0.0 0.0691 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East4, Comp SS Sigma CENA Cen
--7005 0.0 0.0 0.0456 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East5, Comp SS Sigma CENA Cen
--7006 0.0 0.0 0.1095 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East6, Comp SS Sigma CENA Cen
--7007 0.0 0.0 0.1020 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East7, Comp SS Sigma CENA Cen
--7008 0.0 0.0 0.0876 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East8, Comp SS Sigma CENA Cen
--7009 0.0 0.0 0.0859 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East9, Comp SS Sigma CENA Cen
--7010 0.0 0.0 0.0281 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East10, Comp SS Sigma CENA Cen
--7011 0.0 0.0 0.0214 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East11, Comp SS Sigma CENA Cen
--7012 0.0 0.0 0.0293 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East12, Comp SS Sigma CENA Cen
--7013 0.0 0.0 0.0176 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East13, Comp SS Sigma CENA Cen
--7014 0.0 0.0 0.0366 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East14, Comp SS Sigma CENA Cen
--7015 0.0 0.0 0.0368 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East15, Comp SS Sigma CENA Cen
--7016 0.0 0.0 0.0328 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East16, Comp SS Sigma CENA Cen
--7017 0.0 0.0 0.0354 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East17, Comp SS Sigma CENA Cen 
+-7001 0.0 0.0 0.0737 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East1, Comp SS Sigma CENA Cen
+-7002 0.0 0.0 0.0994 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East2, Comp SS Sigma CENA Cen
+-7003 0.0 0.0 0.0892 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East3, Comp SS Sigma CENA Cen
+-7004 0.0 0.0 0.0691 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East4, Comp SS Sigma CENA Cen
+-7005 0.0 0.0 0.0456 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East5, Comp SS Sigma CENA Cen
+-7006 0.0 0.0 0.1095 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East6, Comp SS Sigma CENA Cen
+-7007 0.0 0.0 0.1020 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East7, Comp SS Sigma CENA Cen
+-7008 0.0 0.0 0.0876 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East8, Comp SS Sigma CENA Cen
+-7009 0.0 0.0 0.0859 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East9, Comp SS Sigma CENA Cen
+-7010 0.0 0.0 0.0281 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East10, Comp SS Sigma CENA Cen
+-7011 0.0 0.0 0.0214 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East11, Comp SS Sigma CENA Cen
+-7012 0.0 0.0 0.0293 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East12, Comp SS Sigma CENA Cen
+-7013 0.0 0.0 0.0176 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East13, Comp SS Sigma CENA Cen
+-7014 0.0 0.0 0.0366 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East14, Comp SS Sigma CENA Cen
+-7015 0.0 0.0 0.0368 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East15, Comp SS Sigma CENA Cen
+-7016 0.0 0.0 0.0328 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East16, Comp SS Sigma CENA Cen
+-7017 0.0 0.0 0.0354 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East17, Comp SS Sigma CENA Cen 
 0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1
--7001 0.0 0.0 0.0737 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East1, Comp SS Sigma CENA Low
--7002 0.0 0.0 0.0994 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East2, Comp SS Sigma CENA Low
--7003 0.0 0.0 0.0892 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East3, Comp SS Sigma CENA Low
--7004 0.0 0.0 0.0691 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East4, Comp SS Sigma CENA Low
--7005 0.0 0.0 0.0456 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East5, Comp SS Sigma CENA Low
--7006 0.0 0.0 0.1095 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East6, Comp SS Sigma CENA Low
--7007 0.0 0.0 0.1020 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East7, Comp SS Sigma CENA Low
--7008 0.0 0.0 0.0876 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East8, Comp SS Sigma CENA Low
--7009 0.0 0.0 0.0859 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East9, Comp SS Sigma CENA Low
--7010 0.0 0.0 0.0281 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East10, Comp SS Sigma CENA Low
--7011 0.0 0.0 0.0214 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East11, Comp SS Sigma CENA Low
--7012 0.0 0.0 0.0293 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East12, Comp SS Sigma CENA Low
--7013 0.0 0.0 0.0176 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East13, Comp SS Sigma CENA Low
--7014 0.0 0.0 0.0366 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East14, Comp SS Sigma CENA Low
--7015 0.0 0.0 0.0368 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East15, Comp SS Sigma CENA Low
--7016 0.0 0.0 0.0328 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East16, Comp SS Sigma CENA Low
--7017 0.0 0.0 0.0354 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East17, Comp SS Sigma CENA Low 
+-7001 0.0 0.0 0.0737 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East1, Comp SS Sigma CENA Low
+-7002 0.0 0.0 0.0994 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East2, Comp SS Sigma CENA Low
+-7003 0.0 0.0 0.0892 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East3, Comp SS Sigma CENA Low
+-7004 0.0 0.0 0.0691 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East4, Comp SS Sigma CENA Low
+-7005 0.0 0.0 0.0456 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East5, Comp SS Sigma CENA Low
+-7006 0.0 0.0 0.1095 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East6, Comp SS Sigma CENA Low
+-7007 0.0 0.0 0.1020 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East7, Comp SS Sigma CENA Low
+-7008 0.0 0.0 0.0876 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East8, Comp SS Sigma CENA Low
+-7009 0.0 0.0 0.0859 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East9, Comp SS Sigma CENA Low
+-7010 0.0 0.0 0.0281 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East10, Comp SS Sigma CENA Low
+-7011 0.0 0.0 0.0214 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East11, Comp SS Sigma CENA Low
+-7012 0.0 0.0 0.0293 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East12, Comp SS Sigma CENA Low
+-7013 0.0 0.0 0.0176 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East13, Comp SS Sigma CENA Low
+-7014 0.0 0.0 0.0366 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East14, Comp SS Sigma CENA Low
+-7015 0.0 0.0 0.0368 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East15, Comp SS Sigma CENA Low
+-7016 0.0 0.0 0.0328 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East16, Comp SS Sigma CENA Low
+-7017 0.0 0.0 0.0354 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East17, Comp SS Sigma CENA Low 
 0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1
--7001 0.0 0.0 0.0737 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East1, Comp SS Sigma CENA High
--7002 0.0 0.0 0.0994 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East2, Comp SS Sigma CENA High
--7003 0.0 0.0 0.0892 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East3, Comp SS Sigma CENA High
--7004 0.0 0.0 0.0691 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East4, Comp SS Sigma CENA High
--7005 0.0 0.0 0.0456 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East5, Comp SS Sigma CENA High
--7006 0.0 0.0 0.1095 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East6, Comp SS Sigma CENA High
--7007 0.0 0.0 0.1020 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East7, Comp SS Sigma CENA High
--7008 0.0 0.0 0.0876 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East8, Comp SS Sigma CENA High
--7009 0.0 0.0 0.0859 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East9, Comp SS Sigma CENA High
--7010 0.0 0.0 0.0281 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East10, Comp SS Sigma CENA High
--7011 0.0 0.0 0.0214 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East11, Comp SS Sigma CENA High
--7012 0.0 0.0 0.0293 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East12, Comp SS Sigma CENA High
--7013 0.0 0.0 0.0176 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East13, Comp SS Sigma CENA High
--7014 0.0 0.0 0.0366 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East14, Comp SS Sigma CENA High
--7015 0.0 0.0 0.0368 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East15, Comp SS Sigma CENA High
--7016 0.0 0.0 0.0328 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East16, Comp SS Sigma CENA High
--7017 0.0 0.0 0.0354 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East17, Comp SS Sigma CENA High
+-7001 0.0 0.0 0.0737 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East1, Comp SS Sigma CENA High
+-7002 0.0 0.0 0.0994 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East2, Comp SS Sigma CENA High
+-7003 0.0 0.0 0.0892 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East3, Comp SS Sigma CENA High
+-7004 0.0 0.0 0.0691 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East4, Comp SS Sigma CENA High
+-7005 0.0 0.0 0.0456 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East5, Comp SS Sigma CENA High
+-7006 0.0 0.0 0.1095 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East6, Comp SS Sigma CENA High
+-7007 0.0 0.0 0.1020 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East7, Comp SS Sigma CENA High
+-7008 0.0 0.0 0.0876 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East8, Comp SS Sigma CENA High
+-7009 0.0 0.0 0.0859 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East9, Comp SS Sigma CENA High
+-7010 0.0 0.0 0.0281 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East10, Comp SS Sigma CENA High
+-7011 0.0 0.0 0.0214 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East11, Comp SS Sigma CENA High
+-7012 0.0 0.0 0.0293 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East12, Comp SS Sigma CENA High
+-7013 0.0 0.0 0.0176 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East13, Comp SS Sigma CENA High
+-7014 0.0 0.0 0.0366 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East14, Comp SS Sigma CENA High
+-7015 0.0 0.0 0.0368 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East15, Comp SS Sigma CENA High
+-7016 0.0 0.0 0.0328 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East16, Comp SS Sigma CENA High
+-7017 0.0 0.0 0.0354 0.0 0 7106 0.0		(jcalc, c1, c2, wt, varadd, imix, jsigma, fix_sigma) NGA-East17, Comp SS Sigma CENA High
 0  					psCorFlag  (0=no, 1=yes)
 5					Number of deag mag values
 4.75  5.75  6.25  6.75  7.0	  	  deag mag values
