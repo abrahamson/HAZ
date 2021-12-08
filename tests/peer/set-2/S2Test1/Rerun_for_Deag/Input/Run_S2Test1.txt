@@ -1,10 +1,10 @@
 Source_S2Test1.txt
-45.2					version of fault file
+45.3					version of fault file
 -1.0 1.0 -66.0 -64.0			min max lat long
 200. 					maxdist
 PEER Verification, Set 2 Test 1
 1  1  					nProb, nAttenType
-0.0  8  0   				  period, max epsilon, dir flag
+0.0  8  0  0   				  period, max epsilon, dir flag, pcfag
 1 
 0.187
 1      					  Number of GM Models for AttenType 1
