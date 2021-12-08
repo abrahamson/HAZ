@@ -4,7 +4,7 @@ Source_RTest11.txt
 250. 					maxdist
 Reference Test 11, NGA-East
 3  1  					nProb, nAttenType
-0.2  8  0   				  period, max epsilon, dir flag
+0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1
@@ -25,7 +25,7 @@ Reference Test 11, NGA-East
 -7015 0.0 0.0 0.0368 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East15, Comp SS Sigma CENA Cen
 -7016 0.0 0.0 0.0328 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East16, Comp SS Sigma CENA Cen
 -7017 0.0 0.0 0.0354 0.0 0 7105 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East17, Comp SS Sigma CENA Cen 
-0.2  8  0   				  period, max epsilon, dir flag
+0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1
@@ -46,7 +46,7 @@ Reference Test 11, NGA-East
 -7015 0.0 0.0 0.0368 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East15, Comp SS Sigma CENA Low
 -7016 0.0 0.0 0.0328 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East16, Comp SS Sigma CENA Low
 -7017 0.0 0.0 0.0354 0.0 0 7104 0.0		(jcalc, c1, c2, wt, varadd, imix) NGA-East17, Comp SS Sigma CENA Low 
-0.2  8  0   				  period, max epsilon, dir flag
+0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 17      					  Number of GM Models for AttenType 1

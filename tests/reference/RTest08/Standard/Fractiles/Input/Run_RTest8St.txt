@@ -108,7 +108,7 @@ Reference Test 8
 2787  1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_98
 2787  1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_99
 2787  1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_100
-0.20  8  0  0   				  period, max epsilon, dir flag, PCflag
+0.20  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 100      					  Number of GM Models for AttenType 1
@@ -212,7 +212,7 @@ Reference Test 8
 2787  1.2825 0.0 3.860592E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_98
 2787  1.3095 0.0 2.616979E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_99
 2787  1.3365 0.0 1.759660E-6 0.0 0		(jcalc, c1, c2, wt, varadd, imix) NGAW2-ASK14_100
-2.00  8  0  0   				  period, max epsilon, dir flag, PCflag
+2.00  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 100      					  Number of GM Models for AttenType 1
