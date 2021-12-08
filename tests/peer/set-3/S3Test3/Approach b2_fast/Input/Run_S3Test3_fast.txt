@@ -1,10 +1,10 @@
 Source_S3Test3_fast.txt
-45.2					version of fault file
+45.3					version of fault file
 -1.0 1.0 -66.0 -64.0  			min max long lat
 400. 					maxdist
 PEER Verification, Set 3 Test 3 fast
 1  1  					nProb, nAttenType
-0.0  8  0   				  period, max epsilon, dir flag
+0.0  8  0  0   				  period, max epsilon, dir flag, pcflag
 18 
 0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
 1      					  Number of GM Models for AttenType 1
