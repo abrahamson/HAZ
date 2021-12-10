@@ -29,7 +29,7 @@ c    Declarations for Main file
      3        jType, isyn, nHypoX, iHypoX, iHypoZ, nHypoXStep,
      4        nHypoZ, nHypoZStep, dpp_flag, grid_n(MAX_FLT), iAtten
       integer csrflag(MAX_PROB),hwflag, psCorFlag, dirflag(MAX_PROB),
-     1        tapflag(MAX_PROB), intflag(4,MAX_PROB), isite, nFlt, jInten,
+     1        tapflag(MAX_PROB), intflag, isite, nFlt, jInten,
      2        nInten(MAX_PROB), nfp(MAX_FLT), nMag(MAX_FLT), jcalc1,
      3        jcalc(MAX_PROB,4,MAX_ATTEN), nAtten(MAX_PROB,4), nSite,
      4        iMag, iflt, nRupArea(MAX_FLT), nRupWidth(MAX_FLT), nWidth(MAX_FLT)

@@ -9,7 +9,7 @@ C       attenflag = 2 Spectra
 
       integer cfmodel, icalc, ncalc, jcalc1, ndist, hwflag,
      1        iAtten, jtype, scalc1, sigflag, anper, vs30_class,
-     2        attenflag, intflag(4,MAX_PROB), jj, forearc, coefcountRrup,
+     2        attenflag, intflag, jj, forearc, coefcountRrup,
      3        coefcountRjb, idist, iProb, nper, iper, icf, dcpp_GMPE_Flag
       real Theta_site, cfcoefRRup(MAX_Atten,11), cfcoefRjb(MAX_Atten,11),
      1     coefrr(MAX_PER,11), coefrj(MAX_PER,11), mag, distrup, distjb,
@@ -136,7 +136,6 @@ C     Perform loop over distances for attenuation models.
      4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0)
-              intflag(1,icalc) = intflag(1,1)
 
 C             Adjust median ground motion by constant factors
               lgInten = lgInten + gfac1(1) + gfac2(1)
@@ -323,8 +322,6 @@ c             is not defined (output will be set to null value of -9.99999)
      5               theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0 )
 
-                intflag(1,icalc) = intflag(1,1)
-
               elseif (specT(1,1) .eq. 0.0) then
 
                 call S11_meanInten ( distRup, distJB, distSeismo,
@@ -334,8 +331,6 @@ c             is not defined (output will be set to null value of -9.99999)
      4               hypodepth1, depthvs10, depthvs15, D25, tau,
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
-
-                intflag(1,icalc) = intflag(1,1)
 
               elseif (specT(1,1) .eq. -1.0) then
 
@@ -347,8 +342,6 @@ c             is not defined (output will be set to null value of -9.99999)
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
 
-                intflag(1,icalc) = intflag(1,1)
-
               elseif (specT(1,1) .eq. -2.0) then
 
                 call S11_meanInten ( distRup, distJB, distSeismo,
@@ -359,17 +352,15 @@ c             is not defined (output will be set to null value of -9.99999)
      3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
 
-                 intflag(1,icalc) = intflag(1,1)
-
                else
-                 intflag(1,icalc) = -1
+                 intflag = -1
                endif
 
 C              Adjust the median ground motions by const1 and const2
                lginten = lginten + gfac1(iper) + gfac2(iper)
 
 C              Now compute the sigma if requested is different than jcalc GMPE.
-               if (intflag(1,icalc) .ge. 0) then
+               if (intflag .ge. 0) then
                  if (sigflag .eq. 1) then
                    call S11_meanInten ( distRup, distJB, distSeismo,
      1                     hwflag, mag, scalc1, specT(1,1),
@@ -400,17 +391,17 @@ c                Check for reduction of sigma is greater than 0.0.
                endif
 
 C              Write out spectra with notes for each spectral period.
-               if (intflag(1,icalc) .eq. 0 ) then
+               if (intflag .eq. 0 ) then
                  write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
      4                            'Defined', attenname, sigmaname
-               elseif (intflag(1,icalc) .eq. 1 ) then
+               elseif (intflag .eq. 1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
      4                            'Interp', attenname, sigmaname
-               elseif (intflag(1,icalc) .eq. -1 ) then
+               elseif (intflag .eq. -1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, -9.99999, -9.9999,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,

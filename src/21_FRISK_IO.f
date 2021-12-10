@@ -479,7 +479,7 @@ c  -------------------------------------------------------------------
       real  period1(4,MAX_PROB),
      1     sigTrunc(MAX_PROB), probAct(MAX_FLT), SourceDist(MAX_FLT,MAX_WIDTH,3)
       integer csrflag(MAX_PROB), attenType(MAX_FLT), nAttenType, dirflag(MAX_PROB)
-      integer tapflag(MAX_PROB), intflag(4,MAX_PROB), nAtten, nwr, ii, k, l
+      integer tapflag(MAX_PROB), intflag, nAtten, nwr, ii, k, l
       integer nMagBins, nDistBins, nEpsBins, fsys(MAX_FLT), kk
       integer isite, nInten(MAX_PROB), nFlt, jCalc(MAX_PROB,4,MAX_ATTEN), nWidth(MAX_FLT)
       integer hwflagout(MAX_FLT), nMaxmag2(MAX_FLT), casecount, iProb

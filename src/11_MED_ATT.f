@@ -13,7 +13,7 @@
       real jbdist, rupdist, seismodist, baseDepth, depth, specT, factor, a, b, faddmag
       character*80 attenName
       character*10 number
-      integer intflag(4,MAX_PROB), iflag, vs30_class, iBranch
+      integer intflag, iflag, vs30_class, iBranch
       integer iflag01, iflag02, iflag04, iflag10, foreArc, regionflag, basinflag, msasflag
       integer coefcountRrup, coefcountRjb, iAtten, iProb, jType, region
 
@@ -7644,7 +7644,7 @@ c     Check for valid jcalc
       endif
 
       period1(jType,iProb) = period2
-      intflag(jType,iProb) = iflag
+      intflag = iflag
       siga = sigma
 
 c     Convert to g
