@@ -406,7 +406,7 @@ C               Second call get GMPE for different sigma model
                   elseif (sourceType(iFlt) .eq. 7) then
                     call S11_meanInten ( distRup, distJB, distSeismo,
      1               HWFlag, mag, jcalc1, specT(iProb),
-     2               lgInten, sigmaY, mechS7(iFlt,iMag), attenName, period1,
+     2               lgInten, sigmaY, mechS7(iFlt,iMag), sigmaName, period1,
      3               iAtten, iProb, jType, vs, hypodepth, intflag, AR, dipavgd,
      4               disthypo, depthvs10, depthvs15, D25, tau,
      5               zTOR, theta_site, RupWidth, vs30_class, forearc, Rx, phi,

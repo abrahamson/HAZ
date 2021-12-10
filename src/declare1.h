@@ -123,5 +123,5 @@ c    Declarations for Main file
 
       common/GMTable/ iflagRead, table_m, table_r, table_lnSA, nsc
 
-      character*80 fName(MAX_FLT), attenName(4,MAX_ATTEN), file1, file2,
-     1             sigmaName(4,MAX_ATTEN), filebmode
+      character*80 fName(MAX_FLT), attenName, file1, file2,
+     1             sigmaName, filebmode

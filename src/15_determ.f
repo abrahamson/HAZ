@@ -21,8 +21,7 @@ C       attenflag = 2 Spectra
      2     attenRx(MAXDETM_DIST), attenRy0(MAXDETM_DIST), hypodepth,
      3     specT(4,MAX_PROB), gfac1(MAX_PER), gfac2(MAX_PER), svad(MAX_PER),
      4     period1(4,MAX_PROB), disthypo, Rx, Ry0, temp, rupWidth
-      character*80 attentitle, attenoutfile, attenName(4,MAX_ATTEN),
-     1             sigmaName(4,MAX_ATTEN)
+      character*80 attentitle, attenoutfile, attenName, sigmaName
 
 C     If requested compute ground motion attenuation from input data file.
 c        (i.e., attenflag = 1)
@@ -154,9 +153,9 @@ C     Check for sigma values different than requested GMPE.
 
                  elseif (sigflag .eq. 2) then
                      sigmaY = sigfix1
-                     sigmaname(1,1) = 'Fixed Constant Sigma'
+                     sigmaname = 'Fixed Constant Sigma'
                  else
-                     sigmaname(1,1) = attenname(1,1)
+                     sigmaname = attenname
                  endif
 
 C               Adjust sigma value is sigvaradd .ne. 0.0
@@ -174,7 +173,7 @@ c               Check for reduction of sigma is greater than 0.0.
                 write (67, 676) specT(1,1), mag, distrup, distJB,
      1                         distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY,
      2                         gfac1(1), gfac2(1), svad(1), phi, tau,
-     4                         attenname(1,1), sigmaname(1,1)
+     4                         attenname, sigmaname
 
             enddo
             write (67,*)
@@ -381,9 +380,9 @@ C              Now compute the sigma if requested is different than jcalc GMPE.
      6                     cfcoefRrup, cfcoefRjb, Ry0 )
                  elseif (sigflag .eq. 2) then
                    sigmaY = sigfix1
-                   sigmaname(1,1) = 'Fixed Constant Sigma'
+                   sigmaname = 'Fixed Constant Sigma'
                  else
-                   sigmaname(1,1) = attenname(1,1)
+                   sigmaname = attenname
                  endif
                endif
 
@@ -405,17 +404,17 @@ C              Write out spectra with notes for each spectral period.
                  write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
-     4                            'Defined', attenname(1,1), sigmaname(1,1)
+     4                            'Defined', attenname, sigmaname
                elseif (intflag(1,icalc) .eq. 1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, exp(lgInten), sigmaY,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
-     4                            'Interp', attenname(1,1), sigmaname(1,1)
+     4                            'Interp', attenname, sigmaname
                elseif (intflag(1,icalc) .eq. -1 ) then
                    write (67, 678) specT(1,1), mag, distrup, distJB,
      1                            distseismo, disthypo, Rx, Ry0, -9.99999, -9.9999,
      4                            gfac1(iper), gfac2(iper), svad(iper), phi, tau,
-     4                            'Outside', attenname(1,1), sigmaname(1,1)
+     4                            'Outside', attenname, sigmaname
                endif
              enddo
              write (67,*)
