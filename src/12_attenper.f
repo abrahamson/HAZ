@@ -1,18 +1,18 @@
-C Spectral Attenuation Model Period Subroutine 
-C     This subroutine will return the array of 
-C     spectral periods fo the computation of 
+C Spectral Attenuation Model Period Subroutine
+C     This subroutine will return the array of
+C     spectral periods fo the computation of
 C     deterministic spectra.
 
       subroutine S12_attenper ( jcalc, anper, minaper, maxaper )
 
-      implicit none      
+      implicit none
       include 'pfrisk.h'
-      
+
       integer jcalc, anper
       real minaper, maxaper
 
-c     Set number of attenuation spectral periods to -99 for 
-c     checking of valid jcalc values. 
+c     Set number of attenuation spectral periods to -99 for
+c     checking of valid jcalc values.
       anper = -99
 
 C ******* PEER NGA West 2 GMPE Models *********
@@ -184,13 +184,13 @@ c ******* Gulrce, Kamai, Abrahamson and Silva (NGA West2 2013) *********
 C     Gulrce, Kamai, Abrahamson and Silva (NGA West2 2013) - Vertical
 C        Same spectral periods for all variations of the GMPE model
 C     Model Number = 4787
-      if ( jcalc .ge. 4787 ) then
+      if ( jcalc .eq. 4787 ) then
          anper = 24
          minaper = 0.01
          maxaper = 10.0
        endif
 C     Model Number = 4788
-      if ( jcalc .ge. 4788 ) then
+      if ( jcalc .eq. 4788 ) then
          anper = 24
          minaper = 0.01
          maxaper = 10.0
@@ -200,13 +200,13 @@ c ******* Gulrce, Kamai, Abrahamson and Silva (NGA West2 2013) *********
 C     Gulrce, Kamai, Abrahamson and Silva (NGA West2 2013) - V/H Ratip
 C        Same spectral periods for all variations of the GMPE model
 C     Model Number = 6787
-      if ( jcalc .ge. 6787 ) then
+      if ( jcalc .eq. 6787 ) then
          anper = 24
          minaper = 0.01
          maxaper = 10.0
        endif
 C     Model Number = 6788
-      if ( jcalc .ge. 6788 ) then
+      if ( jcalc .eq. 6788 ) then
          anper = 24
          minaper = 0.01
          maxaper = 10.0
@@ -841,7 +841,7 @@ C     Model Number = 060
       if (jcalc .eq. 60) then
          anper = 11
          minaper = 0.1
-         maxaper = 2.0 
+         maxaper = 2.0
       endif
 
 C     Spudich et al. (1997), Horizontal, Rock, Extensional Regimes
@@ -886,7 +886,7 @@ c          Model A (Geomatrix). Fault parameters for crustal event are:
 c          M =7.4, D=1.0 km, Ftype=1 (reverse).
 
 C     Now call the synchronous rupture cases for rock ground motions
-c     (i.e., no HBIP amp factors applied). 
+c     (i.e., no HBIP amp factors applied).
 c     Set the crustal earthquake parameters
       if (jcalc .eq. 7201001 .or. jcalc .eq. 7201043 .or. jcalc .eq.
      1      7201051) then
@@ -923,7 +923,7 @@ c          Model B (Carver). Fault parameters for crustal event are:
 c          M =7.7, D=1.0 km, Ftype=1 (reverse)
 
 C     Now call the synchronous rupture cases for rock ground motions
-c     (i.e., no HBIP amp factors applied). 
+c     (i.e., no HBIP amp factors applied).
 c     Set the crustal earthquake parameters
       if (jcalc .eq. 8201001 .or. jcalc .eq. 8201043 .or. jcalc .eq.
      1      8201051) then
@@ -954,7 +954,7 @@ C     Model Number = 8201051
            maxaper = 3.0
          endif
       endif
-           
+
 c ***** Atkinson and Boore Subduction Models *****
 c     Atkinson and Boore (2003) - Horizontal, NEHRP-B, Subduction
 C     Model Number = 210
@@ -1366,7 +1366,7 @@ C     Model Number = 104
          minaper = 0.10
          maxaper = 5.0
       endif
-      
+
 c     Atkinson and Boore (2006) with Atkinson (2010) magnitude stress drop adjustment, Horizontal, CEUS Hard Rock
 C     Model Number = 105
       if ( jcalc .eq. 105 ) then
@@ -1374,7 +1374,7 @@ C     Model Number = 105
          minaper = 0.025
          maxaper = 5.0
       endif
-      
+
 c     Atkinson and Boore (2006) with Atkinson (2010) magnitude stress drop adjustment, Horizontal, CEUS, Vs=760m/sec
 C     Model Number = 106
       if ( jcalc .eq. 106 ) then
@@ -1382,7 +1382,7 @@ C     Model Number = 106
          minaper = 0.01
          maxaper = 5.0
       endif
-      
+
 c     Atkinson (2010), Horizontal, CEUS, based on NGA BA08
 C     Model Number = 107
       if (jcalc .eq. 107) then
@@ -1398,7 +1398,7 @@ C     Model Number = 108
          minaper = 0.10
          maxaper = 5.0
       endif
-      
+
 c     Atkinson and Boore (2006) with (2x) stressDrop (280bars), Horizontal, CEUS Hard Rock
 C     Model Number = 130
       if ( jcalc .eq. 130 ) then
@@ -1421,32 +1421,32 @@ C     Model Number = 110
       if (jcalc .eq. 110) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0                                   
-      endif 
+         maxaper = 2.0
+      endif
 
 C Toro et al. (1996) MidCon., Horizontal, Rock, MLg magnitude
 C     Model Number = 111
       if (jcalc .eq. 111) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0                                   
-      endif 
+         maxaper = 2.0
+      endif
 
 C Toro et al. (1996) Gulf, Horizontal, Rock
 C     Model Number = 112
       if (jcalc .eq. 112) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0                                  
-      endif 
+         maxaper = 2.0
+      endif
 
 C Toro et al. (1996) Gulf, Horizontal, Rock, MLg magnitude
 C     Model Number = 113
       if (jcalc .eq. 113) then
          anper = 8
          minaper = 0.029
-         maxaper = 2.0                                   
-      endif 
+         maxaper = 2.0
+      endif
 
 c     Campbell Hybrid (2003), Horizontal, CEUS Hard Rock
 C     Model Number = 120
@@ -1666,13 +1666,13 @@ C     Model Number = 301
       endif
 
 c     Loh high speed rail (New Joyner-Boore form)
-C     Model Number = 302      
+C     Model Number = 302
       if ( jcalc .eq. 302 ) then
          anper = 1
          minaper = 0.0
          maxaper = 0.0
       endif
-         
+
 c     New Loh (1996) model (unpublished)
 C     Model Number = 303
       if ( jcalc .eq. 303 ) then
@@ -1867,7 +1867,7 @@ C     Model Number = 145, Site Class D
          anper = 14
          minaper = 0.01
          maxaper = 3.0
-      endif      
+      endif
 
 c     Bindi et al. (2009) - Crustal, Horizontal
 C     Model Number = 95, Hor, Rock
@@ -1929,7 +1929,7 @@ C     Model Number = 295, Hor, Class A
          maxaper = 3.0
       endif
 
-c     Grazier and Kalkan (Nov. 2012) Currently Unpublished Update 
+c     Grazier and Kalkan (Nov. 2012) Currently Unpublished Update
 c         to Jan/Feb. 2011 SRL model
 C     Model Number = 90, Hor
       if (jcalc .eq. 90) then
@@ -2123,21 +2123,21 @@ C     Model Number = 9011, Hor
       endif
 
 C ***** EPRI Update (2013) GMPE Models *****
-C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201301
       if (jcalc .eq. 201301) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201302
       if (jcalc .eq. 201302) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201303
       if (jcalc .eq. 201303) then
          anper = 8
@@ -2145,21 +2145,21 @@ C     Model Number = 201303
          maxaper = 2.0
       endif
 
-C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201304
       if (jcalc .eq. 201304) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201305
       if (jcalc .eq. 201305) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock *** 
+C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201306
       if (jcalc .eq. 201306) then
          anper = 8
@@ -2167,21 +2167,21 @@ C     Model Number = 201306
          maxaper = 2.0
       endif
 
-C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201307
       if (jcalc .eq. 201307) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201308
       if (jcalc .eq. 201308) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock *** 
+C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201309
       if (jcalc .eq. 201309) then
          anper = 8
@@ -2189,21 +2189,21 @@ C     Model Number = 201309
          maxaper = 2.0
       endif
 
-C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201310
       if (jcalc .eq. 201310) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201311
       if (jcalc .eq. 201311) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201312
       if (jcalc .eq. 201312) then
          anper = 8
@@ -2211,21 +2211,21 @@ C     Model Number = 201312
          maxaper = 2.0
       endif
 
-C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201313
       if (jcalc .eq. 201313) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201314
       if (jcalc .eq. 201314) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock *** 
+C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock ***
 C     Model Number = 201315
       if (jcalc .eq. 201315) then
          anper = 8
@@ -2234,21 +2234,21 @@ C     Model Number = 201315
       endif
 
 C ***** EPRI Update (2013) GMPE Models *****
-C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster01-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201321
       if (jcalc .eq. 201321) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster01-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201322
       if (jcalc .eq. 201322) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster01-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201323
       if (jcalc .eq. 201323) then
          anper = 8
@@ -2256,21 +2256,21 @@ C     Model Number = 201323
          maxaper = 2.0
       endif
 
-C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster02-Low: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201324
       if (jcalc .eq. 201324) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster02-Med: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201325
       if (jcalc .eq. 201325) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster02-High: Mid-Continent, Functional Model 2, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201326
       if (jcalc .eq. 201326) then
          anper = 8
@@ -2278,21 +2278,21 @@ C     Model Number = 201326
          maxaper = 2.0
       endif
 
-C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster03-Low: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201327
       if (jcalc .eq. 201327) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster03-Med: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201328
       if (jcalc .eq. 201328) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster03-High: Mid-Continent, Functional Model 1&3, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201329
       if (jcalc .eq. 201329) then
          anper = 8
@@ -2300,21 +2300,21 @@ C     Model Number = 201329
          maxaper = 2.0
       endif
 
-C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-Low (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201330
       if (jcalc .eq. 201330) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-Med (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201331
       if (jcalc .eq. 201331) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-High (Rift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201332
       if (jcalc .eq. 201332) then
          anper = 8
@@ -2322,21 +2322,21 @@ C     Model Number = 201332
          maxaper = 2.0
       endif
 
-C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-Low (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201333
       if (jcalc .eq. 201333) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-Med (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201334
       if (jcalc .eq. 201334) then
          anper = 8
          minaper = 0.01
          maxaper = 2.0
       endif
-C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma *** 
+C *** Cluster04-High (NonRift): Mid-Continent, Functional Model 4, Horizontal, CEUS Hard Rock, Rjb Sigma ***
 C     Model Number = 201335
       if (jcalc .eq. 201335) then
          anper = 8
