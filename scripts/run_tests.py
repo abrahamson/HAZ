@@ -232,7 +232,11 @@ def test_path(
         shutil.copytree(path_ref.joinpath("Input"), path_test)
         # Run HAZ and track the duration
         start = datetime.datetime.now()
-        run_haz(path_test, haz_bin)
+        try:
+            run_haz(path_test, haz_bin)
+        except subprocess.CalledProcessError as e:
+            print(e)
+            return False
 
         time_diff = datetime.datetime.now() - start
 
@@ -257,6 +261,7 @@ def test_path(
         else:
             continue
 
+        print(f'\tChecking {fpath_test} file...')
         # Check for errors
         errors = check_value(actual, expected, rtol, atol=1e-08)
         if errors:
