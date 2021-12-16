@@ -201,7 +201,7 @@ def run_haz(path: pathlib.PurePath, haz_bin: str, capture_output=True):
     p = subprocess.run(
         [haz_bin],
         cwd=str(fpath.parent),
-        check=True,
+        check=False,
         input=bytes("0\n0\n%s\n" % fpath.name, "ascii"),
         capture_output=capture_output,
     )
@@ -232,11 +232,7 @@ def test_path(
         shutil.copytree(path_ref.joinpath("Input"), path_test)
         # Run HAZ and track the duration
         start = datetime.datetime.now()
-        try:
-            run_haz(path_test, haz_bin)
-        except subprocess.CalledProcessError as e:
-            print(e)
-            return False
+        run_haz(path_test, haz_bin)
 
         time_diff = datetime.datetime.now() - start
 
