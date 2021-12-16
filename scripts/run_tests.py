@@ -244,7 +244,8 @@ def test_path(
             "Calculation time: {} {}".format(path_ref.relative_to(root_ref), time_diff)
         )
 
-    passed = {}
+    ok = True
+    exts_tested = []
     for fpath_test in path_test.iterdir():
         ext = fpath_test.suffix
         fpath_ref = path_ref.joinpath("Output", fpath_test.name)
@@ -261,18 +262,19 @@ def test_path(
         else:
             continue
 
-        print(f'\tChecking {fpath_test} file...')
+        print(f"\tChecking {fpath_test} file...")
         # Check for errors
         errors = check_value(actual, expected, rtol, atol=1e-08)
         if errors:
             print("Errors in: %s" % fpath_test)
             print_errors("%s: " % fpath_test, errors)
 
-        passed[ext] = not errors
+        ok &= not errors
+        exts_tested.append(ext)
 
     # Check that all of the output files were tested
-    required_exts = [".out3", "out4"]
-    return all(ext in passed for ext in required_exts) and all(required_exts.values())
+    required_exts = [".out3", ".out4"]
+    return all(ext in exts_tested for ext in required_exts) and ok
 
 
 if __name__ == "__main__":
@@ -362,4 +364,5 @@ if __name__ == "__main__":
             )
             ok = all(results.get())
 
+    print('Passed' if ok else 'Failed!')
     sys.exit(0 if ok else 1)
