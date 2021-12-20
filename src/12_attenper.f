@@ -1,6 +1,6 @@
 C Spectral Attenuation Model Period Subroutine
 C     This subroutine will return the array of
-C     spectral periods fo the computation of
+C     spectral periods for the computation of
 C     deterministic spectra.
 
       subroutine S12_attenper ( jcalc, anper, minaper, maxaper )
@@ -2352,6 +2352,58 @@ c     Model Numbers 7001 - 7017 (Median, VS30 = 3000 m/s)
         minaper = 0.01
         maxaper = 10.0
       endif
+
+C *** Abrahamson and Gulerce (AG) 2020 Subduction model ****
+C     Model Numbers = 390-399, 1398, 2398, 2392
+C     Model Numbers = 390-399
+      if (jcalc .ge. 390 .and. jcalc .le. 399) then
+         anper = 25
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+C     Model Numbers = 1398
+      if (jcalc .eq. 1398) then
+         anper = 25
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+C     Model Numbers = 2398
+      if (jcalc .eq. 2398) then
+         anper = 25
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+C     Model Numbers = 2392
+      if (jcalc .eq. 2392) then
+         anper = 25
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
+C *** Kuehn et al. (KBCG) 2019 Subduction model ****
+C     Model Numbers = 650-665
+      if (jcalc .ge. 650 .and. jcalc .le. 665) then
+         anper = 23
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
+C *** Parker et al. (PSHAB) 2020 Subduction model ****
+C     Model Numbers = 610-626
+      if (jcalc .ge. 610 .and. jcalc .le. 626) then
+         anper = 26
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
+C *** Si et al. (SMK) 2019 Subduction model ****
+C     Model Numbers = 675-676
+      if (jcalc .ge. 675 .and. jcalc .le. 676) then
+         anper = 23
+         minaper = 0.01
+         maxaper = 10.0
+      endif
+
 
 
 

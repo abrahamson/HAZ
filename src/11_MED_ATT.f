@@ -27,7 +27,9 @@
       real phi, tau, lnYH, sourceclass, sigmac, fth, frv, vs, sigma
       real cfcoefrrup(MAX_Atten,11), cfcoefrjb(MAX_Atten,11), c1
       real depthTop1, s03vfs, s03sr, s03fr, soil, GB, GC, pga4nl
-      real sigmaH, phiH, tauH, sclass, pgaref, sjb
+      real sigmaH, phiH, tauH, sclass, pgaref, sjb, ACadjfac, mbinter
+      real mbslab, mohodepth, rockpga, spectpga, vsrock, x, z25ag, z25p
+      integer CasBas, iRegion, epiflag, pnwbflag
 
 C LNY IS EXPECTED INTENSITY FOR THIS MAGNITUDE AND CLOSEST DISTANCE
       lnY = 1.e30
@@ -7634,6 +7636,723 @@ c     Model Number = 7106
 c       keep median ground motions large since this is only for sigma model
         lnY = 1.0e10
       endif
+
+c ******* NGA-Subduction 2020 Models *******
+c     Abrahamson and Gulerce (AG) 2020 Subduction model ****
+c     Model Numbers = 390 - 399 (depending on region)
+c     390 = Alaska without adjustments
+c     391 = Alaska with adjustments
+c     392 = Cascadia with adjustments
+c     393 = Central Am/Mexico
+c     394 = Japan
+c     395 = New Zealand
+c     396 = South America
+c     397 = Taiwan
+c     398 = Global
+c     399 = Cascadia without adjustments
+c     1398 = Global lower Epistemic Model
+c     2398 = Global upper Epistemic Model
+c     2392 = Cascadia with adjustments with Z25=Z25Ref
+
+C     Alaska Model without adjustments (iRegion = 1)
+      if (jcalc .eq. 390) then
+         iRegion = 1
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         ACadjfac = 0.0
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Alaska without adjustments'
+      endif
+C     Alaska Model with adjustments (iRegion = 1)
+      if (jcalc .eq. 391) then
+         iRegion = 1
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89 + ACadjfac
+         ACadjfac = 0.0
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+C     Apply the Alaska adjustment factors
+         lnY = lnY + ACadjfac
+         attenname = 'Abrahamson&Gulerce (2020), Alaska with adjustments'
+      endif
+C     Cascadia Model without adjustments (iRegion = 2)
+      if (jcalc .eq. 399) then
+         iRegion = 2
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Cascadia without adjustments'
+      endif
+C     Cascadia Model with adjustments (iRegion = 2)
+      if (jcalc .eq. 392) then
+         iRegion = 2
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89 + ACadjfac
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+C     Apply the Cascadia adjustment factors
+         lnY = lnY + ACadjfac
+         attenname = 'Abrahamson&Gulerce (2020), Cascadia with adjustments'
+      endif
+
+C     Cascadia Model with adjustments (iRegion = 2) with Z25=Z25ref
+      if (jcalc .eq. 2392) then
+         iRegion = 2
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+C     Set Z25 = Z25ref based on Vs relationship for Cascadia
+	 call S35_z25_interp ( vs, 200., 570., 8.52, 7.6, z25AG )
+         z25AG = z25AG/1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89 + ACadjfac
+         call S35_AG2020 ( mag, fType, rupDist, vs, Z25ag, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+C     Apply the Cascadia adjustment factors
+         lnY = lnY + ACadjfac
+         attenname = 'Abrahamson&Gulerce (2020), Cascadia with adjustments, Z25=Z25ref'
+      endif
+
+C     Central America/Mexico Model (iRegion = 3)
+      if (jcalc .eq. 393) then
+         iRegion = 3
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Central Am/Mexico'
+      endif
+C     Japan Model (iRegion = 4)
+      if (jcalc .eq. 394) then
+         iRegion = 4
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Japan'
+      endif
+C     New Zealand Model (iRegion = 5)
+      if (jcalc .eq. 395) then
+         iRegion = 5
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), New Zealand'
+      endif
+C     South America Model (iRegion = 6)
+      if (jcalc .eq. 396) then
+         iRegion = 6
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), South America'
+      endif
+C     Taiwan Model (iRegion = 7)
+      if (jcalc .eq. 397) then
+         iRegion = 7
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Taiwan'
+      endif
+
+C     Global Model (iRegion = 8)
+      if (jcalc .eq. 398) then
+         iRegion = 8
+         epiflag = 0
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Global'
+      endif
+
+C     Global Model (iRegion = 8) with lower Epistemic Uncertainty
+      if (jcalc .eq. 1398) then
+         iRegion = 8
+         epiflag = -1
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Global, Lower Epistemic'
+      endif
+
+C     Global Model (iRegion = 8) with upper Epistemic Uncertainty
+      if (jcalc .eq. 2398) then
+         iRegion = 8
+         epiflag = 1
+         specTPGA = 0.0
+         vsrock = 1000.0
+         call S35_AG2020 ( mag, fType, rupDist, vsrock, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            RockPGA, specTPGA, period2, iFlag, ACadjfac, epiflag )
+         rockPGA = LnY - 6.89
+         call S35_AG2020 ( mag, fType, rupDist, vs, D25, depthtop, iRegion, lnY, sigma, phi, tau,
+     1            exp(RockPGA), specT, period2, iFlag, ACadjfac, epiflag )
+         attenname = 'Abrahamson&Gulerce (2020), Global, Upper Epistemic'
+      endif
+
+C     NGA-SUB Kuehn, Bozorgnia, Campbell and Gregor (2019)
+C     Model Numbers = 650 - 662 (depending on region and plate mb values)
+C     Magnitude Break Values Rounded to nearest 1/10 magnitude unit
+
+C     Global Model.
+C     Model Number = 650
+
+      if ( jcalc .eq. 650 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.9
+         mbslab = 7.6
+         iRegion = 0
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Global'
+      endif
+
+C     Alaska
+C     Model Number = 651
+      if ( jcalc .eq. 651 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.6
+         mbslab = 7.2
+         iRegion = 1
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Alaska'
+      endif
+
+C     Alaska
+C     Model Number = 664
+      if ( jcalc .eq. 664 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.3
+         mbslab = 7.2
+         iRegion = 1
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Alaska, mb=8.3'
+      endif
+C     Model Number = 665
+      if ( jcalc .eq. 665 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.9
+         mbslab = 7.2
+         iRegion = 1
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Alaska, mb=8.9'
+      endif
+
+C     Alaska Aluetian Islands Plate
+C     Model Number = 652
+      if ( jcalc .eq. 652 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.0
+         mbslab = 8.0
+         iRegion = 1
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Alaska-AleutianIslands'
+      endif
+
+C     Cascadia - No Basin
+C     Model Number = 653
+      if ( jcalc .eq. 653 ) then
+C     Set mb values for interface and slab cases
+C     Not for Cascadia Interface mb set at upper end of range (8.0) given
+c         the lack of interface data.
+         mbinter = 8.0
+         mbslab = 7.2
+         iRegion = 2
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Cascadia-NoBasin'
+      endif
+
+C     Cascadia - Seattle Basin Site
+C     Model Number = 662
+      if ( jcalc .eq. 662 ) then
+C     Set mb values for interface and slab cases
+C     Not for Cascadia Interface mb set at upper end of range (8.0) given
+c         the lack of interface data.
+         mbinter = 8.0
+         mbslab = 7.2
+         iRegion = 2
+         CasBas = 1
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Cascadia-SeattleBasin'
+      endif
+
+C     Cascadia - Non-Seattle Basin Site
+C     Model Number = 663
+      if ( jcalc .eq. 663 ) then
+C     Set mb values for interface and slab cases
+C     Not for Cascadia Interface mb set at upper end of range (8.0) given
+c         the lack of interface data.
+         mbinter = 8.0
+         mbslab = 7.2
+         iRegion = 2
+         CasBas = 2
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Cascadia-Non-SeattleBasin'
+      endif
+
+C     Northern Central America / Mexico
+C     Model Number = 654
+      if ( jcalc .eq. 654 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.4
+         mbslab = 7.4
+         iRegion = 3
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Northern CAM'
+      endif
+
+C     Southern Central America / Mexico
+C     Model Number = 655
+      if ( jcalc .eq. 655 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.5
+         mbslab = 7.6
+         iRegion = 3
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Southern CAM'
+      endif
+
+C     Japan - Pacific Plate
+C     Model Number = 656
+      if ( jcalc .eq. 656 ) then
+C     Set mb values for interface and slab cases
+C     Period dependent adjustment applied within Subroutine
+         mbinter = 8.5
+         mbslab = 7.6
+         iRegion = 4
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Japan-PacificPlate'
+      endif
+
+C     Japan - Philippine Plate
+C     Model Number = 657
+      if ( jcalc .eq. 657 ) then
+C     Set mb values for interface and slab cases
+C     Period dependent adjustment applied within Subroutine
+         mbinter = 7.7
+         mbslab = 7.6
+         iRegion = 4
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Japan-PhilippinePlate'
+      endif
+
+C     Northern South America
+C     Model Number = 658
+      if ( jcalc .eq. 658 ) then
+C     Set mb values for interface and slab cases
+C     Period dependent adjustment applied within Subroutine
+         mbinter = 8.5
+         mbslab = 7.3
+         iRegion = 6
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Northern SA'
+      endif
+
+C     Southern South America
+C     Model Number = 659
+      if ( jcalc .eq. 659 ) then
+C     Set mb values for interface and slab cases
+C     Period dependent adjustment applied within Subroutine
+         mbinter = 8.6
+         mbslab = 7.2
+         iRegion = 6
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Southern SA'
+      endif
+
+C     Taiwan
+C     Model Number = 660
+      if ( jcalc .eq. 660 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.1
+         mbslab = 7.7
+         iRegion = 7
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), Taiwan'
+      endif
+
+C     New Zealand
+C     Model Number = 661
+      if ( jcalc .eq. 661 ) then
+C     Set mb values for interface and slab cases
+C     mb values currently set at global values
+         mbinter = 8.3
+         mbslab = 7.6
+         iRegion = 5
+         CasBas = 0
+         call S35_KBCG2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, depthtop, CasBas, depthvs10 )
+         attenname = 'Kuehn et al. (2019), New Zealand'
+      endif
+
+
+C     NGA-SUB Parker, Stewart, Boore, Atkinson and Hassani (2020)
+C     Model Numbers = 610 - 626 (depending on region and Subducting plate mb values)
+
+C     Global Model.
+C     Model Number = 610
+      if ( jcalc .eq. 610 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.9
+         mbslab = 7.60
+         iRegion = 0
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Global'
+      endif
+C     Alaska Model.
+C     Model Number = 611
+      if ( jcalc .eq. 611 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.6
+         mbslab = 7.2
+         iRegion = 1
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Alaska'
+      endif
+C     Alaska Aleutian Island Model.
+C     Model Number = 612
+      if ( jcalc .eq. 612 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.0
+         mbslab = 7.98
+         iRegion = 2
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Alaska-AleutianIsland'
+      endif
+C     Cascadia Model, Outside Basin with Z25 (Previous version of the model no longer recommended)
+C     Model Number = 613
+      if ( jcalc .eq. 613 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.2
+         iRegion = 3
+         pnwbflag = 0
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Cascadia, Outside Basin'
+      endif
+
+
+C     Cascadia Model, with Z25=Z25Ref
+C     Model Number = 623
+      if ( jcalc .eq. 623 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.2
+         iRegion = 3
+         pnwbflag = 4
+C     Set Z25 = Z25Ref based on Vs
+         x = (alog10(vs) - alog10(500.0) ) / (0.42*sqrt(2.0))
+         z25P = 10**(3.75-0.74*(1+erf(x)))
+         z25P = z25P/1000.0
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, Z25P, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Cascadia, with Z25=Z25Ref'
+      endif
+
+C     Cascadia Model, with Z25 Basin model
+C     Model Number = 624
+      if ( jcalc .eq. 624 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.2
+         iRegion = 3
+         pnwbflag = 4
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Cascadia with Z25 value'
+      endif
+
+
+C     Cascadia Model, Seattle Basin (Previous version of the model no longer recommended)
+C     Model Number = 614
+      if ( jcalc .eq. 614 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.2
+         iRegion = 3
+         pnwbflag = 1
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Cascadia, Seattle Basin'
+      endif
+C     Cascadia Model, Other PNW Basin (Previous version of the model no longer recommended)
+C     Model Number = 615
+      if ( jcalc .eq. 615 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.2
+         iRegion = 3
+         pnwbflag = 2
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Cascadia, Other PNW Basin'
+      endif
+C     Northern Central America/Mexico Model.
+C     Model Number = 616
+      if ( jcalc .eq. 616 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.4
+         mbslab = 7.4
+         iRegion = 4
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Northern-CAM'
+      endif
+C     Southern Central America/Mexico Model.
+C     Model Number = 617
+      if ( jcalc .eq. 617 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.40
+         mbslab = 7.60
+         iRegion = 4
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Southern-CAM'
+      endif
+
+C     Japan Pacific Plate with Z25 value
+C     Model Number = 618
+      if ( jcalc .eq. 618 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.5
+         mbslab = 7.65
+         iRegion = 5
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Japan-PacificPlate with Z25 value'
+      endif
+
+C     Japan Pacific Plate with Reference Z25 value (i.e., no basin effects)
+C     Model Number = 625
+      if ( jcalc .eq. 625 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.5
+         mbslab = 7.65
+         iRegion = 5
+         pnwbflag = 99
+C     Set Z25 = Z25Ref based on Vs
+         x = (alog10(vs) - alog10(500.0) ) / (0.33*sqrt(2.0))
+         z25P = 10**(3.05-0.8*(1+erf(x)))
+         z25P = z25P/1000.0
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, Z25P, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Japan-PacificPlate with Z25=Z25Ref'
+      endif
+
+C     Japan Philippine Plate with Z25 value
+C     Model Number = 619
+      if ( jcalc .eq. 619 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.55
+         iRegion = 6
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Japan-PhilippinePlate with Z25 value'
+      endif
+
+C     Japan Philippine Plate with Reference Z25 value (i.e., no basin effects)
+C     Model Number = 626
+      if ( jcalc .eq. 626 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.7
+         mbslab = 7.55
+         iRegion = 6
+         pnwbflag = 99
+C     Set Z25 = Z25Ref based on Vs
+         x = (alog10(vs) - alog10(500.0) ) / (0.33*sqrt(2.0))
+         z25P = 10**(3.05-0.8*(1+erf(x)))
+         z25P = z25P/1000.0
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, Z25P, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Japan-PhilippinePlate with Z25=Z25Ref'
+      endif
+
+C     Northern South America
+C     Model Number = 620
+      if ( jcalc .eq. 620 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.5
+         mbslab = 7.3
+         iRegion = 7
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Northern-SA'
+      endif
+C     Southern South America
+C     Model Number = 621
+
+      if ( jcalc .eq. 621 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 8.6
+         mbslab = 7.25
+         iRegion = 8
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Southern-SA'
+      endif
+C     Taiwan
+C     Model Number = 622
+      if ( jcalc .eq. 622 ) then
+C     Set mb values for interface and slab cases
+         mbinter = 7.1
+         mbslab = 7.70
+         iRegion = 9
+         pnwbflag = 99
+         call S35_PSHAB2019 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           disthypo, iRegion, mbInter, mbSlab, pnwbflag )
+         attenname = 'Parker et al. (2020), Taiwan-East'
+      endif
+
+C     NGA-SUB: Si, Midorikawa, and Kishida (2019) - Japan Only
+C     Model Number = 675 Japan - No Basin Z25 Term
+C     Model Number = 676 Japan with Basin Z25 Term
+
+C     Note Moho Depth is fixed at default of 30 km.
+
+C     Model Number = 675
+      if ( jcalc .eq. 675 ) then
+C     Set mb values for interface and slab cases
+         mohodepth = 30.0
+         D25 = 0.0
+         call S35_SMK2020 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           mohodepth )
+         attenname = 'Si, Midorikawa, and Kishida(2020), Japan-No Basin'
+      endif
+C     Model Number = 676
+      if ( jcalc .eq. 676 ) then
+C     Set mb values for interface and slab cases
+         mohodepth = 30.0
+         call S35_SMK2020 ( mag, fType, rupDist, vs, D25, lnY,
+     1           sigma, phi, tau, specT, period2, iflag, depth,
+     2           mohodepth )
+         attenname = 'Si, Midorikawa, and Kishida(2020), Japan with Basin'
+      endif
+
 
 
 c     Check for valid jcalc
