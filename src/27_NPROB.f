@@ -9,23 +9,28 @@ C          D IS DENSITY VALUE (OUTPUT).
 
       real X, AX, P, D, T
 
-      IF (X) 1,2,2
-    1 AX = -X
-      GOTO 3
-    2 AX = X
-    3 IF ( AX-6.0 ) 5,4,4
-    4 P = 1.
-      D = 0.
-      GOTO 6
-    5 T = 1. / (1.0 + 0.2316419 * AX)
-      D = 0.3989423 * EXP(-X*X / 2.0)
-      P = 1.0 - D*T*( (((1.330274*T - 1.821256)*T + 1.781478) * T-
+      if (X .lt. 0.) then
+        AX = -X
+      elseif (X .ge. 0.) then
+        AX = X
+      endif
+
+      if (AX-6.0 .lt. 0.) then
+        T = 1. / (1.0 + 0.2316419 * AX)
+        D = 0.3989423 * EXP(-X*X / 2.0)
+        P = 1.0 - D*T*( (((1.330274*T - 1.821256)*T + 1.781478) * T-
      1    0.3565638) * T + 0.3193815)
-    6 IF (X) 8,7,7
-    7 P = 1.0 - P
-    8 continue
-      RETURN
-      END
+      elseif (AX-6.0 .ge. 0.) then
+        P = 1.
+        D = 0.
+      endif
+
+      if (X .ge. 0) then
+        P = 1.0 - P
+      endif
+
+      return
+      end
 
 c ------------------------------------------------------------------
       subroutine S27_NDTR3( X, P)
