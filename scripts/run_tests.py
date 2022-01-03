@@ -192,18 +192,20 @@ def iter_cases(
             yield path
 
 
-def run_haz(path: pathlib.PurePath, haz_bin: str):
+def run_haz(path: pathlib.PurePath, haz_bin: str, capture_output=True):
     # Use the first Run_ filename
     fpath = next(path.glob("Run_*.txt"))
     print("Running HAZ on:", fpath)
     haz_bin = os.path.abspath(haz_bin)
-    with open(os.devnull, "w") as fp:
-        p = subprocess.Popen(
-            [haz_bin], stdout=fp, stdin=subprocess.PIPE, cwd=str(fpath.parent)
-        )
-        # Process one file
-        p.communicate(bytes("0\n0\n%s\n" % fpath.name, "ascii"))
-        p.wait()
+
+    p = subprocess.run(
+        [haz_bin],
+        cwd=str(fpath.parent),
+        check=False,
+        input=bytes("0\n0\n%s\n" % fpath.name, "ascii"),
+        capture_output=capture_output,
+    )
+    return p
 
 
 def test_path(
@@ -217,6 +219,7 @@ def test_path(
 
     print(path_ref)
     path_test = pathlib.Path(root_test, path_ref.relative_to(root_ref))
+
     if not path_test.exists() or force:
         try:
             shutil.rmtree(path_test)
@@ -229,7 +232,12 @@ def test_path(
         shutil.copytree(path_ref.joinpath("Input"), path_test)
         # Run HAZ and track the duration
         start = datetime.datetime.now()
-        run_haz(path_test, haz_bin)
+        try:
+            run_haz(path_test, haz_bin)
+        except subprocess.CalledProcessError as e:
+            print(e)
+            return False
+
         time_diff = datetime.datetime.now() - start
 
         print(
@@ -237,6 +245,7 @@ def test_path(
         )
 
     ok = True
+    exts_tested = []
     for fpath_test in path_test.iterdir():
         ext = fpath_test.suffix
         fpath_ref = path_ref.joinpath("Output", fpath_test.name)
@@ -253,13 +262,19 @@ def test_path(
         else:
             continue
 
+        print(f"\tChecking {fpath_test} file...")
         # Check for errors
         errors = check_value(actual, expected, rtol, atol=1e-08)
-        ok &= not errors
         if errors:
             print("Errors in: %s" % fpath_test)
             print_errors("%s: " % fpath_test, errors)
-    return ok
+
+        ok &= not errors
+        exts_tested.append(ext)
+
+    # Check that all of the output files were tested
+    required_exts = [".out3", ".out4"]
+    return all(ext in exts_tested for ext in required_exts) and ok
 
 
 if __name__ == "__main__":
@@ -349,4 +364,5 @@ if __name__ == "__main__":
             )
             ok = all(results.get())
 
+    print('Passed' if ok else 'Failed!')
     sys.exit(0 if ok else 1)

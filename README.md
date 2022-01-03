@@ -16,7 +16,7 @@ instructions, open an _MinGW_ terminal and issue the following commands to
 install the required dependencies. Note, that these commands install the 64-bit
 versions. If you prefer to use 32-bit versions replace "x86_64" with "i686".
 ```
-pacman -S git mingw-w64-x86_64-gcc-libgfortran mingw-w64-x86_64-cmake 3.4.1-1
+pacman -S git mingw-w64-x86_64-gcc-libgfortran mingw-w64-x86_64-cmake
 ```
 After installing the required dependencies, _HAZ_ can be checked out of Git and
 built using the following:
