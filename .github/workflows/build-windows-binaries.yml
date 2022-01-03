@@ -47,12 +47,15 @@ jobs:
       run: cmake --build build --verbose --parallel 1
       if: failure()
 
-    - name: Get commit sha
-      run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+    - name: get commit sha
+      run: >-
+        echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+        cd build
+        mv HAZ.exe HAZ-$SHORT_SHA.exe
 
     - name: upload artifacts
       uses: 'actions/upload-artifact@v2'
       with:
         name: HAZ-${{ env.SHORT_SHA }}.exe ${{ matrix.arch }}
-        path: ${{ github.workspace }}/build/HAZ.exe
+        path: ${{ github.workspace }}/build/HAZ-${{ env.SHORT_SHA }}.exe
 
