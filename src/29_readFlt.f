@@ -15,20 +15,20 @@
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
      7     DistS7, DipS7, mechS7, ncountS7, version, VarXstepFlag,
-     8     VarYstepFlag )
+     8     VarYstepFlag)
 
       implicit none
       include 'pfrisk.h'
 
       integer synHWFlag(MAX_FLT,MAX_SYN), nsyn_Case(MAX_FLT), nFlt,
      1        synjcalc(MAX_FLT), fltDirect(MAX_FLT), synchron(MAX_FLT),
-     2        fIndex(3,MAX_FLT), nWidth(MAX_FLT), sourceType(MAX_FLT),
+     2        fIndex(3,MAX_FLT), sourceType(MAX_FLT),
      3        attenType(MAX_FLT), grid_n(MAX_FLT), nMaxMag2(MAX_FLT),
      4        nfp(MAX_FLT), nDownDip(MAX_FLT), nMag(MAX_FLT), iCoor
       integer nRupArea(MAX_FLT), nRupWidth(MAX_FLT), ncountS7(MAX_FLT),
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT),
      2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT),
-     3        VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT),
+     3        VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT), nWidth(MAX_FLT),
      4        segModelFlag(MAX_FLT,100), nSegModel0(MAX_FLT), fsys(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
@@ -140,7 +140,7 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7, VarXstepFlag, VarYstepFlag )
+     7     DistS7, DipS7, mechS7, ncountS7, VarXstepFlag, VarYstepFlag)
 
       implicit none
       include 'pfrisk.h'
@@ -151,17 +151,16 @@ c  --------------------------------------------------------------------
      3        attenType(MAX_FLT), grid_n(MAX_FLT), nMaxMag2(MAX_FLT),
      4        nfp(MAX_FLT), nDownDip(MAX_FLT), HWsource7, iRate, nb1
       integer nMag(MAX_FLT), nRupArea(MAX_FLT), nRupWidth(MAX_FLT),
-     1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn,
-     2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,
+     1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn, nFM,
+     2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem, iflt, i_bValue,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
-     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT)
+     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), n_Dip
       integer nFtype1(MAX_FLT), VarYstepFlag(iFlt), VarXstepFlag(iFlt),
-     2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
-     3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip,
-     4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM
-      integer iflt, nSegModel, nMagRecur, nFtypeModels,
-     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100),
-     2        nSegModel0(MAX_FLT), ncountS7(MAX_FLT)
+     1        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
+     2        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, nSegModel,
+     3        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM,
+     4        nMagRecur, nFtypeModels, segModelFlag(MAX_FLT,100)
+      integer nSegModel0(MAX_FLT), ncountS7(MAX_FLT), iRefMag
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN),

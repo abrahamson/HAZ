@@ -359,7 +359,7 @@ c             Brute force calc of Pmag.  Fix this later to be faster.
       return
       end
 
-C------WAACY subroutine S25_for Magnitude Prob Values --------------
+C------WAACY subroutine for Magnitude Prob Values --------------
 
       subroutine S25_Calc_WA_Pmag1 ( mChar, sigM, b_value, bTail, F, Mmax,
      1       Mmin, ML, MU, WA_Pmag)
@@ -440,7 +440,7 @@ c     Compute the probability of mag bewteen ML and MU
       return
       end
 
-C------WAACY subroutine S25_for Magnitude Prob Values Used for Rates --------------
+C------WAACY subroutine for Magnitude Prob Values Used for Rates --------------
 
       subroutine S25_Calc_WA_Pmag2 ( mChar, sigM, b_value, bTail, F, Mmax,
      1       Mmin, WA_Pmag, stepM, nMag)
@@ -536,7 +536,7 @@ c          and momment greater than M1 (sum2)
       return
       end
 
-C------WAACY subroutine S25_for to correct for rupture outside of modelled flt -----
+C------WAACY subroutine to correct for rupture outside of modelled flt -----
 
       subroutine S25_Calc_F2_Waacy ( mChar, sigM, b_value, bTail, F, Mmax,
      1       Mmin, F2 )

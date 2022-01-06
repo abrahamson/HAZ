@@ -140,32 +140,89 @@ c     truncates and renormalizes on both low and high end
       return
       end
 
+
 c ------------------------------------------------------------------
 
-      subroutine S27_rupDimProb ( sourceType, mag, coef, sigma,
-     1           step, sigmaMax, rupDim, prob, iFlt, idim )
+      subroutine S27_rupArea ( sourceType, mag, coef_area, sigArea,
+     1           areastep, sigMaxArea, rupArea, pArea, iFlt, iArea )
 
       implicit none
       include 'pfrisk.h'
 
-      integer sourceType, iFlt, idim
-      real mag, coef(2,MAX_FLT), sigma(*), rupDim, prob, nSigma,
-     1     nSigma_plus, nSigma_minus, F0, F1, F2, D, step, sigmaMax
+      integer sourceType, iFlt, iArea
+      real mag, coef_area(2,MAX_FLT), sigArea(*), rupArea, pArea, nSigma,
+     1     nSigma_plus, nSigma_minus, F0, F1, F2, D, areastep, sigMaxArea,
+     2     C2, Mo, rigidity
 
       if (sourceType .eq. 7) then
-        prob = 1.0
+        pArea = 1.0
       else
-        nSigma = -sigmaMax + (idim-0.5)*step
-        nSigma_plus = (nSigma + step/2.)
-        nSigma_minus = (nSigma - step/2.)
-        rupDim = 10.0**(coef(1,iflt)+coef(2,iflt)*mag+nSigma*sigma(iflt))
+        nSigma = -sigMaxArea + (iArea-0.5)*areastep
+        nSigma_plus = (nSigma + areastep/2.)
+        nSigma_minus = (nSigma - areastep/2.)
+
+c       rupture coefficient is C2 (Leonard)
+        if (int(coef_area(1,iflt)) .eq. -999) then
+          C2 = coef_area(2,iflt)* 10.**(-5.)
+          rigidity = 3.0e11
+          Mo = 10.**(16.05 + 1.5*mag)
+          rupArea = 10.**(log10(Mo/(C2*rigidity))*(2./3.) + nSigma*sigArea(iflt)) *
+     1              (10.**(-10.))
+c       rupture coefficients are a and b (Wells and Coppersmith)
+        else
+          rupArea = 10.0**(coef_area(1,iflt)+coef_area(2,iflt)*mag+nSigma*sigArea(iflt))
+        endif
 
 c       Compute probability that (log) rupture dimension is between
 c       dim_log_minus and dim_log_plus
-        call S27_NDTR ( sigmaMax, F0, D )
+        call S27_NDTR ( sigMaxArea, F0, D )
         call S27_NDTR ( nSigma_minus, F1, D )
         call S27_NDTR ( nSigma_plus, F2, D )
-        prob = (F1-F2)/(1-2*f0)
+        pArea = (F1-F2)/(1-2*f0)
+      endif
+
+      return
+      end
+
+
+
+c ------------------------------------------------------------------
+
+      subroutine S27_rupWidth ( sourceType, mag, rupArea, coef_width,
+     1           sigWidth, widthstep, sigMaxWidth, rupWidth, pWidth, iFlt, iWidth)
+
+      implicit none
+      include 'pfrisk.h'
+
+      integer sourceType, iFlt, iWidth
+      real mag, coef_width(2,MAX_FLT), sigWidth(*), rupWidth, pWidth, nSigma,
+     1     nSigma_plus, nSigma_minus, F0, F1, F2, D, widthstep, sigMaxWidth,
+     2     rupArea, Beta, C1
+
+      if (sourceType .eq. 7) then
+        pWidth = 1.0
+      else
+        nSigma = -sigMaxWidth + (iWidth-0.5)*widthstep
+        nSigma_plus = (nSigma + widthstep/2.)
+        nSigma_minus = (nSigma - widthstep/2.)
+
+c       rupture coefficient is C1 (Leonard)
+        if (int(coef_width(1,iflt)) .eq. -999) then
+          C1 = coef_width(2,iflt)
+          Beta = (2./3.)
+          rupWidth = ((C1/10.)*(((rupArea/(C1/10.))**(3./5.))**Beta)) *
+     1               (10.0**(nSigma*sigWidth(iflt)))
+c       rupture coefficients are a and b (Wells and Coppersmith)
+        else
+          rupWidth = 10.0**(coef_width(1,iflt)+coef_width(2,iflt)*mag+nSigma*sigWidth(iflt))
+        endif
+
+c       Compute probability that (log) rupture dimension is between
+c       dim_log_minus and dim_log_plus
+        call S27_NDTR ( sigMaxWidth, F0, D )
+        call S27_NDTR ( nSigma_minus, F1, D )
+        call S27_NDTR ( nSigma_plus, F2, D )
+        pWidth = (F1-F2)/(1-2*f0)
       endif
 
       return

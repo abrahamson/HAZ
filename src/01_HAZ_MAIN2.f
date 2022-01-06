@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*         December, 2021        *'
+      write (*,*) '*         January, 2021         *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -67,7 +67,7 @@ c     read fault File
      4     faultFlag, nDD, nFtype, ftype_wt,
      5     segModelFlag, nSegModel, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7, version, VarXstepFlag, VarYstepFlag )
+     7     DistS7, DipS7, mechS7, ncountS7, version, VarXstepFlag, VarYstepFlag)
 
 c     Loop Over Number of Sites
       read (13,*,err=2100) nSite
@@ -240,15 +240,15 @@ c         Intergrate Over Rupture Area for this mag (aleatory)
           do 750 iArea = 1, nRupArea(iFlt)
 
 c          Compute Rupture Area and Probability of Rupture Area
-           call S27_rupDimProb ( sourceType(iFlt), mag, coeff_area, sigArea,
+           call S27_rupArea ( sourceType(iFlt), mag, coeff_area, sigArea,
      1          areaStep, sigMaxArea, rupArea, pArea, iFlt, iArea )
 
 c          Intergrate Over Rupture Width for this mag (aleatory)
            do 700 iWidth = 1, nRupWidth(iFlt)
 
 c           Compute Rupture Width and Probability of Rupture Width
-            call S27_rupDimProb ( sourceType(iFlt), mag, coeff_width, sigWidth,
-     1           widthStep, sigMaxWidth, rupWidth, pWidth, iFlt, iWidth)
+            call S27_rupWidth ( sourceType(iFlt), mag, rupArea, coeff_width,
+     1           sigWidth, widthStep, sigMaxWidth, rupWidth, pWidth, iFlt, iWidth)
 
         call S28_RupDims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen,
      1                faultWidth(iFlt,iFltWidth), dip(iFlt,iFltWidth,1), nLocYST1,
