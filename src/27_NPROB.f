@@ -197,7 +197,7 @@ c ------------------------------------------------------------------
       integer sourceType, iFlt, iWidth
       real mag, coef_width(2,MAX_FLT), sigWidth(*), rupWidth, pWidth, nSigma,
      1     nSigma_plus, nSigma_minus, F0, F1, F2, D, widthstep, sigMaxWidth,
-     2     rupArea, Beta, C1
+     2     rupArea, Beta, C1, AR
 
       if (sourceType .eq. 7) then
         pWidth = 1.0
@@ -212,6 +212,10 @@ c       rupture coefficient is C1 (Leonard)
           Beta = (2./3.)
           rupWidth = ((C1/10.)*(((rupArea/(C1/10.))**(3./5.))**Beta)) *
      1               (10.0**(nSigma*sigWidth(iflt)))
+c       rupture coefficient is constant aspect ratio
+        elseif (int(coef_width(1,iflt)) .eq. -888) then
+          AR = coef_width(2,iflt)
+          rupWidth = (rupArea/AR)**(1./2.) * (10.0**(nSigma*sigWidth(iflt)))
 c       rupture coefficients are a and b (Wells and Coppersmith)
         else
           rupWidth = 10.0**(coef_width(1,iflt)+coef_width(2,iflt)*mag+nSigma*sigWidth(iflt))
