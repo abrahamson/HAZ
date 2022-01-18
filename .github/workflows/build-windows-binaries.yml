@@ -48,11 +48,11 @@ jobs:
       if: failure()
 
     - name: get commit sha
-      run: >-
+      run: >
         echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
     - name: rename binary to include SHA
-      run: >-
+      run: >
         cd build
         mv HAZ.exe HAZ-$SHORT_SHA.exe
         ls
