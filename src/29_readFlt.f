@@ -43,7 +43,7 @@
       real grid_dlat(MAX_FLT), minMag(MAX_FLT), magStep(MAX_FLT),
      1     hxStep(MAX_FLT), hyStep(MAX_FLT), minDepth(MAX_FLT),
      2     segModelWt(MAX_FLT), sampleStep(MAX_FLT), scaleRate(MAX_FLT),
-     3     rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
+     3     rateParam(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      4     rateParamWt(MAX_FLT,MAXPARAM,MAX_WIDTH), segWt1(MAX_FLT)
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), magS7(MAX_FLT,MAX_S7),
@@ -186,7 +186,7 @@ c  --------------------------------------------------------------------
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
-      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
+      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
      3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
@@ -556,6 +556,14 @@ c       Set flag for variable Ystep discretization (only sourceType 2, 3, and 4)
 
          read (10,*,err=3051) (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
          read (10,*,err=3052) (coef_width(k,iFlt),k=1,2), sigWidth(iFlt)
+
+c        check for three width coefficients (for aspect rupture a la Chiou and Youngs 2008, or Eq. 13-9 NGA-East))
+         if (int(coef_width(1,iFlt)) .eq. -777) then
+           backspace (10)
+           read (10,*,err=3052) (coef_width(k,iFlt),k=1,3), sigWidth(iFlt)
+         else
+           coef_width(3,iFlt) = 0.0
+         endif
 
 c        Read ftype Models
          read (10,*,err=3053) nFtypeModels
@@ -939,7 +947,7 @@ c  --------------------------------------------------------------------
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
-      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
+      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
      3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
@@ -1286,6 +1294,7 @@ C         Check that Hxstep = Hystep
 
          read (10,*,err=3051) (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
          read (10,*,err=3052) (coef_width(k,iFlt),k=1,2), sigWidth(iFlt)
+           coef_width(3,iFlt) = 0.0
 
 c        Read ftype Models
          read (10,*,err=3053) nFtypeModels
@@ -1669,7 +1678,7 @@ c ----------------------------
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), sigWidth(MAX_FLT),
      3     faultWidth(MAX_FLT,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
-      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(2,MAX_FLT),
+      real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
      2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
      3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
@@ -2024,6 +2033,7 @@ C         Check that Hxstep = Hystep
 
          read (10,*,err=3051) (coef_area(k,iFlt),k=1,2), sigArea(iFlt)
          read (10,*,err=3052) (coef_width(k,iFlt),k=1,2), sigWidth(iFlt)
+           coef_width(3,iFlt) = 0.0
 
 c        Read ftype Models
          read (10,*,err=3053) nFtypeModels

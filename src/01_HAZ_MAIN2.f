@@ -10,7 +10,7 @@ c     Write Program information to the screen.
       write (*,*) '*********************************'
       write (*,*) '*   Hazard Code: Version 45.3   *'
       write (*,*) '*       Under Development       *'
-      write (*,*) '*         January, 2021         *'
+      write (*,*) '*          March, 2022          *'
       write (*,*) '*********************************'
       write (*,*)
 
@@ -253,6 +253,8 @@ c           Compute Rupture Width and Probability of Rupture Width
         call S28_RupDims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen,
      1                faultWidth(iFlt,iFltWidth), dip(iFlt,iFltWidth,1), nLocYST1,
      2                yStep(iFlt), rupLen)
+
+      write (1313,*) fname(iflt), mag, rupArea, rupWidth
 
         call S28_nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
      1                   rupWidth, fltgrid_a, ruparea, nLocYST1, nLocX, n1AS, n2AS)
@@ -734,6 +736,7 @@ c      Write out the deagrregated hazard
      &         i2.2, ':', i2.2, ':', i2.2 )
 
       close (18) !log file
+      close (1313) !temp
 
       write (*,'( 2x,''Normal termination'')')
       stop

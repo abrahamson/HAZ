@@ -67,7 +67,7 @@ c    Declarations for Main file
      3     grid_x(MAX_GRID), grid_y(MAX_GRID), xFlt(MAX_DD,MAX_SEG),
      4     yFlt(MAX_DD,MAX_SEG), zFlt(MAX_DD,MAX_SEG), minDepth(MAX_FLT)
       real coeff_area(2,MAX_FLT), sigArea(MAX_FLT), sigmaY,
-     1     coeff_width(2,MAX_FLT), sigWidth(MAX_FLT), sigMaxArea,
+     1     coeff_width(3,MAX_FLT), sigWidth(MAX_FLT), sigMaxArea,
      2     faultWidth(MAX_FLT,MAX_WIDTH), magStep(MAX_FLT), ruplen,
      3     faultWidthWt(MAX_FLT,MAX_WIDTH), sigTrunc(MAX_PROB),
      4     maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), minMag(MAX_FLT)

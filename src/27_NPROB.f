@@ -195,7 +195,7 @@ c ------------------------------------------------------------------
       include 'pfrisk.h'
 
       integer sourceType, iFlt, iWidth
-      real mag, coef_width(2,MAX_FLT), sigWidth(*), rupWidth, pWidth, nSigma,
+      real mag, coef_width(3,MAX_FLT), sigWidth(*), rupWidth, pWidth, nSigma,
      1     nSigma_plus, nSigma_minus, F0, F1, F2, D, widthstep, sigMaxWidth,
      2     rupArea, Beta, C1, AR
 
@@ -206,17 +206,21 @@ c ------------------------------------------------------------------
         nSigma_plus = (nSigma + widthstep/2.)
         nSigma_minus = (nSigma - widthstep/2.)
 
-c       rupture coefficient is C1 (Leonard)
+c       flag, rupture coefficient is C1 (Leonard)
         if (int(coef_width(1,iflt)) .eq. -999) then
           C1 = coef_width(2,iflt)
           Beta = (2./3.)
           rupWidth = ((C1/10.)*(((rupArea/(C1/10.))**(3./5.))**Beta)) *
      1               (10.0**(nSigma*sigWidth(iflt)))
-c       rupture coefficient is constant aspect ratio
+c       flag, rupture coefficient is constant aspect ratio
         elseif (int(coef_width(1,iflt)) .eq. -888) then
           AR = coef_width(2,iflt)
           rupWidth = (rupArea/AR)**(1./2.) * (10.0**(nSigma*sigWidth(iflt)))
-c       rupture coefficients are a and b (Wells and Coppersmith)
+c       flag, rupture coefficients are a and b (Chiou and Youngs 2008, or Eq. 13-9 NGA-East)
+        elseif (int(coef_width(1,iflt)) .eq. -777) then
+          AR = exp(max(0.0,coef_width(2,iflt)+coef_width(3,iflt)*mag))
+          rupWidth = (rupArea/AR)**(1./2.) * (10.0**(nSigma*sigWidth(iflt)))
+c       default - rupture coefficients are a and b (Wells and Coppersmith)
         else
           rupWidth = 10.0**(coef_width(1,iflt)+coef_width(2,iflt)*mag+nSigma*sigWidth(iflt))
         endif
