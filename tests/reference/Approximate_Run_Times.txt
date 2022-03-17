@@ -5,9 +5,10 @@ Memory 16 GB 1600 MHz
 
 Approximate run times:
 
-RTest7		~30 seconds
-RTest8 (PC)	~15 seconds
-RTest8 (St)	~16.5 minutes
-RTest9 		~1 second
-RTest10		~1 second
-RTest11		~2.5 minutes
+RTest6, Rupture Dimensions		~1.5 minutes
+RTest7, Fault Segments			~30 seconds
+RTest8, Poly Chaos			~15 seconds
+RTest8, Standard				~16.5 minutes
+RTest9, Deterministic Atten Curves	~1 second
+RTest10, Deterministic Response Spectra	~1 second
+RTest11, NGA-East			~2.5 minutes

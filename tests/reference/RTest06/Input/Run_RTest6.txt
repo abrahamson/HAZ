@@ -1,0 +1,34 @@
+Source_RTest6.txt
+45.3					version of fault file
+36.5 39.5 -123.5 -120.5  		min max lat long 
+250. 					maxdist
+Reference Test 6, Rupture Dimension Scaling
+1  1  					nProb, nAttenType
+0.2  8  0  0   				  period, max epsilon, dir flag, pcflag
+18 
+0.001  0.01  0.05  0.1  0.15  0.2  0.25  0.3  0.35  0.4  0.45  0.5  0.55  0.6  0.7  0.8  0.9  1.0
+5      					Number of GM Models for AttenType 1
+2787 0.0 0.0 0.2 0.0 0			  jcalc, c1, c2, wt, sigvaradd, mixflag (ASK14 est)
+2797 0.0 0.0 0.2 0.0 0			  jcalc, c1, c2, wt, sigvaradd, mixflag (CY14 est)
+2836 0.0 0.0 0.2 0.0 0			  jcalc, c1, c2, wt, sigvaradd, mixflag (CB14)
+2910 0.0 0.0 0.2 0.0 0			  jcalc, c1, c2, wt, sigvaradd, mixflag (I14)
+2922 0.0 0.0 0.2 0.0 0			  jcalc, c1, c2, wt, sigvaradd, mixflag (BSSA14 no basin)
+1  					psCorFlag  (0=no, 1=yes)
+11					Number of deag mag values
+5.0 5.25 5.5 5.75 6.0 6.25 6.5 6.75 7.0 7.25 7.5	  	  deag mag values
+12					Number of deag dist values
+0.0  10.0  20.0  30.0  40.0  50.0  75.0  100.0  125.0  150.0  200.0  250.0     deag dist values  
+6 					Number of deag eps values
+-10.  -2.  0.  1.  2.  10.		  deag eps values
+4					Number of deag dir values
+0.0 0.10 0.40 2.0		  	  deag dir values
+0  					soil amp
+1     					nSites
+-122.000  38.000     760.0  0.0481  0.250  0.6068  0.8 0  (sx, sy, Vs, DVs1.0, DVs1.5, DVs2.5, Vrup, FABA)
+RTest6_Site1.out1
+RTest6_Site1.out2
+RTest6_Site1.out3
+RTest6_Site1.out4
+RTest6_Site1.out5
+RTest6_Site1.out6
+RTest6_Site1.out7
