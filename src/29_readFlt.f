@@ -155,7 +155,7 @@ c  --------------------------------------------------------------------
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem, iflt, i_bValue,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), n_Dip
-      integer nFtype1(MAX_FLT), VarYstepFlag(iFlt), VarXstepFlag(iFlt),
+      integer nFtype1(MAX_FLT), VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT),
      1        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      2        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, nSegModel,
      3        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM,
