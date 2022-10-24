@@ -706,12 +706,12 @@ c ******* Idriss Model *********
 C     Idriss 2013 - Horizontal
 C     Model Number = 2910
       if ( jcalc .eq. 2910 ) then
-         if (vs .ge. 450.0) then
-            call S09_I_NGAWest2_2013 ( mag, rupDist, ftype, vs, specT,
+         if (vs .gt. 1200) then
+            call S09_I_NGAWest2_2013 ( mag, rupDist, ftype, 1200.0, specT,
      1                     period2, lnY, sigma, iflag )
             attenname = 'Idriss_NGAWest2_2013_Hor'
-         elseif (vs .gt. 1200) then
-            call S09_I_NGAWest2_2013 ( mag, rupDist, ftype, 1200.0, specT,
+         elseif (vs .ge. 450.0) then
+            call S09_I_NGAWest2_2013 ( mag, rupDist, ftype, vs, specT,
      1                     period2, lnY, sigma, iflag )
             attenname = 'Idriss_NGAWest2_2013_Hor'
          else
