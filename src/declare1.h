@@ -58,14 +58,14 @@ c    Declarations for Main file
      4     sigma_mu, rate1, PC_Coef(7,MAX_INTEN)
       real dirMed, dirSigma, fs, pHypoX, pHypoZ, temp, sigma0, AR,
      1     siteX, siteY, testInten(MAX_PROB, MAX_INTEN), lgInten,
-     2     fLong(MAX_FLT, MAX_DD, MAX_SEG), fLat(MAX_FLT, MAX_DD, MAX_SEG),
-     3     fZ(MAX_FLT, MAX_DD, MAX_SEG), scaleRate(MAX_FLT),
-     4     dip(MAX_FLT,MAX_WIDTH, MAX_SEG), lgTestInten(MAX_PROB, MAX_INTEN)
+     2     fLong(MAX_FLT, MAX_DD, MAX_COOR), fLat(MAX_FLT, MAX_DD, MAX_COOR),
+     3     fZ(MAX_FLT, MAX_DD, MAX_COOR), scaleRate(MAX_FLT),
+     4     dip(MAX_FLT,MAX_WIDTH), lgTestInten(MAX_PROB, MAX_INTEN)
       real grid_a(MAX_FLT,MAX_GRID), grid_lat(MAX_FLT,MAX_GRID),
      1     grid_long(MAX_FLT,MAX_GRID), grid_dlong(MAX_FLT),
      2     grid_dlat(MAX_FLT), grid_top(MAX_FLT,MAX_GRID), maxlat,
-     3     grid_x(MAX_GRID), grid_y(MAX_GRID), xFlt(MAX_DD,MAX_SEG),
-     4     yFlt(MAX_DD,MAX_SEG), zFlt(MAX_DD,MAX_SEG), minDepth(MAX_FLT)
+     3     grid_x(MAX_GRID), grid_y(MAX_GRID), xFlt(MAX_DD,MAX_COOR),
+     4     yFlt(MAX_DD,MAX_COOR), zFlt(MAX_DD,MAX_COOR), minDepth(MAX_FLT)
       real coeff_area(2,MAX_FLT), sigArea(MAX_FLT), sigmaY,
      1     coeff_width(3,MAX_FLT), sigWidth(MAX_FLT), sigMaxArea,
      2     faultWidth(MAX_FLT,MAX_WIDTH), magStep(MAX_FLT), ruplen,

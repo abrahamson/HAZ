@@ -15,7 +15,7 @@ C       attenflag = 2 Spectra
      1     coefrr(MAX_PER,11), coefrj(MAX_PER,11), mag, distrup, distjb,
      2     distseismo, vs, sigfix1, lgInten, sigmaY, depthvs10, depthvs15,
      3     D25, minaper, maxaper, aper(MAX_PER), ftype(MAX_FLT,MAX_FTYPE),
-     4     fTop(MAX_FLT, MAX_SEG), dipd, AR, tau, phi, hypodepth1
+     4     fTop, dipd, AR, tau, phi, hypodepth1
       real attenrupdist(MAXDETM_DIST), attenjbdist(MAXDETM_DIST),
      1     attenseisdist(MAXDETM_DIST), attenhypodist(MAXDETM_DIST),
      2     attenRx(MAXDETM_DIST), attenRy0(MAXDETM_DIST), hypodepth,
@@ -83,7 +83,7 @@ c     Check for dipping fault type with Dip angle = 90.
             endif
             read (13,*) vs, vs30_class, forearc
             read (13,*) hypodepth, RupWidth
-            read (13,*) depthvs10, depthvs15, D25, ftop(1,1)
+            read (13,*) depthvs10, depthvs15, D25, ftop
             read (13,*) specT(1,1)
 
 c     Write input parameters to output file.
@@ -107,7 +107,7 @@ c     Write input parameters to output file.
             write (67,'(2x,a15,f8.3)')  'DepthVs10  = ', depthvs10
             write (67,'(2x,a15,f8.3)')  'DepthVs15  = ', depthvs15
             write (67,'(2x,a15,f8.3)')  'DepthVs25  = ', D25
-            write (67,'(2x,a15,f8.3)')  'Depthtop   = ', ftop(1,1)
+            write (67,'(2x,a15,f8.3)')  'Depthtop   = ', ftop
             if (forearc .eq. 0) then
                write (67,'(4x,a16)')     'Forearc Site'
             elseif (forearc .eq. 1) then
@@ -133,7 +133,7 @@ C     Perform loop over distances for attenuation models.
      1               hwflag, mag, jcalc1, specT(1,1),
      2               lgInten,sigmaY, ftype(1,1), attenName, period1,
      3               iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dipd,
-     4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
+     4               disthypo, depthvs10, depthvs15, D25, tau, ftop,
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0)
 
@@ -146,7 +146,7 @@ C     Check for sigma values different than requested GMPE.
      1               hwflag, mag, scalc1, specT(1,1),
      2               temp, sigmaY, ftype(1,1), sigmaName, period1,
      3               iAtten, iProb, jType, vs, hypoDepth,intflag,AR,dipd,
-     4               disthypo, depthvs10, depthvs15, D25, tau,  ftop(1,1),
+     4               disthypo, depthvs10, depthvs15, D25, tau,  ftop,
      5               theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0 )
 
@@ -226,7 +226,7 @@ c         Check for dipping fault type with Dip angle = 90.
           endif
           read (13,*) vs, vs30_class, forearc
           read (13,*) hypodepth, RupWidth
-          read (13,*) depthvs10, depthvs15, D25, ftop(1,1)
+          read (13,*) depthvs10, depthvs15, D25, ftop
 
 C         Get the number of spectral periods for each attenuation relationship model
           read (13,*) nper
@@ -264,7 +264,7 @@ c         Write input parameters to output file.
           write (67,'(2x,a15,f8.3)')  'DepthVs10  = ', depthvs10
           write (67,'(2x,a15,f8.3)')  'DepthVs15  = ', depthvs15
           write (67,'(2x,a15,f8.3)')  'DepthVs25  = ', D25
-          write (67,'(2x,a15,f8.3)')  'Depthtop   = ', ftop(1,1)
+          write (67,'(2x,a15,f8.3)')  'Depthtop   = ', ftop
           if (forearc .eq. 0) then
             write (67,'(4x,a16)')     'Forearc Site'
           elseif (forearc .eq. 1) then
@@ -318,7 +318,7 @@ c             is not defined (output will be set to null value of -9.99999)
      1               hwflag, mag, jcalc1, specT(1,1),
      2               lgInten, sigmaY, ftype(1,1), attenName,
      2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
-     4               disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
+     4               disthypo, depthvs10, depthvs15, D25, tau, ftop,
      5               theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
      6               cfcoefRrup, cfcoefRjb, Ry0 )
 
@@ -329,7 +329,7 @@ c             is not defined (output will be set to null value of -9.99999)
      2               lgInten,sigmaY, ftype(1,1), attenName,
      2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau,
-     3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
+     3               ftop, theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
 
               elseif (specT(1,1) .eq. -1.0) then
@@ -339,7 +339,7 @@ c             is not defined (output will be set to null value of -9.99999)
      2               lgInten,sigmaY, ftype(1,1), attenName,
      2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau,
-     3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
+     3               ftop, theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
 
               elseif (specT(1,1) .eq. -2.0) then
@@ -349,7 +349,7 @@ c             is not defined (output will be set to null value of -9.99999)
      2               lgInten,sigmaY, ftype(1,1), attenName,
      2               period1, iAtten, iProb, jType, vs, hypoDepth, intflag, AR, dipd,
      4               hypodepth1, depthvs10, depthvs15, D25, tau,
-     3               ftop(1,1), theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
+     3               ftop, theta_Site, RupWidth, vs30_class, forearc, Rx, phi,
      4               cfcoefRrup, cfcoefRjb, Ry0 )
 
                else
@@ -366,7 +366,7 @@ C              Now compute the sigma if requested is different than jcalc GMPE.
      1                     hwflag, mag, scalc1, specT(1,1),
      2                     temp,sigmaY, ftype(1,1), sigmaName,
      2                     period1, iAtten, iProb, jType, vs, hypoDepth,intflag, AR, dipd,
-     4                     disthypo, depthvs10, depthvs15, D25, tau, ftop(1,1),
+     4                     disthypo, depthvs10, depthvs15, D25, tau, ftop,
      5                     theta_Site, RupWidth, vs30_class, foreArc, Rx, phi,
      6                     cfcoefRrup, cfcoefRjb, Ry0 )
                  elseif (sigflag .eq. 2) then

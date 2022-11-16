@@ -157,7 +157,7 @@ C         Initialize temp hazard array for this source
 
 c        Set bottom of fault for standard faults (source type 1)
           if ( sourceType(iFlt) .eq. 1. ) then
-            call S20_SetFltBottom (iCoor, iFlt, nfp, dip(iFlt,iFltWidth,1),
+            call S20_SetFltBottom (iCoor, iFlt, nfp, dip(iFlt,iFltWidth),
      1                         faultWidth(iFlt,iFltWidth), fZ, flat, flong, nDD)
           endif
 
@@ -251,7 +251,7 @@ c           Compute Rupture Width and Probability of Rupture Width
      1           sigWidth, widthStep, sigMaxWidth, rupWidth, pWidth, iFlt, iWidth)
 
         call S28_RupDims (sourcetype(iFlt), rupWidth, aveWidth, rupArea, faultLen,
-     1                faultWidth(iFlt,iFltWidth), dip(iFlt,iFltWidth,1), nLocYST1,
+     1                faultWidth(iFlt,iFltWidth), dip(iFlt,iFltWidth), nLocYST1,
      2                yStep(iFlt), rupLen)
 
         call S28_nLocXcells (sourceType(iFlt), nLocXAS, grid_n(iFlt), nfltgrid, fltgrid_w,
@@ -276,7 +276,7 @@ c            set the probabilities for the depths
              if ( iDepthFlag .eq. 0 ) then
                call S13_CalcDepthProb ( iDepthModel(iFlt), depthParam, iFlt, pLocY,
      1              sourceType(iFlt), nLocY, yStep(iFlt), zFlt(1,1),
-     2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iWidth,1) )
+     2              faultWidth(iFlt,iFltWidth), rupWidth, dip(iFlt,iFltWidth) )
                if (sourceType(iFlt) .eq. 1 .or. sourceType(iFlt) .eq. 7) then
                  iDepthFlag = 1
                endif

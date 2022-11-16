@@ -25,7 +25,7 @@ c     declarations passed in
      6     fltgrid_y3(MAXFLT_DD,MAXFLT_AS), fltgrid_z3(MAXFLT_DD,MAXFLT_AS),
      6     fltgrid_x4(MAXFLT_DD,MAXFLT_AS), fltgrid_y4(MAXFLT_DD,MAXFLT_AS),
      7     fltgrid_z4(MAXFLT_DD,MAXFLT_AS), fltgrid_Rrup(MAXFLT_DD,MAXFLT_AS),
-     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH,MAX_SEG),
+     8     fltgrid_Rjb(MAXFLT_DD,MAXFLT_AS), dip(MAX_FLT,MAX_WIDTH),
      9     distS7(MAX_FLT,MAX_S7), dipS7(MAX_FLT,MAX_S7)
 
 c     declarations passed out
@@ -60,7 +60,7 @@ c         Set hypoDepth for areal sources
 c         Approximate correction for using point source with extended source model
 C         added limit on only shallow areal sources (Hypo>30.0km)
           if ( psCorFlag .eq. 1  .and. hypoDepth .le. 30.0) then
-            rupz = sin(abs(dip(iFlt,iFltWidth,1)*3.1415926/180.))*rupWidth
+            rupz = sin(abs(dip(iFlt,iFltWidth)*3.1415926/180.))*rupWidth
             hypo1=hypoDepth-rupz/2.
           if (hypo1 .lt. 0.0) hypo1=0.0
           rupLength2 = rupLen/2.
@@ -90,7 +90,7 @@ c         Set other distance values equal to corresponding distance measures.
           Ry0 = 0.0
 C         Set HWflag = 0 for areal or grid sources.
           HWFlag = 0
-          dipavgd = dip(iFlt,ifltWidth,1)
+          dipavgd = dip(iFlt,ifltWidth)
           return
 
 c     Compute distances for SourceType 7
@@ -490,8 +490,8 @@ c --------------------------------------------------------------------
 
       integer i, ix, iy, nx, ny, nPts, nr, insideFlag, iBin, iz, iBinMax
       integer VarXstepFlag
-      real xFlt2(MAX_DD,MAX_SEG), yFlt2(MAX_DD,MAX_SEG), maxdist
-      real xFlt(MAX_SEG), yFlt(MAX_SEG), xMin, xMax, yMin, yMax, sum
+      real xFlt2(MAX_DD,MAX_COOR), yFlt2(MAX_DD,MAX_COOR), maxdist
+      real xFlt(MAX_COOR), yFlt(MAX_COOR), xMin, xMax, yMin, yMax, sum
       real distDensity(MAX_DIST1), dr, step, x, y, x0, y0, horDist
 
 c     Copy to 1-D array

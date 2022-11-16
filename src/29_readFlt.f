@@ -27,9 +27,9 @@
      4        nfp(MAX_FLT), nDownDip(MAX_FLT), nMag(MAX_FLT), iCoor
       integer nRupArea(MAX_FLT), nRupWidth(MAX_FLT), ncountS7(MAX_FLT),
      1        nParamVar(MAX_FLT,MAX_WIDTH), iDepthModel(MAX_FLT),
-     2        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT),
+     2        nFtype(MAX_FLT), faultFlag(MAX_FLT,MAX_SEGMOD,MAX_SEG),
      3        VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT), nWidth(MAX_FLT),
-     4        segModelFlag(MAX_FLT,100), nSegModel0(MAX_FLT), fsys(MAX_FLT)
+     4        segModelFlag(MAX_FLT,MAX_SEGMOD), nSegModel0(MAX_FLT), fsys(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
      2     synftype(MAX_FLT,MAX_SYN), synhypo(MAX_FLT,MAX_SYN),
@@ -48,12 +48,12 @@
       real beta(MAX_FLT,MAXPARAM,MAX_WIDTH), ftype_wt(MAX_FLT,MAX_N1),
      1     magRecurWt(MAX_FLT,MAXPARAM,MAX_WIDTH), magS7(MAX_FLT,MAX_S7),
      2     magRecur(MAX_FLT,MAXPARAM,MAX_WIDTH), mechS7(MAX_FLT,MAX_S7),
-     3     faultWidth(MAX_FLT,MAX_WIDTH), segModelWt1(MAX_FLT,100),
+     3     faultWidth(MAX_FLT,MAX_WIDTH), segModelWt1(MAX_FLT,MAX_SEGMOD),
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), DipS7(MAX_FLT,MAX_S7)
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), rateS7(MAX_FLT,MAX_S7),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
-     2     fLong(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
-     3     fLat(MAX_FLT,MAX_DD,MAX_SEG), dip(MAX_FLT,MAX_WIDTH,MAX_SEG),
+     2     fLong(MAX_FLT,MAX_DD,MAX_COOR), fZ(MAX_FLT,MAX_DD,MAX_COOR),
+     3     fLat(MAX_FLT,MAX_DD,MAX_COOR), dip(MAX_FLT,MAX_WIDTH),
      4     faultWidthWt(MAX_FLT,MAX_WIDTH), ftype(MAX_FLT,MAX_N1)
       real mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), distS7(MAX_FLT,MAX_S7),
      1     depthParam(MAX_FLT,5), mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM),
@@ -154,12 +154,12 @@ c  --------------------------------------------------------------------
      1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn, nFM,
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem, iflt, i_bValue,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
-     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT), n_Dip
+     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,MAX_SEGMOD,MAX_SEG), n_Dip
       integer nFtype1(MAX_FLT), VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT),
      1        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      2        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, nSegModel,
      3        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM,
-     4        nMagRecur, nFtypeModels, segModelFlag(MAX_FLT,100)
+     4        nMagRecur, nFtypeModels, segModelFlag(MAX_FLT,MAX_SEGMOD)
       integer nSegModel0(MAX_FLT), ncountS7(MAX_FLT), iRefMag
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
@@ -188,19 +188,19 @@ c  --------------------------------------------------------------------
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
-     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
-     3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
+     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_COOR),
+     3     fLat(MAX_FLT,MAX_DD,MAX_COOR), fZ(MAX_FLT,MAX_DD,MAX_COOR),
      4     ftype(MAX_FLT,MAX_N1), faultWidthWt(MAX_FLT,MAX_WIDTH)
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1),
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top,
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_SEGMOD)
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM),
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
      3     MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM), segWt1(MAX_FLT),
      4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM), dip2, testMaxMag
-      real dip(MAX_FLT,MAX_WIDTH, MAX_SEG), segModelWt1(MAX_FLT,100),
+      real dip(MAX_FLT,MAX_WIDTH), segModelWt1(MAX_FLT,MAX_SEGMOD),
      1     wt_MoRateBranch, sum, ProbAct0, depthParam(MAX_FLT,5),
      2     rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH),
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7),
@@ -221,10 +221,12 @@ c     Input Fault Parameters
 
 c      Read number of segmentation models for this fault system
        read (10,*,err=3005) nSegModel
+       call S21_CheckDim ( nSegModel, MAX_SEGMOD, 'MAX_SEGMOD   ' )
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
 c      Read total number of fault segments
        read (10,*,err=3007) nFlt2
+       call S21_CheckDim ( nFlt2, MAX_SEG, 'MAX_SEG   ' )
 
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -285,7 +287,11 @@ c       Check for standard fault source or areal source
           read (10,*,err=3014) dip1, top
           read(10,*,err=3015) nfp(iFlt)
 
-          call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+          call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
+          if (sourceType(iFlt) .eq. 2) then  !because second dimension for grid_top is MAX_GRID
+            call S21_CheckDim ( nfp(iFlt), MAX_GRID, 'MAX_GRID   ' )
+          endif
+
           do ipt=1,nfp(iFlt)
             read (10,*,err=3016) fLong(iFlt,1,ipt), fLat(iFlt,1,ipt)
             fZ(iFlt,1,ipt) = top
@@ -324,7 +330,8 @@ c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
            read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt)
 
-           call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+           call S21_CheckDim ( nDownDip(iFlt), MAX_DD, 'MAX_DD   ' )
+           call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
            do ipt=1,nfp(iFlt)
               read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) )
 
@@ -599,7 +606,7 @@ c        Load up parameter variations into large single dimension arrays
            call S21_CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )
 
              dip2 = dip1 + deltaDip1(iDip)
-             dip(iFlt,iWidth,1) = dip2
+             dip(iFlt,iWidth) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
 
@@ -914,13 +921,13 @@ c  --------------------------------------------------------------------
      1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn,
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
-     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT)
+     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,MAX_SEGMOD,MAX_SEG)
       integer nFtype1(MAX_FLT),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip,
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM
       integer iflt, nSegModel, nMagRecur, nFtypeModels,
-     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100),
+     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,MAX_SEGMOD),
      2        nSegModel0(MAX_FLT), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
@@ -949,19 +956,19 @@ c  --------------------------------------------------------------------
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
-     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
-     3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
+     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_COOR),
+     3     fLat(MAX_FLT,MAX_DD,MAX_COOR), fZ(MAX_FLT,MAX_DD,MAX_COOR),
      4     ftype(MAX_FLT,MAX_N1), faultWidthWt(MAX_FLT,MAX_WIDTH)
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1),
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top,
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_SEGMOD)
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM),
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
      3     MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM), segWt1(MAX_FLT),
      4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM), dip2, testMaxMag
-      real dip(MAX_FLT,MAX_WIDTH, MAX_SEG), segModelWt1(MAX_FLT,100),
+      real dip(MAX_FLT,MAX_WIDTH), segModelWt1(MAX_FLT,MAX_SEGMOD),
      1     wt_MoRateBranch, sum, ProbAct0, depthParam(MAX_FLT,5),
      2     rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH),
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7),
@@ -982,10 +989,12 @@ c     Input Fault Parameters
 
 c      Read number of segmentation models for this fault system
        read (10,*,err=3005) nSegModel
+       call S21_CheckDim ( nSegModel, MAX_SEGMOD, 'MAX_SEGMOD   ' )
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
 c      Read total number of fault segments
        read (10,*,err=3007) nFlt2
+       call S21_CheckDim ( nFlt2, MAX_SEG, 'MAX_SEG   ' )
 
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -1046,7 +1055,11 @@ c       Check for standard fault source or areal source
           read (10,*,err=3014) dip1, top
           read(10,*,err=3015) nfp(iFlt)
 
-          call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+          call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
+          if (sourceType(iFlt) .eq. 2) then  !because second dimension for grid_top is MAX_GRID
+            call S21_CheckDim ( nfp(iFlt), MAX_GRID, 'MAX_GRID   ' )
+          endif
+
           do ipt=1,nfp(iFlt)
             read (10,*,err=3016) fLong(iFlt,1,ipt), fLat(iFlt,1,ipt)
             fZ(iFlt,1,ipt) = top
@@ -1085,7 +1098,8 @@ c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
            read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt)
 
-           call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+           call S21_CheckDim ( nDownDip(iFlt), MAX_DD, 'MAX_DD   ' )
+           call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
            do ipt=1,nfp(iFlt)
               read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) )
 
@@ -1330,7 +1344,7 @@ c        Load up parameter variations into large single dimension arrays
            call S21_CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )
 
              dip2 = dip1 + deltaDip1(iDip)
-             dip(iFlt,iWidth,1) = dip2
+             dip(iFlt,iWidth) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
 
@@ -1645,13 +1659,13 @@ c ----------------------------
      1        nRate, n_bValue, nRefMag(MAX_N1), ifsystem, isyn,
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT), iOverRideMag,
-     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,100,MAX_FLT)
+     4        nFtype(MAX_FLT), faultFlag(MAX_FLT,MAX_SEGMOD,MAX_SEG)
       integer nFtype1(MAX_FLT),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip,
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM
       integer iflt, nSegModel, nMagRecur, nFtypeModels,
-     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,100),
+     1        nFM, iRefMag, i_bValue, segModelFlag(MAX_FLT,MAX_SEGMOD),
      2        nSegModel0(MAX_FLT), ncountS7(MAX_FLT)
       real synmag(MAX_FLT,MAX_SYN), syndistRup(MAX_FLT,MAX_SYN),
      1     syndistJB(MAX_FLT,MAX_SYN), syndistSeismo(MAX_FLT,MAX_SYN),
@@ -1680,19 +1694,19 @@ c ----------------------------
      4     mpdf_param(MAX_FLT,MAXPARAM,MAX_WIDTH,6), rp6(MAXPARAM)
       real maxMag(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_width(3,MAX_FLT),
      1     maxMagWt(MAX_FLT,MAXPARAM,MAX_WIDTH), coef_area(2,MAX_FLT),
-     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_SEG),
-     3     fLat(MAX_FLT,MAX_DD,MAX_SEG), fZ(MAX_FLT,MAX_DD,MAX_SEG),
+     2     sigArea(MAX_FLT), fLong(MAX_FLT,MAX_DD,MAX_COOR),
+     3     fLat(MAX_FLT,MAX_DD,MAX_COOR), fZ(MAX_FLT,MAX_DD,MAX_COOR),
      4     ftype(MAX_FLT,MAX_N1), faultWidthWt(MAX_FLT,MAX_WIDTH)
       real ftype1(MAX_FLT,MAX_N1), ftype_wt1(MAX_FLT,MAX_N1),
      1     ftmodelwt(MAX_N1), wt_srBranch, wt_ActrateBranch,
      2     mMagout(MAX_FLT,MAX_WIDTH,MAXPARAM), dip1, top,
-     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_FLT)
+     3     scaleRate(MAX_FLT), segWt(MAX_FLT,MAX_SEGMOD)
       real mMagoutWt(MAX_FLT,MAX_WIDTH,MAXPARAM), wt_recIntBranch,
      1     sr(MAXPARAM), wt_sr(MAXPARAM), actRate(MAXPARAM),
      2     actRateWt1(MAXPARAM), MoRate(MAXPARAM), wt_MoRate(MAXPARAM),
      3     MoRateDepth(MAXPARAM), MoRDepth(MAXPARAM), segWt1(MAX_FLT),
      4     rec_Int(MAXPARAM), wt_recInt(MAXPARAM), dip2, testMaxMag
-      real dip(MAX_FLT,MAX_WIDTH, MAX_SEG), segModelWt1(MAX_FLT,100),
+      real dip(MAX_FLT,MAX_WIDTH), segModelWt1(MAX_FLT,MAX_SEGMOD),
      1     wt_MoRateBranch, sum, ProbAct0, depthParam(MAX_FLT,5),
      2     rateType1(MAXPARAM), RateType(MAX_FLT,MAXPARAM,MAX_WIDTH),
      3     magS7(MAX_FLT,MAX_S7), rateS7(MAX_FLT,MAX_S7),
@@ -1713,10 +1727,12 @@ c     Input Fault Parameters
 
 c      Read number of segmentation models for this fault system
        read (10,*,err=3005) nSegModel
+       call S21_CheckDim ( nSegModel, MAX_SEGMOD, 'MAX_SEGMOD   ' )
        read (10,*,err=3006) (segWt(iFlt0,k),k=1,nSegModel)
 
 c      Read total number of fault segments
        read (10,*,err=3007) nFlt2
+       call S21_CheckDim ( nFlt2, MAX_SEG, 'MAX_SEG   ' )
 
        do i=1,nSegModel
          read (10,*,err=3008) (faultFlag(iFlt0,i,k),k=1,nFlt2)
@@ -1778,7 +1794,11 @@ c       Check for standard fault source or areal source
           read (10,*,err=3014) dip1, top
           read(10,*,err=3015) nfp(iFlt)
 
-          call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+          call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
+          if (sourceType(iFlt) .eq. 2) then  !because second dimension for grid_top is MAX_GRID
+            call S21_CheckDim ( nfp(iFlt), MAX_GRID, 'MAX_GRID   ' )
+          endif
+
           do ipt=1,nfp(iFlt)
             read (10,*,err=3016) fLong(iFlt,1,ipt), fLat(iFlt,1,ipt)
             fZ(iFlt,1,ipt) = top
@@ -1817,7 +1837,8 @@ c        Check for custom fault source
          if ( sourceType(iFlt) .eq. 5 .or. sourceType(iFlt) .eq. 6) then
            read(10,*,err=3017) nDownDip(iFLt), nfp(iFlt)
 
-           call S21_CheckDim ( nfp(iFlt), MAX_SEG, 'MAX_SEG   ' )
+           call S21_CheckDim ( nDownDip(iFlt), MAX_DD, 'MAX_DD   ' )
+           call S21_CheckDim ( nfp(iFlt), MAX_COOR, 'MAX_COOR   ' )
            do ipt=1,nfp(iFlt)
               read (10,*,err=3018) (fLong(iFlt,k,ipt), fLat(iFlt,k,ipt), fZ(iflt,k,ipt), k=1,nDownDip(iFlt) )
 
@@ -2068,7 +2089,7 @@ c        Load up parameter variations into large single dimension arrays
            call S21_CheckDim ( iWidth, MAX_WIDTH, 'MAX_WIDTH' )
 
              dip2 = dip1 + deltaDip1(iDip)
-             dip(iFlt,iWidth,1) = dip2
+             dip(iFlt,iWidth) = dip2
              faultWidth(iFlt,iWidth) = faultThick1(iThick1)
              faultWidthWt(iFlt,iWidth) = faultThickWt1(iThick1) * dipWt1(iDip)
 
