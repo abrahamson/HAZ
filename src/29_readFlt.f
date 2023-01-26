@@ -95,7 +95,7 @@
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7)
+     7     DistS7, DipS7, mechS7, ncountS7, VarXstepFlag, VarYstepFlag)
       elseif (version .eq. 45.3) then
         call S29_Rd_Fault_Data_45_3 ( nFlt, fName, minMag, magStep, hxStep,
      1     hyStep, segModelWt, rateParam, rateParamWt, beta,
@@ -907,7 +907,7 @@ c  --------------------------------------------------------------------
      4     faultFlag, nDownDip, nFtype, ftype_wt,
      5     segModelFlag, nSegModel0, segModelWt1, syn_dip,
      6     syn_zTOR, syn_RupWidth, syn_RX, syn_Ry0, magS7, rateS7,
-     7     DistS7, DipS7, mechS7, ncountS7)
+     7     DistS7, DipS7, mechS7, ncountS7, VarXstepFlag, VarYstepFlag)
 
       implicit none
       include 'pfrisk.h'
@@ -922,7 +922,7 @@ c  --------------------------------------------------------------------
      2        nParamVar(MAX_FLT,MAX_WIDTH), nfsystem,
      3        fsys(MAX_FLT), iDepthModel(MAX_FLT),
      4        nFtype(MAX_FLT), faultFlag(MAX_FLT,MAX_SEGMOD,MAX_SEG)
-      integer nFtype1(MAX_FLT),
+      integer nFtype1(MAX_FLT), VarYstepFlag(MAX_FLT), VarXstepFlag(MAX_FLT),
      2        iDip, iWidth, nThick1, nSR, nMoRate, nRecInt, ii, ipt,
      3        nFlt, iCoor, iFlt0, k, nFlt2, i, iflt2, igrid, n_Dip,
      4        nActRate, iRecur, iThickDip, iThick1, nRefMag0, iFM
@@ -1303,6 +1303,29 @@ C         Check that Hxstep = Hystep
             write (*,*) 'These values must be equal or errors can occur!'
             write (*,*) 'Check input fault file.'
             stop 99
+          endif
+c         check that hxstep and hystep are positive
+          if (hxstep(iFlt) .lt. 0 .or. hystep(iFlt) .lt. 0) then
+            write (*,*) 'Hxstep and Hystep must be positive for fault sources'
+            write (*,*) 'Check input fault file for fault: '
+            write (*,*) fname1
+            stop 99
+          endif
+        endif
+
+c       Set flag for variable Xstep discretization (only sourceType 2, 3)
+        VarXstepFlag(iFlt) = 0
+        if (sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3) then
+          if (hxstep(iFlt) .lt. 0.) then
+            VarXstepFlag(iFlt) = 1
+          endif
+        endif
+
+c       Set flag for variable Ystep discretization (only sourceType 2, 3, and 4)
+        VarYstepFlag(iFlt) = 0
+        if (sourceType(iFlt) .eq. 2 .or. sourceType(iFlt) .eq. 3 .or. sourceType(iFlt) .eq. 4) then
+          if (hystep(iFlt) .lt. 0.) then
+            VarYstepFlag(iFlt) = 1
           endif
         endif
 
