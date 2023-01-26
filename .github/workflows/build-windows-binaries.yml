@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Setup MinGW native environment
-      uses: msys2/setup-msys2@v3
+      uses: msys2/setup-msys2@v2
       if: contains(matrix.msystem, 'MINGW')
       with:
         msystem: ${{ matrix.msystem }}
