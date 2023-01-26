@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
@@ -41,7 +41,7 @@ jobs:
         ls -la
 
     - name: Upload HAZ artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: HAZ
         path: ${{github.workspace}}/build/HAZ
@@ -54,15 +54,13 @@ jobs:
     outputs:
       cases: ${{ steps.set-cases.outputs.cases }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - id: set-cases
         working-directory: ${{github.workspace}}/tests
         run: |
           cases=$(ls -d peer/set-1/* peer/set-2/* | jq -cnR '[inputs | select(length>0)]')
-          echo $cases
-          echo $cases | jq .
-          echo "::set-output name=cases::$cases"
+          echo "cases=$cases" >> $GITHUB_OUTPUT
 
   check-cases:
     runs-on: ubuntu-latest
@@ -88,14 +86,14 @@ jobs:
         case: ${{ fromJson(needs.find-cases.outputs.cases) }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -114,7 +112,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Download a HAZ artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: HAZ
           path: ${{github.workspace}}/scripts

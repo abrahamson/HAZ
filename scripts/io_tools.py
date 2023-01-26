@@ -86,8 +86,8 @@ def parse_site_line(line: str) -> Dict[str, T]:
     parts = line.split()
     s = {
         "id": int(parts[1]),
-        "lon": np.float(parts[3]),
-        "lat": np.float(parts[4]),
+        "lon": float(parts[3]),
+        "lat": float(parts[4]),
     }
     return s
 
@@ -175,15 +175,15 @@ def read_out3(fname: str) -> Dict[str, T]:
         n_ampl = int(lines.pop(0).split()[0])
 
         # Read the amplitudes
-        m["ampl"] = fixed_split(lines.pop(0)[61:], n_ampl * [(12, np.float)])
+        m["ampl"] = fixed_split(lines.pop(0)[61:], n_ampl * [(12, float)])
         m["faults"] = []
         for _ in range(n_faults):
             values = fixed_split(
                 lines.pop(0),
                 [(40, str)]
-                + 2 * [(6, np.float)]
-                + [(9, np.float)]
-                + n_ampl * [(12, np.float)],
+                + 2 * [(6, float)]
+                + [(9, float)]
+                + n_ampl * [(12, float)],
             )
             f = {
                 "name": values[0].strip(),
@@ -196,7 +196,7 @@ def read_out3(fname: str) -> Dict[str, T]:
 
         names = ["rate", "prob", "mag_avg", "dist_avg", "epsilon_avg"]
         for name, line in zip(names, lines):
-            m[name] = fixed_split(line[61:], n_ampl * [(12, np.float)])
+            m[name] = fixed_split(line[61:], n_ampl * [(12, float)])
 
         site["models"].append(m)
 
@@ -474,12 +474,12 @@ def read_out4(fname: str) -> Dict[str, T]:
     n_prob = int(lines.pop(0).split()[0])
     n_ampl = int(lines.pop(0))
 
-    site["amplitudes"] = fixed_split(lines.pop(0)[44:], n_ampl * [(12, np.float)])
+    site["amplitudes"] = fixed_split(lines.pop(0)[44:], n_ampl * [(12, float)])
     pop_lines(lines, 3)
 
     keys = ["mag_avg", "dist_avg", "epsilon_avg", "xcost_avg"]
     for key in keys:
-        site[key] = fixed_split(lines.pop(0)[44:], n_ampl * [(12, np.float)])
+        site[key] = fixed_split(lines.pop(0)[44:], n_ampl * [(12, float)])
 
     # Move two sections down
     pop_until(lines, "^------------------")
@@ -488,7 +488,7 @@ def read_out4(fname: str) -> Dict[str, T]:
 
     site["bins"] = []
     for l in pop_until(lines, "^------------------")[:-2]:
-        values = fixed_split(l[2:], 6 * [(7, np.float)] + n_ampl * [(12, np.float)])
+        values = fixed_split(l[2:], 6 * [(7, float)] + n_ampl * [(12, float)])
         b = {
             "epsilon_range": (values[0], values[1]),
             "mag_range": (values[2], values[3]),
