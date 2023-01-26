@@ -10,7 +10,7 @@ def hash_directory(path):
     """
     m = hashlib.sha1()
 
-    for root, dirnames, fnames in os.walk(path):
+    for root, _, fnames in os.walk(path):
         for fname in fnames:
             fpath = os.path.join(root, fname)
             size = os.path.getsize(fpath)
@@ -26,6 +26,6 @@ def load_ref_checksums():
     """
     with open('ref_checksums.txt') as fp:
         next(fp)
-        checksums = dict(l.strip().split('\t') for l in fp)
+        checksums = dict(line.strip().split('\t') for line in fp)
 
     return checksums
