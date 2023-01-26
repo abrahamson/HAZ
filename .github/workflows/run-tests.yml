@@ -60,9 +60,7 @@ jobs:
         working-directory: ${{github.workspace}}/tests
         run: |
           cases=$(ls -d peer/set-1/* peer/set-2/* | jq -cnR '[inputs | select(length>0)]')
-          echo $cases
-          echo $cases | jq .
-          echo "::set-output name=cases::$cases"
+          echo "cases=$cases" >> $GITHUB_OUTPUT
 
   check-cases:
     runs-on: ubuntu-latest
